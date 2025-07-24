@@ -1,0 +1,295 @@
+---
+title: "Unpopular Opinion - It's harder than ever to be a good data scientist"
+description: "It is an understatement to say that AI, particularly the Data Science profession, is changing drastically with the introduction of GenAI and Large Language Models. In today's GenAI-driven world, being a good data scientist is more challenging than ever."
+pubDate: 2024-10-20T00:00:00.000Z
+updatedDate: 2024-10-25T00:00:00.000Z
+author: "Marcus Elwin"
+tags: ["Data Science", "Large Language Models", "AI Engineering", "Career Advice"]
+---
+
+Over the past **6+ years** (and nearly a **decade** being involved with AI), I've worked across various industries and companies of all sizes, from large corporations 🏢 to agile startups 🚀. This experience has given me a front-row seat 🎟️ to the diverse structures and maturity levels of data science teams and their adjacent roles. Like many data professionals, I recently transitioned to *AI engineering* 🤖, focusing on the practical deployment of GenAI and Large Language Models (LLMs) in production environments over the past year.
+
+The data science landscape has evolved rapidly 🌐, especially with the rise of GenAI and LLMs. While these advancements have opened new doors 🚪, they have also made it more challenging than ever to be a **"good"** data scientist. From managing high expectations in organizations with little to no data strategy 🏗️ to navigating the hype that has turned everyone into self-proclaimed "AI specialists" 🧑‍💻, the role of a data scientist is more complex than it once was.
+
+In this article, I'll share my thoughts and experiences on the challenges data scientists face today. We'll look at what it means to be a **V-shaped data scientist** 📊, how data quality issues impact performance ⚠️, the importance of deep domain knowledge 🧠, and the blurred lines between *DataOps, MLOps, AIOps*, and traditional *DevOps* 🔄. My goal is to shed light on the realities of this profession and why the path to becoming a genuinely skilled data scientist is more demanding than ever.
+
+import Callout from '../../components/Callout.astro';
+
+<Callout type="info" title="Disclaimer">
+The quotes may or may not be inspired by real people. All images are AI generated.
+</Callout>
+
+## What is a good Data Scientist?
+
+> So you say you want to do Deep Learning, we don't do any learning here. Rather unlearning. So, focus on Data Engineering instead.  
+> — **Random Employer in 2015**
+
+When I began my career in data science, my work primarily involved using **R** and **SQL** to conduct statistical analysis for the stock exchange, focusing on trading behavior. The cutting-edge computer vision and deep learning algorithms I had studied felt distant from my day-to-day reality at the time. However, as my career progressed, I had the opportunity to apply deep learning techniques and deploy them in real-world production environments. This evolution mirrors a broader shift in the expectations placed on data scientists, which have expanded from traditional machine learning to deep learning and now GenAI and Large Language Models (LLMs).
+
+The role of a "good" data scientist has continuously evolved, and so have the titles and responsibilities. Depending on the company or industry, a data scientist might focus on anything from statistical modeling to full-stack AI deployment. (*See more on this under Issue #3*). Despite these variations, there are core skills that are essential for data scientists to thrive in today's dynamic industry.
+
+This brings us to the concept of the "V-shaped Data Scientist."
+
+```mermaid
+graph TD;
+ A[Data Scientist]
+ B[Logical Thinking, Mathematical & Statistical Fundamentals]
+ C[Domain and Business Understanding]
+ D[System Design and Architecture Skills]
+ E[Ownership of End-to-End Application Stack]
+ F[Intellectual Curiosity and Continuous Learning]
+
+ A -->|Core Skills| B
+ A -->|Differentiators in AI application| C
+ A -->|Crucial for AI Systems| D
+ A -->|Beyond Proficiency in Modeling| E
+ A -->|Essential for Keeping Up-to-Date| F
+
+ B -->|Critical for| G[Verifying AI-Generated Content]
+ C -->|Leads to| H[Solving Actual User-Centric Use Cases]
+ D -->|Includes| I[Monitoring, Tracing, Drift Detection]
+ E -->|Reduces Need For| J[Building Custom Models]
+ F -->|Enables| K[Adaptation to Rapid Industry Changes]
+
+ G -.->|In context of| J
+ I -.->|Supports| E
+ K -.->|Necessitates| C
+ H -->|Benefits from| D
+```
+
+As I see it, there are five key areas where a successful data scientist must be versatile:
+
+1. **Logical Thinking, Mathematical & Statistical Fundamentals**: A solid understanding of these principles is the foundation for building reliable models and verifying outputs.
+
+2. **Domain and Business Understanding**: Knowing the industry context ensures that data solutions address real-world problems and create value.
+
+3. **System Design and Architecture Skills**: Building scalable and maintainable systems requires a grasp of system architecture, especially for deploying AI models.
+
+4. **Ownership of End-to-End Application Stack**: From data preprocessing to model deployment, owning the entire workflow allows for seamless integration and maintenance.
+
+5. **Intellectual Curiosity and Continuous Learning**: The rapidly changing field demands a passion for continuous learning to stay current with emerging trends and technologies.
+
+These skills form the core of a "V-shaped" data scientist who combines depth in specific areas with broad capabilities across the entire data or ML workflow.
+
+```mermaid
+pie title Skills of a V-shaped Data Scientist
+ "Deep Expertise in AI & ML": 30
+ "Programming & System Development": 20
+ "Data Engineering": 20
+ "Business Acumen": 20
+ "Ethics & Governance": 10
+```
+
+For more on the concept of the V-shaped data scientist, check out my detailed article in [V-shaped Data Scientist in the Era of Generative AI](https://medium.com/gopenai/v-shaped-data-scientist-in-the-era-of-generative-ai-b29f1bca93b7).
+
+## Issue #1 - High expectations but no data or data strategy
+
+> We need to do AI, especially GenAI and LLMs. Our competitors are ahead of us with this AI thing. ChatGPT right? Make a chatbot. Make something cool. And by the way, we have no data available for the first year you work here. Privacy issues. GDPR.
+> — **Random Manager in 2023**
+
+![Fig 1. High expectations without any clear strategy, makes it hard for AI as well](/images/blog/unpopular-opinion-hard-good-ds/pic_issue_1.png)
+
+*Fig 1. High expectations without any clear strategy, makes it hard for AI as well. Source: Author.*
+
+AI is now on every board and company wish list. Since the inception of ChatGPT in late 2022, there's been a rush to become "AI-driven," with many businesses eager to integrate AI capabilities into their products. Implementing AI using Large Language Models (LLMs) may seem more effortless than ever, but the reality is far more complex.
+
+As a data scientist working to bring ML systems or LLMs into production, I've encountered several vital challenges that reveal a gap between expectations and reality. Regardless of whether we call it AI, ML, or LLM, the success of these technologies hinges on having a solid foundation in place.
+
+Here are some of the main issues:
+
+**No Data** 🏗️:
+* *The Data Pipeline Dilemma*: Even the most advanced AI models are useless without data. Many companies need to pay more attention to the importance of having robust data pipelines that can collect, clean, and prepare data for analysis. As a data scientist, you may spend more time convincing the organization to invest in data engineers or analytics engineers who can help build these essential pipelines.
+  
+* *Scattered and Unstructured Data:* Companies may also have data, but it is often siloed, inconsistent, or poorly structured, making it difficult to use effectively for AI applications.
+  
+**No Data Strategy** 🧭:
+* *Data Without Direction*: Simply having data is not enough. You might face significant roadblocks without a clear strategy for leveraging this data. For example, sensitive data that cannot be used freely or a lack of data governance can lead to major compliance and privacy issues. Data science efforts might lack meaningful insights or business value without a strategic approach.
+  
+* *Becoming Truly Data-Driven:* A proper data strategy means clearly understanding what data is needed, how it will be collected, and how it can drive the company's goals. Without this, data scientists solve problems that don't matter or create solutions that no one will use.
+
+**No AI Strategy** 🎯:
+* *"We Need AI, But We Don't Know Why"*: This is a common scenario. Many companies feel pressured to adopt AI simply because it's the latest trend, without understanding how it fits into their business model. Implementing AI without a clear use case is like building a solution in search of a problem. For example, creating a fancy Text2SQL bot or chatbot might sound great, but without a clear vertical or objective, it's unlikely to yield significant benefits.
+  
+* *Defining Real-World Use Cases*: An effective AI strategy should map out specific business problems where AI can offer a competitive advantage. Without this focus, data science projects can become expensive experiments that don't deliver ROI.
+
+**No Labeling Strategy 🏷️**:
+* *The Need for Accurate Evaluation*: Although LLMs are remarkably capable, you still need to evaluate their outputs, which often require labeled data. While relying on the "LLM as a judge" approach is tempting, this can lead to misleading conclusions if the model isn't properly benchmarked.
+  
+* *Ownership and Management of Labels*: Labeling data is critical to many AI workflows, especially for tasks requiring supervised learning. This means someone needs to take ownership of the labeling process, ensuring quality, consistency, and relevance. Without a clear labeling strategy, data scientists are left trying to generate signals from data they don't fully understand, leading to a confusing and ineffective model development cycle.
+  
+* *Synthetic Data vs. Real Labels*: There's been growing interest in using generated or synthetic data to fill gaps, and while this can be helpful, it's not a cure-all. Creating or generating data without understanding the underlying patterns might reinforce biases or miss critical insights, leading to flawed models.
+
+<Callout type="warning" title="The Reality Check">
+These challenges highlight a common theme: **high expectations but a lack of foundational support**. Companies eager to adopt AI must first address these fundamental issues by investing in data infrastructure, developing clear strategies, and fostering a culture that understands the importance of quality data. Otherwise, the gap between expectations and reality will widen, making it harder for data scientists to deliver meaningful results.
+</Callout>
+
+I think this is also a key reason why many Data Scientists quit and progress to do something else e.g., Data Engineering. *Luckily*, more and more companies are starting to understand this and employ a **CAIO or Chief AI Officer**.
+
+## Issue #2 - AI, GenAI, and LLM hype everyone is now "AI" specialists
+
+> AI, AI for real came in 2022 right with ChatGPT; I have done 5 courses in Prompt Engineering, which is not that hard, right? It works when I try on my oversimplified, non-realistic version of reality on my local machine, which does not consider scale or cost. So chop, chop, make it work. 
+> — **Random Manager / non AI Co-worker in 2024**
+
+![Fig 2. There are too many false AI prophets these days](/images/blog/unpopular-opinion-hard-good-ds/pic_issue_2.png)
+
+*Fig 2. There are too many false AI prophets these days. Source: Author.*
+
+Since the launch of Large Language models like GPT, the AI landscape has experienced an explosion of interest, driving businesses to position themselves as "AI-driven" almost overnight. While the increased attention to AI has sparked innovation, it has also led to misconceptions and unrealistic expectations. Many organizations quickly jump on the AI bandwagon without truly understanding what it means to implement these technologies effectively.
+
+Here are some key challenges this hype has created:
+
+**The Rise of the Self-Proclaimed "AI Specialist" 🧑‍💻**:
+* *Overnight Experts*: The commoditization of AI, primarily through LLMs, has made these powerful tools much more accessible. With platforms like [Cursor](https://www.cursor.com/) simplifying coding tasks, it has become easier for anyone to claim technical expertise. This has led to a surge of people rebranding themselves as "AI specialists" after taking a short course in "Prompt Engineering" or reading a few blogs. However, knowing how to ask ChatGPT relevant questions doesn't make someone an expert in any domain. This overconfidence and influx of self-proclaimed experts can dilute the quality of AI projects, leading to a false sense of competence that ultimately hampers real progress.
+
+**Over-Reliance on Plug-and-Play AI Solutions 🔌**:
+As many of you have undoubtedly noticed, AI—particularly Generative AI (GenAI)—has become increasingly commoditized. This means that AI can now be integrated into existing systems as a module or component, making it more accessible and widespread. While this democratization is a positive step for increasing AI adoption, it has also led to a surge in so-called **"OpenAI or GPT wrappers"**—applications that add a basic layer over pre-existing models, like ChatGPT, without offering significant value beyond the core functionalities.
+
+Anyone can build a simple Retrieval-Augmented Generation (RAG) solution, but not everyone can build one that scales effectively. This over-reliance on plug-and-play solutions presents several key challenges:
+
+* **The Illusion of Simplicity**: Plug-and-play tools can create a false sense of ease. Businesses might believe they can integrate AI quickly without understanding the complexities of deployment, scaling, or maintenance.
+
+* **Limited Customization and Differentiation**: Many of these solutions are quick to set up but offer little customization. Companies often end up with generic AI tools that don't differentiate them from competitors.
+
+* **Scalability and Performance Challenges**: While it's easy to prototype with a plug-and-play model, scaling that solution to real-world use cases can be different. Performance bottlenecks, cost inefficiencies, and data integration issues can arise.
+
+**Thinking that LLMs are a universal tool or a panacea for everything ML-related** 🏥:
+**Large Language Models (LLMs)** are potent tools—they excel at generating text, answering questions, and extracting information from unstructured data. However, they are not a one-size-fits-all solution for every machine learning problem. AI has been evolving since the 1950s, and various algorithms have been developed, each suited to specific tasks.
+
+**Use LLMs Where They Shine**: LLMs are great for tasks like generating coherent text, summarizing content, language translation, and even providing conversational interfaces.
+
+**But Don't Overreach**: Despite their capabilities, LLMs are not well-suited for every problem. For instance, regression tasks, time series forecasting, and clustering are areas where traditional machine learning models often perform better.
+
+<Callout type="success" title="Key Takeaway">
+So, in short, next time you want to use an LLM for something ML already does better: **Trust your Data Scientist's or ML Engineers' judgment** 🧠; this is what they are trained for!
+</Callout>
+
+## Issue #3: The Inconsistent Nature of Data Science Roles Across Companies
+
+> Data Scientist? What do you do? I mean, for real? Can't you help me with this dashboard and a SQL query to get my ad-hoc nonreusable insights that I will probably forget I asked about?
+> — **Random Co-worker in 2024**
+
+![Fig 3. Unfortunate that you don't have as many arms as responsibilities](/images/blog/unpopular-opinion-hard-good-ds/pic_issue_3.png)
+
+*Fig 3. Unfortunate that you don't have as many arms as responsibilities. Source: Author.*
+
+Data Scientist was once hailed as the sexiest job of the 21st century, but now AI Engineer seems to be taking that spot. However, even before this shift, it was often unclear what a Data Scientist was actually supposed to do. The responsibilities of a Data Scientist can vary widely depending on the company, industry, and even the team they're a part of. This inconsistency has led to confusion for both employers and professionals trying to build their careers.
+
+**Different Interpretations of the Role**:
+
+* **Product Analyst**: In some companies, Data Scientists function mainly as product analysts, focusing on tasks like A/B testing, user behavior analysis, and generating business insights.
+
+* **Data Engineer**: At other companies, the role may lean heavily towards data engineering—building and maintaining data pipelines, integrating various data sources, and ensuring data quality.
+
+* **Machine Learning Engineer**: Conversely, some companies expect their Data Scientists to act as ML Engineers, handling the end-to-end lifecycle of machine learning models.
+
+**Broadened Skill Requirements**: The role of Data Scientist has continued to evolve, and nowadays, professionals are often expected to have a grasp of:
+
+* **AI Engineering and LLMs**: The rise of generative AI and LLMs (Large Language Models) has added a new layer of complexity.
+
+* **Full-Stack Development**: Some companies seek "full-stack Data Scientists" who can build models and develop the front-end or back-end systems that deploy these models.
+
+## Issue #4: The Data Quality Problem
+
+> Ah, data, my dear friend, foe, and partner. What would I do without you? Use LLMs to generate data, perhaps? But that can be bad, you say?  
+> — **Random Data Scientist in 2024**
+
+![Fig 4. Garbage in equals Garbage out](/images/blog/unpopular-opinion-hard-good-ds/pic_issue_4.png)
+
+*Fig 4. Garbage in equals Garbage out. Source: Author.*
+
+<Callout type="error" title="The GIGO Principle">
+Garbage in equals garbage out—let's repeat it: **GIGO, GIGO**. Data quality is and will remain a critical issue at many companies, even if you use all the cool LLM-based features available today. If there's no data strategy or plan to make data accessible, the quality of the model doesn't matter.
+</Callout>
+
+From my experience, almost every place I've worked has had issues with data, whether it's about quality, accessibility, or integration.
+
+There's a long-standing belief that a Data Scientist spends **80%** of their time cleaning data and only **20%** on actual analysis and modeling. This idea, popularized through various surveys, still holds some truth, even though things have drastically improved over recent years.
+
+However, it's still surprising that so many companies don't fully understand their data, where it resides, how it's generated, and its quality. Without a clear data management strategy, even the most advanced machine learning models will struggle to produce reliable, actionable insights.
+
+## Issue #5: The need for deep domain knowledge 
+
+> Aren't you a "scientist"? Shouldn't you know everything by heart, i.e., legal, finance, sourcing, etc.? It can't be that hard. I have worked with this for 10+ years, so I shouldn't have to tell you how the domain works; use ChatGPT. Why should I provide guidance and help you with labeling?
+> — **Random Domain Expert 2022-2023**
+
+![Fig 5. Data Scientists also needs to be Domain Scientists](/images/blog/unpopular-opinion-hard-good-ds/pic_issue_5.png)
+
+*Fig 5. Data Scientists also needs to be Domain Scientists. Source: Author.*
+
+There is a massive potential for LLMs and LLM Agents. Who knows—this might be the cusp of achieving AGI (*Artificial General Intelligence*) or even ASI (*Artificial Superintelligence*). But, even with this optimism, I still see LLMs and agents having a hard time in their current form becoming genuine generalist problem solvers. This means that profound domain expertise will continue to be essential in the coming years.
+
+However, being a data scientist, it's challenging to be a legal or finance expert or possess in-depth knowledge of other adjacent domains. This is where collaboration becomes crucial. Working alongside domain experts will be even more critical, as their insights can guide the proper framing of problems, ensure that data-driven solutions are relevant, and help validate AI model outcomes.
+
+### The Role of Domain Experts in AI Projects
+
+* **Contextual Understanding**: Domain experts provide the context often missing in pure data analysis.
+
+* **Fine-Tuning AI Models**: When building LLMs or other AI solutions, domain knowledge can aid in fine-tuning, ensuring that the models generate outputs that align with industry standards and real-world applications.
+
+* **Mitigating Risks and Ensuring Compliance**: In sectors like finance, healthcare, and law, there are strict compliance requirements.
+
+<Callout type="note" title="Collaboration is Key">
+While LLMs and other AI tools continue to advance, deep domain knowledge remains crucial for success. For Data Scientists, **collaboration with domain experts is not just a best practice—it's a necessity**.
+</Callout>
+
+## Issue #6: DataOps, MLOps, AIOps, LLMOps, or Just DevOps?
+
+> "Wait, so you're telling me I need to understand how data pipelines work, manage model deployment, optimize LLMs, AND maintain cloud infrastructure? I thought I just needed to train a model! Can we call it 'Ops' and pretend I know what I'm doing?" — **Random Data Scientist in 2024**
+
+![Fig 6. Why not keep it simple and call it Ops?](/images/blog/unpopular-opinion-hard-good-ds/pic_issue_6.png)
+
+*Fig 6. Why not keep it simple and call it Ops? Source: Author.*
+
+I'm a big advocate of end-to-end (E2E) ML systems, and you can find more of my thoughts on this topic in my previous writings. In these systems, the AI or ML component is often a small but critical part of a larger ecosystem that requires testing, monitoring, tracing, and other operational practices. This still holds for LLM-based systems, giving rise to the now-growing field of LLMOps.
+
+However, it can be rather discombobulating for practitioners to differentiate between MLOps, DataOps, AIOps, and LLMOps. Aren't these just variations of DevOps? In my experience, what you call it matters less than understanding the need to operationalize these stochastic systems effectively.
+
+### Breaking Down the Terminology: What's the Difference?
+
+* **DataOps**: Primarily focused on managing data pipelines and workflows. DataOps ensures that data is accessible, reliable, and clean.
+  
+* **MLOps**: A blend of DevOps and machine learning, MLOps focuses on automating and streamlining the deployment, monitoring, and management of machine learning models.
+  
+* **AIOps**: Combines AI with IT operations to automate performance monitoring, anomaly detection, and alert management tasks.
+  
+* **LLMOps**: An emerging field specifically focused on operationalizing Large Language Models. It involves all the principles of MLOps but adds layers unique to LLMs.
+
+## Issue #7: The Impact of Rapid Technological Change
+
+> "Wait, so the new library/model or LLM isn't compatible with our current stack, but is it faster and cheaper? It can reason, you say... Awesome. I'll just figure out how to make it fit, like a square peg in a round hole." - **Problem-Solving EM, 2024**
+
+![Fig 7. Too many languages, frameworks and models to keep track off](/images/blog/unpopular-opinion-hard-good-ds/pic_issue_7_v2.png)
+
+*Fig 7. Too many languages, frameworks and models to keep track off. Source: Author.*
+
+If you have chosen the path of a Data Scientist, you're likely someone who enjoys learning and experimenting with new technology. However, compared to a few years ago, the pace of change in this field has accelerated drastically. We see new research papers released almost daily and new libraries that promise to do things better than before.
+
+The choices don't stop there. Should you buy or build? Fine-tune or prompt-engineer, especially as LLM capabilities continue to improve? What tasks are still considered core to Data Science?
+
+My point is that **technology**—and **Data Science** with it—continues to change rapidly. And we as practitioners need to stay ahead of the curve and adopt a continuous learning mind set.
+
+### Key Challenges and Considerations
+
+* **Overwhelming Choice of Tools and Technologies**: With the rapid release of new programming languages, frameworks, and libraries, Data Scientists face the daunting task of deciding which tools to invest their time.
+  
+* **Fragmentation and Integration**: The sheer number of tools can lead to fragmentation, where teams might struggle to integrate different systems.
+  
+* **Evolving Skillsets**: The skillset required for Data Scientists continues to evolve. It's no longer just about building models.
+  
+* **Balancing Innovation and Practicality**: The fast pace of change means that businesses often feel pressured to adopt the latest technologies.
+
+## Closing remarks
+
+As the field of data science continues to grow and evolve, so do the challenges that come with it. The introduction of GenAI, Large Language Models, and the increasing demand for AI-driven solutions have brought new opportunities and heightened expectations. **Companies want to leverage AI to gain a competitive edge, but many still need the foundational strategies and support systems to make that a reality**.
+
+For data scientists, ML Engineers, and recently AI Engineers, this means adapting to an ever-shifting landscape where skills once considered niche, such as understanding system architecture or working with domain experts, have become essential. **The days of focusing purely on building models are over** and have been over for some time.
+
+However, the journey has its pitfalls. The hype around AI has created a perception that it's easier than ever to implement sophisticated solutions, leading to a rise in **"overnight experts"** and an over-reliance on plug-and-play tools.
+
+As AI continues to develop, so will the need for **robust DataOps, MLOps, and LLMOps frameworks** that ensure these systems are scalable, secure, and reliable. At the same time, the pace of technological change means data scientists must constantly learn and adapt.
+
+In the end, being a **"good" data scientist in today's world** requires more than technical skill—it requires an understanding of the business landscape, a willingness to collaborate with diverse teams, and, above all, a drive to keep learning.
+
+The future of data science is bright—just as soon as we figure out what the job entails, now and in the future. One day, you're cleaning data; the next, you're explaining to your boss why their AI chatbot can't "just read minds." But if you love learning new frameworks, battling tech buzzwords, and trying to convince everyone that data privacy is non-essential, congrats—you've chosen the right field.
+
+So grab your favorite Python package, keep an eye on the latest LLM breakthrough, and remember: **A great data scientist doesn't just solve problems—they convince everyone that they never created them in the first place**.

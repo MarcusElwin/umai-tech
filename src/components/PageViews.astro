@@ -1,0 +1,92 @@
+---
+export interface Props {
+  slug: string;
+  className?: string;
+}
+
+const { slug, className = "" } = Astro.props;
+---
+
+<div class={`pageviews ${className}`}>
+  <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+    </svg>
+    <span id={`views-${slug}`} data-slug={slug}>
+      <span class="views-count">---</span> views
+    </span>
+  </div>
+</div>
+
+<script>
+  interface ViewsData {
+    [slug: string]: number;
+  }
+
+  function initPageViews() {
+    // Get all pageview elements
+    const pageViewElements = document.querySelectorAll('[data-slug]');
+    
+    pageViewElements.forEach(element => {
+      const slug = element.getAttribute('data-slug');
+      if (!slug) return;
+      
+      // Get current views from localStorage
+      const views = getViews(slug);
+      
+      // Update display
+      const countElement = element.querySelector('.views-count');
+      if (countElement) {
+        countElement.textContent = views.toLocaleString();
+      }
+      
+      // Increment view count (with debouncing to prevent multiple counts)
+      if (!sessionStorage.getItem(`viewed-${slug}`)) {
+        incrementView(slug);
+        sessionStorage.setItem(`viewed-${slug}`, 'true');
+        
+        // Update display after increment
+        setTimeout(() => {
+          const newViews = getViews(slug);
+          if (countElement) {
+            countElement.textContent = newViews.toLocaleString();
+          }
+        }, 100);
+      }
+    });
+  }
+
+  function getViews(slug: string): number {
+    const viewsData: ViewsData = JSON.parse(localStorage.getItem('blogViews') || '{}');
+    return viewsData[slug] || 0;
+  }
+
+  function incrementView(slug: string): void {
+    const viewsData: ViewsData = JSON.parse(localStorage.getItem('blogViews') || '{}');
+    viewsData[slug] = (viewsData[slug] || 0) + 1;
+    localStorage.setItem('blogViews', JSON.stringify(viewsData));
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPageViews);
+  } else {
+    initPageViews();
+  }
+
+  // Also run on navigation for SPA-like behavior
+  document.addEventListener('astro:page-load', initPageViews);
+</script>
+
+<style>
+  .pageviews {
+    transition: opacity 0.3s ease;
+  }
+  
+  .views-count {
+    font-variant-numeric: tabular-nums;
+    min-width: 2ch;
+    display: inline-block;
+  }
+</style>

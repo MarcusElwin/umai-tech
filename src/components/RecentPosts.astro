@@ -1,0 +1,125 @@
+---
+import { getCollection } from 'astro:content';
+
+export interface Props {
+  limit?: number;
+  showDescription?: boolean;
+  title?: string;
+  currentSlug?: string;
+}
+
+const { 
+  limit = 3, 
+  showDescription = false, 
+  title = "Recent Posts",
+  currentSlug 
+} = Astro.props;
+
+const allPosts = await getCollection('blog');
+const recentPosts = allPosts
+  .filter(post => currentSlug ? post.slug !== currentSlug : true)
+  .sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf())
+  .slice(0, limit);
+---
+
+<div class="recent-posts bg-white dark:bg-umai-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+  <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+    <svg class="w-5 h-5 mr-2 text-umai-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+    </svg>
+    {title}
+  </h3>
+  
+  {recentPosts.length > 0 ? (
+    <div class="space-y-4">
+      {recentPosts.map((post) => (
+        <article class="group">
+          <div class="flex flex-col space-y-2">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex-1 min-w-0">
+                <h4 class="text-sm font-medium text-gray-900 dark:text-white leading-snug group-hover:text-umai-accent transition-colors">
+                  <a href={`/blog/${post.slug}`} class="hover:underline line-clamp-2">
+                    {post.data.title}
+                  </a>
+                </h4>
+                
+                {showDescription && (
+                  <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
+                    {post.data.description}
+                  </p>
+                )}
+              </div>
+              
+              <time class="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
+                {new Date(post.data.pubDate).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric'
+                })}
+              </time>
+            </div>
+            
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="flex flex-wrap gap-1">
+                {post.data.tags.slice(0, 2).map((tag) => (
+                  <span class="text-xs bg-umai-accent/10 text-umai-accent px-2 py-0.5 rounded-full">
+                    {tag}
+                  </span>
+                ))}
+                {post.data.tags.length > 2 && (
+                  <span class="text-xs text-gray-500 dark:text-gray-400">
+                    +{post.data.tags.length - 2} more
+                  </span>
+                )}
+              </div>
+            )}
+            
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-xs text-gray-500 dark:text-gray-400">
+                By {post.data.author}
+              </span>
+              <a 
+                href={`/blog/${post.slug}`}
+                class="text-xs text-umai-accent hover:text-umai-accent-dark transition-colors font-medium"
+              >
+                Read →
+              </a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  ) : (
+    <p class="text-sm text-gray-500 dark:text-gray-400">No recent posts available.</p>
+  )}
+  
+  {recentPosts.length > 0 && (
+    <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <a 
+        href="/blog" 
+        class="inline-flex items-center text-sm font-medium text-umai-accent hover:text-umai-accent-dark transition-colors group"
+      >
+        <span>View all posts</span>
+        <svg class="ml-1 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  )}
+</div>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .recent-posts {
+    transition: all 0.2s ease;
+  }
+  
+  .recent-posts:hover {
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+  }
+</style>

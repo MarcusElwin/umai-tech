@@ -1,0 +1,53 @@
+---
+interface Props {
+  code: string;
+}
+
+const { code } = Astro.props;
+const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div class="mermaid-container my-8 flex justify-center">
+  <div id={id} class="mermaid bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+    {code}
+  </div>
+</div>
+
+<script define:vars={{ id, code }}>
+  import mermaid from 'mermaid';
+  
+  // Initialize mermaid
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'default',
+    themeVariables: {
+      primaryColor: '#8B5CF6',
+      primaryTextColor: '#1f2937',
+      primaryBorderColor: '#8B5CF6',
+      lineColor: '#6b7280',
+      secondaryColor: '#f3f4f6',
+      tertiaryColor: '#fff'
+    }
+  });
+
+  // Render the diagram
+  document.addEventListener('DOMContentLoaded', async () => {
+    const element = document.getElementById(id);
+    if (element) {
+      try {
+        const { svg } = await mermaid.render(id + '-svg', code);
+        element.innerHTML = svg;
+      } catch (error) {
+        console.error('Mermaid rendering error:', error);
+        element.innerHTML = '<p class="text-red-500">Error rendering diagram</p>';
+      }
+    }
+  });
+</script>
+
+<style>
+  .mermaid-container svg {
+    max-width: 100%;
+    height: auto;
+  }
+</style>

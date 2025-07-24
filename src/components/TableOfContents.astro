@@ -1,0 +1,164 @@
+---
+export interface Props {
+  headings: Array<{
+    slug: string;
+    text: string;
+    depth: number;
+  }>;
+  title?: string;
+}
+
+const { headings, title = "Table of Contents" } = Astro.props;
+
+// Filter out h1 (usually the main title) and only show h2-h4 for better UX
+const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 4);
+---
+
+{tocHeadings.length > 0 && (
+  <nav class="toc bg-white dark:bg-umai-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 sticky top-8">
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+      <svg class="w-5 h-5 mr-2 text-umai-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+      </svg>
+      {title}
+    </h3>
+    
+    <ul class="space-y-2">
+      {tocHeadings.map((heading) => (
+        <li class={`toc-item depth-${heading.depth}`}>
+          <a
+            href={`#${heading.slug}`}
+            class="toc-link block text-sm text-gray-600 dark:text-gray-400 hover:text-umai-accent dark:hover:text-umai-accent transition-colors leading-relaxed py-1"
+            data-heading-id={heading.slug}
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+    
+    <!-- Reading progress indicator -->
+    <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
+        <span>Reading Progress</span>
+        <span id="reading-progress-text">0%</span>
+      </div>
+      <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+        <div 
+          id="reading-progress-bar" 
+          class="bg-umai-accent h-2 rounded-full transition-all duration-300 ease-out"
+          style="width: 0%"
+        ></div>
+      </div>
+    </div>
+  </nav>
+)}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scrolling for TOC links
+    const tocLinks = document.querySelectorAll('.toc-link');
+    
+    tocLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href')?.substring(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+          
+          // Update URL without triggering scroll
+          window.history.pushState(null, null, `#${targetId}`);
+        }
+      });
+    });
+    
+    // Active section highlighting and reading progress
+    function updateActiveSection() {
+      const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      const tocLinks = document.querySelectorAll('.toc-link');
+      const scrollPosition = window.scrollY + 100; // Offset for better UX
+      
+      let activeHeading = null;
+      
+      // Find the current active heading
+      headings.forEach(heading => {
+        if (heading.offsetTop <= scrollPosition) {
+          activeHeading = heading;
+        }
+      });
+      
+      // Update active state in TOC
+      tocLinks.forEach(link => {
+        link.classList.remove('active');
+        const headingId = link.getAttribute('data-heading-id');
+        if (activeHeading && activeHeading.id === headingId) {
+          link.classList.add('active');
+        }
+      });
+      
+      // Update reading progress
+      const article = document.querySelector('.blog-content');
+      if (article) {
+        const articleHeight = article.offsetHeight;
+        const articleTop = article.offsetTop;
+        const windowHeight = window.innerHeight;
+        const scrollTop = window.scrollY;
+        
+        const progress = Math.min(
+          Math.max(
+            ((scrollTop - articleTop + windowHeight / 2) / articleHeight) * 100,
+            0
+          ),
+          100
+        );
+        
+        const progressBar = document.getElementById('reading-progress-bar');
+        const progressText = document.getElementById('reading-progress-text');
+        
+        if (progressBar && progressText) {
+          progressBar.style.width = `${progress}%`;
+          progressText.textContent = `${Math.round(progress)}%`;
+        }
+      }
+    }
+    
+    // Update on scroll
+    window.addEventListener('scroll', updateActiveSection);
+    updateActiveSection(); // Initial call
+  });
+</script>
+
+<style>
+  .toc-item.depth-2 {
+    @apply ml-0;
+  }
+  
+  .toc-item.depth-3 {
+    @apply ml-4;
+  }
+  
+  .toc-item.depth-4 {
+    @apply ml-8;
+  }
+  
+  .toc-link.active {
+    @apply text-umai-accent font-medium;
+  }
+  
+  .toc-link:hover {
+    @apply pl-2;
+  }
+  
+  .toc {
+    transition: all 0.2s ease;
+  }
+  
+  .toc:hover {
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
+  }
+</style>
