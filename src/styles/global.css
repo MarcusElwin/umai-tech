@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer utilities {
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+  
+  .animate-logo-swap {
+    animation: logoSwap 4s infinite;
+  }
+  
+  .animate-logo-swap-alt {
+    animation: logoSwapAlt 4s infinite;
+  }
+  
+  .animate-lightning {
+    animation: lightning 0.8s ease-in-out infinite;
+  }
+}
+
+@keyframes logoSwap {
+  0%, 45% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  50%, 95% {
+    opacity: 0;
+    transform: scale(0.8) rotate(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes logoSwapAlt {
+  0%, 45% {
+    opacity: 0;
+    transform: scale(0.8) rotate(-10deg);
+  }
+  50%, 95% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) rotate(-10deg);
+  }
+}
+
+@keyframes lightning {
+  0%, 90%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+  }
+  5%, 10%, 15%, 20%, 25% {
+    opacity: 0.1;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 1));
+  }
+  30%, 35% {
+    opacity: 1;
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 1));
+  }
+  40%, 45%, 50% {
+    opacity: 0.3;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+  }
+  55%, 60% {
+    opacity: 1;
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1));
+  }
+}
