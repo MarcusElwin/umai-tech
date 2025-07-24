@@ -15,6 +15,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.13.1",
   "dependencies": {
+    "@astrojs/check": "^0.9.4",
     "@astrojs/mdx": "^4.3.1",
     "@astrojs/prism": "^3.3.0",
     "astro": "^5.12.3",
