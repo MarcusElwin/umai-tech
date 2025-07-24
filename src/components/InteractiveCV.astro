@@ -358,6 +358,83 @@
   let currentSection = 'overview';
   let isAnimating = false;
 
+  function getASCIIHeader(section) {
+    const headers = {
+      overview: {
+        title: 'OVERVIEW',
+        subtitle: '🚀 INTERACTIVE RESUME 🚀',
+        description: 'AI Lead & Data Science Expert',
+        ascii: `
+╔══════════════════════════════════════════════════════╗
+║  ███╗   ███╗ █████╗ ██████╗  ██════╝██╗   ██╗██╗     ║
+║  ████╗ ████║██╔══██╗██╔══██╗██║    ██║   ██║██║     ║
+║  ██╔████╔██║███████║██████╔╝██║    ██║   ██║███████╗║
+║  ██║╚██╔╝██║██╔══██║██╔══██╗██║    ██║   ██║╚════██║║
+║  ██║ ╚═╝ ██║██║  ██║██║  ██║╚████═╝╚██████╔╝███████║║
+║                                                      ║
+║  ███████╗██╗     ██╗    ██╗██╗███╗   ██╗             ║
+║  ██╔════╝██║     ██║    ██║██║████╗  ██║             ║
+║  █████╗  ██║     ██║ █╗ ██║██║██╔██╗ ██║             ║
+║  ██╔══╝  ██║     ██║███╗██║██║██║╚██╗██║             ║
+║  ███████╗███████╗╚███╔███╔╝██║██║ ╚████║             ║
+╚══════════════════════════════════════════════════════╝`
+      },
+      experience: {
+        title: 'EXPERIENCE',
+        subtitle: '💼 PROFESSIONAL JOURNEY',
+        description: '7+ Years in AI & Data Science',
+        ascii: `
+╔════════════════════════════════════════════╗
+║  ███████╗██╗  ██╗██████╗ ███████╗██████╗   ║
+║  ██╔════╝╚██╗██╔╝██╔══██╗██╔════╝██╔══██╗  ║
+║  █████╗   ╚███╔╝ ██████╔╝█████╗  ██████╔╝  ║
+║  ██╔══╝   ██╔██╗ ██╔═══╝ ██╔══╝  ██╔══██╗  ║
+║  ███████╗██╔╝ ██╗██║     ███████╗██║  ██║  ║
+╚════════════════════════════════════════════╝`
+      },
+      skills: {
+        title: 'SKILLS',
+        subtitle: '⚡ TECHNICAL EXPERTISE',
+        description: 'AI, ML, and Engineering Stack',
+        ascii: `
+╔═══════════════════════════════════════╗
+║  ███████╗██╗  ██╗██╗██╗     ██╗     ██║
+║  ██╔════╝██║ ██╔╝██║██║     ██║     ██║
+║  ███████╗█████╔╝ ██║██║     ██║     ██║
+║  ╚════██║██╔═██╗ ██║██║     ██║     ██║
+║  ███████║██║  ██╗██║███████╗███████╗██║
+╚═══════════════════════════════════════╝`
+      },
+      education: {
+        title: 'EDUCATION',
+        subtitle: '🎓 ACADEMIC FOUNDATION',
+        description: 'KTH Royal Institute of Technology',
+        ascii: `
+╔═══════════════════════════════════════════╗
+║  ███████╗██████╗ ██╗   ██╗ ██████╗ █████╗ ║
+║  ██╔════╝██╔══██╗██║   ██║██╔════╝██╔══██╗║
+║  █████╗  ██║  ██║██║   ██║██║     ███████║║
+║  ██╔══╝  ██║  ██║██║   ██║██║     ██╔══██║║
+║  ███████╗██████╔╝╚██████╔╝╚██████╗██║  ██║║
+╚═══════════════════════════════════════════╝`
+      },
+      certifications: {
+        title: 'CERTIFICATIONS',
+        subtitle: '📜 PROFESSIONAL CREDENTIALS',
+        description: 'Industry Recognition & Learning',
+        ascii: `
+╔═══════════════════════════════════════════╗
+║   ██████╗███████╗██████╗ ████████╗███████╗║
+║  ██╔════╝██╔════╝██╔══██╗╚══██╔══╝██╔════╝║
+║  ██║     █████╗  ██████╔╝   ██║   ███████╗║
+║  ██║     ██╔══╝  ██╔══██╗   ██║   ╚════██║║
+║  ╚██████╗███████╗██║  ██║   ██║   ███████║║
+╚═══════════════════════════════════════════╝`
+      }
+    };
+    return headers[section] || headers.overview;
+  }
+
   function displayContent(data) {
     const content = document.getElementById('cv-content');
     if (!content) {
@@ -368,32 +445,31 @@
     // Enhanced terminal output with better styling and icons
     let output = '';
     
-    // Add ASCII header for overview section (when data is an object with name property)
-    if (data && typeof data === 'object' && !Array.isArray(data) && data.name) {
-      output += `<div style="margin-bottom: 24px; text-align: center;">`;
-      output += `<pre style="color: #8b5cf6; font-size: 10px; line-height: 1; margin: 0; text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);">`;
-      output += `╔═══════════════════════════════════════════════════════════════╗\n`;
-      output += `║  ███╗   ███╗ █████╗ ██████╗  ██████╗██╗   ██╗███████╗       ║\n`;
-      output += `║  ████╗ ████║██╔══██╗██╔══██╗██╔════╝██║   ██║██╔════╝       ║\n`;
-      output += `║  ██╔████╔██║███████║██████╔╝██║     ██║   ██║███████╗       ║\n`;
-      output += `║  ██║╚██╔╝██║██╔══██║██╔══██╗██║     ██║   ██║╚════██║       ║\n`;
-      output += `║  ██║ ╚═╝ ██║██║  ██║██║  ██║╚██████╗╚██████╔╝███████║       ║\n`;
-      output += `║  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝       ║\n`;
-      output += `║                                                               ║\n`;
-      output += `║           ███████╗██╗     ██╗    ██╗██╗███╗   ██╗            ║\n`;
-      output += `║           ██╔════╝██║     ██║    ██║██║████╗  ██║            ║\n`;
-      output += `║           █████╗  ██║     ██║ █╗ ██║██║██╔██╗ ██║            ║\n`;
-      output += `║           ██╔══╝  ██║     ██║███╗██║██║██║╚██╗██║            ║\n`;
-      output += `║           ███████╗███████╗╚███╔███╔╝██║██║ ╚████║            ║\n`;
-      output += `║           ╚══════╝╚══════╝ ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝            ║\n`;
-      output += `║                                                               ║\n`;
-      output += `║                    🚀 INTERACTIVE RESUME 🚀                  ║\n`;
-      output += `║               AI Lead & Data Science Expert                   ║\n`;
-      output += `║                   Stockholm, Sweden                          ║\n`;
-      output += `╚═══════════════════════════════════════════════════════════════╝</pre>`;
-      output += `</div>`;
-      
-      // Add system info banner
+    // Determine section type and show appropriate ASCII header
+    let sectionType = currentSection || 'overview';
+    
+    // Debug log to see what we're working with
+    console.log('Current section:', currentSection, 'Data type:', Array.isArray(data) ? 'array' : typeof data);
+    
+    const header = getASCIIHeader(sectionType);
+    
+    // Add ASCII header with MARCUS in purple and ELWIN in yellow
+    output += `<div style="margin-bottom: 24px; text-align: center;">`;
+    
+    // Use consistent purple color for all ASCII headers
+    output += `<pre style="color: #8b5cf6; font-size: 10px; line-height: 1; margin: 0; text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);">${header.ascii}</pre>`;
+    
+    if (sectionType !== 'overview') {
+      output += `<div style="margin-top: 8px; color: #86efac; font-size: 12px;">${header.subtitle}</div>`;
+      output += `<div style="color: #9ca3af; font-size: 10px;">${header.description}</div>`;
+    } else {
+      output += `<div style="margin-top: 8px; color: #86efac; font-size: 12px;">🚀 INTERACTIVE RESUME 🚀</div>`;
+      output += `<div style="color: #9ca3af; font-size: 10px;">AI Lead & Data Science Expert - Stockholm, Sweden</div>`;
+    }
+    output += `</div>`;
+    
+    // Add system info banner (only for overview)
+    if (sectionType === 'overview') {
       output += `<div style="margin-bottom: 20px; padding: 12px; background: linear-gradient(90deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%); border: 1px solid #374151; border-radius: 8px;">`;
       output += `<div style="color: #60a5fa; font-size: 11px; margin-bottom: 8px;">SYSTEM INFO:</div>`;
       output += `<div style="color: #86efac; font-size: 10px; line-height: 1.4;">`;
@@ -496,11 +572,43 @@
     console.log('Enhanced CV content displayed');
   }
 
+  function updateCommandLine(section) {
+    const commands = {
+      overview: './marcus-cv --display --interactive',
+      experience: './marcus-cv --show experience --verbose',
+      skills: './marcus-cv --list skills --detailed',
+      education: './marcus-cv --show education --academic',
+      certifications: './marcus-cv --list certs --verified'
+    };
+    
+    const descriptions = {
+      overview: 'Loading Marcus Elwin\'s Interactive Resume...',
+      experience: 'Fetching professional experience data...',
+      skills: 'Analyzing technical skill matrix...',
+      education: 'Retrieving academic credentials...',
+      certifications: 'Validating professional certifications...'
+    };
+    
+    const commandElement = document.querySelector('.terminal-cursor');
+    const descElement = document.querySelector('.text-gray-500.text-xs');
+    
+    if (commandElement) {
+      commandElement.textContent = commands[section] || commands.overview;
+    }
+    
+    if (descElement) {
+      descElement.innerHTML = `<span class="text-green-400">✓</span> ${descriptions[section] || descriptions.overview}`;
+    }
+  }
+
   function showSection(section) {
     if (isAnimating) return;
     isAnimating = true;
 
     console.log('Showing section:', section);
+    
+    // Update command line for this section
+    updateCommandLine(section);
 
     // Update button states
     document.querySelectorAll('.cv-btn').forEach(btn => {
@@ -526,10 +634,12 @@
       return;
     }
     
+    // Store current section for ASCII header detection
+    currentSection = section;
+    
     // Display content immediately
     displayContent(data);
     isAnimating = false;
-    currentSection = section;
   }
 
   function downloadPDF() {
