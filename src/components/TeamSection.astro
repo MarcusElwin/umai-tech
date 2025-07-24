@@ -1,0 +1,315 @@
+---
+// TeamSection.astro - AI Stack Visualization
+---
+
+<section class="py-20 bg-white dark:bg-umai-primary relative overflow-hidden">
+  <!-- Background elements -->
+  <div class="absolute inset-0 opacity-5">
+    <div class="absolute top-20 left-20 w-32 h-32 border border-umai-accent rounded-full"></div>
+    <div class="absolute bottom-32 right-32 w-24 h-24 border border-umai-accent rounded-full"></div>
+    <div class="absolute top-1/2 left-1/4 w-16 h-16 border border-umai-accent rounded-full"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section Header -->
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-light text-gray-900 dark:text-white mb-4">
+        The <span class="text-umai-accent">AI-Powered</span> Team
+      </h2>
+      <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+        At Umai Tech, I orchestrate a symphony of cutting-edge AI tools to deliver exceptional results. 
+        Meet the digital partners that amplify human creativity and intelligence.
+      </p>
+    </div>
+
+    <!-- Team Grid - Option 1: Clean Professional Layout -->
+    <div class="max-w-6xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        
+        <!-- Marcus Elwin - Human Leader -->
+        <div class="group relative bg-white dark:bg-umai-gray-800 rounded-3xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 hover:border-umai-accent/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+          <div class="absolute top-4 right-4">
+            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+          </div>
+          
+          <div class="text-center">
+            <div class="relative mb-6">
+              <div class="w-24 h-24 mx-auto relative">
+                <img 
+                  src="/images/authors/marcus-elwin.jpg" 
+                  alt="Marcus Elwin"
+                  class="w-full h-full rounded-full object-cover ring-4 ring-umai-accent/20 group-hover:ring-umai-accent/40 transition-all duration-300 shadow-lg"
+                  onerror="this.src='/images/authors/default-avatar.svg'"
+                />
+                <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                  <div class="bg-gradient-to-r from-umai-accent to-umai-accent-dark text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+                    HUMAN
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <h4 class="font-semibold text-gray-900 dark:text-white text-lg mb-2">
+              Marcus Elwin
+            </h4>
+            <p class="text-umai-accent font-medium text-sm mb-3">Founder & AI Lead</p>
+            
+            <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400">
+              <div class="flex items-center justify-center gap-2">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                7+ Years Experience
+              </div>
+              <div class="flex items-center justify-center gap-2">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+                </svg>
+                AI Strategy & Leadership
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OpenAI O3 -->
+        <div class="group relative bg-white dark:bg-umai-gray-800 rounded-3xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 hover:border-emerald-500/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+          <div class="absolute top-4 right-4">
+            <div class="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
+          </div>
+          
+          <div class="text-center">
+            <div class="relative mb-6">
+              <div class="w-24 h-24 bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-600 rounded-full mx-auto flex items-center justify-center ring-4 ring-emerald-400/20 group-hover:ring-emerald-400/40 transition-all duration-300 shadow-xl">
+                <!-- OpenAI Logo-inspired icon -->
+                <div class="relative">
+                  <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                  </div>
+                  <div class="absolute top-0 right-0 w-4 h-4 bg-white rounded-full flex items-center justify-center">
+                    <span class="text-emerald-600 text-xs font-bold">3</span>
+                  </div>
+                </div>
+              </div>
+              <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+                  AI
+                </div>
+              </div>
+            </div>
+            
+            <h4 class="font-semibold text-gray-900 dark:text-white text-lg mb-2">
+              OpenAI O3
+            </h4>
+            <p class="text-emerald-500 font-medium text-sm mb-3">AI Assistant</p>
+            
+            <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400">
+              <div>Complex Reasoning</div>
+              <div>Strategic Planning</div>
+              <div>Problem Solving</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Claude Code -->
+        <div class="group relative bg-white dark:bg-umai-gray-800 rounded-3xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 hover:border-orange-500/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+          <div class="absolute top-4 right-4">
+            <div class="w-3 h-3 bg-orange-400 rounded-full animate-pulse"></div>
+          </div>
+          
+          <div class="text-center">
+            <div class="relative mb-6">
+              <div class="w-24 h-24 bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 rounded-full mx-auto flex items-center justify-center ring-4 ring-orange-400/20 group-hover:ring-orange-400/40 transition-all duration-300 shadow-xl">
+                <!-- Claude-inspired icon -->
+                <div class="relative">
+                  <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                    </svg>
+                  </div>
+                  <!-- Claude "C" badge -->
+                  <div class="absolute -top-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center">
+                    <span class="text-orange-600 text-xs font-bold">C</span>
+                  </div>
+                </div>
+              </div>
+              <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+                  AI
+                </div>
+              </div>
+            </div>
+            
+            <h4 class="font-semibold text-gray-900 dark:text-white text-lg mb-2">
+              Claude Code
+            </h4>
+            <p class="text-orange-500 font-medium text-sm mb-3">Code Partner</p>
+            
+            <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400">
+              <div>Sonnet 4 / Opus</div>
+              <div>Code Generation</div>
+              <div>Architecture Design</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Combined Research Team -->
+        <div class="group relative bg-white dark:bg-umai-gray-800 rounded-3xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+          <div class="absolute top-4 right-4">
+            <div class="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
+          </div>
+          
+          <div class="text-center">
+            <div class="relative mb-6">
+              <!-- Single unified research avatar -->
+              <div class="w-24 h-24 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 rounded-full mx-auto flex items-center justify-center ring-4 ring-blue-400/20 group-hover:ring-blue-400/40 transition-all duration-300 shadow-xl relative">
+                <!-- Unified research icon -->
+                <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center relative">
+                  <!-- Combined research icon -->
+                  <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v6a2 2 0 002 2h2m0-8v8m0-8l3-3m-3 3l3 3m6-6v6a2 2 0 01-2 2h-2m0-8V5a2 2 0 012-2h2m0 8V9a2 2 0 00-2-2h-2"/>
+                  </svg>
+                  <!-- Small search overlay -->
+                  <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-white/90 rounded-full flex items-center justify-center">
+                    <svg class="w-2.5 h-2.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                  </div>
+                </div>
+                <!-- Brand indicators -->
+                <div class="absolute top-0 right-0 flex -space-x-1">
+                  <div class="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center ring-2 ring-white">
+                    <span class="text-white text-[8px] font-bold">M</span>
+                  </div>
+                  <div class="w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center ring-2 ring-white">
+                    <span class="text-white text-[8px] font-bold">P</span>
+                  </div>
+                </div>
+              </div>
+              <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                <div class="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+                  AI TEAM
+                </div>
+              </div>
+            </div>
+            
+            <h4 class="font-semibold text-gray-900 dark:text-white text-lg mb-2">
+              Research Team
+            </h4>
+            <p class="text-blue-500 font-medium text-sm mb-3">Manus AI + Perplexity</p>
+            
+            <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400">
+              <div>Academic Papers</div>
+              <div>Real-time Data</div>
+              <div>Market Analysis</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team Stats -->
+    <div class="mt-16 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div class="text-center">
+        <div class="text-3xl font-bold text-umai-accent mb-2">10K+</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">Lines of Code Generated</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl font-bold text-umai-accent mb-2">500+</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">Research Papers Analyzed</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl font-bold text-umai-accent mb-2">24/7</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">AI Collaboration</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl font-bold text-umai-accent mb-2">7+</div>
+        <div class="text-sm text-gray-600 dark:text-gray-400">Years of Experience</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .team-central {
+    animation: pulse-glow 3s ease-in-out infinite alternate;
+  }
+
+  .ai-tool {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .tool-1 { animation-delay: 0s; }
+  .tool-2 { animation-delay: 1.5s; }
+  .tool-3 { animation-delay: 3s; }
+  .tool-4 { animation-delay: 4.5s; }
+
+  .connection-line {
+    stroke-dasharray: 5,5;
+  }
+
+  .data-flow-1 {
+    animation: flow-1 4s linear infinite;
+  }
+
+  .data-flow-2 {
+    animation: flow-2 5s linear infinite;
+  }
+
+  .data-flow-3 {
+    animation: flow-3 6s linear infinite;
+  }
+
+  @keyframes pulse-glow {
+    0% { 
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+    }
+    100% { 
+      box-shadow: 0 0 40px rgba(139, 92, 246, 0.6), 0 0 60px rgba(139, 92, 246, 0.3);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes flow-1 {
+    0% { top: 25%; left: 50%; }
+    25% { top: 50%; left: 75%; }
+    50% { top: 75%; left: 50%; }
+    75% { top: 50%; left: 25%; }
+    100% { top: 25%; left: 50%; }
+  }
+
+  @keyframes flow-2 {
+    0% { top: 50%; left: 75%; }
+    25% { top: 75%; left: 50%; }
+    50% { top: 50%; left: 25%; }
+    75% { top: 25%; left: 50%; }
+    100% { top: 50%; left: 75%; }
+  }
+
+  @keyframes flow-3 {
+    0% { top: 75%; left: 50%; }
+    25% { top: 50%; left: 25%; }
+    50% { top: 25%; left: 50%; }
+    75% { top: 50%; left: 75%; }
+    100% { top: 75%; left: 50%; }
+  }
+
+  @media (max-width: 768px) {
+    .team-orbit {
+      height: 400px;
+    }
+    
+    .ai-tool {
+      transform: scale(0.9);
+    }
+    
+    .team-central {
+      transform: translate(-50%, -50%) scale(0.8);
+    }
+  }
+</style>

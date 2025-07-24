@@ -1,0 +1,71 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  icon: string;
+  accent: string;
+  features: string[];
+  pricing?: string;
+  cta?: {
+    text: string;
+    href: string;
+  };
+}
+
+const { title, description, icon, accent, features, pricing, cta } = Astro.props;
+---
+
+<div class="group relative p-8 bg-white dark:bg-umai-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-umai-accent/50 dark:hover:border-umai-accent/50 transition-all duration-300">
+  <!-- Subtle gradient on hover -->
+  <div class="absolute inset-0 bg-gradient-to-br from-umai-accent/0 to-umai-accent/0 group-hover:from-umai-accent/5 group-hover:to-umai-accent/10 rounded-2xl transition-all duration-300"></div>
+  
+  <div class="relative">
+    <!-- Icon and Title -->
+    <div class="mb-6 flex items-center space-x-4">
+      <span class={`text-3xl text-umai-accent bg-gradient-to-r ${accent} bg-clip-text text-transparent`}>
+        {icon}
+      </span>
+      <h3 class="text-xl font-medium text-gray-900 dark:text-white">
+        {title}
+      </h3>
+    </div>
+    
+    <!-- Description -->
+    <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+      {description}
+    </p>
+    
+    <!-- Features -->
+    <div class="mb-8">
+      <ul class="space-y-3">
+        {features.map((feature) => (
+          <li class="flex items-start text-sm text-gray-600 dark:text-gray-400">
+            <div class="w-1.5 h-1.5 rounded-full bg-umai-accent mt-2 mr-3 flex-shrink-0"></div>
+            {feature}
+          </li>
+        ))}
+      </ul>
+    </div>
+    
+    <!-- Pricing and CTA -->
+    <div class="pt-6 border-t border-gray-200/30 dark:border-gray-700/30">
+      {pricing && (
+        <div class="mb-4">
+          <span class="text-sm font-medium text-gray-900 dark:text-white">{pricing}</span>
+        </div>
+      )}
+      
+      {cta && (
+        <a 
+          href={cta.href}
+          class="inline-flex items-center text-sm font-medium text-umai-accent hover:text-umai-accent-dark transition-colors group/link"
+        >
+          <span>{cta.text}</span>
+          <svg class="ml-2 w-4 h-4 transition-transform group-hover/link:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      )}
+    </div>
+  </div>
+</div>

@@ -261,12 +261,40 @@ const { Content, headings } = await entry.render();
   
   /* Better code highlighting */
   .blog-content :global(pre) {
-    @apply relative;
+    @apply relative bg-gray-900 dark:bg-gray-950 rounded-lg p-4 overflow-x-auto my-6;
+    font-family: 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
   }
   
   .blog-content :global(pre):before {
     content: '';
     @apply absolute top-0 left-0 w-1 h-full bg-umai-accent rounded-l-lg;
+  }
+  
+  .blog-content :global(pre code) {
+    @apply bg-transparent p-0 text-sm leading-relaxed;
+    color: #e1e7ef;
+  }
+  
+  /* Custom syntax highlighting tweaks */
+  .blog-content :global(.shiki) {
+    @apply bg-gray-900 dark:bg-gray-950;
+  }
+  
+  .blog-content :global(.shiki code) {
+    @apply text-sm;
+    counter-reset: step;
+    counter-increment: step 0;
+  }
+  
+  .blog-content :global(.shiki .line) {
+    @apply px-4 py-0.5;
+  }
+  
+  .blog-content :global(.shiki .line:before) {
+    content: counter(step);
+    counter-increment: step;
+    @apply inline-block w-4 mr-4 text-gray-500 text-right select-none;
+    font-size: 0.75rem;
   }
   
   /* Improve table responsive design */

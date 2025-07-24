@@ -1,0 +1,492 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Contact Us">
+  <section class="min-h-screen pt-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-umai-primary">
+    <div class="max-w-4xl mx-auto">
+      <div class="mb-12 text-center">
+        <h1 class="text-4xl sm:text-5xl font-light text-gray-900 dark:text-white mb-4">
+          Get in <span class="font-normal text-umai-accent">Touch</span>
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          Have a question about AI, data science, or want to discuss a potential project? We'd love to hear from you.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <!-- Contact Form -->
+        <div class="order-2 lg:order-1">
+          <form 
+            id="contactForm"
+            action="https://formspree.io/f/xpznvkqj" 
+            method="POST"
+            class="space-y-6"
+          >
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="firstName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  First Name *
+                </label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  required
+                  class="w-full px-4 py-3 bg-white dark:bg-umai-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-umai-accent focus:border-transparent text-gray-900 dark:text-white transition-colors"
+                  placeholder="John"
+                />
+              </div>
+              <div>
+                <label for="lastName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Last Name *
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  required
+                  class="w-full px-4 py-3 bg-white dark:bg-umai-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-umai-accent focus:border-transparent text-gray-900 dark:text-white transition-colors"
+                  placeholder="Doe"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Email Address *
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                class="w-full px-4 py-3 bg-white dark:bg-umai-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-umai-accent focus:border-transparent text-gray-900 dark:text-white transition-colors"
+                placeholder="john@example.com"
+              />
+            </div>
+
+            <div>
+              <label for="company" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Company/Organization
+              </label>
+              <input
+                type="text"
+                id="company"
+                name="company"
+                class="w-full px-4 py-3 bg-white dark:bg-umai-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-umai-accent focus:border-transparent text-gray-900 dark:text-white transition-colors"
+                placeholder="Your Company"
+              />
+            </div>
+
+            <div>
+              <label for="subject" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Subject *
+              </label>
+              <select
+                id="subject"
+                name="subject"
+                required
+                class="w-full px-4 py-3 bg-white dark:bg-umai-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-umai-accent focus:border-transparent text-gray-900 dark:text-white transition-colors"
+              >
+                <option value="">Select a topic</option>
+                <option value="ai-consulting">AI & ML Consulting</option>
+                <option value="data-science">Data Science Services</option>
+                <option value="project-collaboration">Project Collaboration</option>
+                <option value="speaking-engagement">Speaking Engagement</option>
+                <option value="blog-content">Blog Content Discussion</option>
+                <option value="general-inquiry">General Inquiry</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Message *
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                required
+                rows="6"
+                class="w-full px-4 py-3 bg-white dark:bg-umai-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-umai-accent focus:border-transparent text-gray-900 dark:text-white transition-colors resize-vertical"
+                placeholder="Tell us about your project, question, or how we can help you..."
+              ></textarea>
+            </div>
+
+            <!-- Bot protection honeypot field (hidden from humans) -->
+            <div class="hidden" aria-hidden="true">
+              <label for="website">Website (leave this blank):</label>
+              <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <!-- Additional honeypot field -->
+            <input type="text" name="_gotcha" style="display:none !important" tabindex="-1" autocomplete="off" />
+
+            <!-- Timestamp for rate limiting -->
+            <input type="hidden" name="_timestamp" id="timestamp" />
+
+            <!-- Hidden fields for better email templates -->
+            <input type="hidden" name="_subject" value="New Contact Form Submission from Umai Tech" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="_next" value="https://umai-tech.com/contact?success=true" />
+            <input type="hidden" name="_captcha" value="false" />
+
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                * Required fields
+              </p>
+              <button
+                type="submit"
+                id="submitBtn"
+                class="inline-flex items-center px-6 py-3 bg-umai-accent text-white font-medium rounded-lg hover:bg-umai-accent-dark focus:ring-4 focus:ring-umai-accent/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span id="submitText">Send Message</span>
+                <svg id="submitIcon" class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+                <svg id="loadingIcon" class="ml-2 w-5 h-5 animate-spin hidden" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="order-1 lg:order-2">
+          <div class="bg-white dark:bg-umai-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-8">
+            <h2 class="text-2xl font-light text-gray-900 dark:text-white mb-6">
+              Let's Connect
+            </h2>
+
+            <div class="space-y-6">
+              <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0">
+                  <div class="w-10 h-10 bg-umai-accent/10 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-umai-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-medium text-gray-900 dark:text-white">Email</h3>
+                  <p class="text-gray-600 dark:text-gray-400">marcus@umai-tech.com</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">
+                    We typically respond within 24 hours
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0">
+                  <div class="w-10 h-10 bg-umai-accent/10 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-umai-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-medium text-gray-900 dark:text-white">Location</h3>
+                  <p class="text-gray-600 dark:text-gray-400">Global Remote</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">
+                    Working with clients worldwide
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0">
+                  <div class="w-10 h-10 bg-umai-accent/10 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 text-umai-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <h3 class="text-lg font-medium text-gray-900 dark:text-white">Response Time</h3>
+                  <p class="text-gray-600 dark:text-gray-400">24-48 hours</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">
+                    For urgent matters, please mention in your message
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+              <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Follow Us</h3>
+              <div class="flex space-x-4">
+                <a
+                  href="https://linkedin.com/in/MarcusElwin"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-umai-accent hover:text-white transition-colors"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </a>
+                <a
+                  href="https://twitter.com/MarqKwesi"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-umai-accent hover:text-white transition-colors"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </a>
+                <a
+                  href="https://github.com/MarcusElwin"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-umai-accent hover:text-white transition-colors"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Success/Error Messages -->
+  <div id="successMessage" class="fixed bottom-6 right-6 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+    <div class="flex items-center">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+      <span>Message sent successfully! We'll get back to you soon.</span>
+    </div>
+  </div>
+
+  <div id="errorMessage" class="fixed bottom-6 right-6 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+    <div class="flex items-center">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+      <span>Failed to send message. Please try again.</span>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    const submitIcon = document.getElementById('submitIcon');
+    const loadingIcon = document.getElementById('loadingIcon');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
+
+    // Bot protection: Set form load timestamp
+    const timestampField = document.getElementById('timestamp');
+    const formLoadTime = Date.now();
+    timestampField.value = formLoadTime;
+
+    // Minimum time before form can be submitted (prevents instant bot submissions)
+    const MIN_FORM_TIME = 3000; // 3 seconds
+
+    // Track user interactions for bot detection
+    let userInteractions = 0;
+    let hasMouseMovement = false;
+    let hasKeyboardInput = false;
+    let mouseMovements = 0;
+    let focusEvents = 0;
+
+    // Detect human-like interactions
+    document.addEventListener('mousemove', function() {
+      hasMouseMovement = true;
+      mouseMovements++;
+    });
+
+    form.addEventListener('input', function(e) {
+      userInteractions++;
+      hasKeyboardInput = true;
+      
+      // Detect rapid-fire input (bot behavior)
+      const now = Date.now();
+      if (!e.target.lastInputTime) e.target.lastInputTime = now;
+      const timeDiff = now - e.target.lastInputTime;
+      
+      if (timeDiff < 50 && e.target.value.length > 10) {
+        e.target.suspicious = true;
+      }
+      e.target.lastInputTime = now;
+    });
+
+    // Track focus events
+    form.addEventListener('focusin', function() {
+      focusEvents++;
+    });
+
+    // Rate limiting check
+    function checkRateLimit() {
+      const lastSubmission = localStorage.getItem('lastContactSubmission');
+      const now = Date.now();
+      const RATE_LIMIT = 60000; // 1 minute between submissions
+      
+      if (lastSubmission && (now - parseInt(lastSubmission)) < RATE_LIMIT) {
+        showMessage(errorMessage);
+        errorMessage.querySelector('span').textContent = 'Please wait a moment before submitting another message.';
+        return false;
+      }
+      
+      localStorage.setItem('lastContactSubmission', now.toString());
+      return true;
+    }
+
+    // Check for success parameter in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'true') {
+      showMessage(successMessage);
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    function showMessage(element) {
+      element.classList.remove('translate-x-full');
+      element.classList.add('translate-x-0');
+      
+      setTimeout(() => {
+        element.classList.add('translate-x-full');
+        element.classList.remove('translate-x-0');
+      }, 5000);
+    }
+
+    function setSubmitButtonState(loading) {
+      if (loading) {
+        submitBtn.disabled = true;
+        submitText.textContent = 'Sending...';
+        submitIcon.classList.add('hidden');
+        loadingIcon.classList.remove('hidden');
+      } else {
+        submitBtn.disabled = false;
+        submitText.textContent = 'Send Message';
+        submitIcon.classList.remove('hidden');
+        loadingIcon.classList.add('hidden');
+      }
+    }
+
+    // Bot protection validation
+    function validateHumanBehavior() {
+      const timeSpent = Date.now() - formLoadTime;
+      const honeypotField = document.getElementById('website');
+      const gotchaField = document.querySelector('input[name="_gotcha"]');
+      
+      // Check honeypot fields (should be empty)
+      if (honeypotField.value !== '' || gotchaField.value !== '') {
+        console.warn('Bot detected: Honeypot fields filled');
+        return false;
+      }
+      
+      // Check minimum time spent on form
+      if (timeSpent < MIN_FORM_TIME) {
+        console.warn('Bot detected: Form submitted too quickly');
+        showMessage(errorMessage);
+        errorMessage.querySelector('span').textContent = 'Please take a moment to fill out the form properly.';
+        return false;
+      }
+      
+      // Check for human-like interactions
+      if (!hasMouseMovement && !hasKeyboardInput) {
+        console.warn('Bot detected: No human-like interactions');
+        return false;
+      }
+      
+      // Check minimum user interactions
+      if (userInteractions < 3) {
+        console.warn('Bot detected: Insufficient user interactions');
+        showMessage(errorMessage);
+        errorMessage.querySelector('span').textContent = 'Please complete all required fields.';
+        return false;
+      }
+      
+      // Check for suspicious rapid input
+      const fields = form.querySelectorAll('input[type="text"], input[type="email"], textarea');
+      for (let field of fields) {
+        if (field.suspicious) {
+          console.warn('Bot detected: Suspicious rapid input');
+          return false;
+        }
+      }
+      
+      // Check for reasonable mouse movements and focus events
+      if (mouseMovements < 5 || focusEvents < 2) {
+        console.warn('Bot detected: Insufficient natural user interactions');
+        return false;
+      }
+      
+      // Check for spam patterns in message content
+      const message = document.getElementById('message').value.toLowerCase();
+      const spamPatterns = [
+        /(?:https?:\/\/|www\.)[^\s]+/g, // URLs
+        /\b(?:buy|purchase|click here|free|offer|deal|limited time)\b/gi,
+        /.{1,3}@.{1,3}\..{1,3}/g, // Suspicious email patterns
+        /(.)\1{4,}/g, // Repeated characters
+      ];
+      
+      for (let pattern of spamPatterns) {
+        if (pattern.test(message)) {
+          console.warn('Bot detected: Spam pattern in message');
+          showMessage(errorMessage);
+          errorMessage.querySelector('span').textContent = 'Please remove any links or promotional content from your message.';
+          return false;
+        }
+      }
+      
+      return true;
+    }
+
+    // Handle form submission with bot protection
+    form.addEventListener('submit', function(e) {
+      // Check rate limiting first
+      if (!checkRateLimit()) {
+        e.preventDefault();
+        setSubmitButtonState(false);
+        return;
+      }
+      
+      // Validate human behavior before submission
+      if (!validateHumanBehavior()) {
+        e.preventDefault();
+        setSubmitButtonState(false);
+        return;
+      }
+      
+      setSubmitButtonState(true);
+      
+      // Let the form submit naturally to Formspree
+      // The success/error handling will be done via redirect
+    });
+
+    // Add form validation feedback
+    const requiredFields = form.querySelectorAll('[required]');
+    requiredFields.forEach(field => {
+      field.addEventListener('blur', function() {
+        if (this.value.trim() === '') {
+          this.classList.add('border-red-500');
+          this.classList.remove('border-gray-300', 'dark:border-gray-600');
+        } else {
+          this.classList.remove('border-red-500');
+          this.classList.add('border-gray-300', 'dark:border-gray-600');
+        }
+      });
+
+      field.addEventListener('input', function() {
+        if (this.value.trim() !== '') {
+          this.classList.remove('border-red-500');
+          this.classList.add('border-gray-300', 'dark:border-gray-600');
+        }
+      });
+    });
+  });
+</script>
+</Layout>

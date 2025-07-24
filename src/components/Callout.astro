@@ -8,34 +8,39 @@ const { type = 'info', title } = Astro.props;
 
 const typeStyles = {
   info: {
-    container: 'bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800/30',
+    container: 'bg-blue-50/80 border-blue-200/60 dark:bg-blue-950/30 dark:border-blue-800/40',
     icon: 'text-blue-600 dark:text-blue-400',
     title: 'text-blue-800 dark:text-blue-300',
-    content: 'text-blue-700 dark:text-blue-200'
+    content: 'text-blue-700 dark:text-blue-200',
+    accent: 'bg-blue-500'
   },
   warning: {
-    container: 'bg-amber-50 border-amber-200 dark:bg-amber-950/20 dark:border-amber-800/30',
+    container: 'bg-amber-50/80 border-amber-200/60 dark:bg-amber-950/30 dark:border-amber-800/40',
     icon: 'text-amber-600 dark:text-amber-400',
     title: 'text-amber-800 dark:text-amber-300',
-    content: 'text-amber-700 dark:text-amber-200'
+    content: 'text-amber-700 dark:text-amber-200',
+    accent: 'bg-amber-500'
   },
   error: {
-    container: 'bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-800/30',
+    container: 'bg-red-50/80 border-red-200/60 dark:bg-red-950/30 dark:border-red-800/40',
     icon: 'text-red-600 dark:text-red-400',
     title: 'text-red-800 dark:text-red-300',
-    content: 'text-red-700 dark:text-red-200'
+    content: 'text-red-700 dark:text-red-200',
+    accent: 'bg-red-500'
   },
   success: {
-    container: 'bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-800/30',
+    container: 'bg-green-50/80 border-green-200/60 dark:bg-green-950/30 dark:border-green-800/40',
     icon: 'text-green-600 dark:text-green-400',
     title: 'text-green-800 dark:text-green-300',
-    content: 'text-green-700 dark:text-green-200'
+    content: 'text-green-700 dark:text-green-200',
+    accent: 'bg-green-500'
   },
   note: {
-    container: 'bg-umai-gray-50 border-umai-gray-200 dark:bg-umai-gray-900/20 dark:border-umai-gray-700/30',
+    container: 'bg-umai-gray-50/80 border-umai-gray-200/60 dark:bg-umai-gray-900/30 dark:border-umai-gray-700/40',
     icon: 'text-umai-gray-600 dark:text-umai-gray-400',
     title: 'text-umai-gray-800 dark:text-umai-gray-300',
-    content: 'text-umai-gray-700 dark:text-umai-gray-200'
+    content: 'text-umai-gray-700 dark:text-umai-gray-200',
+    accent: 'bg-umai-gray-500'
   }
 };
 
@@ -60,30 +65,87 @@ const icons = {
 const styles = typeStyles[type];
 ---
 
-<div class={`callout border-l-4 border rounded-lg p-4 my-6 ${styles.container}`}>
-  <div class="flex">
+<div class={`callout relative border rounded-xl p-4 my-4 ${styles.container} backdrop-blur-sm`}>
+  <!-- Accent line -->
+  <div class={`absolute left-0 top-0 bottom-0 w-1 rounded-l-xl ${styles.accent}`}></div>
+  
+  <div class="flex items-start gap-3">
     <div class={`flex-shrink-0 ${styles.icon}`}>
       <Fragment set:html={icons[type]} />
     </div>
-    <div class="ml-3 flex-1">
+    <div class="flex-1 min-w-0">
       {title && (
-        <h3 class={`text-sm font-medium ${styles.title} mb-2`}>
+        <h4 class={`text-sm font-semibold ${styles.title} mb-2 leading-tight inline`}>
           {title}
-        </h3>
+        </h4>
       )}
-      <div class={`text-sm ${styles.content} prose prose-sm max-w-none`}>
-        <slot />
+      <div class={`text-sm ${styles.content} leading-relaxed ${title ? 'mt-2' : ''}`}>
+        <div class="prose prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&>p]:mb-2 [&>p:last-child]:mb-0">
+          <slot />
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <style>
-  .callout :global(p:last-child) {
-    @apply mb-0;
+  .callout {
+    transition: all 0.2s ease;
   }
   
-  .callout :global(p:first-child) {
-    @apply mt-0;
+  .callout:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .callout :global(p) {
+    @apply mb-2 last:mb-0;
+  }
+  
+  .callout :global(strong) {
+    @apply font-semibold;
+  }
+  
+  .callout :global(em) {
+    @apply italic;
+  }
+  
+  .callout :global(code) {
+    @apply text-xs px-1.5 py-0.5 rounded font-mono;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .callout :global(a) {
+    @apply underline;
+    color: inherit;
+    opacity: 0.8;
+  }
+  
+  .callout :global(a:hover) {
+    opacity: 1;
+  }
+  
+  .callout :global(ul),
+  .callout :global(ol) {
+    @apply mb-2 last:mb-0 pl-4;
+  }
+  
+  .callout :global(li) {
+    @apply mb-1 last:mb-0;
+  }
+  
+  .callout :global(blockquote) {
+    @apply pl-3 border-l-2 my-2;
+    border-color: currentColor;
+    opacity: 0.8;
+  }
+  
+  /* Ensure proper spacing for nested elements */
+  .callout :global(.prose > *:first-child) {
+    margin-top: 0 !important;
+  }
+  
+  .callout :global(.prose > *:last-child) {
+    margin-bottom: 0 !important;
   }
 </style>

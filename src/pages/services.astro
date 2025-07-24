@@ -1,21 +1,230 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+
+const services = [
+  {
+    title: 'AI Strategy Consulting',
+    description: 'Strategic guidance to help your organization identify, prioritize, and implement AI opportunities that drive real business value.',
+    icon: '◎',
+    accent: 'from-purple-500 to-purple-600',
+    features: [
+      'AI readiness assessment and roadmap creation',
+      'Technology stack evaluation and recommendations',
+      'ROI analysis and business case development',
+      'Risk assessment and mitigation strategies',
+      'Team training and change management',
+      'Implementation planning and milestone setting'
+    ],
+    pricing: 'Starting from consultation',
+    cta: {
+      text: 'Schedule Consultation',
+      href: '/contact'
+    }
+  },
+  {
+    title: 'GenAI & LLM Implementation',
+    description: 'End-to-end development and deployment of Generative AI solutions tailored to your specific use cases and requirements.',
+    icon: '⚡',
+    accent: 'from-purple-600 to-purple-700',
+    features: [
+      'Custom LLM fine-tuning and optimization',
+      'RAG (Retrieval Augmented Generation) systems',
+      'Prompt engineering and optimization',
+      'Multi-modal AI applications',
+      'LLM safety and alignment',
+      'Production deployment and scaling'
+    ],
+    pricing: 'Custom pricing based on scope',
+    cta: {
+      text: 'Discuss Your Project',
+      href: '/contact'
+    }
+  },
+  {
+    title: 'ML Product Development',
+    description: 'Full-cycle machine learning product development from concept to production, including data pipelines and model deployment.',
+    icon: '◉',
+    accent: 'from-purple-500 to-purple-600',
+    features: [
+      'End-to-end ML pipeline development',
+      'Data engineering and preprocessing',
+      'Model training, validation, and optimization',
+      'MLOps setup and automation',
+      'A/B testing and experimentation frameworks',
+      'Monitoring and maintenance systems'
+    ],
+    pricing: 'Project-based engagement',
+    cta: {
+      text: 'Start Your Project',
+      href: '/contact'
+    }
+  },
+  {
+    title: 'Startup Advisory',
+    description: 'Strategic advisory services for startups building AI-powered products. From technical architecture to go-to-market strategy.',
+    icon: '◈',
+    accent: 'from-purple-600 to-purple-700',
+    features: [
+      'Technical architecture and stack decisions',
+      'Product-market fit validation for AI products',
+      'Fundraising support and pitch deck review',
+      'Team building and hiring guidance',
+      'Go-to-market strategy for AI products',
+      'Investor introductions and networking'
+    ],
+    pricing: 'Equity or retainer-based',
+    cta: {
+      text: 'Apply for Advisory',
+      href: '/contact'
+    }
+  }
+];
 ---
 
-<Layout title="Services">
-  <section class="min-h-screen pt-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-umai-primary">
+<Layout title="Services - Umai Tech">
+  <section class="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-umai-gray-900">
     <div class="max-w-6xl mx-auto">
-      <div class="mb-12">
-        <h1 class="text-4xl sm:text-5xl font-light text-gray-900 dark:text-white mb-4">
+      <!-- Header -->
+      <div class="mb-16">
+        <h2 class="text-3xl sm:text-4xl font-light text-gray-900 dark:text-white mb-4">
           Our <span class="font-normal text-umai-accent">Services</span>
-        </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-400">
-          End-to-end AI consulting and implementation
+        </h2>
+        <p class="text-base text-gray-600 dark:text-gray-400 max-w-2xl mb-6">
+          From strategic AI consulting to full-scale product development, we help organizations harness the power of artificial intelligence to solve real-world problems and drive innovation.
+        </p>
+        <div class="inline-flex items-center px-4 py-2 bg-umai-accent/10 dark:bg-umai-accent/20 rounded-full text-umai-accent text-sm font-medium">
+          <div class="w-2 h-2 bg-umai-accent rounded-full mr-2 animate-pulse"></div>
+          Available for new projects
+        </div>
+      </div>
+
+      <!-- Services Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+        {services.map((service) => (
+          <ServiceCard {...service} />
+        ))}
+      </div>
+
+      <!-- Call to action -->
+      <div class="text-center">
+        <a href="/contact" class="inline-flex items-center text-sm font-medium text-umai-accent hover:text-umai-accent-dark transition-colors group">
+          <span>Get started with a consultation</span>
+          <svg class="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Startup Advisory Spotlight -->
+  <section class="py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-umai-primary">
+    <div class="max-w-6xl mx-auto">
+      <div class="bg-gradient-to-br from-umai-accent/5 to-purple-600/5 rounded-3xl p-8 md:p-12 border border-umai-accent/10 dark:border-umai-accent/20">
+        <div class="max-w-4xl mx-auto text-center">
+          <div class="mb-6">
+            <span class="text-4xl bg-gradient-to-r from-purple-500 to-purple-600 bg-clip-text text-transparent">◈</span>
+          </div>
+          <h2 class="text-3xl font-light text-gray-900 dark:text-white mb-4">
+            Open for <span class="font-normal text-umai-accent">Startup Advisory</span>
+          </h2>
+          <p class="text-base text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+            We're actively seeking innovative startups building GenAI, ML-powered products, or AI-first solutions. 
+            Whether you need technical guidance, product strategy, or help navigating the AI landscape, we're here to help you succeed.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+              <div class="w-1.5 h-1.5 rounded-full bg-umai-accent mr-2"></div>
+              GenAI & LLM Products
+            </div>
+            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+              <div class="w-1.5 h-1.5 rounded-full bg-umai-accent mr-2"></div>
+              ML-Powered Applications
+            </div>
+            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+              <div class="w-1.5 h-1.5 rounded-full bg-umai-accent mr-2"></div>
+              AI-First Solutions
+            </div>
+          </div>
+          <a 
+            href="/contact" 
+            class="inline-flex items-center text-sm font-medium text-umai-accent hover:text-umai-accent-dark transition-colors group"
+          >
+            <span>Apply for Advisory</span>
+            <svg class="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section class="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-umai-gray-900">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-16">
+        <h2 class="text-3xl sm:text-4xl font-light text-gray-900 dark:text-white mb-4">
+          Our <span class="font-normal text-umai-accent">Process</span>
+        </h2>
+        <p class="text-base text-gray-600 dark:text-gray-400 max-w-2xl">
+          A structured approach to delivering exceptional AI solutions
         </p>
       </div>
-      
-      <div class="text-center py-20">
-        <p class="text-gray-500 dark:text-gray-400">Services details coming soon...</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {[
+          { 
+            step: '01', 
+            title: 'Discovery', 
+            description: 'We analyze your business needs, technical requirements, and success metrics to understand the full scope of your AI opportunity.',
+            icon: '◎',
+            accent: 'from-purple-500 to-purple-600'
+          },
+          { 
+            step: '02', 
+            title: 'Strategy', 
+            description: 'Develop a comprehensive roadmap with clear milestones, deliverables, and technical architecture decisions.',
+            icon: '⚡',
+            accent: 'from-purple-600 to-purple-700'
+          },
+          { 
+            step: '03', 
+            title: 'Implementation', 
+            description: 'Build and deploy solutions using best practices, cutting-edge technology, and rigorous testing methodologies.',
+            icon: '◉',
+            accent: 'from-purple-500 to-purple-600'
+          },
+          { 
+            step: '04', 
+            title: 'Support', 
+            description: 'Ongoing monitoring, optimization, and scaling support as your business grows and evolves.',
+            icon: '◈',
+            accent: 'from-purple-600 to-purple-700'
+          }
+        ].map((phase) => (
+          <div class="group relative p-8 bg-white dark:bg-umai-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-umai-accent/50 dark:hover:border-umai-accent/50 transition-all duration-300">
+            <div class="absolute inset-0 bg-gradient-to-br from-umai-accent/0 to-umai-accent/0 group-hover:from-umai-accent/5 group-hover:to-umai-accent/10 rounded-2xl transition-all duration-300"></div>
+            
+            <div class="relative">
+              <div class="mb-6 flex items-center space-x-4">
+                <span class={`text-3xl text-umai-accent bg-gradient-to-r ${phase.accent} bg-clip-text text-transparent`}>
+                  {phase.icon}
+                </span>
+                <div>
+                  <span class="text-sm font-medium text-umai-accent">{phase.step}</span>
+                  <h3 class="text-xl font-medium text-gray-900 dark:text-white">
+                    {phase.title}
+                  </h3>
+                </div>
+              </div>
+              <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                {phase.description}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   </section>
