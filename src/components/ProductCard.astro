@@ -41,13 +41,13 @@ const statusLabels = {
 const currentStatus = statusStyles[status];
 ---
 
-<div class="relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-3xl border border-gray-200/50 dark:border-gray-700/50 hover:border-gray-300/50 dark:hover:border-gray-600/50 transition-all duration-500 group overflow-hidden">
+<div class="relative bg-white dark:bg-umai-gray-800 rounded-2xl border border-umai-gray-200 dark:border-umai-gray-700 hover:border-umai-accent/50 dark:hover:border-umai-accent/50 transition-all duration-300 group overflow-hidden">
   <!-- Gradient overlay -->
-  <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent dark:from-white/2 pointer-events-none"></div>
+  <div class="absolute inset-0 bg-gradient-to-br from-umai-accent/0 to-umai-accent/0 group-hover:from-umai-accent/5 group-hover:to-umai-accent/10 rounded-2xl transition-all duration-300 pointer-events-none"></div>
   
   <!-- Status indicator -->
   <div class="absolute top-4 right-4 z-10">
-    <div class={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium backdrop-blur-md ${currentStatus.bg} ${currentStatus.text} border border-white/20 dark:border-gray-700/30`}>
+    <div class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${currentStatus.bg} ${currentStatus.text}`}>
       <div class={`w-1.5 h-1.5 rounded-full ${currentStatus.dot} mr-2 animate-pulse`}></div>
       {statusLabels[status]}
     </div>

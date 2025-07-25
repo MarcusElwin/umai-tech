@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Development files
+.env.local
+.env.development
+.env.test
+
+# Build outputs (handled by vercel.json)
+dist/
+.astro/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+**/*.test.*
+**/*.spec.*
+tests/
+test/
+
+# Documentation
+README.md
+scripts/README.md
+
+# Git
+.git/
+.gitignore
+
+# Temporary files
+*.log
+*.tmp

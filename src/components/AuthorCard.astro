@@ -53,7 +53,7 @@ const formatDate = (date: Date) => {
       src={authorInfo.avatar} 
       alt={`${authorInfo.name} avatar`}
       class="w-12 h-12 rounded-full object-cover ring-2 ring-umai-accent/20"
-      onerror="this.src='/images/authors/default-avatar.svg'"
+      onerror="this.setAttribute('src', '/images/authors/default-avatar.svg')"
     />
   </div>
   

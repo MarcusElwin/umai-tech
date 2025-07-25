@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import mdx from '@astrojs/mdx';
 import mermaid from 'astro-mermaid';
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
@@ -18,5 +19,9 @@ export default defineConfig({
     mermaid()
   ],
   output: 'static',
+  adapter: vercel({
+    webAnalytics: { enabled: true },
+    imageService: true,
+  }),
   site: 'https://umai-tech.com',
 });

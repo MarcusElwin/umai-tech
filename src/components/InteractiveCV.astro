@@ -493,7 +493,7 @@
         Object.entries(item).forEach(([key, value]) => {
           if (Array.isArray(value)) {
             output += `<div style="color: #60a5fa; padding-left: 16px; margin: 6px 0;">🔗 ${key}: [</div>`;
-            value.forEach((v, i) => {
+            value.forEach((v) => {
               output += `<div style="color: #86efac; padding-left: 32px; line-height: 1.6; margin: 2px 0;">  • "${v}"</div>`;
             });
             output += `<div style="color: #60a5fa; padding-left: 16px;">]</div>`;
@@ -528,7 +528,7 @@
         
         if (Array.isArray(value)) {
           output += `<div style="color: #fbbf24; font-weight: bold; font-size: 14px; margin-bottom: 8px;">${keyIcon} ${key}: [</div>`;
-          value.forEach((v, i) => {
+          value.forEach((v) => {
             output += `<div style="color: #86efac; padding-left: 16px; line-height: 1.6; margin: 4px 0;">  • "${v}"</div>`;
           });
           output += `<div style="color: #fbbf24;">]</div>`;

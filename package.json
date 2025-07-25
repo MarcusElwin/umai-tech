@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev", 
+    "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -20,6 +20,7 @@
     "@astrojs/check": "^0.9.4",
     "@astrojs/mdx": "^4.3.1",
     "@astrojs/prism": "^3.3.0",
+    "@astrojs/vercel": "^8.2.3",
     "astro": "^5.12.3",
     "astro-mermaid": "^1.0.4",
     "mermaid": "^11.9.0"

@@ -15,40 +15,49 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 4);
 ---
 
 {tocHeadings.length > 0 && (
-  <nav class="toc bg-white dark:bg-umai-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 sticky top-8">
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-      <svg class="w-5 h-5 mr-2 text-umai-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-      </svg>
-      {title}
-    </h3>
+  <nav class="toc bg-white dark:bg-umai-gray-800 rounded-2xl border border-umai-gray-200 dark:border-umai-gray-700 p-6 sticky top-8">
+    <button class="toc-toggle w-full text-left mb-4" aria-expanded="true">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center justify-between">
+        <span class="flex items-center">
+          <svg class="w-5 h-5 mr-2 text-umai-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+          </svg>
+          {title}
+        </span>
+        <svg class="toc-chevron w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </h3>
+    </button>
     
-    <ul class="space-y-2">
-      {tocHeadings.map((heading) => (
-        <li class={`toc-item depth-${heading.depth}`}>
-          <a
-            href={`#${heading.slug}`}
-            class="toc-link block text-sm text-gray-600 dark:text-gray-400 hover:text-umai-accent dark:hover:text-umai-accent transition-colors leading-relaxed py-1"
-            data-heading-id={heading.slug}
-          >
-            {heading.text}
-          </a>
-        </li>
-      ))}
-    </ul>
-    
-    <!-- Reading progress indicator -->
-    <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-      <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
-        <span>Reading Progress</span>
-        <span id="reading-progress-text">0%</span>
-      </div>
-      <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-        <div 
-          id="reading-progress-bar" 
-          class="bg-umai-accent h-2 rounded-full transition-all duration-300 ease-out"
-          style="width: 0%"
-        ></div>
+    <div class="toc-content transition-all duration-300 ease-in-out overflow-hidden">
+      <ul class="space-y-2">
+        {tocHeadings.map((heading) => (
+          <li class={`toc-item depth-${heading.depth}`}>
+            <a
+              href={`#${heading.slug}`}
+              class="toc-link block text-sm text-gray-600 dark:text-gray-400 hover:text-umai-accent dark:hover:text-umai-accent transition-colors leading-relaxed py-1"
+              data-heading-id={heading.slug}
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+      
+      <!-- Reading progress indicator -->
+      <div class="mt-6 pt-4 border-t border-umai-gray-200 dark:border-umai-gray-700">
+        <div class="flex items-center justify-between text-xs text-umai-gray-500 dark:text-umai-gray-400 mb-2">
+          <span>Reading Progress</span>
+          <span id="reading-progress-text">0%</span>
+        </div>
+        <div class="w-full bg-umai-gray-200 dark:bg-umai-gray-700 rounded-full h-2">
+          <div 
+            id="reading-progress-bar" 
+            class="bg-umai-accent h-2 rounded-full transition-all duration-300 ease-out"
+            style="width: 0%"
+          ></div>
+        </div>
       </div>
     </div>
   </nav>
@@ -56,6 +65,35 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 4);
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    // TOC collapse/expand functionality
+    const tocToggle = document.querySelector('.toc-toggle');
+    const tocContent = document.querySelector('.toc-content');
+    const tocChevron = document.querySelector('.toc-chevron');
+    
+    if (tocToggle && tocContent && tocChevron) {
+      tocToggle.addEventListener('click', function() {
+        const isExpanded = tocToggle.getAttribute('aria-expanded') === 'true';
+        
+        if (isExpanded) {
+          // Collapse
+          (tocContent as HTMLElement).style.maxHeight = '0';
+          (tocContent as HTMLElement).style.opacity = '0';
+          (tocChevron as HTMLElement).style.transform = 'rotate(-90deg)';
+          tocToggle.setAttribute('aria-expanded', 'false');
+        } else {
+          // Expand
+          (tocContent as HTMLElement).style.maxHeight = (tocContent as HTMLElement).scrollHeight + 'px';
+          (tocContent as HTMLElement).style.opacity = '1';
+          (tocChevron as HTMLElement).style.transform = 'rotate(0deg)';
+          tocToggle.setAttribute('aria-expanded', 'true');
+        }
+      });
+      
+      // Set initial state
+      (tocContent as HTMLElement).style.maxHeight = (tocContent as HTMLElement).scrollHeight + 'px';
+      (tocContent as HTMLElement).style.opacity = '1';
+    }
+    
     // Smooth scrolling for TOC links
     const tocLinks = document.querySelectorAll('.toc-link');
     

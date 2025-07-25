@@ -2,6 +2,8 @@ name: Deploy to Vercel
 
 on:
   push:
+    branches: [ '**' ]  # Deploy on push to any branch
+  pull_request:
     branches: [ main ]
 
 jobs:
@@ -28,10 +30,55 @@ jobs:
     - name: Build project
       run: pnpm build
       
-    - name: Deploy to Vercel
+    - name: Deploy to Vercel (Production)
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: vercel/action@v1
       with:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
         vercel-args: '--prod'
+        
+    - name: Deploy to Vercel (Feature Branch Preview)
+      if: github.event_name == 'push' && github.ref != 'refs/heads/main'
+      uses: vercel/action@v1
+      id: feature-deploy
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        
+    - name: Deploy to Vercel (PR Preview)
+      if: github.event_name == 'pull_request'
+      uses: vercel/action@v1
+      id: pr-deploy
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        
+    - name: Comment Feature Branch Deployment
+      if: github.event_name == 'push' && github.ref != 'refs/heads/main'
+      run: |
+        echo "🚀 Feature branch deployed!"
+        echo "Branch: ${{ github.ref_name }}"
+        echo "Preview URL: ${{ steps.feature-deploy.outputs.preview-url }}"
+        
+    - name: Comment Preview URL on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const previewUrl = '${{ steps.pr-deploy.outputs.preview-url }}';
+          if (previewUrl) {
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🚀 **Preview deployment ready!**
+              
+              ✅ Preview: ${previewUrl}
+              
+              This preview will be automatically updated with new commits to this PR.`
+            });
+          }
