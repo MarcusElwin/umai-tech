@@ -9,7 +9,7 @@ const allPosts = await getCollection('blog');
 const sortedPosts = allPosts.sort((a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf());
 
 // Get all unique tags with counts
-const tagCounts = {};
+const tagCounts: Record<string, number> = {};
 allPosts.forEach(post => {
   if (post.data.tags) {
     post.data.tags.forEach(tag => {
@@ -169,14 +169,14 @@ const allTags = Object.keys(tagCounts).sort();
     let currentSearch = '';
     
     // Search functionality
-    searchInput.addEventListener('input', function() {
-      currentSearch = this.value.toLowerCase();
+    searchInput?.addEventListener('input', function() {
+      currentSearch = (this as HTMLInputElement).value.toLowerCase();
       filterPosts();
     });
     
     // Tag filter functionality
     tagFilters.forEach(filter => {
-      filter.addEventListener('click', function() {
+      filter.addEventListener('click', function(this: HTMLElement) {
         // Remove active class from all filters
         tagFilters.forEach(f => {
           f.classList.remove('active');
@@ -189,16 +189,16 @@ const allTags = Object.keys(tagCounts).sort();
         this.classList.remove('bg-gray-100', 'dark:bg-gray-700', 'text-gray-600', 'dark:text-gray-300');
         this.classList.add('bg-umai-accent', 'text-white');
         
-        currentTag = this.dataset.tag.toLowerCase();
+        currentTag = this.dataset.tag?.toLowerCase() || '';
         filterPosts();
       });
     });
     
     function filterPosts() {
       blogPosts.forEach(post => {
-        const title = post.dataset.title;
-        const description = post.dataset.description;
-        const tags = post.dataset.tags;
+        const title = (post as HTMLElement).dataset.title || '';
+        const description = (post as HTMLElement).dataset.description || '';
+        const tags = (post as HTMLElement).dataset.tags || '';
         
         // Check search match
         const searchMatch = !currentSearch || 
@@ -211,16 +211,16 @@ const allTags = Object.keys(tagCounts).sort();
         
         // Show/hide post
         if (searchMatch && tagMatch) {
-          post.style.display = 'block';
-          post.style.opacity = '1';
+          (post as HTMLElement).style.display = 'block';
+          (post as HTMLElement).style.opacity = '1';
         } else {
-          post.style.display = 'none';
-          post.style.opacity = '0';
+          (post as HTMLElement).style.display = 'none';
+          (post as HTMLElement).style.opacity = '0';
         }
       });
       
       // Show/hide no results message
-      const visiblePosts = Array.from(blogPosts).filter(post => post.style.display !== 'none');
+      const visiblePosts = Array.from(blogPosts).filter(post => (post as HTMLElement).style.display !== 'none');
       const blogContainer = document.getElementById('blogPosts');
       let noResultsMsg = document.getElementById('noResultsMsg');
       
@@ -230,7 +230,7 @@ const allTags = Object.keys(tagCounts).sort();
           noResultsMsg.id = 'noResultsMsg';
           noResultsMsg.className = 'text-center py-20';
           noResultsMsg.innerHTML = '<p class="text-gray-500 dark:text-gray-400">No blog posts match your search criteria.</p>';
-          blogContainer.parentNode.appendChild(noResultsMsg);
+          blogContainer?.parentNode?.appendChild(noResultsMsg);
         }
         noResultsMsg.style.display = 'block';
       } else {

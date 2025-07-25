@@ -60,9 +60,10 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 4);
     const tocLinks = document.querySelectorAll('.toc-link');
     
     tocLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
+      link.addEventListener('click', function(this: HTMLElement, e) {
         e.preventDefault();
         const targetId = this.getAttribute('href')?.substring(1);
+        if (!targetId) return;
         const targetElement = document.getElementById(targetId);
         
         if (targetElement) {
@@ -72,7 +73,7 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 4);
           });
           
           // Update URL without triggering scroll
-          window.history.pushState(null, null, `#${targetId}`);
+          window.history.pushState(null, '', `#${targetId}`);
         }
       });
     });
@@ -83,11 +84,11 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 4);
       const tocLinks = document.querySelectorAll('.toc-link');
       const scrollPosition = window.scrollY + 100; // Offset for better UX
       
-      let activeHeading = null;
+      let activeHeading: HTMLElement | null = null;
       
       // Find the current active heading
-      headings.forEach(heading => {
-        if (heading.offsetTop <= scrollPosition) {
+      headings.forEach((heading: Element) => {
+        if (heading instanceof HTMLElement && heading.offsetTop <= scrollPosition) {
           activeHeading = heading;
         }
       });
@@ -103,7 +104,7 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 4);
       
       // Update reading progress
       const article = document.querySelector('.blog-content');
-      if (article) {
+      if (article && article instanceof HTMLElement) {
         const articleHeight = article.offsetHeight;
         const articleTop = article.offsetTop;
         const windowHeight = window.innerHeight;

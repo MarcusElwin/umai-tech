@@ -9,7 +9,16 @@ export interface Props {
 const { author, date, readTime, showBio = false } = Astro.props;
 
 // Author data - you can expand this to come from a data file or CMS
-const authorData = {
+const authorData: Record<string, {
+  name: string;
+  avatar: string;
+  bio: string;
+  social: {
+    twitter?: string;
+    linkedin?: string;
+    github?: string;
+  };
+}> = {
   'Marcus Elwin': {
     name: 'Marcus Elwin',
     avatar: '/images/authors/marcus-elwin.jpg',
@@ -51,7 +60,7 @@ const formatDate = (date: Date) => {
   <div class="flex-1 min-w-0">
     <div class="flex items-center gap-2 mb-1">
       <h3 class="text-sm font-semibold text-umai-gray-900 dark:text-umai-gray-100">
-        {authorInfo.name.split(' ').map((part, index, array) => 
+        {authorInfo.name.split(' ').map((part: string, index: number, array: string[]) => 
           index === array.length - 1 ? 
             <span class="text-umai-accent">{part}</span> : 
             <span>{part} </span>

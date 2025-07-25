@@ -5,10 +5,12 @@
   "main": "index.js",
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
+    "start": "astro dev", 
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "new-post": "node scripts/new-blog-post.js",
+    "new-post:quick": "./scripts/new-post.sh"
   },
   "keywords": [],
   "author": "",

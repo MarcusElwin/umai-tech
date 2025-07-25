@@ -136,7 +136,7 @@ const projects = [
             }
             
             // Update forks count
-            const forksElement = element.parentElement.querySelector('.github-forks');
+            const forksElement = element.parentElement?.querySelector('.github-forks');
             if (forksElement) {
               forksElement.textContent = data.forks_count.toLocaleString();
             }

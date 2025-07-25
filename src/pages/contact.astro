@@ -278,18 +278,18 @@ import Layout from '../layouts/Layout.astro';
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('contactForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const submitText = document.getElementById('submitText');
-    const submitIcon = document.getElementById('submitIcon');
-    const loadingIcon = document.getElementById('loadingIcon');
-    const successMessage = document.getElementById('successMessage');
-    const errorMessage = document.getElementById('errorMessage');
+    const form = document.getElementById('contactForm') as HTMLFormElement;
+    const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
+    const submitText = document.getElementById('submitText') as HTMLSpanElement;
+    const submitIcon = document.getElementById('submitIcon') as HTMLElement;
+    const loadingIcon = document.getElementById('loadingIcon') as HTMLElement;
+    const successMessage = document.getElementById('successMessage') as HTMLElement;
+    const errorMessage = document.getElementById('errorMessage') as HTMLElement;
 
     // Bot protection: Set form load timestamp
-    const timestampField = document.getElementById('timestamp');
+    const timestampField = document.getElementById('timestamp') as HTMLInputElement;
     const formLoadTime = Date.now();
-    timestampField.value = formLoadTime;
+    timestampField.value = formLoadTime.toString();
 
     // Minimum time before form can be submitted (prevents instant bot submissions)
     const MIN_FORM_TIME = 3000; // 3 seconds
@@ -307,19 +307,20 @@ import Layout from '../layouts/Layout.astro';
       mouseMovements++;
     });
 
-    form.addEventListener('input', function(e) {
+    form.addEventListener('input', function(e: Event) {
       userInteractions++;
       hasKeyboardInput = true;
       
       // Detect rapid-fire input (bot behavior)
+      const target = e.target as HTMLInputElement & { lastInputTime?: number; suspicious?: boolean };
       const now = Date.now();
-      if (!e.target.lastInputTime) e.target.lastInputTime = now;
-      const timeDiff = now - e.target.lastInputTime;
+      if (!target.lastInputTime) target.lastInputTime = now;
+      const timeDiff = now - target.lastInputTime;
       
-      if (timeDiff < 50 && e.target.value.length > 10) {
-        e.target.suspicious = true;
+      if (timeDiff < 50 && target.value.length > 10) {
+        target.suspicious = true;
       }
-      e.target.lastInputTime = now;
+      target.lastInputTime = now;
     });
 
     // Track focus events
@@ -335,7 +336,7 @@ import Layout from '../layouts/Layout.astro';
       
       if (lastSubmission && (now - parseInt(lastSubmission)) < RATE_LIMIT) {
         showMessage(errorMessage);
-        errorMessage.querySelector('span').textContent = 'Please wait a moment before submitting another message.';
+        errorMessage.querySelector('span')!.textContent = 'Please wait a moment before submitting another message.';
         return false;
       }
       
@@ -351,7 +352,7 @@ import Layout from '../layouts/Layout.astro';
       window.history.replaceState({}, document.title, window.location.pathname);
     }
 
-    function showMessage(element) {
+    function showMessage(element: HTMLElement) {
       element.classList.remove('translate-x-full');
       element.classList.add('translate-x-0');
       
@@ -361,7 +362,7 @@ import Layout from '../layouts/Layout.astro';
       }, 5000);
     }
 
-    function setSubmitButtonState(loading) {
+    function setSubmitButtonState(loading: boolean) {
       if (loading) {
         submitBtn.disabled = true;
         submitText.textContent = 'Sending...';
@@ -376,10 +377,10 @@ import Layout from '../layouts/Layout.astro';
     }
 
     // Bot protection validation
-    function validateHumanBehavior() {
+    function validateHumanBehavior(): boolean {
       const timeSpent = Date.now() - formLoadTime;
-      const honeypotField = document.getElementById('website');
-      const gotchaField = document.querySelector('input[name="_gotcha"]');
+      const honeypotField = document.getElementById('website') as HTMLInputElement;
+      const gotchaField = document.querySelector('input[name="_gotcha"]') as HTMLInputElement;
       
       // Check honeypot fields (should be empty)
       if (honeypotField.value !== '' || gotchaField.value !== '') {
@@ -391,7 +392,7 @@ import Layout from '../layouts/Layout.astro';
       if (timeSpent < MIN_FORM_TIME) {
         console.warn('Bot detected: Form submitted too quickly');
         showMessage(errorMessage);
-        errorMessage.querySelector('span').textContent = 'Please take a moment to fill out the form properly.';
+        errorMessage.querySelector('span')!.textContent = 'Please take a moment to fill out the form properly.';
         return false;
       }
       
@@ -405,14 +406,15 @@ import Layout from '../layouts/Layout.astro';
       if (userInteractions < 3) {
         console.warn('Bot detected: Insufficient user interactions');
         showMessage(errorMessage);
-        errorMessage.querySelector('span').textContent = 'Please complete all required fields.';
+        errorMessage.querySelector('span')!.textContent = 'Please complete all required fields.';
         return false;
       }
       
       // Check for suspicious rapid input
       const fields = form.querySelectorAll('input[type="text"], input[type="email"], textarea');
       for (let field of fields) {
-        if (field.suspicious) {
+        const typedField = field as HTMLInputElement & { suspicious?: boolean };
+        if (typedField.suspicious) {
           console.warn('Bot detected: Suspicious rapid input');
           return false;
         }
@@ -425,7 +427,7 @@ import Layout from '../layouts/Layout.astro';
       }
       
       // Check for spam patterns in message content
-      const message = document.getElementById('message').value.toLowerCase();
+      const message = (document.getElementById('message') as HTMLTextAreaElement).value.toLowerCase();
       const spamPatterns = [
         /(?:https?:\/\/|www\.)[^\s]+/g, // URLs
         /\b(?:buy|purchase|click here|free|offer|deal|limited time)\b/gi,
@@ -437,7 +439,7 @@ import Layout from '../layouts/Layout.astro';
         if (pattern.test(message)) {
           console.warn('Bot detected: Spam pattern in message');
           showMessage(errorMessage);
-          errorMessage.querySelector('span').textContent = 'Please remove any links or promotional content from your message.';
+          errorMessage.querySelector('span')!.textContent = 'Please remove any links or promotional content from your message.';
           return false;
         }
       }
@@ -446,7 +448,7 @@ import Layout from '../layouts/Layout.astro';
     }
 
     // Handle form submission with bot protection
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', function(e: Event) {
       // Check rate limiting first
       if (!checkRateLimit()) {
         e.preventDefault();
@@ -469,8 +471,9 @@ import Layout from '../layouts/Layout.astro';
 
     // Add form validation feedback
     const requiredFields = form.querySelectorAll('[required]');
-    requiredFields.forEach(field => {
-      field.addEventListener('blur', function() {
+    requiredFields.forEach((field: Element) => {
+      const inputField = field as HTMLInputElement;
+      inputField.addEventListener('blur', function() {
         if (this.value.trim() === '') {
           this.classList.add('border-red-500');
           this.classList.remove('border-gray-300', 'dark:border-gray-600');
@@ -480,7 +483,7 @@ import Layout from '../layouts/Layout.astro';
         }
       });
 
-      field.addEventListener('input', function() {
+      inputField.addEventListener('input', function() {
         if (this.value.trim() !== '') {
           this.classList.remove('border-red-500');
           this.classList.add('border-gray-300', 'dark:border-gray-600');
