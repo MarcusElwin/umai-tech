@@ -37,11 +37,19 @@ jobs:
     - name: Deploy to Vercel (Production)
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: amondnet/vercel-action@v25
+      id: prod-deploy
       with:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
         vercel-args: '--prod'
+        
+    - name: Production Deployment Complete
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        echo "🚀 Production deployment complete!"
+        echo "🌐 Live at: https://umai-tech.com"
+        echo "📋 Vercel URL: ${{ steps.prod-deploy.outputs.preview-url }}"
         
     - name: Deploy to Vercel (PR Preview)
       if: github.event_name == 'pull_request'

@@ -8,6 +8,12 @@
 
 <div align="center">
 
+[![CI](https://github.com/MarcusElwin/umai-tech/workflows/CI/badge.svg)](https://github.com/MarcusElwin/umai-tech/actions/workflows/ci.yml)
+[![Deploy to Vercel](https://github.com/MarcusElwin/umai-tech/workflows/Deploy%20to%20Vercel/badge.svg)](https://github.com/MarcusElwin/umai-tech/actions/workflows/deploy.yml)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Astro](https://img.shields.io/badge/Built_with-Astro-FF5D01?logo=astro&logoColor=white)](https://astro.build/)
+[![Tailwind CSS](https://img.shields.io/badge/Styled_with-Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/MarcusElwin/umai-tech)
 
 </div>
@@ -26,7 +32,23 @@ pnpm build
 
 # Preview production build
 pnpm preview
+
+# Type checking
+pnpm astro check
 ```
+
+## ✨ Key Features
+
+- **Static Site Generation** with Astro for optimal performance
+- **Japanese Cultural Integration** - Brand philosophy and design
+- **Full-Featured Blog** - MDX, tags, search, view tracking
+- **Collapsible Table of Contents** - Smooth animations with reading progress
+- **Consistent Design System** - SVG icons, unified colors, card patterns
+- **Dark Mode Support** - Consistent throughout all components
+- **Interactive CV Component** - Dynamic resume with print functionality
+- **Advanced Tagging System** - Searchable and filterable content
+- **TypeScript Ready** - Full type safety with zero errors
+- **Vercel Analytics** - Built-in performance and usage tracking
 
 ## 📁 Project Structure
 
@@ -40,241 +62,18 @@ umai-tech/
 │   └── styles/           # Global CSS
 ├── public/
 │   └── images/           # Static assets
+├── docs/                 # Detailed documentation
 └── .github/
     └── workflows/        # CI/CD pipelines
 ```
 
-## 🧩 Components
+## 📚 Documentation
 
-### Core Components
+For detailed documentation, see the [`docs/`](./docs/) folder:
 
-#### `AuthorCard.astro`
-Displays author information with social links and bio.
-
-```astro
-<AuthorCard 
-  author="Marcus Elwin"
-  date={new Date()}
-  readTime="5 min read"
-  showBio={true}
-/>
-```
-
-**Props:**
-- `author: string` - Author name
-- `date?: Date` - Publication date
-- `readTime?: string` - Reading time estimate
-- `showBio?: boolean` - Show author bio (default: false)
-
-#### `Callout.astro`
-Creates styled notification/alert boxes for content emphasis.
-
-```astro
-<Callout type="warning" title="Important Notice">
-  This is a warning message.
-</Callout>
-```
-
-**Props:**
-- `type?: 'info' | 'warning' | 'error' | 'success' | 'note'` - Callout style (default: 'info')
-- `title?: string` - Optional callout title
-
-#### `RecentPosts.astro`
-Displays a sidebar widget of recent blog posts.
-
-```astro
-<RecentPosts 
-  limit={5}
-  showDescription={true}
-  title="Popular Posts"
-  currentSlug="current-post-slug"
-/>
-```
-
-**Props:**
-- `limit?: number` - Number of posts to show (default: 3)
-- `showDescription?: boolean` - Show post descriptions (default: false)
-- `title?: string` - Widget title (default: "Recent Posts")
-- `currentSlug?: string` - Exclude current post from list
-
-#### `PageViews.astro`
-Displays and tracks page view counts for blog posts.
-
-```astro
-<PageViews slug="my-blog-post" />
-```
-
-**Props:**
-- `slug: string` - Post slug for tracking
-- `className?: string` - Additional CSS classes
-
-#### `Mermaid.astro`
-Renders Mermaid diagrams within blog content.
-
-```astro
-<Mermaid code={`
-  graph TD;
-    A[Start] --> B[Process]
-    B --> C[End]
-`} />
-```
-
-**Props:**
-- `code: string` - Mermaid diagram code
-
-#### `TableOfContents.astro`
-Collapsible table of contents with reading progress indicator.
-
-```astro
-<TableOfContents 
-  headings={headings}
-  title="Table of Contents"
-/>
-```
-
-**Props:**
-- `headings: Array<{slug: string, text: string, depth: number}>` - Page headings
-- `title?: string` - TOC title (default: "Table of Contents")
-
-**Features:**
-- Collapsible with smooth animations
-- Active section highlighting
-- Reading progress bar
-- Responsive design
-
-### Layout Components
-
-#### `Header.astro`
-Fixed navigation header with animated logo and responsive menu.
-
-#### `Footer.astro`
-Site-wide footer with navigation links and brand information.
-
-#### `Hero.astro`
-Main landing page hero section with Japanese-inspired design.
-
-#### `Features.astro`
-Displays company expertise/services in a responsive grid layout with consistent SVG icons.
-
-#### `InteractiveCV.astro`
-Dynamic, interactive resume component with print functionality and JSON-like display.
-
-**Features:**
-- Interactive sections with hover effects
-- Print-optimized layout
-- JSON-style data visualization
-- Responsive typography
-
-### Layout Template
-
-#### `Layout.astro`
-Base layout template for all pages.
-
-```astro
-<Layout title="Page Title" description="Page description">
-  <!-- Your content here -->
-</Layout>
-```
-
-**Props:**
-- `title: string` - Page title
-- `description?: string` - Page description (default: company description)
-- `noHeader?: boolean` - Exclude header (default: false)
-- `noFooter?: boolean` - Exclude footer (default: false)
-
-## 📝 Content Management
-
-### Blog Posts
-
-Blog posts are written in MDX format and stored in `src/content/blog/`. Each post requires frontmatter:
-
-```mdx
----
-title: "Your Blog Post Title"
-description: "Brief description of the post"
-pubDate: 2024-01-15
-tags: ["ai", "technology", "consulting"]
-author: "Marcus Elwin"
----
-
-Your blog content here with support for:
-- **Markdown** formatting
-- Astro components like <Callout type="info">callouts</Callout>
-- <Mermaid code="graph TD; A-->B" />
-```
-
-**Required Fields:**
-- `title: string`
-- `description: string`
-- `pubDate: Date`
-
-**Optional Fields:**
-- `updatedDate: Date`
-- `heroImage: string`
-- `tags: string[]`
-- `author: string` (default: "Marcus Elwin")
-
-### Adding Images
-
-Place blog images in `public/images/blog/[post-slug]/` and reference them in your MDX:
-
-```mdx
-![Alt text](/images/blog/my-post/image.png)
-```
-
-## 🎨 Styling
-
-### Custom Color Palette
-
-```css
-/* Primary Colors */
---umai-primary: #0a0a0a
---umai-secondary: #f5f5f5
---umai-accent: #8B5CF6
-
-/* Grayscale */
---umai-gray-50: #fafafa
---umai-gray-900: #111111
-```
-
-### Typography
-
-- **Primary**: Inter (sans-serif)
-- **Monospace**: JetBrains Mono
-- **Japanese**: Noto Sans JP
-
-### Dark Mode
-
-Dark mode is implemented using Tailwind's class-based approach. Toggle with the `dark` class on the HTML element.
-
-## 🚀 Deployment
-
-### GitHub Actions
-
-The project includes two workflows:
-
-#### CI Pipeline (`.github/workflows/ci.yml`)
-- Runs on push to `main`/`develop` and PRs to `main`
-- TypeScript checking with `astro check`
-- Production build testing
-- Artifact upload
-
-#### Deployment Pipeline (`.github/workflows/deploy.yml`)
-- Deploys to Vercel on push to `main`
-- Requires environment secrets:
-  - `VERCEL_TOKEN`
-  - `VERCEL_ORG_ID`
-  - `VERCEL_PROJECT_ID`
-
-### Manual Deployment
-
-```bash
-# Build for production
-pnpm build
-
-# Deploy to your preferred platform
-# The built files will be in the `dist/` directory
-```
+- **[Components Guide](./docs/components.md)** - Detailed component documentation and usage
+- **[Development Guide](./docs/development.md)** - Setup, deployment, and workflows
+- **[Content Management](./docs/content.md)** - Blog writing and content guidelines
 
 ## 🛠️ Development
 
@@ -293,33 +92,19 @@ pnpm astro       # Run Astro CLI commands
 pnpm astro check # TypeScript type checking (0 errors, 0 warnings)
 ```
 
-### Key Features
+## 🚀 Deployment
 
-- ✨ **Static Site Generation** with Astro
-- 🎌 **Japanese Cultural Integration** - Brand philosophy and design
-- 📝 **Full-Featured Blog** - MDX, tags, search, view tracking
-- 📋 **Collapsible Table of Contents** - Smooth animations with reading progress
-- 🎯 **Consistent Design System** - SVG icons, unified colors, card patterns
-- 🌙 **Dark Mode Support** - Consistent throughout all components
-- 📱 **Responsive Design** - Mobile-first approach
-- ⚡ **Performance Optimized** - Minimal JavaScript, optimized assets
-- 🔍 **SEO Ready** - Semantic HTML, meta tags, structured content
-- 🎨 **Modern Styling** - Tailwind CSS with custom design system
-- 📊 **Interactive CV Component** - Dynamic resume with print functionality
-- 🏷️ **Advanced Tagging System** - Searchable and filterable content
-- 🛡️ **TypeScript Ready** - Full type safety with zero errors
+This project automatically deploys to Vercel:
 
-### Architecture Decisions
+- **Production**: Pushes to `main` branch deploy to production
+- **Preview**: Pull requests get preview deployments
+- **Analytics**: Vercel Analytics enabled for performance tracking
 
-- **Astro**: Chosen for optimal performance and SEO with minimal JavaScript
-- **MDX**: Enables rich content with embedded components
-- **Tailwind**: Provides consistent design system with dark mode support
-- **Content Collections**: Type-safe content management with automatic routing
-- **Component-Based**: Reusable components for maintainability
+## 🎨 Design System
 
-## 📄 License
-
-ISC License - see LICENSE file for details.
+- **Primary Colors**: Umai Purple (`#8B5CF6`), Dark (`#0a0a0a`), Light (`#f5f5f5`)
+- **Typography**: Inter (primary), JetBrains Mono (code), Noto Sans JP (Japanese)
+- **Components**: Consistent SVG icons, unified card patterns, responsive design
 
 ## 🤝 Contributing
 
@@ -328,6 +113,10 @@ ISC License - see LICENSE file for details.
 3. Make your changes
 4. Run tests with `pnpm build`
 5. Submit a pull request
+
+## 📄 License
+
+ISC License - see LICENSE file for details.
 
 ---
 
