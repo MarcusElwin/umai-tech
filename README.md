@@ -122,6 +122,26 @@ Renders Mermaid diagrams within blog content.
 **Props:**
 - `code: string` - Mermaid diagram code
 
+#### `TableOfContents.astro`
+Collapsible table of contents with reading progress indicator.
+
+```astro
+<TableOfContents 
+  headings={headings}
+  title="Table of Contents"
+/>
+```
+
+**Props:**
+- `headings: Array<{slug: string, text: string, depth: number}>` - Page headings
+- `title?: string` - TOC title (default: "Table of Contents")
+
+**Features:**
+- Collapsible with smooth animations
+- Active section highlighting
+- Reading progress bar
+- Responsive design
+
 ### Layout Components
 
 #### `Header.astro`
@@ -134,7 +154,16 @@ Site-wide footer with navigation links and brand information.
 Main landing page hero section with Japanese-inspired design.
 
 #### `Features.astro`
-Displays company expertise/services in a responsive grid layout.
+Displays company expertise/services in a responsive grid layout with consistent SVG icons.
+
+#### `InteractiveCV.astro`
+Dynamic, interactive resume component with print functionality and JSON-like display.
+
+**Features:**
+- Interactive sections with hover effects
+- Print-optimized layout
+- JSON-style data visualization
+- Responsive typography
 
 ### Layout Template
 
@@ -261,6 +290,7 @@ pnpm dev         # Start development server
 pnpm build       # Build for production (includes type checking)
 pnpm preview     # Preview production build
 pnpm astro       # Run Astro CLI commands
+pnpm astro check # TypeScript type checking (0 errors, 0 warnings)
 ```
 
 ### Key Features
@@ -268,11 +298,16 @@ pnpm astro       # Run Astro CLI commands
 - ✨ **Static Site Generation** with Astro
 - 🎌 **Japanese Cultural Integration** - Brand philosophy and design
 - 📝 **Full-Featured Blog** - MDX, tags, search, view tracking
+- 📋 **Collapsible Table of Contents** - Smooth animations with reading progress
+- 🎯 **Consistent Design System** - SVG icons, unified colors, card patterns
 - 🌙 **Dark Mode Support** - Consistent throughout all components
 - 📱 **Responsive Design** - Mobile-first approach
 - ⚡ **Performance Optimized** - Minimal JavaScript, optimized assets
 - 🔍 **SEO Ready** - Semantic HTML, meta tags, structured content
 - 🎨 **Modern Styling** - Tailwind CSS with custom design system
+- 📊 **Interactive CV Component** - Dynamic resume with print functionality
+- 🏷️ **Advanced Tagging System** - Searchable and filterable content
+- 🛡️ **TypeScript Ready** - Full type safety with zero errors
 
 ### Architecture Decisions
 
