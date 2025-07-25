@@ -1,0 +1,63 @@
+---
+---
+
+<section class="relative min-h-[85vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white dark:bg-umai-primary">
+  <!-- Subtle purple gradient overlay -->
+  <div class="absolute inset-0 bg-gradient-to-br from-umai-accent/5 via-transparent to-umai-accent/5"></div>
+  
+  <!-- Minimal geometric pattern -->
+  <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.02]">
+    <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="1" class="text-umai-accent"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grid)" />
+    </svg>
+  </div>
+
+  <div class="relative max-w-6xl mx-auto">
+    <!-- Small purple accent pill -->
+    <div class="mb-8 flex justify-center">
+      <div class="inline-flex items-center space-x-2 px-3 py-1 bg-umai-accent/10 dark:bg-umai-accent/20 rounded-full border border-umai-accent/20">
+        <div class="w-1.5 h-1.5 bg-umai-accent rounded-full"></div>
+        <span class="text-xs font-medium text-umai-accent uppercase tracking-wider">AI Consulting</span>
+      </div>
+    </div>
+
+    <h1 class="text-6xl sm:text-7xl lg:text-8xl font-extralight text-center text-gray-900 dark:text-white mb-6">
+      Umai<span class="font-normal text-umai-accent">Tech</span>
+    </h1>
+
+    <p class="text-lg sm:text-xl text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto font-light leading-relaxed">
+      Crafting delightful AI solutions. We transform complex challenges into elegant, intelligent systems.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <a href="/services" class="group px-6 py-3 bg-umai-accent hover:bg-umai-accent-dark text-white text-sm font-medium rounded-full transition-all duration-200 flex items-center space-x-2">
+        <span>Explore Services</span>
+        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+      <a href="/blog" class="group px-6 py-3 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-full transition-all duration-200 flex items-center space-x-2 border border-gray-200 dark:border-gray-700 hover:border-umai-accent dark:hover:border-umai-accent hover:text-umai-accent dark:hover:text-umai-accent">
+        <span>Read Our Blog</span>
+        <svg class="w-4 h-4 opacity-0 -ml-1 transition-all duration-200 group-hover:opacity-100 group-hover:ml-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+
+    <!-- Minimal floating elements -->
+    <div class="absolute -z-10 top-1/4 -left-20 w-72 h-72 bg-umai-accent/10 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute -z-10 bottom-1/4 -right-20 w-72 h-72 bg-umai-accent-light/10 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+    <svg class="w-5 h-5 text-gray-400 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+    </svg>
+  </div>
+</section>

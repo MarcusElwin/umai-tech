@@ -1,0 +1,654 @@
+---
+title: "NER using DSPy"
+description: "Using DSPy for extracting metadata data using NER - Learn how to use DSPy framework for Named Entity Recognition tasks instead of traditional prompt engineering approaches."
+pubDate: 2024-04-01T16:15:31.000Z
+updatedDate: 2024-04-01T16:15:31.000Z
+author: "Marcus Elwin"
+tags: ["Large Language Models", "Generative AI", "Prompt Engineering", "NER", "DSPy", "Natural Language Processing"]
+---
+
+import Callout from '@components/Callout.astro';
+
+Anyone, who has been working with LLMs and generative AI recently has noticed that how you *prompt* an LLM matters. Slight changes to your prompts might lead to unexpected results. It is often *non-trivial* to reuse the same prompts when switching the underlying LLM you are using. An example is e.g. moving from `OpenAI` to `Anthropic` and using `function` calling. 
+
+This often leads to quite some time spent on rewriting your prompts, thus more prompt engineering is required. Luckily, there are some interesting frameworks out there such as [DSPy](https://dspy-docs.vercel.app/) that focus more on *'programming'* rather than *'prompting'* your LLMs.
+
+To get a good overview of `DSPy` see some of the references below:
+1. 💻 [Intro to DSPy: Goodbye Prompting, Hello Programming!](https://towardsdatascience.com/intro-to-dspy-goodbye-prompting-hello-programming-4ca1c6ce3eb9)
+2. 💻 [DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines](https://arxiv.org/abs/2310.03714)
+3. 💻 [DSPy Deep-Dive](https://dspy-docs.vercel.app/docs/category/deep-dive)
+
+In this post, we will try to use `DSPy` to extract metadata data from recipes. For a recap of our previous approach see e.g. this [post](/blog/prompt-eng-ner#food-entities-from-recipes).
+
+## DSPy - Declarative Self-improving Language Programs
+`DSPy` or *Declarative Self-improving Language Programs* was first introduced in the paper in (2):
+
+<Callout type="info" title="About DSPy">
+`DSPy` is a framework for algorithmically **optimizing** LM prompts and weights, especially when LMs are used one or more times within a pipeline.
+
+`DSPy` can routinely teach powerful models like `GPT-3.5` or `GPT-4` and local models like `T5-base` or `Llama2-13b` to be much more **reliable** at tasks, i.e. having higher quality and/or avoiding specific failure patterns. DSPy optimizers will **"compile"** the same program into different instructions, few-shot prompts, and/or weight updates (finetunes) for each LM
+
+— *DSPy Documentation*
+</Callout>
+
+Note the use of `optimizing` above as this provides some analogies to `optimizing` neural networks using a framework such as `Pytorch` or `Tensorflow`. The nice thing with the `optimizer` above is that `DSPy` enables us to not focus too much on `prompt engineering` with whatever LLM we choose. Instead, we can `compile` i.e. optimize the underlying instructions to work with any LLM.
+
+In short, the `DSPy` programming model has the following abstractions:
+1. [Signatures](https://dspy-docs.vercel.app/docs/building-blocks/signatures) instead of the needed for hand-written prompts/fine-tuning.
+2. [Modules](https://dspy-docs.vercel.app/docs/building-blocks/modules) that implement various prompt engineering techniques such as [Cot](https://dspy-docs.vercel.app/api/modules/ChainOfThought), [REACT](https://dspy-docs.vercel.app/api/modules/ReAct) etc.
+3. [Optimizer](https://dspy-docs.vercel.app/docs/building-blocks/optimizers) to automated manual prompt engineering based on given [metrics](https://dspy-docs.vercel.app/docs/building-blocks/metrics)
+
+A `DSPy` program is a program using (1) - (3) together with data to use in the optimization step. For a more thorough walk-through of `DSPy` see e.g., (1) and (2) from the introduction section.
+
+## NER using DSPy, extracting food-related entities
+In the following sections, we will use this [notebook](https://github.com/MarcusElwin/ner-dspy) 📓 to examine how you can use `DSPy` for `NER` use cases. As in the previous NER post, we want to extract different metadata for food items.
+
+### Setup environment
+The first thing to do is to load the necessary libraries and do any setup of these libraries.
+
+```python
+import dspy
+from pydantic import BaseModel, Field
+from dspy.functional import TypedPredictor
+from IPython.display import Markdown, display
+from typing import List, Optional, Union
+from dotenv import load_dotenv
+from devtools import pprint
+
+assert load_dotenv() == True
+gpt4 = dspy.OpenAI(model="gpt-4-turbo-preview", max_tokens=4096, model_type="chat")
+gpt_turbo = dspy.OpenAI(model="gpt-3.5-turbo", max_tokens=4096, model_type="chat")
+dspy.settings.configure(lm=gpt4)
+```
+
+Here we use `OpenAI` for the example. `DSPy` seems to support many of the big open/closed source providers. For implementations see more [here](https://github.com/stanfordnlp/dspy/tree/main/dsp/modules) and [here](https://github.com/stanfordnlp/dspy/blob/main/dspy/__init__.py)
+
+### Data
+As in this [post](/blog/prompt-eng-ner#food-entities-from-recipes), we will use the data shown below:
+
+```markdown
+### Chashu pork (for ramen and more)
+Chashu pork is a classic way to prepare pork belly for Japanese dishes such as ramen. 
+While it takes a little time, it's relatively hands-off and easy, and the result is delicious.
+
+### Ingredients
+2 lb pork belly or a little more/less
+2 green onions spring onions, or 3 if small
+1 in fresh ginger (a chunk that will give around 4 - 6 slices)
+2 cloves garlic
+⅔ cup sake
+⅔ cup soy sauce
+¼ cup mirin
+½ cup sugar
+2 cups water or a little more as needed
+
+### Instructions
+Have some string/kitchen twine ready and a pair of scissors before you prepare the pork. 
+If needed, trim excess fat from the outside of the pork but you still want a later over the
+...
+```
+
+We will also use the following `Pydantic` data models as part of the problem:
+
+```python
+class FoodMetaData(BaseModel):
+    reasoning: str = Field(description="Reasoning for why the entity is correct")
+    value: Union[str, int] = Field(description="Value of the entity")
+    entity: str = Field(description="The actual entity i.e. pork, onions etc")
+
+class FoodMetaData(BaseModel):
+    context: List[FoodMetaData]
+```
+
+The first model above represents the "reasoning" object as part of the CoT step in the workflow.
+
+<Callout type="note" title="Pydantic Integration">
+`DSPy` seems to be relying on `Pydantic` for many things in the library.
+</Callout>
+
+```python
+class FoodEntity(BaseModel):
+    food: str = Field(description="This can be both liquid and \
+    solid food such as meat, vegetables, alcohol, etc")
+    quantity: int = Field(description="The exact quantity or amount \
+    of the food that should be used in the recipe")
+    unit: str = Field(description="The unit being used e.g. \
+    grams, milliliters, pounds, etc")
+    physical_quality: Optional[str] = Field(description="The characteristic of the ingredient")
+    color: str = Field(description="The color of the food")
+
+class FoodEntities(BaseModel):
+    entities: List[FoodEntity]
+```
+
+The second model above is the schema for the actual metadata that we want to extract. Below is the resulting `JSON` schema for this object:
+
+```json
+{
+    "properties": {
+        "food": {
+            "description": "This can be both liquid and solid food such as meat, vegetables, alcohol, etc",
+            "title": "Food",
+            "type": "string"
+        },
+        "quantity": {
+            "description": "The exact quantity or amount of the food that should be used in the recipe",
+            "title": "Quantity",
+            "type": "integer"
+        },
+        "unit": {
+            "description": "The unit being used e.g. grams, milliliters, pounds, etc",
+            "title": "Unit",
+            "type": "string"
+        },
+        "physical_quality": {
+            "anyOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "null"
+                }
+            ],
+            "description": "The characteristic of the ingredient",
+            "title": "Physical Quality"
+        },
+        "color": {
+            "description": "The color of the food",
+            "title": "Color",
+            "type": "string"
+        }
+    },
+    "required": [
+        "food",
+        "quantity",
+        "unit",
+        "physical_quality",
+        "color"
+    ],
+    "title": "FoodEntity",
+    "type": "object"
+}
+```
+
+Finally, for the teleprompter/optimizer, we need to provide some training examples:
+
+```python
+# create some dummy data for training
+trainset = [
+    dspy.Example(
+        recipe="French omelett with 2 eggs, 500grams of butter and 10 grams gruyere", 
+        entities=[
+            FoodEntity(food="eggs", quantity=2, unit="", physical_quality="", color="white"),
+            FoodEntity(food="butter", quantity=500, unit="grams", physical_quality="", color="yellow"),
+            FoodEntity(food="cheese", quantity=10, unit="grams", physical_quality="gruyer", color="yellow")
+        ]
+    ).with_inputs("recipe"),
+    dspy.Example(
+        recipe="200 grams of Ramen noodles bowel with one pickled egg, 500grams of pork, and 1 spring onion", 
+        entities=[
+            FoodEntity(food="egg", quantity=1, unit="", physical_quality="pickled", color="ivory"),
+            FoodEntity(food="ramen nudles", quantity=200, unit="grams", physical_quality="", color="yellow"),
+            FoodEntity(food="spring onion", quantity=1, unit="", physical_quality="", color="white")
+        ]
+    ).with_inputs("recipe"),
+    dspy.Example(
+        recipe="10 grams of dutch orange cheese, 2 liters of water, and 5 ml of ice", 
+        entities=[
+            FoodEntity(food="cheese", quantity=10, unit="grams", physical_quality="", color="orange"),
+            FoodEntity(food="water", quantity=2, unit="liters", physical_quality="translucent", color=""),
+            FoodEntity(food="ice", quantity=5, unit="militers", physical_quality="cold", color="white")
+        ]
+    ).with_inputs("recipe"),
+    dspy.Example(
+        recipe="Pasta carbonara, 250 grams of pasta 300 grams of pancetta, \
+        150 grams pecorino romano, 150grams parmesan cheese, 3 egg yolks", 
+        entities=[
+            FoodEntity(food="pasta", quantity=250, unit="grams", physical_quality="dried", color="yellow"),
+            FoodEntity(food="egg yolk", quantity=3, unit="", physical_quality="", color="orange"),
+            FoodEntity(food="pancetta", quantity=300, unit="grams", physical_quality="pork", color=""),
+            FoodEntity(food="pecorino", quantity=150, unit="grams", physical_quality="goat chese", color="yellow"),
+            FoodEntity(food="parmesan", quantity=150, unit="grams", physical_quality="chese", color="yellow"),
+        ]
+    ).with_inputs("recipe"),
+    dspy.Example(
+        recipe="American pancakes with 250g flour, 1 tsp baking powder, 1 gram salt, 10g sugar, 100ml fat milk", 
+        entities=[
+            FoodEntity(food="flour", quantity=250, unit="grams", physical_quality="", color="white"),
+            FoodEntity(food="baking powder", quantity=1, unit="tsp", physical_quality="", color="white"),
+            FoodEntity(food="salt", quantity=1, unit="grams", physical_quality="salty", color="white"),
+            FoodEntity(food="milk", quantity=100, unit="mil", physical_quality="fat", color="white"),
+        ]
+    ).with_inputs("recipe")
+]
+```
+
+For this you can use [dspy.Example](https://dspy-docs.vercel.app/docs/building-blocks/data)
+
+### Signatures
+The next step is to create the `dspy.Signature` objects, where we need to specify an `InputField(...)` and `OutPutField(...)`. To recap what a `Signature` is:
+
+<Callout type="info" title="DSPy Signatures">
+A **signature** is a declarative specification of the input/output behavior of a DSPy module. Signatures allow you to tell the LM what it needs to do, rather than specify how we should ask the LM to do it.
+
+— *DSPy Documentation*
+</Callout>
+
+Below are the `Signatures` we will be using:
+
+```python
+class RecipeToFoodContext(dspy.Signature):
+    """You are a food AI assistant. Your task is to extract the entity, the value of the entity and the reasoning 
+    for why the extracted value is the correct value. If you cannot extract the entity, add null"""
+    recipe: str = dspy.InputField()
+    context: FoodMetaData = dspy.OutputField()
+
+class RecipeToFoodEntities(dspy.Signature):
+    """You are a food AI assistant. Your task is to extract food-related metadata from recipes."""
+    recipe: str = dspy.InputField()
+    entities: FoodEntities = dspy.OutputField()
+```
+
+Notice the modular and sleek nature of creating these compared to how it would look in other frameworks. Looking into the actual code for these you will see that these are wrappers for the `Pydantic` [Fields](https://docs.pydantic.dev/latest/concepts/fields/) object:
+
+```python
+def InputField(**kwargs):
+    return pydantic.Field(**move_kwargs(**kwargs, __dspy_field_type="input"))
+
+def OutputField(**kwargs):
+    return pydantic.Field(**move_kwargs(**kwargs, __dspy_field_type="output"))
+```
+
+### Modules
+The next thing to do is select what `Modules` that we want to use. To recap what `Modules` are:
+
+<Callout type="info" title="DSPy Modules">
+Each built-in module abstracts a prompting technique (like chain of thought or ReAct). Crucially, they are generalized to handle any `[DSPy Signature]`. Your init method declares the modules you will use. Your forward method expresses any computation you want to do with your modules
+
+— *DSPy Documentation*
+</Callout>
+
+The `Modules` that we will be using are:
+1. `TypedPredictor`
+2. `TypedChainOfThought`
+
+These are 2 `functional` modules that let us specify `types` via `Pydantic` schemas which are useful for `structured` data extraction. These can either be used with `dspy.Functional` or `dspy.Module`. However, before creating the actual modules, we will define 1 helper method to parse the `context` call:
+
+```python
+def parse_context(food_context: FoodMetaData) -> str:
+    context_str = ""
+    for context in food_context:
+        context: FoodMetaData
+        context_str += f"{context.entity}:\n" + context.model_dump_json(indent=4) + "\n"
+    return context_str
+```
+
+This is mainly to extract the resulting context `JSON` object as a string for the next step of the chain.
+
+Moving on to the actual `Modules` using `dspy.Module` we define it as:
+```python
+class ExtractFoodEntities(dspy.Module):
+    def __init__(self, temperature: int = 0, seed: int = 123):
+        super().__init__()
+        self.temperature = temperature
+        self.seed = seed
+        self.extract_food_context = dspy.TypedPredictor(RecipeToFoodContext)
+        self.extract_food_context_cot = dspy.TypedChainOfThought(RecipeToFoodContext)
+        self.extract_food_entities = dspy.TypedPredictor(RecipeToFoodEntities)
+        
+    def forward(self, recipe: str) -> FoodEntities:
+        food_context = self.extract_food_context(recipe=recipe).context
+        parsed_context = parse_context(food_context.context)
+        food_entities = self.extract_food_entities(recipe=parsed_context)
+        return food_entities.entities
+```
+
+Or using `dspy.Functional` we define it as:
+```python
+from dspy.functional import FunctionalModule, predictor, cot
+
+class ExtractFoodEntitiesV2(FunctionalModule):
+    def __init__(self, temperature: int = 0, seed: int = 123):
+        super().__init__()
+        self.temperature = temperature
+        self.seed = seed
+
+    @predictor
+    def extract_food_context(self, recipe: str) -> FoodMetaData:
+        """You are a food AI assistant. Your task is to extract the entity, the value of the entity and the reasoning 
+        for why the extracted value is the correct value. If you cannot extract the entity, add null"""
+        pass
+
+    @cot
+    def extract_food_context_cot(self, recipe: str) -> FoodMetaData:
+        """You are a food AI assistant. Your task is to extract the entity, the value of the entity and the reasoning 
+        for why the extracted value is the correct value. If you cannot extract the entity, add null"""
+        pass
+    
+    @predictor
+    def extract_food_entities(self, recipe: str) -> FoodEntities:
+        """You are a food AI assistant. Your task is to extract food entities from a recipe."""
+        pass
+        
+    def forward(self, recipe: str) -> FoodEntities:
+        food_context = self.extract_food_context(recipe=recipe)
+        parsed_context = parse_context(food_context.context)
+        food_entities = self.extract_food_entities(recipe=parsed_context)
+        return food_entities
+```
+
+Using the `functional` API we can use some nifty decorator functions i.e. `@predictor` and `@cot`. Now when we have our `Module` we might want to test it on some example data. `DSPy` also allows you to specify a `dspy.Context` where you can choose what LLM to use:
+
+```python
+extract_food_entities = ExtractFoodEntities()
+
+with dspy.context(lm=gpt4):
+    entities = extract_food_entities(recipe="Ten grams of orange dutch cheese,  \
+    2 liters of water and 5 ml of ice")
+    pprint(entities)
+```
+
+This will result in the following `entities`:
+```python
+FoodEntities(
+    entities=[
+        FoodEntity(
+            food='orange dutch cheese',
+            quantity=10,
+            unit='grams',
+            physical_quality=None,
+            color='orange',
+        ),
+        FoodEntity(
+            food='water',
+            quantity=2000,
+            unit='milliliters',
+            physical_quality=None,
+            color='clear',
+        ),
+        FoodEntity(
+            food='ice',
+            quantity=5,
+            unit='milliliters',
+            physical_quality=None,
+            color='clear',
+        ),
+    ],
+)
+```
+
+### Optimize the program
+Now we have all the components we need to start `optimizing` our program. To recap:
+
+<Callout type="info" title="DSPy Optimizers">
+A DSPy optimizer is an algorithm that can tune the parameters of a DSPy program (i.e., the prompts and/or the LM weights) to maximize the metrics you specify, like accuracy.
+
+DSPy programs consist of multiple calls to LMs, stacked together as `[DSPy modules]`. Each DSPy module has internal parameters of three kinds: (1) the LM weights, (2) the instructions, and (3) demonstrations of the input/output behavior.
+
+Given a metric, DSPy can optimize all of these three with multi-stage optimization algorithms.
+
+— *DSPy Documentation*
+</Callout>
+
+For the optimization, we will use the [BootstrapFewShot](https://dspy-docs.vercel.app/api/optimizers/BootstrapFewShot) and the metric below:
+
+```python
+def validate_entities(example, pred, trace=None):
+    """Check if both objects are equal"""
+    return example.entities == pred
+```
+I.e. we need an exact match for the objects
+
+<Callout type="note" title="Metric Considerations">
+`BootstrapFewShot` is recommended if you have a few samples. A partial match might have been better to account for some randomness in the data extraction.
+</Callout>
+
+To run the optimization step we use the `compile` method:
+
+```python
+from dspy.teleprompt import BootstrapFewShot
+
+teleprompter = BootstrapFewShot(metric=validate_entities)
+compiled_ner = teleprompter.compile(ExtractFoodEntitiesV2(), trainset=trainset)
+```
+
+The compiled programming is something we can store and load from disk as well for [later use](https://github.com/stanfordnlp/dspy/blob/main/dspy/primitives/module.py#L77).
+
+To use the `compiled` program on our dataset we do:
+
+```python
+pprint(compiled_ner(recipe=train_data))
+
+FoodEntities(
+    entities=[
+        FoodEntity(
+            food='pork belly',
+            quantity=2,
+            unit='lb',
+            physical_quality=None,
+            color='',
+        ),
+        FoodEntity(
+            food='green onions',
+            quantity=2,
+            unit='items',
+            physical_quality='or 3 if small',
+            color='',
+        ),
+        FoodEntity(
+            food='fresh ginger',
+            quantity=1,
+            unit='inch',
+            physical_quality='chunk',
+            color='',
+        ),
+        FoodEntity(
+            food='garlic',
+            quantity=2,
+            unit='cloves',
+            physical_quality=None,
+            color='',
+        ),
+        FoodEntity(
+            food='sake',
+            quantity=2,
+            unit='⅔ cup',
+            physical_quality=None,
+            color='',
+        ),
+        FoodEntity(
+            food='soy sauce',
+            quantity=2,
+            unit='⅔ cup',
+            physical_quality=None,
+            color='',
+        ),
+        FoodEntity(
+            food='mirin',
+            quantity=1,
+            unit='¼ cup',
+            physical_quality=None,
+            color='',
+        ),
+        FoodEntity(
+            food='sugar',
+            quantity=1,
+            unit='½ cup',
+            physical_quality=None,
+            color='',
+        ),
+        FoodEntity(
+            food='water',
+            quantity=2,
+            unit='cups',
+            physical_quality='or a little more as needed',
+            color='',
+        ),
+    ],
+)
+```
+
+Not too bad after doing some code for a couple of hours 🎉. Finally to inspect the resulting prompt used by the program each `LM` has an `inspect_history` method:
+
+```python
+gpt4.inspect_history(n=1)
+```
+
+Which outputs the prompt below:
+
+```shell
+You are a food AI assistant. Your task is to extract food entities from a recipe.
+
+---
+
+Follow the following format.
+
+Recipe: ${recipe}
+Extract Food Entities: ${extract_food_entities}. Respond with a single JSON object. JSON Schema: {"$defs": {"FoodEntity": {"properties": {"food": {"description": "This can be both liquid and solid food such as meat, vegetables, alcohol, etc", "title": "Food", "type": "string"}, "quantity": {"description": "The exact quantity or amount of the food that should be used in the recipe", "title": "Quantity", "type": "integer"}, "unit": {"description": "The unit being used e.g. grams, milliliters, pounds, etc", "title": "Unit", "type": "string"}, "physical_quality": {"anyOf": [{"type": "string"}, {"type": "null"}], "description": "The characteristic of the ingredient", "title": "Physical Quality"}, "color": {"description": "The color of the food", "title": "Color", "type": "string"}}, "required": ["food", "quantity", "unit", "physical_quality", "color"], "title": "FoodEntity", "type": "object"}}, "properties": {"entities": {"items": {"$ref": "#/$defs/FoodEntity"}, "title": "Entities", "type": "array"}}, "required": ["entities"], "title": "FoodEntities", "type": "object"}
+
+---
+
+Recipe:
+pork belly:
+{
+    "reasoning": "The recipe specifies using 2 lb of pork belly as the main ingredient for the chashu pork.",
+    "value": "2 lb",
+    "entity": "pork belly"
+}
+green onions:
+{
+    "reasoning": "The recipe calls for 2 green onions, or 3 if they are small, to be used in the cooking process.",
+    "value": "2 or 3",
+    "entity": "green onions"
+}
+fresh ginger:
+{
+    "reasoning": "A 1 inch chunk of fresh ginger is required, which will give around 4 - 6 slices for the recipe.",
+    "value": "1 in",
+    "entity": "fresh ginger"
+}
+garlic:
+{
+    "reasoning": "2 cloves of garlic are needed as part of the ingredients.",
+    "value": "2 cloves",
+    "entity": "garlic"
+}
+sake:
+{
+    "reasoning": "⅔ cup of sake is used in the cooking liquid for flavor.",
+    "value": "⅔ cup",
+    "entity": "sake"
+}
+soy sauce:
+{
+    "reasoning": "⅔ cup of soy sauce is added to the cooking liquid, contributing to the dish's savory taste.",
+    "value": "⅔ cup",
+    "entity": "soy sauce"
+}
+mirin:
+{
+    "reasoning": "¼ cup of mirin is included in the recipe for sweetness and depth of flavor.",
+    "value": "¼ cup",
+    "entity": "mirin"
+}
+sugar:
+{
+    "reasoning": "½ cup of sugar is used to sweeten the cooking liquid.",
+    "value": "½ cup",
+    "entity": "sugar"
+}
+water:
+{
+    "reasoning": "2 cups of water (or a little more as needed) are required to create the cooking liquid for the pork.",
+    "value": "2 cups",
+    "entity": "water"
+}
+
+Extract Food Entities: ```json
+{
+  "entities": [
+    {
+      "food": "pork belly",
+      "quantity": 2,
+      "unit": "lb",
+      "physical_quality": null,
+      "color": ""
+    },
+    {
+      "food": "green onions",
+      "quantity": 2,
+      "unit": "items",
+      "physical_quality": "or 3 if small",
+      "color": ""
+    },
+    {
+      "food": "fresh ginger",
+      "quantity": 1,
+      "unit": "inch",
+      "physical_quality": "chunk",
+      "color": ""
+    },
+    {
+      "food": "garlic",
+      "quantity": 2,
+      "unit": "cloves",
+      "physical_quality": null,
+      "color": ""
+    },
+    {
+      "food": "sake",
+      "quantity": 2,
+      "unit": "⅔ cup",
+      "physical_quality": null,
+      "color": ""
+    },
+    {
+      "food": "soy sauce",
+      "quantity": 2,
+      "unit": "⅔ cup",
+      "physical_quality": null,
+      "color": ""
+    },
+    {
+      "food": "mirin",
+      "quantity": 1,
+      "unit": "¼ cup",
+      "physical_quality": null,
+      "color": ""
+    },
+    {
+      "food": "sugar",
+      "quantity": 1,
+      "unit": "½ cup",
+      "physical_quality": null,
+      "color": ""
+    },
+    {
+      "food": "water",
+      "quantity": 2,
+      "unit": "cups",
+      "physical_quality": "or a little more as needed",
+      "color": ""
+    }
+  ]
+}
+```
+
+## Closing remarks
+
+The aim for this post was for me to familiarize myself a bit more with `DSPy` that seems to be all the 'rave' lately. This is only an initial attempt to get a first understanding of what you can and cannot do. Hopefully, this will give you some insights on how you can get started with `DSPy` as well. 
+
+However to summarize my first impressions:
+
+<Callout type="success" title="Pros">
+- Easy to use and get started with ✅
+- Nice to not have to spend hours on prompt-engineering ✅  
+- Nice to treat this a a "typical" ML problem using `optimization` ✅
+</Callout>
+
+<Callout type="warning" title="Cons">
+- Still evolving and not "production ready" yet ❌
+- Needs better logging / tracing to make it easier to understand what is happening when you are debugging your programs ❌
+</Callout>
+
+All in all the approach of `programming` rather `prompting` really resonates with me and is inline with the current trends of [Compound AI systems](https://bair.berkeley.edu/blog/2024/02/18/compound-ai-systems/). Will be exciting to follow how this package evolves and matures over time. As prompting in its current state is not likely the future of building scalable, non-fragile and resilient systems using LLMs.

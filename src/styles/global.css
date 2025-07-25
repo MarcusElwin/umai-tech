@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer utilities {
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+  
+  .animate-logo-swap {
+    animation: logoSwap 6s infinite;
+  }
+  
+  .animate-logo-swap-alt {
+    animation: logoSwapAlt 6s infinite;
+  }
+  
+  .animate-lightning {
+    animation: lightning 2s ease-in-out infinite;
+  }
+}
+
+@keyframes logoSwap {
+  0%, 40% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  50%, 90% {
+    opacity: 0;
+    transform: scale(0.9) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes logoSwapAlt {
+  0%, 40% {
+    opacity: 0;
+    transform: scale(0.9) rotate(-5deg);
+  }
+  50%, 90% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9) rotate(-5deg);
+  }
+}
+
+@keyframes lightning {
+  0%, 90%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+  }
+  5%, 10% {
+    opacity: 0.4;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
+  }
+}

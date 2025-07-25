@@ -1,0 +1,125 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TeamSection from '../components/TeamSection.astro';
+import InteractiveCV from '../components/InteractiveCV.astro';
+---
+
+<Layout title="About">
+  <section class="min-h-screen pt-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-umai-primary">
+    <div class="max-w-5xl mx-auto">
+      <!-- Hero Section -->
+      <div class="text-center mb-20">
+        <h1 class="text-4xl sm:text-5xl font-light text-gray-900 dark:text-white mb-4">
+          About <span class="font-normal text-umai-accent">Umai</span>Tech
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400">Where Japanese craftsmanship meets AI innovation</p>
+      </div>
+      
+      <!-- Umai Meaning Section -->
+      <div class="mb-20">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <!-- Kanji Display -->
+          <div class="text-center md:text-right">
+            <div class="inline-block relative">
+              <div class="text-8xl sm:text-9xl font-japanese text-umai-accent mb-4 relative">
+                うまい
+                <div class="absolute -inset-4 bg-umai-accent/5 rounded-3xl blur-2xl -z-10"></div>
+              </div>
+              <p class="text-2xl text-gray-700 dark:text-gray-300 font-light">umai</p>
+            </div>
+          </div>
+          
+          <!-- Explanation -->
+          <div class="space-y-6">
+            <div class="relative">
+              <div class="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-umai-accent to-umai-accent-light rounded-full"></div>
+              <div class="pl-8">
+                <h2 class="text-2xl font-light mb-3 text-gray-900 dark:text-white">
+                  Delicious <span class="text-umai-accent">·</span> Skillful <span class="text-umai-accent">·</span> Excellent
+                </h2>
+                <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                  In Japanese culture, <span class="font-japanese text-umai-accent font-semibold">うまい</span> represents 
+                  the pinnacle of quality — whether describing a masterfully prepared dish or expertly crafted work.
+                </p>
+              </div>
+            </div>
+            
+            <div class="p-6 bg-gray-50 dark:bg-umai-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700">
+              <p class="text-gray-700 dark:text-gray-300 italic">
+                "Just as a chef creates dishes that make diners exclaim 'Umai!', we craft AI solutions 
+                that delight through their elegance and effectiveness."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Philosophy Section -->
+      <div class="mb-20 max-w-3xl mx-auto">
+        <h2 class="text-3xl font-light text-center mb-12 text-gray-900 dark:text-white">
+          Our <span class="font-normal text-umai-accent">Philosophy</span>
+        </h2>
+        
+        <div class="grid gap-8">
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-umai-accent/10 rounded-full flex items-center justify-center">
+              <span class="text-umai-accent text-xl">精</span>
+            </div>
+            <div>
+              <h3 class="font-medium text-gray-900 dark:text-white mb-2">Precision in Every Detail</h3>
+              <p class="text-gray-600 dark:text-gray-400">
+                We approach AI development with the meticulous attention of Japanese craftsmanship, 
+                ensuring every component is thoughtfully designed and expertly implemented.
+              </p>
+            </div>
+          </div>
+          
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-umai-accent/10 rounded-full flex items-center justify-center">
+              <span class="text-umai-accent text-xl">美</span>
+            </div>
+            <div>
+              <h3 class="font-medium text-gray-900 dark:text-white mb-2">Beauty in Simplicity</h3>
+              <p class="text-gray-600 dark:text-gray-400">
+                Our solutions embrace minimalism and elegance, creating AI systems that are 
+                both powerful and delightfully simple to use.
+              </p>
+            </div>
+          </div>
+          
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-umai-accent/10 rounded-full flex items-center justify-center">
+              <span class="text-umai-accent text-xl">心</span>
+            </div>
+            <div>
+              <h3 class="font-medium text-gray-900 dark:text-white mb-2">Heart in Innovation</h3>
+              <p class="text-gray-600 dark:text-gray-400">
+                We infuse each project with passion and purpose, creating AI that not only 
+                solves problems but enhances human potential.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- CTA Section -->
+      <div class="text-center pb-20">
+        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+          Ready to experience AI solutions that make you say "Umai!"?
+        </p>
+        <a href="/services" class="inline-flex items-center px-6 py-3 bg-umai-accent hover:bg-umai-accent-dark text-white text-sm font-medium rounded-full transition-all duration-200 group">
+          <span>Explore Our Services</span>
+          <svg class="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <TeamSection />
+
+  <!-- Interactive CV Section -->
+  <InteractiveCV />
+</Layout>

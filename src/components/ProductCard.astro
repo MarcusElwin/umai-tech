@@ -1,0 +1,129 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  status: 'live' | 'in-progress' | 'beta';
+  url?: string;
+  image?: string;
+  tags?: string[];
+  features?: string[];
+}
+
+const { title, description, status, url, image, tags = [], features = [] } = Astro.props;
+
+const statusStyles = {
+  live: {
+    bg: 'bg-green-500/10 dark:bg-green-400/10',
+    text: 'text-green-600 dark:text-green-400',
+    dot: 'bg-green-500',
+    glow: 'shadow-green-500/20'
+  },
+  'in-progress': {
+    bg: 'bg-blue-500/10 dark:bg-blue-400/10',
+    text: 'text-blue-600 dark:text-blue-400',
+    dot: 'bg-blue-500',
+    glow: 'shadow-blue-500/20'
+  },
+  beta: {
+    bg: 'bg-orange-500/10 dark:bg-orange-400/10',
+    text: 'text-orange-600 dark:text-orange-400',
+    dot: 'bg-orange-500',
+    glow: 'shadow-orange-500/20'
+  }
+};
+
+const statusLabels = {
+  live: 'Live',
+  'in-progress': 'In Progress',
+  beta: 'Beta'
+};
+
+const currentStatus = statusStyles[status];
+---
+
+<div class="relative bg-white dark:bg-umai-gray-800 rounded-2xl border border-umai-gray-200 dark:border-umai-gray-700 hover:border-umai-accent/50 dark:hover:border-umai-accent/50 transition-all duration-300 group overflow-hidden">
+  <!-- Gradient overlay -->
+  <div class="absolute inset-0 bg-gradient-to-br from-umai-accent/0 to-umai-accent/0 group-hover:from-umai-accent/5 group-hover:to-umai-accent/10 rounded-2xl transition-all duration-300 pointer-events-none"></div>
+  
+  <!-- Status indicator -->
+  <div class="absolute top-4 right-4 z-10">
+    <div class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${currentStatus.bg} ${currentStatus.text}`}>
+      <div class={`w-1.5 h-1.5 rounded-full ${currentStatus.dot} mr-2 animate-pulse`}></div>
+      {statusLabels[status]}
+    </div>
+  </div>
+
+  <!-- Header with Image -->
+  {image && (
+    <div class="relative h-48 overflow-hidden rounded-t-3xl">
+      <img 
+        src={image} 
+        alt={title}
+        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+    </div>
+  )}
+  
+  <!-- Content -->
+  <div class="relative p-6">
+    <!-- Title -->
+    <h3 class="text-xl font-light text-gray-900 dark:text-white mb-2 group-hover:text-umai-accent transition-colors duration-300">
+      {title}
+    </h3>
+    
+    <!-- Description -->
+    <p class="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed text-sm">
+      {description}
+    </p>
+    
+    <!-- Tags -->
+    {tags.length > 0 && (
+      <div class="flex flex-wrap gap-1.5 mb-4">
+        {tags.map((tag) => (
+          <span class="px-2.5 py-0.5 bg-gray-100/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-700 dark:text-gray-300 text-xs rounded-full border border-gray-200/30 dark:border-gray-700/30">
+            {tag}
+          </span>
+        ))}
+      </div>
+    )}
+    
+    <!-- Features -->
+    {features.length > 0 && (
+      <div class="mb-5">
+        <ul class="space-y-1.5">
+          {features.map((feature) => (
+            <li class="flex items-start text-xs text-gray-600 dark:text-gray-400">
+              <div class="w-1 h-1 rounded-full bg-umai-accent mt-1.5 mr-2.5 flex-shrink-0"></div>
+              {feature}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+    
+    <!-- Action Button -->
+    <div class="pt-3 border-t border-gray-200/50 dark:border-gray-700/50">
+      {url ? (
+        <a 
+          href={url} 
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center w-full px-4 py-2.5 bg-gradient-to-r from-umai-accent to-purple-600 hover:from-umai-accent-dark hover:to-purple-700 text-white font-medium rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl group-hover:shadow-2xl text-sm"
+        >
+          {status === 'live' ? 'Visit Product' : status === 'beta' ? 'Try Beta' : 'Coming Soon'}
+          <svg class="w-3.5 h-3.5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+          </svg>
+        </a>
+      ) : (
+        <div class="inline-flex items-center justify-center w-full px-4 py-2.5 bg-gray-100/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-500 dark:text-gray-400 font-medium rounded-xl border border-gray-200/30 dark:border-gray-700/30 text-sm">
+          Coming Soon
+        </div>
+      )}
+    </div>
+  </div>
+
+  <!-- Hover glow effect -->
+  <div class={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl ${currentStatus.glow} shadow-2xl`}></div>
+</div>

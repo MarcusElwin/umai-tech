@@ -1,0 +1,153 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+
+const projects = [
+  {
+    title: 'Medium Converter',
+    description: 'A Python package that converts Medium articles to various formats including Markdown, HTML, and structured data. Perfect for content migration, backup, and analysis workflows.',
+    icon: 'code',
+    accent: 'from-purple-500 to-purple-600',
+    tags: ['Python', 'LLM', 'Medium', 'Content Processing', 'CLI'],
+    githubUrl: 'https://github.com/MarcusElwin/medium-converter',
+    status: 'active' as const
+  },
+  {
+    title: 'NER with DSPy',
+    description: 'Advanced Named Entity Recognition implementation using DSPy framework. Demonstrates modern prompt engineering techniques and structured data extraction from unstructured text.',
+    icon: 'lightning',
+    accent: 'from-purple-600 to-purple-700',
+    tags: ['Python', 'DSPy', 'NER', 'Machine Learning', 'NLP'],
+    githubUrl: 'https://github.com/MarcusElwin/ner-dspy',
+    status: 'active' as const
+  },
+  {
+    title: 'AI Engineering Legal Agents',
+    description: 'Exploring AI agents for legal document processing and analysis. Research project investigating the application of LLMs in legal workflows and compliance automation.',
+    icon: 'legal',
+    accent: 'from-purple-500 to-purple-600',
+    tags: ['Python', 'LLM', 'Legal Tech', 'AI Agents', 'Research'],
+    githubUrl: 'https://github.com/MarcusElwin/ai-eng-sto-learnings-legal-agents',
+    status: 'wip' as const
+  }
+];
+---
+
+<Layout title="Projects - Umai Tech">
+  <section class="py-24 px-4 sm:px-6 lg:px-8 bg-umai-gray-50 dark:bg-umai-gray-900">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <div class="mb-16">
+        <h2 class="text-3xl sm:text-4xl font-light text-umai-gray-900 dark:text-white mb-4">
+          Our <span class="font-normal text-umai-accent">Projects</span>
+        </h2>
+        <p class="text-base text-umai-gray-600 dark:text-umai-gray-400 max-w-2xl">
+          Open source tools and research projects that demonstrate our expertise in AI, machine learning, and software engineering.
+        </p>
+      </div>
+
+      <!-- Projects Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+        {projects.map((project) => (
+          <ProjectCard {...project} />
+        ))}
+      </div>
+
+      <!-- Call to action -->
+      <div class="text-center">
+        <a 
+          href="https://github.com/MarcusElwin" 
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center text-sm font-medium text-umai-accent hover:text-umai-accent-dark transition-colors group"
+        >
+          <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          <span>View all projects on GitHub</span>
+          <svg class="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contributions Section -->
+  <section class="py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-umai-primary">
+    <div class="max-w-6xl mx-auto">
+      <div class="bg-gradient-to-br from-umai-accent/5 to-purple-600/5 rounded-3xl p-8 md:p-12 border border-umai-accent/10 dark:border-umai-accent/20">
+        <div class="max-w-4xl mx-auto text-center">
+          <div class="mb-6">
+            <span class="text-4xl bg-gradient-to-r from-purple-500 to-purple-600 bg-clip-text text-transparent">◈</span>
+          </div>
+          <h2 class="text-3xl font-light text-gray-900 dark:text-white mb-4">
+            Open Source <span class="font-normal text-umai-accent">Contributions</span>
+          </h2>
+          <p class="text-base text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+            We believe in giving back to the community. Our open source projects help advance the field of AI and provide practical tools for developers and researchers worldwide.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+              <div class="w-1.5 h-1.5 rounded-full bg-umai-accent mr-2"></div>
+              Research & Development
+            </div>
+            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+              <div class="w-1.5 h-1.5 rounded-full bg-umai-accent mr-2"></div>
+              Production-Ready Tools
+            </div>
+            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+              <div class="w-1.5 h-1.5 rounded-full bg-umai-accent mr-2"></div>
+              Educational Resources
+            </div>
+          </div>
+          <a 
+            href="/contact" 
+            class="inline-flex items-center text-sm font-medium text-umai-accent hover:text-umai-accent-dark transition-colors group"
+          >
+            <span>Collaborate with us</span>
+            <svg class="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Fetch GitHub stats for all projects
+    async function fetchGitHubStats() {
+      const repoElements = document.querySelectorAll('[data-repo]');
+      
+      for (const element of repoElements) {
+        const repo = element.getAttribute('data-repo');
+        if (!repo) continue;
+        
+        try {
+          const response = await fetch(`https://api.github.com/repos/${repo}`);
+          if (response.ok) {
+            const data = await response.json();
+            
+            // Update stars count
+            const starsElement = element.querySelector('.github-stars');
+            if (starsElement) {
+              starsElement.textContent = data.stargazers_count.toLocaleString();
+            }
+            
+            // Update forks count
+            const forksElement = element.parentElement?.querySelector('.github-forks');
+            if (forksElement) {
+              forksElement.textContent = data.forks_count.toLocaleString();
+            }
+          }
+        } catch (error) {
+          console.warn(`Failed to fetch GitHub stats for ${repo}:`, error);
+        }
+      }
+    }
+    
+    // Fetch stats when page loads
+    document.addEventListener('DOMContentLoaded', fetchGitHubStats);
+  </script>
+</Layout>
