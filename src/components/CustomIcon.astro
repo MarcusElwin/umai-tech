@@ -24,7 +24,7 @@ if (svgContent) {
   // Add classes and styles to the SVG element
   processedSvg = svgContent.replace(
     /<svg([^>]*)>/,
-    (match, attributes) => {
+    (_match, attributes) => {
       let newAttributes = attributes;
       
       // Add class if provided

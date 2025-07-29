@@ -7,8 +7,8 @@ export interface Props {
   enableCopy?: boolean;
 }
 
-const { title, headers, responsive = true, showIcons = true, enableCopy = true } = Astro.props;
-const tableId = `pretty-table-${Math.random().toString(36).substr(2, 9)}`;
+const { title, headers, responsive = true, enableCopy = true } = Astro.props;
+const tableId = `pretty-table-${Math.random().toString(36).substring(2, 11)}`;
 ---
 
 <div class="pretty-table-container my-8">
@@ -37,7 +37,7 @@ const tableId = `pretty-table-${Math.random().toString(36).substr(2, 9)}`;
     <table class="w-full" id={tableId}>
       <thead>
         <tr class="bg-gradient-to-r from-purple-500/10 to-purple-600/10 dark:from-purple-400/10 dark:to-purple-500/10 border-b border-gray-200/60 dark:border-gray-700/40">
-          {headers.map((header) => (
+          {headers.map((header: string) => (
             <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 first:rounded-tl-xl last:rounded-tr-xl">
               {header}
             </th>
@@ -116,10 +116,11 @@ const tableId = `pretty-table-${Math.random().toString(36).substr(2, 9)}`;
 <script>
   function initPrettyTableCopy() {
     document.querySelectorAll('.copy-table-btn').forEach(button => {
-      button.addEventListener('click', async function() {
+      button.addEventListener('click', async function(this: HTMLButtonElement) {
         const tableId = this.getAttribute('data-table-id');
-        const table = document.getElementById(tableId);
+        if (!tableId) return;
         
+        const table = document.getElementById(tableId);
         if (!table) return;
         
         // Extract table data
@@ -144,7 +145,7 @@ const tableId = `pretty-table-${Math.random().toString(36).substr(2, 9)}`;
                 `[${a.textContent?.trim()}](${a.href})`
               );
               const plainText = Array.from(sourcesElement.childNodes)
-                .filter(node => node.nodeType === Node.TEXT_NODE || !node.querySelector('a'))
+                .filter(node => node.nodeType === Node.TEXT_NODE || !(node as Element).querySelector?.('a'))
                 .map(node => node.textContent?.trim())
                 .filter(text => text && text.length > 0);
               

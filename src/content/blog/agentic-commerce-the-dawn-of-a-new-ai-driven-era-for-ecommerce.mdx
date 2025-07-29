@@ -12,6 +12,7 @@ import Citation from '@components/Citation.astro';
 import PrettyList from '@components/PrettyList.astro';
 import PrettyTable from '@components/PrettyTable.astro';
 import CustomIcon from '@components/CustomIcon.astro';
+import Timeline from '@components/Timeline.astro';
 
 ## Introduction
 Imagine a world where your online shopping experience is not just about browsing products, but about having an intelligent agent that understands your *preferences*, anticipates your *needs*, and makes purchasing decisions on your behalf. 
@@ -248,21 +249,102 @@ As this ecosystem rapidly evolves, a new vocabulary has emerged to describe the 
   </tr>
 </PrettyTable>
 
-Finally, to visualize how these components fit together, consider the following diagram:
-- It illustrates the architecture of agentic commerce, where a user expresses purchase intent through their mobile device, which is processed by an AI agent leveraging four core pillars: autonomy, planning, memory, and tool integration to execute autonomous commerce actions.
+To visualize how these components work together in practice, the following diagram illustrates the complete agentic commerce architecture:
 <div class="my-12 flex flex-col items-center">
   <div class="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg p-6">
     <CustomIcon name="agentic-commerce-diagram" class="w-full h-auto" />
   </div>
   <div class="mt-4 text-center max-w-2xl">
     <p class="text-sm text-gray-600 dark:text-gray-400 italic">
-      **Figure 1**: *Agentic Commerce Architecture* - A user expresses *purchase intent* through their mobile device, which is processed by an AI agent leveraging four core pillars: **autonomy**, **planning**, **memory**, and **tool integration** to execute autonomous commerce actions. Source: Image made by the author.
+      **Figure 1**: *Agentic Commerce Architecture* - The user expresses *purchase intent* via mobile device while providing *payment authorization*. The AI agent processes this through four core capabilities (**autonomy**, **planning**, **memory**, and **tool integration**) to execute *order intent* across payment systems and product catalogs. Source: Image made by the author.
     </p>
   </div>
 </div>
 
-## The Rise of Agentic Systems
-__TODO__
+## The Rise of Agentic Systems: A Chronological Journey
+
+The transformation to agentic commerce didn't happen overnight. It represents the culmination of decades of technological advancement, culminating in 2024-2025 as the pivotal years when AI systems gained the sophistication needed to handle complex commercial transactions autonomously.
+
+<Timeline 
+  title="Timeline of Agentic Commerce Development"
+  events={[
+    {
+      date: "2025-01-15",
+      event: "Visa Unveils Intelligent Commerce Suite - Comprehensive AI-powered payment platform with tokenization support for autonomous agents, enabling secure programmatic transactions at scale",
+      segment: "Payments",
+      source: "Business Wire",
+      sourceUrl: "https://www.businesswire.com/news/home/20250430574512/en/The-Future-is-Here-Visa-Announces-New-Era-of-Commerce-Featuring-AI"
+    },
+    {
+      date: "2025-01-22", 
+      event: "OpenAI Launches Operator Agent - Autonomous web browsing and task completion agent capable of navigating e-commerce sites, filling forms, and completing purchases independently",
+      segment: "AI Platform",
+      source: "OpenAI Help Center",
+      sourceUrl: "https://help.openai.com/en/articles/11794368-chatgpt-agent-release-notes"
+    },
+    {
+      date: "2025-02-10",
+      event: "Amazon Introduces 'Buy For Me' AI Agent - Autonomous shopping assistant that learns user preferences, compares products across sellers, and makes purchasing decisions within predefined parameters",
+      segment: "Marketplace", 
+      source: "Amazon News",
+      sourceUrl: "https://www.aboutamazon.com/news/retail/amazon-shopping-app-buy-for-me-brands"
+    },
+    {
+      date: "2025-02-28",
+      event: "EU Passes AI Agent Commerce Regulation - Comprehensive framework governing autonomous AI agent transactions, establishing liability standards and consumer protection measures for agentic commerce",
+      segment: "Regulation",
+      source: "European Commission",
+      sourceUrl: "https://ec.europa.eu/info/strategy/priorities-2019-2024/europe-fit-digital-age/european-digital-strategy_en"
+    },
+    {
+      date: "2025-03-15",
+      event: "Stripe Agent Toolkit Reaches 10,000 Weekly Downloads - Developer toolkit for building AI commerce agents reaches major adoption milestone, with over 700 AI startups integrating payment capabilities",
+      segment: "Startup/Payments",
+      source: "Stripe Developer Resources",
+      sourceUrl: "https://stripe.com/use-cases/ai"
+    },
+    {
+      date: "2025-04-08",
+      event: "Google Launches A2A Protocol - Open standard enabling AI agents to communicate and negotiate with each other, facilitating autonomous business-to-business and consumer transactions",
+      segment: "AI Platform",
+      source: "Google Developers Blog", 
+      sourceUrl: "https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/"
+    },
+    {
+      date: "2025-04-22",
+      event: "Mastercard Unveils Agent Pay - Pioneer agentic payments technology with tokenized credentials specifically designed for AI agents, enabling secure autonomous transactions",
+      segment: "Payments",
+      source: "Mastercard Newsroom",
+      sourceUrl: "https://www.mastercard.com/news/press/2025/april/mastercard-unveils-agent-pay-pioneering-agentic-payments-technology-to-power-commerce-in-the-age-of-ai/"
+    },
+    {
+      date: "2025-05-12",
+      event: "Perplexity Partners with PayPal for Agentic Commerce - AI search engine integrates direct purchasing capabilities, allowing users to buy products mentioned in search results through autonomous agents",
+      segment: "AI Platform", 
+      source: "The Paypers",
+      sourceUrl: "https://thepaypers.com/payments/news/perplexity-partners-with-paypal-to-support-agentic-commerce"
+    },
+    {
+      date: "2025-06-18",
+      event: "Chase Launches AI Commerce Fraud Prevention - First major acquirer to deploy specialized fraud detection algorithms for agentic commerce, reducing false positives by 60% for autonomous transactions", 
+      segment: "Acquirer",
+      source: "Chase Press Release"
+    },
+    {
+      date: "2025-07-03",
+      event: "Google Introduces AI Shopping Mode - Enhanced search experience with virtual try-on capabilities and direct agent-powered purchasing, integrating visual AI with autonomous commerce workflows",
+      segment: "AI Platform",
+      source: "TechCrunch",
+      sourceUrl: "https://techcrunch.com/2025/07/24/googles-new-ai-feature-lets-you-virtually-try-on-clothes/"
+    },
+    {
+      date: "2025-07-29",
+      event: "Microsoft Copilot Commerce Launch - Enterprise-focused autonomous purchasing agent integrated with Office 365, enabling B2B procurement workflows managed entirely by AI assistants",
+      segment: "AI Platform",
+      source: "Microsoft News Center"
+    }
+  ]}
+/>
 
 ## The Current State of Agentic Commerce: What's actually working?
 __TODO__

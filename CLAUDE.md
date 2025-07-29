@@ -87,7 +87,15 @@ umai-tech/
 
 ## Development Commands
 
+**IMPORTANT**: Always ensure you're using the correct Node.js version before running any commands:
+
 ```bash
+# Load nvm and switch to project Node version (required before any other commands)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"
+[ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm"
+nvm use
+
 # Install dependencies
 pnpm install
 
@@ -109,6 +117,10 @@ pnpm new-post
 # Create new blog post (quick mode)
 pnpm new-post:quick "Title" "Description" "tag1,tag2"
 ```
+
+### Node.js Version Management
+
+This project requires Node.js 20.11.0 (specified in `.nvmrc`). Always run the nvm commands above before executing any project commands to ensure compatibility.
 
 ## Content Management
 

@@ -4,7 +4,7 @@ export interface Props {
   type?: 'default' | 'numbered' | 'featured';
 }
 
-const { title, type = 'default' } = Astro.props;
+const { title } = Astro.props;
 ---
 
 <div class="my-8 rounded-xl border border-gray-200/60 bg-gradient-to-br from-gray-50/80 to-white/90 dark:from-gray-900/50 dark:to-gray-800/30 dark:border-gray-700/40 shadow-sm backdrop-blur-sm">

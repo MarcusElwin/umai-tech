@@ -17,7 +17,7 @@
   <rect width="800" height="600" fill="#FAFAFA" />
 
   <!-- Title -->
-  <text x="400" y="40" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" font-weight="600" fill="#1F2937">
+  <text x="400" y="40" text-anchor="middle" font-family="Inter, sans-serif" font-size="26" font-weight="800" fill="#8B5CF6">
     Agentic Commerce Architecture
   </text>
 
@@ -69,61 +69,96 @@
   <rect x="80" y="300" width="580" height="200" rx="15" fill="none" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
   <text x="400" y="320" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#6B7280" opacity="0.7">Core AI Capabilities</text>
   
+  <!-- Subtle connections between capabilities -->
+  <path d="M 200 350 Q 265 400 280 450" stroke="#E5E7EB" stroke-width="1" fill="none" stroke-dasharray="2,2" opacity="0.4"/>
+  <path d="M 380 450 Q 425 450 420 450" stroke="#E5E7EB" stroke-width="1" fill="none" stroke-dasharray="2,2" opacity="0.4"/>
+  <path d="M 520 450 Q 585 400 600 350" stroke="#E5E7EB" stroke-width="1" fill="none" stroke-dasharray="2,2" opacity="0.4"/>
+  
   <!-- Four Pillars -->
   <!-- 1. Autonomy -->
   <g transform="translate(150, 350)">
-    <rect x="-50" y="-30" width="100" height="60" rx="10" fill="url(#lightGradient)" stroke="#8B5CF6" stroke-width="2" filter="url(#shadow)"/>
-    <circle cx="0" cy="-10" r="12" fill="#8B5CF6"/>
+    <rect x="-50" y="-30" width="100" height="60" rx="10" fill="url(#lightGradient)" stroke="#8B5CF6" stroke-width="2" filter="url(#shadow)">
+      <animate attributeName="stroke-width" values="2;3;2" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <circle cx="0" cy="-10" r="12" fill="#8B5CF6">
+      <animate attributeName="r" values="12;13;12" dur="3s" repeatCount="indefinite"/>
+    </circle>
     <!-- Lightning bolt SVG -->
     <g transform="translate(-6, -16)">
-      <path d="M6 2L4 7h4l-2 5 4-5H6l1-5z" fill="white"/>
+      <path d="M6 2L4 7h4l-2 5 4-5H6l1-5z" fill="white">
+        <animate attributeName="opacity" values="1;0.7;1" dur="2s" repeatCount="indefinite"/>
+      </path>
     </g>
-    <text x="0" y="15" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#1F2937">Autonomy</text>
+    <text x="0" y="15" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1F2937">Autonomy</text>
     <text x="0" y="50" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6B7280">Independent</text>
     <text x="0" y="62" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6B7280">Decision Making</text>
   </g>
 
   <!-- 2. Planning -->
   <g transform="translate(330, 450)">
-    <rect x="-50" y="-30" width="100" height="60" rx="10" fill="url(#lightGradient)" stroke="#8B5CF6" stroke-width="2" filter="url(#shadow)"/>
-    <circle cx="0" cy="-10" r="12" fill="#8B5CF6"/>
+    <rect x="-50" y="-30" width="100" height="60" rx="10" fill="url(#lightGradient)" stroke="#8B5CF6" stroke-width="2" filter="url(#shadow)">
+      <animate attributeName="stroke-width" values="2;3;2" dur="4.5s" repeatCount="indefinite"/>
+    </rect>
+    <circle cx="0" cy="-10" r="12" fill="#8B5CF6">
+      <animate attributeName="r" values="12;13;12" dur="3.5s" repeatCount="indefinite"/>
+    </circle>
     <!-- Target/Bullseye SVG -->
     <g transform="translate(-6, -16)">
-      <circle cx="6" cy="6" r="5" fill="none" stroke="white" stroke-width="1"/>
-      <circle cx="6" cy="6" r="3" fill="none" stroke="white" stroke-width="1"/>
-      <circle cx="6" cy="6" r="1.5" fill="white"/>
+      <circle cx="6" cy="6" r="5" fill="none" stroke="white" stroke-width="1">
+        <animate attributeName="r" values="5;6;5" dur="4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="6" cy="6" r="3" fill="none" stroke="white" stroke-width="1">
+        <animate attributeName="r" values="3;4;3" dur="4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="6" cy="6" r="1.5" fill="white">
+        <animate attributeName="r" values="1.5;2;1.5" dur="4s" repeatCount="indefinite"/>
+      </circle>
     </g>
-    <text x="0" y="15" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#1F2937">Planning</text>
+    <text x="0" y="15" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1F2937">Planning</text>
     <text x="0" y="50" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6B7280">Multi-step</text>
     <text x="0" y="62" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6B7280">Strategy</text>
   </g>
 
   <!-- 3. Memory -->
   <g transform="translate(470, 450)">
-    <rect x="-50" y="-30" width="100" height="60" rx="10" fill="url(#lightGradient)" stroke="#8B5CF6" stroke-width="2" filter="url(#shadow)"/>
-    <circle cx="0" cy="-10" r="12" fill="#8B5CF6"/>
+    <rect x="-50" y="-30" width="100" height="60" rx="10" fill="url(#lightGradient)" stroke="#8B5CF6" stroke-width="2" filter="url(#shadow)">
+      <animate attributeName="stroke-width" values="2;3;2" dur="3.8s" repeatCount="indefinite"/>
+    </rect>
+    <circle cx="0" cy="-10" r="12" fill="#8B5CF6">
+      <animate attributeName="r" values="12;13;12" dur="2.8s" repeatCount="indefinite"/>
+    </circle>
     <!-- Brain/Memory SVG -->
     <g transform="translate(-6, -16)">
       <path d="M3 5c0-1.5 1-3 3-3s3 1.5 3 3c1 0 2 1 2 2s-1 2-2 2c0 1.5-1 3-3 3s-3-1.5-3-3c-1 0-2-1-2-2s1-2 2-2z" 
             fill="white" stroke="white" stroke-width="0.5"/>
-      <circle cx="4.5" cy="6" r="0.5" fill="#8B5CF6"/>
-      <circle cx="7.5" cy="6" r="0.5" fill="#8B5CF6"/>
+      <circle cx="4.5" cy="6" r="0.5" fill="#8B5CF6">
+        <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="7.5" cy="6" r="0.5" fill="#8B5CF6">
+        <animate attributeName="opacity" values="1;0.3;1" dur="1.8s" repeatCount="indefinite"/>
+      </circle>
     </g>
-    <text x="0" y="15" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#1F2937">Memory</text>
+    <text x="0" y="15" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1F2937">Memory</text>
     <text x="0" y="50" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6B7280">Context &</text>
     <text x="0" y="62" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6B7280">Preferences</text>
   </g>
 
   <!-- 4. Tool Integration -->
   <g transform="translate(650, 350)">
-    <rect x="-50" y="-30" width="100" height="60" rx="10" fill="url(#lightGradient)" stroke="#8B5CF6" stroke-width="2" filter="url(#shadow)"/>
-    <circle cx="0" cy="-10" r="12" fill="#8B5CF6"/>
+    <rect x="-50" y="-30" width="100" height="60" rx="10" fill="url(#lightGradient)" stroke="#8B5CF6" stroke-width="2" filter="url(#shadow)">
+      <animate attributeName="stroke-width" values="2;3;2" dur="5s" repeatCount="indefinite"/>
+    </rect>
+    <circle cx="0" cy="-10" r="12" fill="#8B5CF6">
+      <animate attributeName="r" values="12;13;12" dur="3.2s" repeatCount="indefinite"/>
+    </circle>
     <!-- Tools/Gear SVG -->
     <g transform="translate(-6, -16)">
-      <path d="M6 1l1 2h2l-1 2 1 2h-2l-1 2-1-2H3l1-2-1-2h2l1-2z" fill="white"/>
+      <path d="M6 1l1 2h2l-1 2 1 2h-2l-1 2-1-2H3l1-2-1-2h2l1-2z" fill="white">
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" values="0 6 6;360 6 6" dur="8s" repeatCount="indefinite"/>
+      </path>
       <circle cx="6" cy="6" r="2" fill="none" stroke="#8B5CF6" stroke-width="1"/>
     </g>
-    <text x="0" y="15" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#1F2937">Tool Integration</text>
+    <text x="0" y="15" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#1F2937">Tool Integration</text>
     <text x="0" y="50" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6B7280">Payment Systems,</text>
     <text x="0" y="62" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#6B7280">Computer Use & APIs</text>
   </g>
@@ -137,8 +172,20 @@
       <path d="M2 2h2l1 8h8l1-6H6" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       <circle cx="8" cy="14" r="1.5" fill="#10B981"/>
       <circle cx="12" cy="14" r="1.5" fill="#10B981"/>
+      
+      <!-- Example products in cart -->
+      <g transform="translate(6, 6)">
+        <!-- Laptop -->
+        <rect x="0" y="0" width="4" height="2.5" rx="0.3" fill="#6B7280" opacity="0.8"/>
+        <!-- Coffee -->
+        <circle cx="6" cy="1" r="1" fill="#8B4513" opacity="0.7"/>
+        <!-- Book -->
+        <rect x="2" y="2" width="2" height="3" rx="0.2" fill="#4F46E5" opacity="0.6"/>
+      </g>
     </g>
     <text x="0" y="50" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#1F2937">Products</text>
+    <!-- Product labels -->
+    <text x="0" y="65" text-anchor="middle" font-family="Inter, sans-serif" font-size="8" fill="#6B7280">Laptop, Coffee, Books</text>
   </g>
 
   <!-- Payment -->
@@ -185,11 +232,29 @@
   <path d="M 380 170 Q 290 130 225 90" stroke="#10B981" stroke-width="2" fill="none" stroke-dasharray="3,3">
     <animate attributeName="stroke-dashoffset" values="0;6" dur="0.8s" repeatCount="indefinite"/>
   </path>
+  
+  <!-- Connection points -->
+  <circle cx="140" cy="160" r="3" fill="#8B5CF6" opacity="0.8"/>
+  <circle cx="360" cy="190" r="3" fill="#8B5CF6" opacity="0.8"/>
+  <circle cx="200" cy="100" r="2" fill="#F59E0B" opacity="0.8"/>
+  <circle cx="600" cy="120" r="2" fill="#10B981" opacity="0.8"/>
+  <circle cx="200" cy="100" r="2" fill="#10B981" opacity="0.8"/>
 
-  <!-- Flow Labels -->
-  <text x="250" y="170" font-family="Inter, sans-serif" font-size="10" font-weight="500" fill="#8B5CF6">Purchase Intent</text>
-  <text x="500" y="105" font-family="Inter, sans-serif" font-size="10" font-weight="500" fill="#10B981">Order Intent</text>
-  <text x="135" y="115" font-family="Inter, sans-serif" font-size="9" font-weight="500" fill="#F59E0B">Payment Auth</text>
+  <!-- Flow Labels with backgrounds -->
+  <g>
+    <rect x="210" y="155" width="80" height="18" rx="9" fill="white" stroke="#8B5CF6" stroke-width="1" opacity="0.9"/>
+    <text x="250" y="167" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#8B5CF6">Purchase Intent</text>
+  </g>
+  
+  <g>
+    <rect x="460" y="90" width="80" height="18" rx="9" fill="white" stroke="#10B981" stroke-width="1" opacity="0.9"/>
+    <text x="500" y="102" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#10B981">Order Intent</text>
+  </g>
+  
+  <g>
+    <rect x="95" y="100" width="80" height="18" rx="9" fill="white" stroke="#F59E0B" stroke-width="1" opacity="0.9"/>
+    <text x="135" y="112" text-anchor="middle" font-family="Inter, sans-serif" font-size="9" font-weight="600" fill="#F59E0B">Payment Auth</text>
+  </g>
 
   <!-- Legend -->
   <g transform="translate(50, 530)">
