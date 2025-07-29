@@ -122,6 +122,42 @@ pnpm new-post:quick "Title" "Description" "tag1,tag2"
 
 This project requires Node.js 20.11.0 (specified in `.nvmrc`). Always run the nvm commands above before executing any project commands to ensure compatibility.
 
+### TypeScript Configuration
+
+The project maintains strict TypeScript standards with zero errors policy:
+
+- **Type Checking**: `pnpm astro check` validates all TypeScript files
+- **Zero Errors**: Build process fails if any TypeScript errors exist
+- **Component Props**: All Astro components use proper TypeScript interfaces
+- **Script Sections**: Browser scripts use type assertions for DOM elements
+- **Build Integration**: Type checking runs automatically during build process
+
+**Common TypeScript Patterns:**
+```typescript
+// Component interfaces
+export interface Props {
+  title?: string;
+  events: Array<{
+    date: string;
+    event: string;
+    segment: string;
+  }>;
+}
+
+// DOM element type assertions
+const element = document.querySelector('.selector') as HTMLElement;
+element.style.property = 'value';
+
+// Global function declarations
+(globalThis as any).functionName = functionName;
+```
+
+**Troubleshooting TypeScript Issues:**
+- Use `pnpm astro check` to identify type errors
+- Add proper type assertions for DOM manipulation
+- Use `any` type sparingly, prefer specific interfaces
+- Ensure all component props have defined interfaces
+
 ## Content Management
 
 ### Blog Post Schema
