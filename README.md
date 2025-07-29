@@ -133,11 +133,26 @@ This project automatically deploys to Vercel:
 
 ### Color Palette
 
-| Color | Preview | Hex Code |
-|-------|---------|----------|
-| **Umai Purple** | <img src="data:image/svg+xml,%3csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='20' height='20' fill='%238B5CF6'/%3e%3c/svg%3e" alt="Umai Purple" /> | `#8B5CF6` |
-| **Dark** | <img src="data:image/svg+xml,%3csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='20' height='20' fill='%230a0a0a'/%3e%3c/svg%3e" alt="Dark" /> | `#0a0a0a` |
-| **Light** | <img src="data:image/svg+xml,%3csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='20' height='20' fill='%23f5f5f5' stroke='%23ccc'/%3e%3c/svg%3e" alt="Light" /> | `#f5f5f5` |
+```css
+/* Primary Colors */
+--umai-primary: #0a0a0a
+--umai-secondary: #f5f5f5
+--umai-accent: #8B5CF6
+--umai-accent-dark: #7C3AED
+--umai-accent-light: #A78BFA
+
+/* Grayscale */
+--umai-gray-50: #fafafa
+--umai-gray-100: #f4f4f5
+--umai-gray-200: #e4e4e7
+--umai-gray-300: #d4d4d8
+--umai-gray-400: #a1a1aa
+--umai-gray-500: #71717a
+--umai-gray-600: #52525b
+--umai-gray-700: #3f3f46
+--umai-gray-800: #27272a
+--umai-gray-900: #18181b
+```
 
 ### Typography
 
