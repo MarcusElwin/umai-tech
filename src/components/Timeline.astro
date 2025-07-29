@@ -1,0 +1,204 @@
+---
+export interface Props {
+  title?: string;
+  events: Array<{
+    date: string;
+    event: string;
+    segment: string;
+    source?: string;
+    sourceUrl?: string;
+  }>;
+}
+
+const { title, events } = Astro.props;
+
+// Function to format date for display
+function formatDate(dateStr: string) {
+  const date = new Date(dateStr);
+  const options: Intl.DateTimeFormatOptions = { 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric' 
+  };
+  return date.toLocaleDateString('en-US', options);
+}
+
+// Function to get segment color and icon
+function getSegmentColor(segment: string) {
+  const colors = {
+    'Payments': '#8B5CF6', // Umai Purple
+    'AI Platform': '#3B82F6', // Blue
+    'Marketplace': '#10B981', // Green
+    'Regulation': '#F59E0B', // Orange
+    'Startup/Payments': '#EC4899', // Pink
+    'Acquirer': '#6366F1', // Indigo
+  };
+  return colors[segment as keyof typeof colors] || '#6B7280';
+}
+
+function getSegmentIcon(segment: string) {
+  const icons = {
+    'Payments': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>',
+    'AI Platform': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>',
+    'Marketplace': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>',
+    'Regulation': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>',
+    'Startup/Payments': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>',
+    'Acquirer': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>'
+  };
+  return icons[segment as keyof typeof icons] || '<circle cx="12" cy="12" r="3"/>';
+}
+---
+
+<div class="timeline-container my-8">
+  {title && (
+    <div class="mb-6">
+      <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 flex items-center gap-3">
+        <div class="w-1 h-6 bg-purple-500 rounded-full"></div>
+        {title}
+      </h3>
+    </div>
+  )}
+  
+  <div class="relative">
+    <!-- Clean timeline line -->
+    <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-purple-400 to-purple-300 opacity-60"></div>
+    
+    <div class="space-y-6">
+      {events.map((event) => (
+        <div class="relative flex items-start group">
+          <!-- Timeline dot with icon -->
+          <div 
+            class="flex-shrink-0 w-12 h-12 rounded-full border-3 border-white dark:border-gray-800 shadow-lg flex items-center justify-center relative z-10 transition-all duration-300 group-hover:scale-110"
+            style={`background: linear-gradient(135deg, ${getSegmentColor(event.segment)}, ${getSegmentColor(event.segment)}dd)`}
+          >
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <Fragment set:html={getSegmentIcon(event.segment)} />
+            </svg>
+          </div>
+          
+          <!-- Event content -->
+          <div class="ml-5 pb-6 flex-1">
+            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300 p-5 group-hover:border-purple-300 dark:group-hover:border-purple-600">
+              <!-- Date and segment -->
+              <div class="flex items-center justify-between mb-3">
+                <time class="text-sm font-semibold text-purple-600 dark:text-purple-400">
+                  {formatDate(event.date)}
+                </time>
+                <span 
+                  class="px-2.5 py-1 rounded-full text-xs font-medium text-white"
+                  style={`background-color: ${getSegmentColor(event.segment)}`}
+                >
+                  {event.segment}
+                </span>
+              </div>
+              
+              <!-- Event description -->
+              <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-sm mb-4">
+                {event.event}
+              </p>
+              
+              <!-- Source -->
+              {event.source && (
+                <div class="text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-700 pt-3">
+                  <span class="font-medium">Source: </span>
+                  {event.sourceUrl ? (
+                    <a 
+                      href={event.sourceUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      class="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 underline transition-colors"
+                    >
+                      {event.source}
+                    </a>
+                  ) : (
+                    <span>{event.source}</span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .timeline-container {
+    max-width: 100%;
+  }
+  
+  @media (max-width: 768px) {
+    .timeline-container .relative {
+      margin-left: -1rem;
+    }
+    
+    .timeline-container .ml-6 {
+      margin-left: 1rem;
+    }
+    
+    .timeline-container .absolute.left-6 {
+      left: 1.5rem;
+    }
+  }
+  
+  /* Enhanced animations */
+  .timeline-container .group:hover .bg-gradient-to-br {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.1), 0 10px 10px -5px rgba(139, 92, 246, 0.04);
+  }
+  
+  /* Timeline line gradient animation */
+  @keyframes shimmer {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+  
+  .timeline-container .animate-pulse {
+    animation: shimmer 4s ease-in-out infinite;
+  }
+  
+  /* Segment icon animations */
+  .timeline-container .group:hover svg {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+  }
+  
+  /* Stagger animation for timeline items */
+  .timeline-container .group {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .timeline-container .group:nth-child(1) { animation-delay: 0.1s; }
+  .timeline-container .group:nth-child(2) { animation-delay: 0.15s; }
+  .timeline-container .group:nth-child(3) { animation-delay: 0.2s; }
+  .timeline-container .group:nth-child(4) { animation-delay: 0.25s; }
+  .timeline-container .group:nth-child(5) { animation-delay: 0.3s; }
+  .timeline-container .group:nth-child(6) { animation-delay: 0.35s; }
+  .timeline-container .group:nth-child(7) { animation-delay: 0.4s; }
+  .timeline-container .group:nth-child(8) { animation-delay: 0.45s; }
+  .timeline-container .group:nth-child(9) { animation-delay: 0.5s; }
+  .timeline-container .group:nth-child(10) { animation-delay: 0.55s; }
+  .timeline-container .group:nth-child(11) { animation-delay: 0.6s; }
+  
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Improved responsive behavior */
+  /* Mobile responsiveness */
+  @media (max-width: 640px) {
+    .timeline-container .group:hover .bg-white {
+      transform: none;
+    }
+    
+    .timeline-container .ml-5 {
+      margin-left: 1rem;
+    }
+  }
+</style>
+
