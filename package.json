@@ -25,6 +25,7 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "astro": "^5.12.3",
+    "astro-icon": "^1.1.5",
     "astro-mermaid": "^1.0.4",
     "mermaid": "^11.9.0"
   },

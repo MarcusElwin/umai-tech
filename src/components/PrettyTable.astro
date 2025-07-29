@@ -1,0 +1,212 @@
+---
+export interface Props {
+  title?: string;
+  headers: string[];
+  responsive?: boolean;
+  showIcons?: boolean;
+  enableCopy?: boolean;
+}
+
+const { title, headers, responsive = true, showIcons = true, enableCopy = true } = Astro.props;
+const tableId = `pretty-table-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div class="pretty-table-container my-8">
+  {title && (
+    <div class="mb-4">
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+        <div class="w-1 h-5 bg-purple-500 rounded-full"></div>
+        {title}
+      </h3>
+    </div>
+  )}
+  
+  <div class={`relative rounded-xl border border-gray-200/60 bg-gradient-to-br from-gray-50/80 to-white/90 dark:from-gray-900/50 dark:to-gray-800/30 dark:border-gray-700/40 shadow-sm backdrop-blur-sm overflow-hidden ${responsive ? 'overflow-x-auto' : ''}`}>
+    {enableCopy && (
+      <button 
+        class="copy-table-btn absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-all border border-gray-200/60 dark:border-gray-700/40 rounded-lg hover:border-purple-300 dark:hover:border-purple-600 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:shadow-md"
+        data-table-id={tableId}
+        title="Copy table as Markdown"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+        </svg>
+        Copy
+      </button>
+    )}
+    <table class="w-full" id={tableId}>
+      <thead>
+        <tr class="bg-gradient-to-r from-purple-500/10 to-purple-600/10 dark:from-purple-400/10 dark:to-purple-500/10 border-b border-gray-200/60 dark:border-gray-700/40">
+          {headers.map((header) => (
+            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 first:rounded-tl-xl last:rounded-tr-xl">
+              {header}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200/40 dark:divide-gray-700/30">
+        <slot />
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  /* Custom styling for table rows and cells */
+  :global(.pretty-table-row) {
+    @apply hover:bg-purple-50/50 dark:hover:bg-purple-900/20 transition-colors;
+  }
+  
+  :global(.pretty-table-cell) {
+    @apply px-6 py-4 text-sm text-gray-700 dark:text-gray-300 align-top;
+  }
+  
+  :global(.pretty-table-term) {
+    @apply font-semibold text-gray-900 dark:text-gray-100 text-base;
+  }
+  
+  :global(.pretty-table-definition) {
+    @apply leading-relaxed;
+  }
+  
+  :global(.pretty-table-sources) {
+    @apply text-xs space-y-1;
+  }
+  
+  :global(.pretty-table-sources a) {
+    @apply text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 underline transition-colors;
+  }
+
+  :global(.pretty-table-icon) {
+    @apply w-5 h-5 mr-3 text-purple-600 dark:text-purple-400 flex-shrink-0;
+  }
+  
+  :global(.pretty-table-term-with-icon) {
+    @apply flex items-center;
+  }
+
+  .copy-table-btn:hover svg {
+    transform: scale(1.1);
+  }
+
+  .copy-table-btn.copied {
+    @apply text-green-600 dark:text-green-400 border-green-300 dark:border-green-600;
+  }
+
+  /* Responsive behavior */
+  @media (max-width: 768px) {
+    :global(.pretty-table-container .overflow-x-auto) {
+      @apply -mx-4;
+    }
+    
+    :global(.pretty-table-container table) {
+      @apply min-w-full;
+    }
+    
+    :global(.pretty-table-cell) {
+      @apply px-4 py-3;
+    }
+    
+    :global(.pretty-table-term) {
+      @apply text-sm;
+    }
+  }
+</style>
+
+<script>
+  function initPrettyTableCopy() {
+    document.querySelectorAll('.copy-table-btn').forEach(button => {
+      button.addEventListener('click', async function() {
+        const tableId = this.getAttribute('data-table-id');
+        const table = document.getElementById(tableId);
+        
+        if (!table) return;
+        
+        // Extract table data
+        const headers = Array.from(table.querySelectorAll('thead th')).map(th => 
+          th.textContent?.trim() || ''
+        );
+        
+        const rows = Array.from(table.querySelectorAll('tbody tr')).map(tr => {
+          return Array.from(tr.querySelectorAll('td')).map(td => {
+            // Extract text content, handling icons and links
+            const termElement = td.querySelector('.pretty-table-term');
+            const definitionElement = td.querySelector('.pretty-table-definition');
+            const sourcesElement = td.querySelector('.pretty-table-sources');
+            
+            if (termElement) {
+              return termElement.textContent?.trim() || '';
+            } else if (definitionElement) {
+              return definitionElement.textContent?.trim() || '';
+            } else if (sourcesElement) {
+              // Extract links with their text
+              const links = Array.from(sourcesElement.querySelectorAll('a')).map(a => 
+                `[${a.textContent?.trim()}](${a.href})`
+              );
+              const plainText = Array.from(sourcesElement.childNodes)
+                .filter(node => node.nodeType === Node.TEXT_NODE || !node.querySelector('a'))
+                .map(node => node.textContent?.trim())
+                .filter(text => text && text.length > 0);
+              
+              return [...links, ...plainText].join(', ');
+            } else {
+              return td.textContent?.trim() || '';
+            }
+          });
+        });
+        
+        // Generate markdown table
+        const headerRow = `| ${headers.join(' | ')} |`;
+        const separatorRow = `| ${headers.map(() => '---').join(' | ')} |`;
+        const dataRows = rows.map(row => `| ${row.join(' | ')} |`);
+        
+        const markdownTable = [headerRow, separatorRow, ...dataRows].join('\n');
+        
+        try {
+          await navigator.clipboard.writeText(markdownTable);
+          
+          // Visual feedback
+          const originalContent = this.innerHTML;
+          this.innerHTML = `
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            Copied!
+          `;
+          this.classList.add('copied');
+          
+          setTimeout(() => {
+            this.innerHTML = originalContent;
+            this.classList.remove('copied');
+          }, 2000);
+          
+        } catch (err) {
+          console.error('Failed to copy table:', err);
+          
+          // Fallback feedback
+          const originalContent = this.innerHTML;
+          this.innerHTML = `
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01"/>
+            </svg>
+            Failed
+          `;
+          
+          setTimeout(() => {
+            this.innerHTML = originalContent;
+          }, 2000);
+        }
+      });
+    });
+  }
+
+  // Initialize when DOM is loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPrettyTableCopy);
+  } else {
+    initPrettyTableCopy();
+  }
+
+  // Re-initialize if content is dynamically added
+  document.addEventListener('astro:page-load', initPrettyTableCopy);
+</script>

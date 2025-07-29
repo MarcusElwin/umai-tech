@@ -10,6 +10,8 @@ tags: ["Artificial Intelligence", "Large Language Models", "Generative AI", "Eco
 import Callout from '@components/Callout.astro';
 import Citation from '@components/Citation.astro';
 import PrettyList from '@components/PrettyList.astro';
+import PrettyTable from '@components/PrettyTable.astro';
+import CustomIcon from '@components/CustomIcon.astro';
 
 ## Introduction
 Imagine a world where your online shopping experience is not just about browsing products, but about having an intelligent agent that understands your *preferences*, anticipates your *needs*, and makes purchasing decisions on your behalf. 
@@ -68,36 +70,196 @@ Since the dawn of **e-commerce** in the 1990s, the landscape has been rapidly ev
 
 In this post, we will explore the concept of "Agentic Commerce" and how it represents a new era in e-commerce, driven by these converging AI and agentic systems.
 
-<Callout type="info" title="Pro Tip">
-Use callout components to highlight important information!
-</Callout>
-
 ## What is Agentic Commerce?
 
-<Citation 
-  type="quote" 
-  author="Jeff Bezos" 
-  source="Amazon Annual Shareholder Meeting" 
-  date="2001"
+Agentic commerce represents a fundamental shift from traditional e-commerce where humans drive every decision, to an ecosystem where AI agents autonomously browse, evaluate, negotiate, and purchase on behalf of consumers and businesses. Think of it as the difference between driving a car yourself and riding in a fully autonomous vehicle—you set the destination, but the AI handles the journey.
+
+Think of A-commerce as **e-commerce without the click**: AI agents endowed with **autonomy**, **planning**, **memory** and **deep tool-integration** that close the loop from discovery to delivery while you sleep.
+
+<Callout type="info" title="Key Definition">
+**Agentic commerce** refers to a new paradigm where autonomous AI agents—not humans—initiate, evaluate, and complete shopping tasks on behalf of users. Unlike traditional e-commerce where the buyer controls every step, agentic commerce leverages advanced AI to handle everything from product discovery and price negotiation to payment and post-purchase support[^10].
+</Callout>
+
+Industry leaders are already recognizing this transformation. Mastercard's Jorn Lambert calls the launch of Agent Pay "our initial steps in redefining commerce in the AI era"[^11]. These aren't just chatbots with payment capabilities—they're sophisticated software entities with goal-directed behavior capable of completing commercial tasks end-to-end, often operating with minimal or even no ongoing human oversight.
+
+The paradigm shift is profound: agentic commerce isn't just about "one-click"—it's about "**no-click**," shifting focus from discrete purchases to persistent purchase intent, managed seamlessly by trusted AI agents. 
+
+This transformation is enabled by emerging protocols that standardize how AI agents communicate and transact:
+
+<Callout type="note" title="Model Context Protocol (MCP)">
+**MCP** is Anthropic's open standard for connecting AI assistants to data sources and tools, acting like "USB for AI integrations." Released in November 2024, it provides a universal protocol for AI systems to access external resources, tools, and prompts[^12].
+</Callout>
+
+<Callout type="note" title="Agent to Agent Protocol (A2A)">
+**A2A** is Google's open protocol enabling AI agents to communicate, negotiate, and coordinate actions across different platforms as autonomous peers. Launched in April 2025 with 50+ technology partners, it's designed to power the "A2A economy" where agents conduct business 24/7[^13].
+</Callout>
+
+<Callout type="note" title="Agent Communication Protocol (IBM's ACP)">
+**IBM's ACP** is an open, REST-based standard enabling AI agents to discover, understand, and collaborate across different frameworks and organizations. Designed to be lightweight and vendor-neutral, it transforms fragmented AI ecosystems into interconnected systems[^14].
+</Callout>
+
+<Callout type="note" title="Agent Commerce Protocol (Virtuals' ACP)">
+**Virtuals' ACP** is a blockchain-based framework for secure, verifiable transactions between autonomous agents. Using smart contracts and a four-phase interaction model, it enables AI agents to operate as composable, on-chain businesses[^15].
+</Callout>
+
+These protocols, combined with evolving regulatory structures, are laying the foundation for a future where AI agents can safely and transparently conduct commerce with minimal human oversight.
+
+As this ecosystem rapidly evolves, a new vocabulary has emerged to describe the various components and capabilities of agentic commerce. Understanding these key terms is essential for anyone looking to navigate this transformative landscape—whether you're a developer building agent systems, a business leader evaluating opportunities, or simply curious about the future of commerce.
+
+<PrettyTable 
+  title="Key Agentic Commerce Terminology" 
+  headers={["Term", "Definition", "Key Sources"]}
 >
-I predict that because of artificial intelligence and its ability to automate certain tasks that in the past have required human intuition, by far the greatest breakthroughs will come by bringing human and artificial intelligence together.
-</Citation>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell">
+      <div class="pretty-table-term-with-icon">
+        <svg class="pretty-table-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <div class="pretty-table-term">Agentic Commerce</div>
+      </div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-definition">AI-powered agents autonomously search, decide, and transact on a user's behalf, spanning all purchase steps</div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-sources">
+        <div><a href="https://www.businesswire.com/news/home/20250430574512/en/The-Future-is-Here-Visa-Announces-New-Era-of-Commerce-Featuring-AI" target="_blank">Visa Intelligent Commerce</a></div>
+        <div><a href="https://www.mastercard.com/news/press/2025/april/mastercard-unveils-agent-pay-pioneering-agentic-payments-technology-to-power-commerce-in-the-age-of-ai/" target="_blank">Mastercard Agent Pay</a></div>
+      </div>
+    </td>
+  </tr>
+  
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell">
+      <div class="pretty-table-term-with-icon">
+        <svg class="pretty-table-icon" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M9.5 2A1.5 1.5 0 008 3.5v1A1.5 1.5 0 009.5 6h5A1.5 1.5 0 0016 4.5v-1A1.5 1.5 0 0014.5 2h-5zM6 7.5A1.5 1.5 0 017.5 6h9A1.5 1.5 0 0118 7.5v11A1.5 1.5 0 0116.5 20h-9A1.5 1.5 0 016 18.5v-11zM10 9a1 1 0 100 2h4a1 1 0 100-2h-4zm0 4a1 1 0 100 2h4a1 1 0 100-2h-4z"/>
+        </svg>
+        <div class="pretty-table-term">Autonomous Shopping Agent</div>
+      </div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-definition">Software entity with goal-directed behavior, able to initiate and complete commercial tasks alone</div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-sources">
+        <div><a href="https://help.openai.com/en/articles/11794368-chatgpt-agent-release-notes" target="_blank">OpenAI Operator Preview</a></div>
+        <div><a href="https://www.aboutamazon.com/news/retail/amazon-shopping-app-buy-for-me-brands" target="_blank">Amazon Buy For Me</a></div>
+      </div>
+    </td>
+  </tr>
+  
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell">
+      <div class="pretty-table-term-with-icon">
+        <svg class="pretty-table-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
+        </svg>
+        <div class="pretty-table-term">A2A Economy</div>
+      </div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-definition">AI agents negotiating, procuring, and reconciling transactions with minimal human input</div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-sources">
+        <div>Industry Reports & Protocol Documentation</div>
+      </div>
+    </td>
+  </tr>
+  
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell">
+      <div class="pretty-table-term-with-icon">
+        <svg class="pretty-table-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+        </svg>
+        <div class="pretty-table-term">Agentic Token</div>
+      </div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-definition">Tokenized payment credential scoped to a specific AI agent for secure, regulated spending</div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-sources">
+        <div><a href="https://www.businesswire.com/news/home/20250430574512/en/The-Future-is-Here-Visa-Announces-New-Era-of-Commerce-Featuring-AI" target="_blank">Visa Tokenization</a></div>
+        <div><a href="https://www.mastercard.com/news/press/2025/april/mastercard-unveils-agent-pay-pioneering-agentic-payments-technology-to-power-commerce-in-the-age-of-ai/" target="_blank">Mastercard Agentic Tokens</a></div>
+      </div>
+    </td>
+  </tr>
+  
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell">
+      <div class="pretty-table-term-with-icon">
+        <svg class="pretty-table-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v4a2 2 0 01-2 2H9a2 2 0 01-2-2v-4m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"/>
+        </svg>
+        <div class="pretty-table-term">Agentic Checkout</div>
+      </div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-definition">Flow where an AI agent manages price tracking, inventory verification, and payment via tokenized credentials</div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-sources">
+        <div><a href="https://techcrunch.com/2025/07/24/googles-new-ai-feature-lets-you-virtually-try-on-clothes/" target="_blank">Google AI Mode</a></div>
+        <div><a href="https://thepaypers.com/payments/news/perplexity-partners-with-paypal-to-support-agentic-commerce" target="_blank">PayPal-Perplexity</a></div>
+      </div>
+    </td>
+  </tr>
+  
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell">
+      <div class="pretty-table-term-with-icon">
+        <svg class="pretty-table-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        <div class="pretty-table-term">Purchase Intent</div>
+      </div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-definition">AI agent's programmatic capability to identify, evaluate, and initiate purchase decisions based on user preferences and contextual signals</div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-sources">
+        <div><a href="https://docs.stripe.com/agents#online-purchasing" target="_blank">Stripe Agent Documentation</a></div>
+      </div>
+    </td>
+  </tr>
+  
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell">
+      <div class="pretty-table-term-with-icon">
+        <svg class="pretty-table-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+        </svg>
+        <div class="pretty-table-term">Order Intent</div>
+      </div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-definition">Stripe's programmatic execution framework enabling AI agents to facilitate variant selection, manage order lifecycle, and execute commerce capabilities end-to-end</div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-sources">
+        <div><a href="https://docs.stripe.com/agents#online-purchasing" target="_blank">Stripe Agent Documentation</a></div>
+      </div>
+    </td>
+  </tr>
+</PrettyTable>
 
-<Citation 
-  type="pullquote"
-  author="Reid Hoffman"
-  source="Masters of Scale Podcast"
-  url="https://mastersofscale.com/"
-  date="2024"
->
-The future of commerce isn't about replacing human decision-making—it's about amplifying human intelligence with AI agents that can act on our behalf at the speed of business.
-</Citation>
-
-<Citation type="reference" source="McKinsey Global Institute Report on AI in Retail">
-Companies implementing AI-driven commerce solutions report 40% higher customer satisfaction rates and 25% improvement in operational efficiency within the first year.
-</Citation>
-
-__TODO__
+Finally, to visualize how these components fit together, consider the following diagram:
+- It illustrates the architecture of agentic commerce, where a user expresses purchase intent through their mobile device, which is processed by an AI agent leveraging four core pillars: autonomy, planning, memory, and tool integration to execute autonomous commerce actions.
+<div class="my-12 flex flex-col items-center">
+  <div class="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg p-6">
+    <CustomIcon name="agentic-commerce-diagram" class="w-full h-auto" />
+  </div>
+  <div class="mt-4 text-center max-w-2xl">
+    <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+      **Figure 1**: *Agentic Commerce Architecture* - A user expresses *purchase intent* through their mobile device, which is processed by an AI agent leveraging four core pillars: **autonomy**, **planning**, **memory**, and **tool integration** to execute autonomous commerce actions. Source: Image made by the author.
+    </p>
+  </div>
+</div>
 
 ## The Rise of Agentic Systems
 __TODO__
@@ -122,6 +284,29 @@ __TODO__
 
 ## Conclusion
 
+<Citation 
+  type="quote" 
+  author="Jeff Bezos" 
+  source="Amazon Annual Shareholder Meeting" 
+  date="2001"
+>
+I predict that because of artificial intelligence and its ability to automate certain tasks that in the past have required human intuition, by far the greatest breakthroughs will come by bringing human and artificial intelligence together.
+</Citation>
+
+<Citation 
+  type="pullquote"
+  author="Reid Hoffman"
+  source="Masters of Scale Podcast"
+  url="https://mastersofscale.com/"
+  date="2024"
+>
+The future of commerce isn't about replacing human decision-making—it's about amplifying human intelligence with AI agents that can act on our behalf at the speed of business.
+</Citation>
+
+<Citation type="reference" source="McKinsey Global Institute Report on AI in Retail">
+Companies implementing AI-driven commerce solutions report 40% higher customer satisfaction rates and 25% improvement in operational efficiency within the first year.
+</Citation>
+
 Wrap up your thoughts...
 
 ---
@@ -143,3 +328,15 @@ Wrap up your thoughts...
 [^8]: Industry analysis on AI agent productivity in retail (2024).
 
 [^9]: Pactum AI negotiation results and cost reduction analysis (2024).
+
+[^10]: Industry consensus definition based on Edgar, Dunn & Company and various sources on autonomous AI agents in commerce (2024).
+
+[^11]: Mastercard. ["Mastercard unveils Agent Pay, pioneering agentic payments technology"](https://www.mastercard.com/news/press/2025/april/mastercard-unveils-agent-pay-pioneering-agentic-payments-technology-to-power-commerce-in-the-age-of-ai/) (April 2025). Quote from Jorn Lambert, Chief Product Officer.
+
+[^12]: Anthropic. ["Introducing the Model Context Protocol"](https://www.anthropic.com/news/model-context-protocol) (November 2024). Open standard for connecting AI assistants to data sources and tools.
+
+[^13]: Google. ["Announcing the Agent2Agent Protocol (A2A)"](https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/) (April 2025). Open protocol for AI agent communication and coordination.
+
+[^14]: IBM. ["Agent Communication Protocol"](https://www.ibm.com/think/topics/agent-communication-protocol) (2024). Open, REST-based standard for AI agent discovery and collaboration across frameworks.
+
+[^15]: Virtuals Protocol. ["Agent Commerce Protocol"](https://whitepaper.virtuals.io/about-virtuals/agent-commerce-protocol) (2024). Blockchain-based framework for autonomous agent transactions.

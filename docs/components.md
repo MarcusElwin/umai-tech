@@ -189,6 +189,67 @@ Creates visually appealing lists with icons, titles, and descriptions for highli
 
 ---
 
+### `PrettyTable.astro`
+
+Creates professional, responsive tables with enhanced styling for displaying structured data like terminology, comparisons, or reference materials.
+
+```astro
+<PrettyTable 
+  title="Key Terminology" 
+  headers={["Term", "Definition", "Sources"]}
+  showIcons={true}
+  enableCopy={true}
+>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell">
+      <div class="pretty-table-term-with-icon">
+        <svg class="pretty-table-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <div class="pretty-table-term">Term Name</div>
+      </div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-definition">Clear definition with **markdown** support</div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-sources">
+        <div><a href="https://example.com" target="_blank">Source Link</a></div>
+      </div>
+    </td>
+  </tr>
+</PrettyTable>
+```
+
+**Props:**
+- `title?: string` - Optional table title with purple accent
+- `headers: string[]` - Array of column header names
+- `responsive?: boolean` - Enable horizontal scrolling on mobile (default: true)
+- `showIcons?: boolean` - Enable icon display for terms (default: true)
+- `enableCopy?: boolean` - Show copy-to-markdown button (default: true)
+
+**Features:**
+- Gradient background with professional styling
+- Responsive design with horizontal scroll on mobile
+- Hover effects on table rows
+- Dark mode support
+- Purple accent theming consistent with site design
+- Structured CSS classes for content organization
+- **Copy to Markdown**: One-click export of table data as properly formatted markdown
+- Smart link extraction preserving URLs in markdown format
+- Visual feedback with success/error states
+
+**CSS Classes:**
+- `.pretty-table-row` - Table row with hover effects
+- `.pretty-table-cell` - Standard cell styling with proper spacing
+- `.pretty-table-term` - Bold styling for key terms/names
+- `.pretty-table-term-with-icon` - Flexbox container for icon + term
+- `.pretty-table-icon` - SVG icon styling with purple theming
+- `.pretty-table-definition` - Regular text for definitions/descriptions
+- `.pretty-table-sources` - Smaller text with link styling for references
+
+---
+
 ### `Citation.astro`
 
 Creates styled citation/quote blocks for academic references and quotations in blog content.
