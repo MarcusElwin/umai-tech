@@ -90,7 +90,36 @@ pnpm build       # Build for production (includes type checking)
 pnpm preview     # Preview production build
 pnpm astro       # Run Astro CLI commands
 pnpm astro check # TypeScript type checking (0 errors, 0 warnings)
+pnpm new-post    # Interactive blog post creation
+pnpm new-post:quick # Quick blog post creation (requires args)
 ```
+
+### Creating Blog Posts
+
+#### Interactive Mode
+```bash
+pnpm new-post
+```
+This will prompt you for:
+- Blog post title
+- Brief description
+- Tags (shows popular tag suggestions)
+- Optional initial content
+
+#### Quick Mode
+```bash
+pnpm new-post:quick "Blog Post Title" "Description" "tag1,tag2,tag3"
+# Example:
+pnpm new-post:quick "My AI Journey" "Exploring the world of AI" "AI,Machine Learning,Python"
+```
+
+Both commands will:
+- Generate a URL-friendly slug from your title
+- Create an MDX file in `src/content/blog/`
+- Create an image directory in `public/images/blog/{slug}/`
+- Add proper frontmatter with author and timestamps
+- Include Callout component import
+- Provide quick reference for adding images and using callouts
 
 ## 🚀 Deployment
 
@@ -102,9 +131,25 @@ This project automatically deploys to Vercel:
 
 ## 🎨 Design System
 
-- **Primary Colors**: Umai Purple (`#8B5CF6`), Dark (`#0a0a0a`), Light (`#f5f5f5`)
-- **Typography**: Inter (primary), JetBrains Mono (code), Noto Sans JP (Japanese)
-- **Components**: Consistent SVG icons, unified card patterns, responsive design
+### Color Palette
+
+| Color | Preview | Hex Code |
+|-------|---------|----------|
+| **Umai Purple** | ![#8B5CF6](https://via.placeholder.com/20/8B5CF6/8B5CF6?text=+) | `#8B5CF6` |
+| **Dark** | ![#0a0a0a](https://via.placeholder.com/20/0a0a0a/0a0a0a?text=+) | `#0a0a0a` |
+| **Light** | ![#f5f5f5](https://via.placeholder.com/20/f5f5f5/f5f5f5?text=+) | `#f5f5f5` |
+
+### Typography
+
+- **Primary**: Inter
+- **Code**: JetBrains Mono  
+- **Japanese**: Noto Sans JP
+
+### Components
+
+- Consistent SVG icons
+- Unified card patterns
+- Responsive design
 
 ## 🤝 Contributing
 
