@@ -135,9 +135,9 @@ This project automatically deploys to Vercel:
 
 | Color | Preview | Hex Code |
 |-------|---------|----------|
-| **Umai Purple** | ![#8B5CF6](https://via.placeholder.com/20/8B5CF6/8B5CF6?text=+) | `#8B5CF6` |
-| **Dark** | ![#0a0a0a](https://via.placeholder.com/20/0a0a0a/0a0a0a?text=+) | `#0a0a0a` |
-| **Light** | ![#f5f5f5](https://via.placeholder.com/20/f5f5f5/f5f5f5?text=+) | `#f5f5f5` |
+| **Umai Purple** | <img src="data:image/svg+xml,%3csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='20' height='20' fill='%238B5CF6'/%3e%3c/svg%3e" alt="Umai Purple" /> | `#8B5CF6` |
+| **Dark** | <img src="data:image/svg+xml,%3csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='20' height='20' fill='%230a0a0a'/%3e%3c/svg%3e" alt="Dark" /> | `#0a0a0a` |
+| **Light** | <img src="data:image/svg+xml,%3csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='20' height='20' fill='%23f5f5f5' stroke='%23ccc'/%3e%3c/svg%3e" alt="Light" /> | `#f5f5f5` |
 
 ### Typography
 
@@ -161,7 +161,7 @@ This project automatically deploys to Vercel:
 
 ## 📄 License
 
-ISC License - see LICENSE file for details.
+MIT License - see LICENSE file for details.
 
 ---
 
