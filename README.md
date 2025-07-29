@@ -133,26 +133,18 @@ This project automatically deploys to Vercel:
 
 ### Color Palette
 
-```css
-/* Primary Colors */
---umai-primary: #0a0a0a
---umai-secondary: #f5f5f5
---umai-accent: #8B5CF6
---umai-accent-dark: #7C3AED
---umai-accent-light: #A78BFA
-
-/* Grayscale */
---umai-gray-50: #fafafa
---umai-gray-100: #f4f4f5
---umai-gray-200: #e4e4e7
---umai-gray-300: #d4d4d8
---umai-gray-400: #a1a1aa
---umai-gray-500: #71717a
---umai-gray-600: #52525b
---umai-gray-700: #3f3f46
---umai-gray-800: #27272a
---umai-gray-900: #18181b
-```
+| Color | Preview | Hex Code | Usage |
+|-------|---------|----------|-------|
+| **Umai Purple** | ![#8B5CF6](https://place-hold.it/20x20/8B5CF6/8B5CF6.png) | `#8B5CF6` | Primary accent, buttons, links |
+| **Umai Purple Dark** | ![#7C3AED](https://place-hold.it/20x20/7C3AED/7C3AED.png) | `#7C3AED` | Hover states, emphasis |
+| **Umai Purple Light** | ![#A78BFA](https://place-hold.it/20x20/A78BFA/A78BFA.png) | `#A78BFA` | Light backgrounds, borders |
+| **Primary Dark** | ![#0a0a0a](https://place-hold.it/20x20/0a0a0a/0a0a0a.png) | `#0a0a0a` | Text, backgrounds |
+| **Secondary Light** | ![#f5f5f5](https://place-hold.it/20x20/f5f5f5/f5f5f5.png) | `#f5f5f5` | Light backgrounds |
+| **Gray 50** | ![#fafafa](https://place-hold.it/20x20/fafafa/fafafa.png) | `#fafafa` | Lightest backgrounds |
+| **Gray 200** | ![#e4e4e7](https://place-hold.it/20x20/e4e4e7/e4e4e7.png) | `#e4e4e7` | Borders, dividers |
+| **Gray 500** | ![#71717a](https://place-hold.it/20x20/71717a/71717a.png) | `#71717a` | Muted text |
+| **Gray 700** | ![#3f3f46](https://place-hold.it/20x20/3f3f46/3f3f46.png) | `#3f3f46` | Dark borders |
+| **Gray 900** | ![#18181b](https://place-hold.it/20x20/18181b/18181b.png) | `#18181b` | Darkest backgrounds |
 
 ### Typography
 
