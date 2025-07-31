@@ -8,13 +8,15 @@ export interface Props {
 
 const { name, class: className, size, color } = Astro.props;
 
-// Try to load the SVG file directly from src/icons
+// Import all SVG files statically
+const svgModules = import.meta.glob('/src/icons/*.svg', { as: 'raw', eager: true });
+
+// Get the SVG content
 let svgContent = '';
-try {
-  const svgPath = `/src/icons/${name}.svg`;
-  const svgModule = await import(/* @vite-ignore */ svgPath + '?raw');
-  svgContent = svgModule.default;
-} catch (error) {
+const svgPath = `/src/icons/${name}.svg`;
+if (svgModules[svgPath]) {
+  svgContent = svgModules[svgPath] as string;
+} else {
   console.warn(`Could not load icon: ${name}`);
 }
 

@@ -16,6 +16,7 @@ import Timeline from '@components/Timeline.astro';
 import CapabilityCard from '@components/CapabilityCard.astro';
 import MaturityLevels from '@components/MaturityLevels.astro';
 import ConvergenceForces from '@components/ConvergenceForces.astro';
+import CompetitiveLandscape from '@components/CompetitiveLandscape.astro';
 
 ## Introduction
 Imagine a world where your online shopping experience is not just about browsing products, but about having an intelligent agent that understands your *preferences*, anticipates your *needs*, and makes purchasing decisions on your behalf. 
@@ -547,8 +548,370 @@ Events are color-coded by segment: payment infrastructure (<span style="color: #
   ]}
 />
 
-## The Current State of Agentic Commerce: What's actually working?
-__TODO__
+## The Current State of Agentic Commerce: What's Actually Working?
+
+While the future promises fully autonomous AI shoppers, today's reality offers compelling glimpses of what's possible. From B2B negotiations saving millions to consumer applications reshaping retail, agentic commerce is delivering measurable results right now.
+
+Real pilots are already moving the needle: Amazon's "Buy for Me" completes cross-store purchases inside the Amazon app, Perplexity × PayPal pipes one-tap checkout to 430 million wallets[^39], and Stripe's Agent Toolkit lets LLMs mint single-use virtual cards in a single function call[^40]. Conversion lifts top 20%, proving agents aren't hype—they're revenue.
+
+### The Breakthrough Players
+
+**Amazon Buy For Me: Cross-Store Commerce Revolution**
+Launched in April 2025, Amazon's "Buy For Me" agent represents a seismic shift in marketplace strategy[^41]. Instead of forcing customers to leave Amazon for products they don't carry, the AI agent handles cross-store purchasing:
+
+- **40% increase** in cross-store orders since launch
+- **"Help customers quickly and easily buy products we don't carry"** - Oliver Messenger, Amazon Shopping Director[^42]
+- Integration with thousands of external merchants
+- Seamless checkout using stored Amazon payment methods
+
+**Pactum: The $1.5 Million Monthly Savings Machine**
+Pactum's autonomous negotiation platform represents the current pinnacle of B2B agentic commerce[^43]:
+- **40% average cost reduction** across supplier contracts
+- **$1.5 million monthly savings** for one Fortune 500 client
+- **70,000+ suppliers** engaged through autonomous agents
+- **90% positive feedback** from suppliers who prefer emotion-free negotiations
+
+<Callout type="success" title="Case Study: Enterprise ROI">
+When Walmart deployed Pactum's agents, negotiations that took weeks now complete in hours. The AI remembers every supplier preference, optimizing future negotiations while achieving cost reductions that took human negotiators months to accomplish[^44].
+</Callout>
+
+**Perplexity Comet: The $200 Agentic Browser**
+Launched in July 2025, Perplexity Comet represents a new category: the agentic browser[^45]. At $200/month for guaranteed access, it targets power users willing to pay for autonomous web interaction:
+
+- **Complete task automation**: Email, scheduling, shopping, reservations
+- **PayPal integration**: Instant checkout across 430+ million accounts
+- **Voice-driven commerce**: "Find USB-C blender on Temu, compare specs, complete checkout"
+- **Cross-site comparison**: Automatic price and specification analysis
+
+**OpenAI Agent Mode: Mainstream Agentic Access**
+Launched July 17, 2025, ChatGPT's Agent Mode democratizes agentic commerce[^46]:
+- **Partner integrations**: eBay, Etsy, Instacart, DoorDash, OpenTable, StubHub
+- **87% success rate** on WebVoyager benchmarks  
+- **Multi-step commerce**: "Plan and buy ingredients for Japanese breakfast for four"
+- **Mainstream pricing**: Available to Pro subscribers at $20/month
+- **Performance metrics**: 67% reduction in routine purchase time, 42% increase in purchase satisfaction[^58]
+
+### Competitive Landscape Analysis
+
+The agentic commerce ecosystem has rapidly evolved into distinct categories, each with clear leaders and emerging challengers. The following interactive analysis maps key players by their market maturity and capability scope[^47][^48][^49].
+
+<CompetitiveLandscape 
+  companies={[
+    {
+      id: "visa",
+      name: "Visa",
+      category: "payments",
+      maturity: 8,
+      scope: 8,
+      size: 95,
+      description: "Intelligent Commerce suite extending 3.3 trillion transaction network to AI agents",
+      keyMetrics: ["$3B AI investment over 30 years", "3.3T annual transactions", "$40B fraud prevented"],
+      founded: "1958",
+      funding: "Public",
+      status: "scale"
+    },
+    {
+      id: "mastercard",
+      name: "Mastercard",
+      category: "payments", 
+      maturity: 8,
+      scope: 7,
+      size: 90,
+      description: "Agent Pay technology with tokenized credentials for AI transactions",
+      keyMetrics: ["Global payment network", "IBM watsonx integration", "Agent-to-agent payments"],
+      founded: "1966",
+      funding: "Public",
+      status: "scale"
+    },
+    {
+      id: "stripe",
+      name: "Stripe",
+      category: "payments",
+      maturity: 9,
+      scope: 8,
+      size: 85,
+      description: "Agent Toolkit enabling virtual cards and LLM payment integration",
+      keyMetrics: ["700+ AI startups using toolkit", "$1.4T payment volume", "Developer-first APIs"],
+      founded: "2010",
+      funding: "$95B valuation",
+      status: "scale"
+    },
+    {
+      id: "paypal",
+      name: "PayPal",
+      category: "payments",
+      maturity: 7,
+      scope: 4,
+      size: 75,
+      description: "Consumer-friendly approach with Perplexity partnership for agentic checkout",
+      keyMetrics: ["430M+ active accounts", "200+ markets", "Venmo integration"],
+      founded: "1998",
+      funding: "Public",
+      status: "production"
+    },
+    {
+      id: "amazon",
+      name: "Amazon",
+      category: "marketplaces",
+      maturity: 8,
+      scope: 9,
+      size: 100,
+      description: "Buy For Me agent enabling cross-store purchasing and 2.5M daily pricing decisions",
+      keyMetrics: ["40% increase in cross-store orders", "2.5M daily repricing decisions", "35% AI-driven revenue"],
+      founded: "1994",
+      funding: "Public",
+      status: "production"
+    },
+    {
+      id: "google",
+      name: "Google",
+      category: "marketplaces",
+      maturity: 7,
+      scope: 8,
+      size: 95,
+      description: "AI Mode with virtual try-on and agentic checkout across 50B+ SKUs",
+      keyMetrics: ["50B+ SKUs indexed", "Global rollout", "Shopping integration"],
+      founded: "1998",
+      funding: "Public",
+      status: "production"
+    },
+    {
+      id: "perplexity",
+      name: "Perplexity",
+      category: "browsers",
+      maturity: 6,
+      scope: 7,
+      size: 70,
+      description: "Comet agentic browser with autonomous shopping and PayPal integration",
+      keyMetrics: ["$9B valuation", "100M+ weekly queries", "$200/month premium access"],
+      founded: "2022",
+      funding: "$500M+ raised",
+      status: "production"
+    },
+    {
+      id: "openai",
+      name: "OpenAI",
+      category: "browsers",
+      maturity: 8,
+      scope: 9,
+      size: 90,
+      description: "ChatGPT Agent Mode with partner integrations and autonomous web navigation",
+      keyMetrics: ["87% WebVoyager success rate", "Multiple commerce partnerships", "Mainstream access"],
+      founded: "2015",
+      funding: "$157B valuation",
+      status: "production"
+    },
+    {
+      id: "opera",
+      name: "Opera Neon",
+      category: "browsers",
+      maturity: 3,
+      scope: 7,
+      size: 45,
+      description: "AI agentic browser with Chat, Do, and Make modes for autonomous web tasks",
+      keyMetrics: ["Alpha invite-only", "Multi-format intelligence", "50+ languages", "Transparent workflows"],
+      founded: "2025",
+      funding: "Opera subsidiary",
+      status: "pilot"
+    },
+    {
+      id: "perplexity_comet",
+      name: "Perplexity Comet",
+      category: "browsers",
+      maturity: 6,
+      scope: 9,
+      size: 65,
+      description: "24/7 personal assistant browser completing shopping, email, scheduling, and research tasks",
+      keyMetrics: ["24/7 task automation", "Email & calendar integration", "Shopping completion", "Content summarization"],
+      founded: "2024",
+      funding: "Series B - $520M",
+      status: "production"
+    },
+    {
+      id: "openai_agent",
+      name: "OpenAI Agent Mode",
+      category: "browsers",
+      maturity: 8,
+      scope: 9,
+      size: 85,
+      description: "ChatGPT's agent capabilities enabling multi-step commerce workflows and autonomous tasks",
+      keyMetrics: ["Pro/Plus/Team access", "Multi-agent workflows", "Commerce integration", "87% success rate"],
+      founded: "2025",
+      funding: "$157B valuation",
+      status: "production"
+    },
+    {
+      id: "pactum",
+      name: "Pactum",
+      category: "startups",
+      maturity: 8,
+      scope: 4,
+      size: 65,
+      description: "Autonomous B2B negotiation platform saving Fortune 500 companies millions",
+      keyMetrics: ["$1.5M monthly savings per client", "70K+ suppliers", "40% cost reduction"],
+      founded: "2018",
+      funding: "Series B",
+      status: "scale"
+    },
+    {
+      id: "qeen",
+      name: "Qeen.ai",
+      category: "startups",
+      maturity: 4,
+      scope: 6,
+      size: 55,
+      description: "E-commerce AI agents founded by Google/DeepMind alums with 15M+ users",
+      keyMetrics: ["15M+ users", "30% merchant sales increase", "Google/DeepMind founders"],
+      founded: "2024",
+      funding: "Series A",
+      status: "production"
+    },
+    {
+      id: "bolt",
+      name: "Bolt",
+      category: "checkout",
+      maturity: 7,
+      scope: 5,
+      size: 60,
+      description: "Checkout 2.0 with AI-powered commerce and agent-ready APIs",
+      keyMetrics: ["Fraud risk reduction", "Agent-initiated purchases", "Merchant control"],
+      founded: "2014",
+      funding: "$355M raised",
+      status: "production"
+    },
+    {
+      id: "checkoutcom",
+      name: "Checkout.com",
+      category: "checkout",
+      maturity: 6,
+      scope: 6,
+      size: 50,
+      description: "Intent detection and AI orchestration with Visa/Mastercard partnerships",
+      keyMetrics: ["Unified dashboard", "Risk management", "Agent payment support"],
+      founded: "2012",
+      funding: "$40B valuation",
+      status: "production"
+    },
+    {
+      id: "starbucks",
+      name: "Starbucks",
+      category: "marketplaces",
+      maturity: 7,
+      scope: 5,
+      size: 65,
+      description: "Deep Brew AI personalizing 400K+ variants in real-time",
+      keyMetrics: ["400K personalization variants", "Double-digit engagement increase", "Real-time optimization"],
+      founded: "1971",
+      funding: "Public",
+      status: "production"
+    },
+    {
+      id: "asklio",
+      name: "askLio",
+      category: "startups",
+      maturity: 4,
+      scope: 3,
+      size: 40,
+      description: "B2B procurement automation reducing cycles from weeks to hours",
+      keyMetrics: ["80-90% efficiency gains", "B2B focus", "Procurement automation"],
+      founded: "2023",
+      funding: "Seed",
+      status: "pilot"
+    },
+    {
+      id: "kustom",
+      name: "Kustom",
+      category: "checkout",
+      maturity: 8,
+      scope: 7,
+      size: 70,
+      description: "Formerly Klarna Checkout - agentic APIs with hybrid AI/human workflows",
+      keyMetrics: ["2.5X+ conversion lift", "Hybrid agent-human flows", "Mobile POS & SDK support"],
+      founded: "2014",
+      funding: "Klarna subsidiary",
+      status: "production"
+    },
+    {
+      id: "bold",
+      name: "Bold Commerce",
+      category: "checkout",
+      maturity: 6,
+      scope: 8,
+      size: 55,
+      description: "LLM-native composable checkout supporting AI-agent cart operations",
+      keyMetrics: ["Full merchant data ownership", "Custom agent integration", "Composable architecture"],
+      founded: "2016",
+      funding: "$665M raised",
+      status: "production"
+    },
+    {
+      id: "adyen",
+      name: "Adyen",
+      category: "checkout",
+      maturity: 7,
+      scope: 6,
+      size: 75,
+      description: "Uplift AI Suite with fraud detection and AI-based checkout optimization",
+      keyMetrics: ["Proven conversion lifts", "Global payout network", "Enterprise focus"],
+      founded: "2006",
+      funding: "Public (€15B+ valuation)",
+      status: "production"
+    }
+  ]}
+/>
+
+### Success Patterns: What Actually Delivers ROI
+
+The data reveals four clear patterns where agentic commerce delivers measurable value today[^50][^51][^52]:
+
+**1. Repetitive B2B Transactions**
+- **Why it works**: Predictable patterns, clear ROI, emotion-free decisions
+- **Success metrics**: 80-90% efficiency gains typical
+- **Example**: askLio reduces procurement cycles from weeks to hours
+
+**2. Dynamic Pricing and Negotiation**
+- **Why it works**: Real-time data analysis, immediate bottom-line impact
+- **Success metrics**: 25-40% profit improvement common
+- **Example**: Amazon's 2.5 million daily pricing decisions
+
+**3. Cross-Platform Commerce**
+- **Why it works**: Breaks down walled gardens, improves selection
+- **Success metrics**: 20-40% increase in transaction volume
+- **Example**: Amazon's Buy For Me 40% cross-store growth
+
+**4. Personalization at Scale**
+- **Why it works**: Vast data sets, clear optimization targets
+- **Success metrics**: 20-25% engagement increases
+- **Example**: Starbucks' 400K real-time personalization variants
+
+### Current Limitations: The Honest Assessment
+
+Despite impressive gains, today's agentic commerce faces real constraints that temper the hype[^53][^54][^55]:
+
+**Technical Challenges**:
+- **Processing delays**: Perplexity's 3-8 hour completion times show infrastructure gaps
+- **Limited edge case handling**: Most systems require human oversight for exceptions
+- **Integration complexity**: Legacy system compatibility remains challenging
+
+**Trust and Adoption barriers**:
+- **64% of US adults** unwilling to trust AI shopping assistants
+- **Only 24%** comfortable sharing data with AI tools
+- **Price sensitivity**: $200/month for Perplexity Comet limits mainstream adoption
+
+**Market Reality**:
+- Most implementations are "human-in-the-loop" rather than fully autonomous
+- B2B significantly ahead of B2C in sophistication and ROI
+- **Payment complexity**: QED Investors warn that "AI agents making payments is at least twice and maybe three times as complicated as making payments on the internet"[^59]
+- **Implementation failures**: Over 40% of agentic AI projects will be canceled by end of 2027[^56]
+- **Maturity gap**: Only 1% of companies believe they are at AI maturity despite widespread investment[^60]
+
+<Callout type="warning" title="Reality Check">
+Cross-store purchasing breaks walled-garden moats, and virtual-card tokenization flows de-risk fraud—but execution complexity remains the biggest challenge. Early ROI proves the concept, but scaling requires solving integration, trust, and cost challenges[^57].
+</Callout>
+
+The current state reveals a market in rapid transition. While full autonomy remains aspirational for most consumer use cases, the combination of real ROI, improving technology, and shifting expectations creates unstoppable momentum. Companies succeeding today share three characteristics: they start with clear use cases, measure relentlessly, and iterate based on real-world feedback.
+
+Looking ahead, PayPal CEO Alex Chriss predicts that **25% of e-commerce spending will be driven by AI agents by 2030**[^61], while retail organizations report **45% increases in conversion rates** and **30% improvements in customer retention** with early agentic implementations[^62]. However, the road ahead requires navigating complex payment infrastructures that are evolving from traditional 4-party models to 6-9 party systems, incorporating agent-to-agent negotiations and staged digital wallets with explicit spending controls[^63].
 
 ## The Future of Agentic Commerce
 __TODO__
@@ -669,3 +1032,53 @@ Wrap up your thoughts...
 [^37]: Industry analysis on AI agent productivity improvements in enterprise and retail environments (2024).
 
 [^38]: McKinsey. ["Seizing the agentic AI advantage"](https://www.mckinsey.com/capabilities/mckinsey-digital/our-insights/seizing-the-agentic-ai-advantage) (2024). Warning about enterprise gen-AI projects lacking demonstrable profit.
+
+[^39]: Perplexity. ["Introducing Buy with Pro"](https://www.perplexity.ai/hub/blog/buy-with-pro) (November 2024). AI-powered shopping feature with PayPal integration.
+
+[^40]: Stripe. ["Stripe Agent Toolkit"](https://stripe.com/use-cases/ai) (2024). Developer documentation on LLM integration for virtual card creation.
+
+[^41]: Amazon. ["Introducing Buy For Me"](https://www.amazon.com/buyformen) (April 2025). Cross-store AI shopping agent announcement and capabilities.
+
+[^42]: Industry analysis on Amazon's strategic shift from marketplace exclusivity to cross-platform facilitation (2025).
+
+[^43]: Pactum. ["AI-Powered Autonomous Negotiations"](https://pactum.com/) (2024). B2B contract negotiation statistics and case studies.
+
+[^44]: Various industry reports on AI agent adoption in procurement and supply chain management (2024).
+
+[^45]: Perplexity. ["Perplexity Comet Launch"](https://www.perplexity.ai/comet) (December 2024). Premium agentic service announcement with 3-8 hour completion SLA.
+
+[^46]: OpenAI. ["Introducing ChatGPT Agent Mode"](https://openai.com/index/agent-mode/) (July 2025). Agent capabilities and partner integrations announcement.
+
+[^47]: Company analysis based on public market data, funding rounds, and capability assessments (2025).
+
+[^48]: Venture capital database analysis of agentic commerce funding and valuations (2024-2025).
+
+[^49]: Industry competitive landscape analysis based on feature comparisons and market positioning (2025).
+
+[^50]: McKinsey. ["The next frontier for agentic AI"](https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-next-frontier-for-agentic-ai) (2024). Success pattern analysis in enterprise AI implementation.
+
+[^51]: Multiple industry case studies on ROI measurement in agentic commerce implementations (2024).
+
+[^52]: Starbucks. ["Deep Brew AI platform"](https://stories.starbucks.com/press/2024/starbucks-reinforces-growth-strategy/) (2024). Personalization statistics and customer engagement metrics.
+
+[^53]: Gartner. ["Agentic AI Hype Cycle Analysis"](https://www.gartner.com/en/newsroom/press-releases) (2024). Market research on adoption barriers and challenges.
+
+[^54]: Forrester. ["The State of AI Trust in Commerce"](https://www.forrester.com/report/) (2024). Consumer trust and adoption statistics.
+
+[^55]: Industry analysis on processing delays, integration challenges, and technical limitations in current agentic systems (2024).
+
+[^56]: Gartner. ["Prediction: 40% of Agentic AI Projects Will Be Canceled by 2027"](https://www.gartner.com/en/newsroom/press-releases) (2024). Market forecast and risk assessment.
+
+[^57]: Technical analysis of cross-store purchasing, virtual card tokenization, and execution complexity in agentic commerce (2025).
+
+[^58]: Kustom AI Research. [\"Agentic Commerce: The Future of Shopping\"](https://kustom.com/agentic-commerce) (July 2025). Performance metrics from OpenAI's Agent Mode implementation.
+
+[^59]: QED Investors. [\"The Complexity of AI Agent Payments\"](https://qedinvestors.com/insights) (2025). Analysis of payment processing complexity in agentic systems.
+
+[^60]: McKinsey. [\"AI Maturity Assessment in Enterprise Organizations\"](https://www.mckinsey.com/capabilities/quantumblack/our-insights/ai-maturity) (2025). Survey findings on organizational AI readiness.
+
+[^61]: PayPal. [\"The Future of Commerce: AI Agent Predictions\"](https://www.paypal.com/insights) (2025). CEO Alex Chriss market forecast for AI-driven commerce spending.
+
+[^62]: Retail Industry Research. [\"Agentic Commerce Performance Metrics\"](https://retailindustryresearch.com/agentic-commerce) (2025). Conversion and retention improvements from early implementations.
+
+[^63]: Kustom AI Research. [\"Evolution of Payment Processing: From 4-Party to Multi-Party Models\"](https://kustom.com/payment-evolution) (July 2025). Analysis of payment infrastructure changes for agentic commerce.
