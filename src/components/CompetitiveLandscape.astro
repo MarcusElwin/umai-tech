@@ -74,28 +74,28 @@ const { companies } = Astro.props;
 
       <!-- Collapsible Quadrant Definitions -->
       <div id="quadrant-definitions" class="mb-2 hidden">
-        <div class="max-w-3xl mx-auto grid grid-cols-2 gap-2 text-xs">
-          <div class="flex items-center space-x-2">
-            <div class="w-2.5 h-2.5 bg-green-500/20 border border-green-300 rounded"></div>
-            <span class="text-gray-600 dark:text-gray-400"><strong>Market Leaders</strong>: High maturity + broad scope</span>
-          </div>
-          <div class="flex items-center space-x-2">
-            <div class="w-2.5 h-2.5 bg-blue-500/20 border border-blue-300 rounded"></div>
-            <span class="text-gray-600 dark:text-gray-400"><strong>Specialists</strong>: High maturity + focused scope</span>
-          </div>
+        <div class="max-w-3xl mx-auto grid grid-cols-2 gap-2 text-xs justify-items-center">
           <div class="flex items-center space-x-2">
             <div class="w-2.5 h-2.5 bg-purple-500/20 border border-purple-300 rounded"></div>
             <span class="text-gray-600 dark:text-gray-400"><strong>Ambitious Challengers</strong>: Emerging + broad scope</span>
           </div>
           <div class="flex items-center space-x-2">
+            <div class="w-2.5 h-2.5 bg-green-500/20 border border-green-300 rounded"></div>
+            <span class="text-gray-600 dark:text-gray-400"><strong>Market Leaders</strong>: High maturity + broad scope</span>
+          </div>
+          <div class="flex items-center space-x-2">
             <div class="w-2.5 h-2.5 bg-orange-500/20 border border-orange-300 rounded"></div>
             <span class="text-gray-600 dark:text-gray-400"><strong>Niche Players</strong>: Emerging + focused scope</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <div class="w-2.5 h-2.5 bg-blue-500/20 border border-blue-300 rounded"></div>
+            <span class="text-gray-600 dark:text-gray-400"><strong>Specialists</strong>: High maturity + focused scope</span>
           </div>
         </div>
       </div>
 
       <!-- Category Legend -->
-      <div class="flex flex-wrap gap-4 justify-center text-xs mt-3">
+      <div class="flex flex-wrap gap-4 justify-center text-xs mt-5">
         <div class="flex items-center space-x-1.5">
           <div class="w-2.5 h-2.5 rounded-full bg-purple-500"></div>
           <span class="font-medium text-gray-700 dark:text-gray-300">Payment Giants</span>
@@ -307,10 +307,10 @@ const { companies } = Astro.props;
 
     // Add subtle matrix cell backgrounds
     const matrixCells = [
-      { x: 0, y: 0, width: width/2, height: height/2, color: '#10B981', opacity: 0.05, title: 'Market Leaders', titleColor: '#059669' }, // Top-left: High Maturity, High Scope
-      { x: width/2, y: 0, width: width/2, height: height/2, color: '#3B82F6', opacity: 0.05, title: 'Specialists', titleColor: '#2563EB' }, // Top-right: High Maturity, Low Scope
-      { x: 0, y: height/2, width: width/2, height: height/2, color: '#8B5CF6', opacity: 0.05, title: 'Ambitious Challengers', titleColor: '#7C3AED' }, // Bottom-left: Low Maturity, High Scope
-      { x: width/2, y: height/2, width: width/2, height: height/2, color: '#F59E0B', opacity: 0.05, title: 'Niche Players', titleColor: '#D97706' } // Bottom-right: Low Maturity, Low Scope
+      { x: 0, y: 0, width: width/2, height: height/2, color: '#8B5CF6', opacity: 0.05, title: 'Ambitious Challengers', titleColor: '#7C3AED' }, // Top-left: Low Maturity, High Scope
+      { x: width/2, y: 0, width: width/2, height: height/2, color: '#10B981', opacity: 0.05, title: 'Market Leaders', titleColor: '#059669' }, // Top-right: High Maturity, High Scope
+      { x: 0, y: height/2, width: width/2, height: height/2, color: '#F59E0B', opacity: 0.05, title: 'Niche Players', titleColor: '#D97706' }, // Bottom-left: Low Maturity, Low Scope
+      { x: width/2, y: height/2, width: width/2, height: height/2, color: '#3B82F6', opacity: 0.05, title: 'Specialists', titleColor: '#2563EB' } // Bottom-right: High Maturity, Low Scope
     ];
 
     g.selectAll('.matrix-cell')
