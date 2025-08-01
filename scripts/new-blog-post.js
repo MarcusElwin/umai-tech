@@ -155,21 +155,41 @@ async function createBlogPost() {
     }
     
     // Get tags
-    console.log(`\n${colors.yellow}Popular tags:${colors.reset}`);
+    console.log(`\n${colors.yellow}Popular tags (you can use these or add your own):${colors.reset}`);
     suggestedTags.slice(0, 12).forEach((tag, index) => {
       console.log(`  ${index + 1}. ${tag}`);
     });
     
+    console.log(`\n${colors.blue}Enter tags by number (e.g., 1,3,5) or type custom tags${colors.reset}`);
+    console.log(`${colors.blue}You can mix both: 1,3,Custom Tag,Another Tag${colors.reset}`);
     const tagsInput = await prompt(`\n${colors.yellow}Tags (comma-separated):${colors.reset} `);
-    const tags = tagsInput
-      .split(',')
-      .map(tag => tag.trim())
-      .filter(tag => tag.length > 0);
     
-    if (tags.length === 0) {
+    // Process tags - handle both numbers and custom tags
+    const tagParts = tagsInput.split(',').map(part => part.trim());
+    const tags = [];
+    
+    for (const part of tagParts) {
+      if (!part) continue;
+      
+      // Check if it's a number (tag selection)
+      const tagNumber = parseInt(part);
+      if (!isNaN(tagNumber) && tagNumber >= 1 && tagNumber <= suggestedTags.length) {
+        tags.push(suggestedTags[tagNumber - 1]);
+      } else {
+        // It's a custom tag
+        tags.push(part);
+      }
+    }
+    
+    // Remove duplicates
+    const uniqueTags = [...new Set(tags)];
+    
+    if (uniqueTags.length === 0) {
       console.log(`${colors.red}Error: At least one tag is required${colors.reset}`);
       process.exit(1);
     }
+    
+    console.log(`${colors.green}Selected tags:${colors.reset} ${uniqueTags.join(', ')}`)
     
     // Ask if they want to add initial content
     const addContent = await prompt(`\n${colors.yellow}Add initial content? (y/N):${colors.reset} `);
@@ -192,7 +212,7 @@ async function createBlogPost() {
     const blogPostData = {
       title,
       description,
-      tags,
+      tags: uniqueTags,
       content
     };
     

@@ -146,6 +146,156 @@ Renders Mermaid diagrams within blog content.
 
 ---
 
+### `PrettyList.astro`
+
+Creates visually appealing lists with icons, titles, and descriptions for highlighting key information.
+
+```astro
+<PrettyList title="Key Features">
+  <div class="pretty-list-item">
+    <div class="pretty-list-icon">
+      <svg fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>
+    </div>
+    <div class="pretty-list-content">
+      <div class="pretty-list-title">Feature Title</div>
+      <div class="pretty-list-description">
+        Detailed description of the feature with **markdown** support.
+      </div>
+    </div>
+  </div>
+</PrettyList>
+```
+
+**Props:**
+- `title?: string` - Optional list title with purple accent
+- `type?: 'default' | 'numbered' | 'featured'` - List styling type (default: 'default')
+
+**Features:**
+- Gradient background container with rounded corners
+- Individual list items with hover effects
+- SVG icon support with circular backgrounds
+- Dark mode support
+- Responsive design
+- Markdown support in descriptions
+
+**CSS Classes:**
+- `.pretty-list-item` - Individual list item container
+- `.pretty-list-icon` - Icon container with gradient background
+- `.pretty-list-content` - Content wrapper
+- `.pretty-list-title` - Item title styling
+- `.pretty-list-description` - Item description styling
+
+---
+
+### `PrettyTable.astro`
+
+Creates professional, responsive tables with enhanced styling for displaying structured data like terminology, comparisons, or reference materials.
+
+```astro
+<PrettyTable 
+  title="Key Terminology" 
+  headers={["Term", "Definition", "Sources"]}
+  showIcons={true}
+  enableCopy={true}
+>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell">
+      <div class="pretty-table-term-with-icon">
+        <svg class="pretty-table-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <div class="pretty-table-term">Term Name</div>
+      </div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-definition">Clear definition with **markdown** support</div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-sources">
+        <div><a href="https://example.com" target="_blank">Source Link</a></div>
+      </div>
+    </td>
+  </tr>
+</PrettyTable>
+```
+
+**Props:**
+- `title?: string` - Optional table title with purple accent
+- `headers: string[]` - Array of column header names
+- `responsive?: boolean` - Enable horizontal scrolling on mobile (default: true)
+- `showIcons?: boolean` - Enable icon display for terms (default: true)
+- `enableCopy?: boolean` - Show copy-to-markdown button (default: true)
+
+**Features:**
+- Gradient background with professional styling
+- Responsive design with horizontal scroll on mobile
+- Hover effects on table rows
+- Dark mode support
+- Purple accent theming consistent with site design
+- Structured CSS classes for content organization
+- **Copy to Markdown**: One-click export of table data as properly formatted markdown
+- Smart link extraction preserving URLs in markdown format
+- Visual feedback with success/error states
+
+**CSS Classes:**
+- `.pretty-table-row` - Table row with hover effects
+- `.pretty-table-cell` - Standard cell styling with proper spacing
+- `.pretty-table-term` - Bold styling for key terms/names
+- `.pretty-table-term-with-icon` - Flexbox container for icon + term
+- `.pretty-table-icon` - SVG icon styling with purple theming
+- `.pretty-table-definition` - Regular text for definitions/descriptions
+- `.pretty-table-sources` - Smaller text with link styling for references
+
+---
+
+### `Citation.astro`
+
+Creates styled citation/quote blocks for academic references and quotations in blog content.
+
+```astro
+<Citation 
+  type="quote" 
+  author="Jeff Bezos" 
+  source="Amazon Annual Shareholder Meeting" 
+  date="2001"
+>
+I predict that because of artificial intelligence and its ability to automate certain tasks that in the past have required human intuition, by far the greatest breakthroughs will come by bringing human and artificial intelligence together.
+</Citation>
+
+<Citation 
+  type="pullquote"
+  author="Reid Hoffman"
+  source="Masters of Scale Podcast"
+  url="https://mastersofscale.com/"
+  date="2024"
+>
+The future of commerce isn't about replacing human decision-making—it's about amplifying human intelligence with AI agents that can act on our behalf at the speed of business.
+</Citation>
+
+<Citation type="reference" source="McKinsey Global Institute Report on AI in Retail">
+Companies implementing AI-driven commerce solutions report 40% higher customer satisfaction rates and 25% improvement in operational efficiency within the first year.
+</Citation>
+```
+
+**Props:**
+- `type?: 'quote' | 'reference' | 'pullquote'` - Citation style (default: 'quote')
+- `author?: string` - Quote author or researcher name
+- `source?: string` - Publication or source name
+- `url?: string` - Link to original source (makes source clickable)
+- `date?: string` - Publication or quote date
+
+**Features:**
+- Three distinct citation types with unique styling
+- Optional clickable source links
+- Proper academic citation formatting
+- Dark mode support with accent colors
+- Hover effects and smooth transitions
+- Accessible markup with proper semantic elements
+
+---
+
 ### `ReadingTime.astro`
 
 Calculates and displays estimated reading time for content.

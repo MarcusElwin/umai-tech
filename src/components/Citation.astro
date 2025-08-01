@@ -1,0 +1,151 @@
+---
+export interface Props {
+  author?: string;
+  source?: string;
+  url?: string;
+  date?: string;
+  type?: 'quote' | 'reference' | 'pullquote';
+}
+
+const { author, source, url, date, type = 'quote' } = Astro.props;
+
+const typeStyles = {
+  quote: {
+    container: 'bg-umai-gray-50/80 border-umai-gray-200/60 dark:bg-umai-gray-900/30 dark:border-umai-gray-700/40',
+    text: 'text-umai-gray-800 dark:text-umai-gray-200',
+    citation: 'text-umai-gray-600 dark:text-umai-gray-400',
+    accent: 'bg-umai-accent',
+    icon: 'text-umai-accent dark:text-umai-accent-light'
+  },
+  reference: {
+    container: 'bg-blue-50/80 border-blue-200/60 dark:bg-blue-950/30 dark:border-blue-800/40',
+    text: 'text-blue-800 dark:text-blue-200',
+    citation: 'text-blue-600 dark:text-blue-400',
+    accent: 'bg-blue-500',
+    icon: 'text-blue-600 dark:text-blue-400'
+  },
+  pullquote: {
+    container: 'bg-umai-accent/5 border-umai-accent/20 dark:bg-umai-accent/10 dark:border-umai-accent/30',
+    text: 'text-umai-primary dark:text-umai-secondary',
+    citation: 'text-umai-accent dark:text-umai-accent-light',
+    accent: 'bg-umai-accent',
+    icon: 'text-umai-accent dark:text-umai-accent-light'
+  }
+};
+
+const quoteIcon = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
+</svg>`;
+
+const referenceIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+  <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 01-1.447.894L10 15.618l-4.553 1.276A1 1 0 014 16V4zm4.553 8.894L10 12.382l1.447.512A1 1 0 0013 12V6a1 1 0 10-2 0v4.382l-.553-.276a1 1 0 00-.894 0L9 10.618V6a1 1 0 10-2 0v6a1 1 0 001.553.894z" clip-rule="evenodd" />
+</svg>`;
+
+const icons = {
+  quote: quoteIcon,
+  reference: referenceIcon,
+  pullquote: quoteIcon
+};
+
+const styles = typeStyles[type];
+---
+
+<div class={`citation relative border rounded-xl p-6 my-6 ${styles.container} backdrop-blur-sm`}>
+  <!-- Accent line -->
+  <div class={`absolute left-0 top-0 bottom-0 w-1 rounded-l-xl ${styles.accent}`}></div>
+  
+  <div class="flex gap-4">
+    <div class={`flex-shrink-0 ${styles.icon} mt-1`}>
+      <Fragment set:html={icons[type]} />
+    </div>
+    <div class="flex-1 min-w-0">
+      <blockquote class={`text-lg leading-relaxed ${styles.text} mb-4 font-medium italic`}>
+        <div class="prose prose-lg max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+          <slot />
+        </div>
+      </blockquote>
+      
+      {(author || source || date) && (
+        <cite class={`not-italic text-sm ${styles.citation} block`}>
+          {author && (
+            <span class="font-medium">— {author}</span>
+          )}
+          {source && (
+            <>
+              {author && <span class="mx-2">•</span>}
+              {url ? (
+                <a 
+                  href={url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="underline hover:opacity-80 transition-opacity"
+                >
+                  {source}
+                </a>
+              ) : (
+                <span class="italic">{source}</span>
+              )}
+            </>
+          )}
+          {date && (
+            <>
+              {(author || source) && <span class="mx-2">•</span>}
+              <time>{date}</time>
+            </>
+          )}
+        </cite>
+      )}
+    </div>
+  </div>
+</div>
+
+<style>
+  .citation {
+    transition: all 0.2s ease;
+  }
+  
+  .citation:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .citation blockquote {
+    position: relative;
+  }
+  
+  .citation :global(p) {
+    @apply mb-3 last:mb-0;
+  }
+  
+  .citation :global(strong) {
+    @apply font-semibold;
+  }
+  
+  .citation :global(em) {
+    @apply italic;
+  }
+  
+  .citation :global(code) {
+    @apply text-sm px-2 py-1 rounded font-mono;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .citation :global(a:not(cite a)) {
+    @apply underline;
+    color: inherit;
+    opacity: 0.8;
+  }
+  
+  .citation :global(a:not(cite a):hover) {
+    opacity: 1;
+  }
+  
+  /* Ensure proper spacing for nested elements */
+  .citation :global(.prose > *:first-child) {
+    margin-top: 0 !important;
+  }
+  
+  .citation :global(.prose > *:last-child) {
+    margin-bottom: 0 !important;
+  }
+</style>
