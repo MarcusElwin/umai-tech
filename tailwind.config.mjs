@@ -8,6 +8,7 @@ export default {
         'umai-secondary': '#f5f5f5',
         'umai-accent': '#8B5CF6',
         'umai-accent-dark': '#7C3AED',
+        'umai-accent-darker': '#6D28D9',
         'umai-accent-light': '#A78BFA',
         'umai-gray': {
           50: '#FAFAFA',

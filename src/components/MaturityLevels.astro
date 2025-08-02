@@ -1,0 +1,256 @@
+---
+export interface Props {
+  levels: Array<{
+    level: number;
+    title: string;
+    description: string;
+    example: string;
+    adoption: string;
+    adoptionFootnote?: string;
+    adoptionStatus: 'widespread' | 'growing' | 'early' | 'limited' | 'emerging';
+  }>;
+}
+
+const { levels } = Astro.props;
+
+function getAdoptionColor(status: string) {
+  const colors = {
+    widespread: 'bg-green-500',
+    growing: 'bg-blue-500', 
+    early: 'bg-yellow-500',
+    limited: 'bg-orange-500',
+    emerging: 'bg-purple-500'
+  };
+  return colors[status as keyof typeof colors] || colors.emerging;
+}
+
+function getAdoptionLabel(status: string) {
+  const labels = {
+    widespread: 'Widespread',
+    growing: 'Growing Rapidly',
+    early: 'Early Mainstream', 
+    limited: 'Limited but Growing',
+    emerging: 'Emerging'
+  };
+  return labels[status as keyof typeof labels] || 'Emerging';
+}
+
+function getAdoptionGlow(status: string) {
+  const glows = {
+    widespread: 'shadow-green-500/20',
+    growing: 'shadow-blue-500/20', 
+    early: 'shadow-yellow-500/20',
+    limited: 'shadow-orange-500/20',
+    emerging: 'shadow-purple-500/20'
+  };
+  return glows[status as keyof typeof glows] || glows.emerging;
+}
+
+function getLevelIcon(level: number) {
+  const icons = {
+    1: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>`, // Search icon for Basic Research
+    2: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+    </svg>`, // Lightbulb for Discovery
+    3: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>`, // Check circle for Approval
+    4: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+    </svg>`, // Refresh for Autonomous Parameters
+    5: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>` // Lightning for Full Autonomy
+  };
+  return icons[level as keyof typeof icons] || icons[1];
+}
+
+function getAdoptionTooltip(status: string) {
+  const tooltips = {
+    widespread: 'Available on most major platforms and widely used by consumers',
+    growing: 'Rapidly expanding across platforms with increasing user adoption',
+    early: 'Available on select platforms with growing mainstream acceptance',
+    limited: 'Available but with constraints; growing within specific use cases',
+    emerging: 'Early implementations, primarily in specialized or B2B contexts'
+  };
+  return tooltips[status as keyof typeof tooltips] || tooltips.emerging;
+}
+---
+
+<div class="my-12">
+  <!-- Header with Legend -->
+  <div class="bg-gradient-to-r from-umai-gray-50 to-white dark:from-umai-gray-800 dark:to-umai-gray-700 rounded-2xl border border-umai-gray-200 dark:border-umai-gray-600 p-5 mb-6">
+    <div class="flex items-start justify-between gap-4">
+      <div class="flex-1">
+        <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">Agentic Commerce Maturity Framework</h4>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Track the evolution from basic AI assistance to full autonomous commerce.</p>
+        
+        <!-- Collapse Toggle -->
+        <button 
+          id="maturity-toggle" 
+          class="flex items-center space-x-2 text-sm text-umai-accent hover:text-umai-accent/80 transition-colors focus:outline-none"
+          aria-expanded="true"
+          aria-controls="maturity-content"
+        >
+          <span id="toggle-text">Hide Details</span>
+          <svg id="toggle-icon" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Legend -->
+      <div class="flex flex-wrap gap-3 shrink-0">
+        <div class="flex flex-col items-center space-y-1 group relative">
+          <span class="text-xs text-gray-600 dark:text-gray-400 font-medium">Widespread</span>
+          <div class="w-2 h-2 rounded-full bg-green-500"></div>
+          <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+            Available on most major platforms and widely used by consumers
+            <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-gray-100"></div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center space-y-1 group relative">
+          <span class="text-xs text-gray-600 dark:text-gray-400 font-medium">Growing</span>
+          <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+          <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+            Rapidly expanding across platforms with increasing user adoption
+            <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-gray-100"></div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center space-y-1 group relative">
+          <span class="text-xs text-gray-600 dark:text-gray-400 font-medium">Early</span>
+          <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+          <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+            Available on select platforms with growing mainstream acceptance
+            <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-gray-100"></div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center space-y-1 group relative">
+          <span class="text-xs text-gray-600 dark:text-gray-400 font-medium">Limited</span>
+          <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+          <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+            Available but with constraints; growing within specific use cases
+            <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-gray-100"></div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center space-y-1 group relative">
+          <span class="text-xs text-gray-600 dark:text-gray-400 font-medium">Emerging</span>
+          <div class="w-2 h-2 rounded-full bg-purple-500"></div>
+          <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+            Early implementations, primarily in specialized or B2B contexts
+            <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-gray-100"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Collapsible Content -->
+  <div id="maturity-content" class="transition-all duration-300 ease-in-out overflow-hidden">
+    <div class="relative">
+      <!-- Progress line -->
+      <div class="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-umai-accent/30 via-umai-accent/60 to-umai-accent/30"></div>
+      
+      <!-- Levels -->
+      <div class="space-y-6">
+        {levels.map((level) => (
+          <div class="relative flex items-start space-x-4 group">
+            <!-- Level indicator -->
+            <div class="flex-shrink-0 relative z-10">
+              <div class={`w-12 h-12 rounded-xl bg-gradient-to-br from-umai-accent to-umai-accent/80 flex items-center justify-center shadow-lg ${getAdoptionGlow(level.adoptionStatus)} group-hover:shadow-xl transition-all duration-300`}>
+                <span class="text-white font-bold text-sm">{level.level}</span>
+              </div>
+              <!-- Status indicator -->
+              <div class={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${getAdoptionColor(level.adoptionStatus)} border-2 border-white dark:border-umai-gray-800`}></div>
+            </div>
+            
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+              <div class="bg-white dark:bg-umai-gray-800 rounded-xl border border-umai-gray-200 dark:border-umai-gray-700 p-5 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group-hover:border-umai-accent/30">
+                <!-- Header -->
+                <div class="flex items-start justify-between mb-3">
+                  <div class="flex-1">
+                    <div class="flex items-center space-x-3 mb-1">
+                      <div class="text-umai-accent" set:html={getLevelIcon(level.level)} />
+                      <h5 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        {level.title}
+                      </h5>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                      {level.description}
+                    </p>
+                  </div>
+                  <div class="flex-shrink-0 ml-4 group relative">
+                    <span class={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white ${getAdoptionColor(level.adoptionStatus)} cursor-help`}>
+                      {getAdoptionLabel(level.adoptionStatus)}
+                    </span>
+                    <div class="absolute top-full right-0 mt-2 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                      {getAdoptionTooltip(level.adoptionStatus)}
+                      <div class="absolute bottom-full right-4 border-4 border-transparent border-b-gray-900 dark:border-b-gray-100"></div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Example -->
+                <div class="bg-gradient-to-r from-umai-gray-50 to-gray-50/50 dark:from-umai-gray-700/50 dark:to-umai-gray-700/30 rounded-lg p-4 mb-3">
+                  <p class="text-sm text-gray-700 dark:text-gray-300">
+                    <span class="font-medium text-umai-accent">Example:</span> {level.example}
+                  </p>
+                </div>
+                
+                <!-- Current adoption -->
+                <div class="text-sm text-gray-600 dark:text-gray-400">
+                  <span class="font-medium">Current adoption:</span> {level.adoption}{level.adoptionFootnote && <sup><a href={`#user-content-fn-${level.adoptionFootnote}`} class="text-umai-accent font-medium hover:text-umai-accent/80 transition-colors" data-footnote-ref aria-describedby="footnote-label">{level.adoptionFootnote}</a></sup>}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initMaturityLevels() {
+    const toggle = document.getElementById('maturity-toggle');
+    const content = document.getElementById('maturity-content');
+    const icon = document.getElementById('toggle-icon');
+    const text = document.getElementById('toggle-text');
+    
+    if (!toggle || !content || !icon || !text) return;
+    
+    let isExpanded = true;
+    
+    toggle.addEventListener('click', () => {
+      isExpanded = !isExpanded;
+      
+      if (isExpanded) {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        icon.style.transform = 'rotate(0deg)';
+        text.textContent = 'Hide Details';
+        toggle.setAttribute('aria-expanded', 'true');
+      } else {
+        content.style.maxHeight = '0px';
+        icon.style.transform = 'rotate(180deg)';
+        text.textContent = 'Show Details';
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+    
+    // Set initial state
+    content.style.maxHeight = content.scrollHeight + 'px';
+  }
+  
+  // Initialize on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMaturityLevels);
+  } else {
+    initMaturityLevels();
+  }
+  
+  // Re-initialize on navigation (for SPAs)
+  (globalThis as any).initMaturityLevels = initMaturityLevels;
+</script>

@@ -16,7 +16,7 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 4);
 
 {tocHeadings.length > 0 && (
   <nav class="toc bg-white dark:bg-umai-gray-800 rounded-2xl border border-umai-gray-200 dark:border-umai-gray-700 p-6 sticky top-8">
-    <button class="toc-toggle w-full text-left mb-4" aria-expanded="true">
+    <button class="toc-toggle w-full text-left mb-4 touch-manipulation active:bg-gray-100 dark:active:bg-umai-gray-700" aria-expanded="true">
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center justify-between">
         <span class="flex items-center">
           <svg class="w-5 h-5 mr-2 text-umai-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,7 +71,8 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 4);
     const tocChevron = document.querySelector('.toc-chevron');
     
     if (tocToggle && tocContent && tocChevron) {
-      tocToggle.addEventListener('click', function() {
+      function toggleTOC() {
+        if (!tocToggle) return;
         const isExpanded = tocToggle.getAttribute('aria-expanded') === 'true';
         
         if (isExpanded) {
@@ -87,6 +88,13 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 4);
           (tocChevron as HTMLElement).style.transform = 'rotate(0deg)';
           tocToggle.setAttribute('aria-expanded', 'true');
         }
+      }
+
+      // Add both click and touch event listeners for better mobile support
+      tocToggle.addEventListener('click', toggleTOC);
+      tocToggle.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        toggleTOC();
       });
       
       // Set initial state

@@ -3,6 +3,7 @@ import tailwind from '@astrojs/tailwind';
 import mdx from '@astrojs/mdx';
 import mermaid from 'astro-mermaid';
 import vercel from '@astrojs/vercel';
+import icon from 'astro-icon';
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,7 +17,8 @@ export default defineConfig({
         wrap: true
       }
     }), 
-    mermaid()
+    mermaid(),
+    icon()
   ],
   output: 'static',
   adapter: vercel({

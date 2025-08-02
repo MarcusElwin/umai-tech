@@ -1,0 +1,75 @@
+---
+export interface Props {
+  name: string;
+  class?: string;
+  size?: string | number;
+  color?: string;
+}
+
+const { name, class: className, size, color } = Astro.props;
+
+// Import all SVG files statically
+const svgModules = import.meta.glob('/src/icons/*.svg', { as: 'raw', eager: true });
+
+// Get the SVG content
+let svgContent = '';
+const svgPath = `/src/icons/${name}.svg`;
+if (svgModules[svgPath]) {
+  svgContent = svgModules[svgPath] as string;
+} else {
+  console.warn(`Could not load icon: ${name}`);
+}
+
+// Parse and modify SVG attributes if needed
+let processedSvg = svgContent;
+if (svgContent) {
+  // Add classes and styles to the SVG element
+  processedSvg = svgContent.replace(
+    /<svg([^>]*)>/,
+    (_match, attributes) => {
+      let newAttributes = attributes;
+      
+      // Add class if provided
+      if (className) {
+        newAttributes += ` class="${className}"`;
+      }
+      
+      // Add size styling if provided
+      if (size) {
+        const sizeValue = typeof size === 'number' ? `${size}px` : size;
+        newAttributes += ` style="width: ${sizeValue}; height: ${sizeValue};"`;
+      }
+      
+      // Add color styling if provided (for fill or stroke)
+      if (color) {
+        newAttributes += ` style="color: ${color};"`;
+      }
+      
+      return `<svg${newAttributes}>`;
+    }
+  );
+}
+---
+
+{svgContent ? (
+  <Fragment set:html={processedSvg} />
+) : (
+  <div class={`icon-fallback ${className || ''}`}>
+    <span>Icon not found: {name}</span>
+  </div>
+)}
+
+<style>
+  .icon-fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 10px;
+    color: #6b7280;
+  }
+</style>

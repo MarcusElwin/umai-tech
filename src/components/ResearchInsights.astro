@@ -1,0 +1,57 @@
+---
+export interface Props {
+  title?: string;
+}
+
+const { title = "Research Insights" } = Astro.props;
+---
+
+<div class="my-8 rounded-xl border border-gray-200/60 bg-gradient-to-br from-purple-50/80 to-white/90 dark:from-purple-900/20 dark:to-gray-800/30 dark:border-gray-700/40 shadow-sm backdrop-blur-sm">
+  <div class="px-6 py-4 border-b border-gray-200/60 dark:border-gray-700/40">
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+      <div class="w-1 h-5 bg-purple-500 rounded-full"></div>
+      {title}
+    </h3>
+  </div>
+  
+  <div class="p-6">
+    <div class="space-y-4">
+      <slot />
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Custom styling for insight items within ResearchInsights */
+  :global(.insight-item) {
+    @apply flex items-center justify-between p-4 rounded-lg bg-white/60 dark:bg-gray-800/40 border border-gray-200/40 dark:border-gray-700/30 transition-all hover:shadow-md hover:border-purple-300/60 dark:hover:border-purple-600/40;
+  }
+  
+  :global(.insight-item:hover) {
+    transform: translateY(-1px);
+  }
+  
+  :global(.insight-content) {
+    @apply flex-1 min-w-0;
+  }
+  
+  :global(.insight-source) {
+    @apply text-sm font-medium text-purple-600 dark:text-purple-400 mb-1;
+  }
+  
+  :global(.insight-stat) {
+    @apply font-bold text-gray-900 dark:text-gray-100 text-lg mb-1;
+  }
+  
+  :global(.insight-impact) {
+    @apply text-sm text-gray-600 dark:text-gray-400;
+  }
+  
+  :global(.insight-icon) {
+    @apply flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-400 dark:to-purple-500 flex items-center justify-center text-white shadow-sm ml-4;
+  }
+  
+  :global(.insight-icon svg) {
+    @apply w-4 h-4;
+  }
+</style>

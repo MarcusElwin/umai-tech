@@ -146,6 +146,156 @@ Renders Mermaid diagrams within blog content.
 
 ---
 
+### `PrettyList.astro`
+
+Creates visually appealing lists with icons, titles, and descriptions for highlighting key information.
+
+```astro
+<PrettyList title="Key Features">
+  <div class="pretty-list-item">
+    <div class="pretty-list-icon">
+      <svg fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>
+    </div>
+    <div class="pretty-list-content">
+      <div class="pretty-list-title">Feature Title</div>
+      <div class="pretty-list-description">
+        Detailed description of the feature with **markdown** support.
+      </div>
+    </div>
+  </div>
+</PrettyList>
+```
+
+**Props:**
+- `title?: string` - Optional list title with purple accent
+- `type?: 'default' | 'numbered' | 'featured'` - List styling type (default: 'default')
+
+**Features:**
+- Gradient background container with rounded corners
+- Individual list items with hover effects
+- SVG icon support with circular backgrounds
+- Dark mode support
+- Responsive design
+- Markdown support in descriptions
+
+**CSS Classes:**
+- `.pretty-list-item` - Individual list item container
+- `.pretty-list-icon` - Icon container with gradient background
+- `.pretty-list-content` - Content wrapper
+- `.pretty-list-title` - Item title styling
+- `.pretty-list-description` - Item description styling
+
+---
+
+### `PrettyTable.astro`
+
+Creates professional, responsive tables with enhanced styling for displaying structured data like terminology, comparisons, or reference materials.
+
+```astro
+<PrettyTable 
+  title="Key Terminology" 
+  headers={["Term", "Definition", "Sources"]}
+  showIcons={true}
+  enableCopy={true}
+>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell">
+      <div class="pretty-table-term-with-icon">
+        <svg class="pretty-table-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <div class="pretty-table-term">Term Name</div>
+      </div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-definition">Clear definition with **markdown** support</div>
+    </td>
+    <td class="pretty-table-cell">
+      <div class="pretty-table-sources">
+        <div><a href="https://example.com" target="_blank">Source Link</a></div>
+      </div>
+    </td>
+  </tr>
+</PrettyTable>
+```
+
+**Props:**
+- `title?: string` - Optional table title with purple accent
+- `headers: string[]` - Array of column header names
+- `responsive?: boolean` - Enable horizontal scrolling on mobile (default: true)
+- `showIcons?: boolean` - Enable icon display for terms (default: true)
+- `enableCopy?: boolean` - Show copy-to-markdown button (default: true)
+
+**Features:**
+- Gradient background with professional styling
+- Responsive design with horizontal scroll on mobile
+- Hover effects on table rows
+- Dark mode support
+- Purple accent theming consistent with site design
+- Structured CSS classes for content organization
+- **Copy to Markdown**: One-click export of table data as properly formatted markdown
+- Smart link extraction preserving URLs in markdown format
+- Visual feedback with success/error states
+
+**CSS Classes:**
+- `.pretty-table-row` - Table row with hover effects
+- `.pretty-table-cell` - Standard cell styling with proper spacing
+- `.pretty-table-term` - Bold styling for key terms/names
+- `.pretty-table-term-with-icon` - Flexbox container for icon + term
+- `.pretty-table-icon` - SVG icon styling with purple theming
+- `.pretty-table-definition` - Regular text for definitions/descriptions
+- `.pretty-table-sources` - Smaller text with link styling for references
+
+---
+
+### `Citation.astro`
+
+Creates styled citation/quote blocks for academic references and quotations in blog content.
+
+```astro
+<Citation 
+  type="quote" 
+  author="Jeff Bezos" 
+  source="Amazon Annual Shareholder Meeting" 
+  date="2001"
+>
+I predict that because of artificial intelligence and its ability to automate certain tasks that in the past have required human intuition, by far the greatest breakthroughs will come by bringing human and artificial intelligence together.
+</Citation>
+
+<Citation 
+  type="pullquote"
+  author="Reid Hoffman"
+  source="Masters of Scale Podcast"
+  url="https://mastersofscale.com/"
+  date="2024"
+>
+The future of commerce isn't about replacing human decision-making—it's about amplifying human intelligence with AI agents that can act on our behalf at the speed of business.
+</Citation>
+
+<Citation type="reference" source="McKinsey Global Institute Report on AI in Retail">
+Companies implementing AI-driven commerce solutions report 40% higher customer satisfaction rates and 25% improvement in operational efficiency within the first year.
+</Citation>
+```
+
+**Props:**
+- `type?: 'quote' | 'reference' | 'pullquote'` - Citation style (default: 'quote')
+- `author?: string` - Quote author or researcher name
+- `source?: string` - Publication or source name
+- `url?: string` - Link to original source (makes source clickable)
+- `date?: string` - Publication or quote date
+
+**Features:**
+- Three distinct citation types with unique styling
+- Optional clickable source links
+- Proper academic citation formatting
+- Dark mode support with accent colors
+- Hover effects and smooth transitions
+- Accessible markup with proper semantic elements
+
+---
+
 ### `ReadingTime.astro`
 
 Calculates and displays estimated reading time for content.
@@ -378,3 +528,332 @@ All cards follow consistent patterns:
 - **Transitions**: `transition-all duration-300`
 
 This ensures visual consistency across all components while maintaining flexibility for specific use cases.
+
+## Blog-Specific Components
+
+### `CapabilityCard.astro`
+
+Displays agent capabilities in a numbered grid format with icons and detailed descriptions.
+
+```astro
+<CapabilityCard 
+  capabilities={[
+    {
+      number: 1,
+      title: "Autonomous Decision Making",
+      description: "AI agents can evaluate options and make purchasing decisions independently",
+      example: "Automatically selecting the best supplier based on price, quality, and delivery time",
+      footnote: "Requires pre-defined decision criteria and budget limits",
+      icon: "autonomy"
+    },
+    {
+      number: 2,
+      title: "Multi-step Planning",
+      description: "Complex task decomposition and execution planning",
+      icon: "planning"
+    }
+  ]}
+/>
+```
+
+**Props:**
+- `capabilities: Array<{number, title, description, example?, footnote?, icon?}>` - List of capabilities to display
+
+**Features:**
+- Responsive 2-column grid layout
+- Numbered capability cards with hover effects
+- Built-in SVG icons (autonomy, planning, memory, integration)
+- Gradient hover animations
+- Support for examples and footnotes
+
+---
+
+### `MaturityLevels.astro`
+
+Interactive maturity assessment component with level indicators and descriptions.
+
+```astro
+<MaturityLevels 
+  title="AI Agent Maturity Assessment"
+  levels={[
+    {
+      level: 1,
+      name: "Basic Automation",
+      description: "Simple rule-based responses",
+      color: "#EF4444",
+      percentage: 20
+    },
+    {
+      level: 5,
+      name: "Full Autonomy",
+      description: "Independent decision-making and learning",
+      color: "#10B981",
+      percentage: 95
+    }
+  ]}
+/>
+```
+
+**Props:**
+- `title?: string` - Component title
+- `levels: Array<{level, name, description, color, percentage}>` - Maturity levels with visual indicators
+
+**Features:**
+- Interactive level bars with color coding
+- Percentage-based visual progress
+- Hover effects with detailed descriptions
+- Responsive design with mobile optimization
+
+---
+
+### `ConvergenceForces.astro`
+
+Displays the three forces driving agentic commerce with interconnected visual design.
+
+```astro
+<ConvergenceForces 
+  forces={[
+    {
+      id: "ai-agents",
+      title: "Advanced AI Agents",
+      description: "LLMs with reasoning, memory, and tool use",
+      icon: "brain",
+      examples: ["GPT-4", "Claude", "Gemini"]
+    },
+    {
+      id: "payment-infrastructure", 
+      title: "Payment Infrastructure",
+      description: "Agent-ready APIs and autonomous transaction systems",
+      icon: "payment",
+      examples: ["Visa Intelligent Commerce", "Mastercard Agent Pay"]
+    },
+    {
+      id: "commerce-platforms",
+      title: "Commerce Platforms", 
+      description: "E-commerce systems with agent-optimized interfaces",
+      icon: "commerce",
+      examples: ["Shopify Magic", "Amazon Agent APIs"]
+    }
+  ]}
+/>
+```
+
+**Props:**
+- `forces: Array<{id, title, description, icon, examples}>` - The three convergence forces
+- `centerTitle?: string` - Central convergence point title
+
+**Features:**
+- Triangular force diagram with center convergence
+- Animated connections between forces
+- Interactive hover states
+- Example listings for each force
+- Responsive scaling
+
+---
+
+### `Timeline.astro`
+
+Vertical timeline component for displaying chronological events and milestones.
+
+```astro
+<Timeline 
+  title="Agentic Commerce Timeline"
+  events={[
+    {
+      date: "2024 Q1",
+      title: "Infrastructure Foundation",
+      description: "Payment systems and APIs launch",
+      type: "milestone",
+      status: "completed"
+    },
+    {
+      date: "2025 Q2", 
+      title: "Consumer Adoption",
+      description: "First mainstream agent shopping experiences",
+      type: "prediction",
+      status: "upcoming"
+    }
+  ]}
+/>
+```
+
+**Props:**
+- `title?: string` - Timeline title
+- `events: Array<{date, title, description, type?, status?}>` - Timeline events
+- `orientation?: 'vertical' | 'horizontal'` - Timeline layout (default: vertical)
+
+**Features:**
+- Responsive vertical/horizontal layouts
+- Status indicators (completed, in-progress, upcoming)
+- Event type styling (milestone, prediction, achievement)
+- Smooth scroll animations
+- Connected line visualization
+
+---
+
+### `CompetitiveLandscape.astro`
+
+Interactive bubble chart showing companies in the agentic commerce ecosystem.
+
+```astro
+<CompetitiveLandscape 
+  title="Agentic Commerce Ecosystem"
+  companies={[
+    {
+      id: "openai",
+      name: "OpenAI",
+      category: "ai-platforms",
+      maturity: 8.5,
+      scope: 9.2,
+      size: 45,
+      description: "ChatGPT with autonomous agent capabilities",
+      keyMetrics: ["$10B ARR", "500M users"],
+      status: "production"
+    }
+  ]}
+  categories={[
+    {
+      id: "ai-platforms",
+      name: "AI Platforms", 
+      color: "#8B5CF6",
+      description: "Core AI and agent platforms"
+    }
+  ]}
+/>
+```
+
+**Props:**
+- `title?: string` - Chart title
+- `companies: Array<{id, name, category, maturity, scope, size, description, keyMetrics, status}>` - Company data
+- `categories: Array<{id, name, color, description}>` - Category definitions
+- `interactive?: boolean` - Enable hover interactions (default: true)
+
+**Features:**
+- Interactive bubble positioning based on maturity/scope
+- Category-based color coding
+- Company size represented by bubble diameter
+- Detailed hover cards with metrics
+- Responsive scaling and mobile optimization
+- Legend with category explanations
+
+---
+
+### `FuturePredictions.astro`
+
+Interactive timeline showing future phases of agentic commerce evolution.
+
+```astro
+<FuturePredictions 
+  phases={[
+    {
+      id: "foundation-phase",
+      timeframe: "2025-2026",
+      title: "The Foundation Phase",
+      subtitle: "Infrastructure becomes ubiquitous",
+      marketValue: "$136B",
+      adoptionRate: "15%",
+      color: "#8B5CF6",
+      keyInsights: [
+        {
+          title: "Payment Infrastructure Goes Live",
+          description: "Global rollout of agent-ready payment systems",
+          icon: "infrastructure"
+        }
+      ],
+      metrics: [
+        { label: "AI-Influenced Transactions", value: "15%", trend: "up" }
+      ]
+    }
+  ]}
+/>
+```
+
+**Props:**
+- `phases: Array<{id, timeframe, title, subtitle, marketValue, adoptionRate, color, keyInsights, metrics}>` - Future phases
+- `interactive?: boolean` - Enable phase selection (default: true)
+
+**Features:**
+- Interactive phase selection with smooth transitions
+- Market value and adoption rate visualizations
+- Detailed insights with icons and descriptions
+- Metric cards with trend indicators
+- Progress bar showing timeline progression
+- Mobile-optimized accordion layout
+
+---
+
+### `ChallengeCategories.astro`
+
+Comprehensive challenge breakdown with impact analysis and solutions.
+
+```astro
+<ChallengeCategories 
+  challenges={[
+    {
+      id: "trust-gap",
+      title: "Consumer Trust Deficit",
+      subtitle: "64% won't trust AI with shopping",
+      severity: "high",
+      icon: "trust",
+      keyPoints: [
+        "64% of US adults unwilling to trust AI assistants",
+        "Fear of unauthorized purchases"
+      ],
+      impact: "Fundamental adoption barrier preventing market scale",
+      solution: "Start with low-risk purchases to build confidence"
+    }
+  ]}
+/>
+```
+
+**Props:**
+- `challenges: Array<{id, title, subtitle, severity, icon, keyPoints, impact, solution}>` - Challenge definitions
+- `expandable?: boolean` - Allow expanding for details (default: true)
+
+**Features:**
+- Severity-based color coding (high, medium, low)
+- Expandable cards with detailed breakdowns
+- Icon system for challenge categories
+- Impact and solution sections
+- Responsive grid layout
+- Smooth expand/collapse animations
+
+---
+
+### `ResearchInsights.astro`
+
+Research validation component with data sources and methodology.
+
+```astro
+<ResearchInsights 
+  title="Market Validation"
+  insights={[
+    {
+      finding: "Enterprise adoption leads consumer by 3-5 years",
+      confidence: "high",
+      sources: ["McKinsey Global Institute", "Forrester Research"],
+      methodology: "Survey of 1,200 enterprise decision makers",
+      implications: ["B2B market develops first", "Consumer trust follows proven B2B success"]
+    }
+  ]}
+  methodology={{
+    sampleSize: "1,200+ enterprises, 2,400+ consumers",
+    timeframe: "Q3 2024 - Q1 2025",
+    geography: "US, EU, Asia-Pacific",
+    confidence: "95%"
+  }}
+/>
+```
+
+**Props:**
+- `title?: string` - Research section title
+- `insights: Array<{finding, confidence, sources, methodology, implications}>` - Research findings
+- `methodology?: {sampleSize, timeframe, geography, confidence}` - Research methodology details
+
+**Features:**
+- Confidence level indicators with visual scales
+- Source attribution and linking
+- Methodology transparency section
+- Implication analysis with bullet points
+- Academic citation formatting
+- Expandable methodology details
