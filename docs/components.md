@@ -528,3 +528,332 @@ All cards follow consistent patterns:
 - **Transitions**: `transition-all duration-300`
 
 This ensures visual consistency across all components while maintaining flexibility for specific use cases.
+
+## Blog-Specific Components
+
+### `CapabilityCard.astro`
+
+Displays agent capabilities in a numbered grid format with icons and detailed descriptions.
+
+```astro
+<CapabilityCard 
+  capabilities={[
+    {
+      number: 1,
+      title: "Autonomous Decision Making",
+      description: "AI agents can evaluate options and make purchasing decisions independently",
+      example: "Automatically selecting the best supplier based on price, quality, and delivery time",
+      footnote: "Requires pre-defined decision criteria and budget limits",
+      icon: "autonomy"
+    },
+    {
+      number: 2,
+      title: "Multi-step Planning",
+      description: "Complex task decomposition and execution planning",
+      icon: "planning"
+    }
+  ]}
+/>
+```
+
+**Props:**
+- `capabilities: Array<{number, title, description, example?, footnote?, icon?}>` - List of capabilities to display
+
+**Features:**
+- Responsive 2-column grid layout
+- Numbered capability cards with hover effects
+- Built-in SVG icons (autonomy, planning, memory, integration)
+- Gradient hover animations
+- Support for examples and footnotes
+
+---
+
+### `MaturityLevels.astro`
+
+Interactive maturity assessment component with level indicators and descriptions.
+
+```astro
+<MaturityLevels 
+  title="AI Agent Maturity Assessment"
+  levels={[
+    {
+      level: 1,
+      name: "Basic Automation",
+      description: "Simple rule-based responses",
+      color: "#EF4444",
+      percentage: 20
+    },
+    {
+      level: 5,
+      name: "Full Autonomy",
+      description: "Independent decision-making and learning",
+      color: "#10B981",
+      percentage: 95
+    }
+  ]}
+/>
+```
+
+**Props:**
+- `title?: string` - Component title
+- `levels: Array<{level, name, description, color, percentage}>` - Maturity levels with visual indicators
+
+**Features:**
+- Interactive level bars with color coding
+- Percentage-based visual progress
+- Hover effects with detailed descriptions
+- Responsive design with mobile optimization
+
+---
+
+### `ConvergenceForces.astro`
+
+Displays the three forces driving agentic commerce with interconnected visual design.
+
+```astro
+<ConvergenceForces 
+  forces={[
+    {
+      id: "ai-agents",
+      title: "Advanced AI Agents",
+      description: "LLMs with reasoning, memory, and tool use",
+      icon: "brain",
+      examples: ["GPT-4", "Claude", "Gemini"]
+    },
+    {
+      id: "payment-infrastructure", 
+      title: "Payment Infrastructure",
+      description: "Agent-ready APIs and autonomous transaction systems",
+      icon: "payment",
+      examples: ["Visa Intelligent Commerce", "Mastercard Agent Pay"]
+    },
+    {
+      id: "commerce-platforms",
+      title: "Commerce Platforms", 
+      description: "E-commerce systems with agent-optimized interfaces",
+      icon: "commerce",
+      examples: ["Shopify Magic", "Amazon Agent APIs"]
+    }
+  ]}
+/>
+```
+
+**Props:**
+- `forces: Array<{id, title, description, icon, examples}>` - The three convergence forces
+- `centerTitle?: string` - Central convergence point title
+
+**Features:**
+- Triangular force diagram with center convergence
+- Animated connections between forces
+- Interactive hover states
+- Example listings for each force
+- Responsive scaling
+
+---
+
+### `Timeline.astro`
+
+Vertical timeline component for displaying chronological events and milestones.
+
+```astro
+<Timeline 
+  title="Agentic Commerce Timeline"
+  events={[
+    {
+      date: "2024 Q1",
+      title: "Infrastructure Foundation",
+      description: "Payment systems and APIs launch",
+      type: "milestone",
+      status: "completed"
+    },
+    {
+      date: "2025 Q2", 
+      title: "Consumer Adoption",
+      description: "First mainstream agent shopping experiences",
+      type: "prediction",
+      status: "upcoming"
+    }
+  ]}
+/>
+```
+
+**Props:**
+- `title?: string` - Timeline title
+- `events: Array<{date, title, description, type?, status?}>` - Timeline events
+- `orientation?: 'vertical' | 'horizontal'` - Timeline layout (default: vertical)
+
+**Features:**
+- Responsive vertical/horizontal layouts
+- Status indicators (completed, in-progress, upcoming)
+- Event type styling (milestone, prediction, achievement)
+- Smooth scroll animations
+- Connected line visualization
+
+---
+
+### `CompetitiveLandscape.astro`
+
+Interactive bubble chart showing companies in the agentic commerce ecosystem.
+
+```astro
+<CompetitiveLandscape 
+  title="Agentic Commerce Ecosystem"
+  companies={[
+    {
+      id: "openai",
+      name: "OpenAI",
+      category: "ai-platforms",
+      maturity: 8.5,
+      scope: 9.2,
+      size: 45,
+      description: "ChatGPT with autonomous agent capabilities",
+      keyMetrics: ["$10B ARR", "500M users"],
+      status: "production"
+    }
+  ]}
+  categories={[
+    {
+      id: "ai-platforms",
+      name: "AI Platforms", 
+      color: "#8B5CF6",
+      description: "Core AI and agent platforms"
+    }
+  ]}
+/>
+```
+
+**Props:**
+- `title?: string` - Chart title
+- `companies: Array<{id, name, category, maturity, scope, size, description, keyMetrics, status}>` - Company data
+- `categories: Array<{id, name, color, description}>` - Category definitions
+- `interactive?: boolean` - Enable hover interactions (default: true)
+
+**Features:**
+- Interactive bubble positioning based on maturity/scope
+- Category-based color coding
+- Company size represented by bubble diameter
+- Detailed hover cards with metrics
+- Responsive scaling and mobile optimization
+- Legend with category explanations
+
+---
+
+### `FuturePredictions.astro`
+
+Interactive timeline showing future phases of agentic commerce evolution.
+
+```astro
+<FuturePredictions 
+  phases={[
+    {
+      id: "foundation-phase",
+      timeframe: "2025-2026",
+      title: "The Foundation Phase",
+      subtitle: "Infrastructure becomes ubiquitous",
+      marketValue: "$136B",
+      adoptionRate: "15%",
+      color: "#8B5CF6",
+      keyInsights: [
+        {
+          title: "Payment Infrastructure Goes Live",
+          description: "Global rollout of agent-ready payment systems",
+          icon: "infrastructure"
+        }
+      ],
+      metrics: [
+        { label: "AI-Influenced Transactions", value: "15%", trend: "up" }
+      ]
+    }
+  ]}
+/>
+```
+
+**Props:**
+- `phases: Array<{id, timeframe, title, subtitle, marketValue, adoptionRate, color, keyInsights, metrics}>` - Future phases
+- `interactive?: boolean` - Enable phase selection (default: true)
+
+**Features:**
+- Interactive phase selection with smooth transitions
+- Market value and adoption rate visualizations
+- Detailed insights with icons and descriptions
+- Metric cards with trend indicators
+- Progress bar showing timeline progression
+- Mobile-optimized accordion layout
+
+---
+
+### `ChallengeCategories.astro`
+
+Comprehensive challenge breakdown with impact analysis and solutions.
+
+```astro
+<ChallengeCategories 
+  challenges={[
+    {
+      id: "trust-gap",
+      title: "Consumer Trust Deficit",
+      subtitle: "64% won't trust AI with shopping",
+      severity: "high",
+      icon: "trust",
+      keyPoints: [
+        "64% of US adults unwilling to trust AI assistants",
+        "Fear of unauthorized purchases"
+      ],
+      impact: "Fundamental adoption barrier preventing market scale",
+      solution: "Start with low-risk purchases to build confidence"
+    }
+  ]}
+/>
+```
+
+**Props:**
+- `challenges: Array<{id, title, subtitle, severity, icon, keyPoints, impact, solution}>` - Challenge definitions
+- `expandable?: boolean` - Allow expanding for details (default: true)
+
+**Features:**
+- Severity-based color coding (high, medium, low)
+- Expandable cards with detailed breakdowns
+- Icon system for challenge categories
+- Impact and solution sections
+- Responsive grid layout
+- Smooth expand/collapse animations
+
+---
+
+### `ResearchInsights.astro`
+
+Research validation component with data sources and methodology.
+
+```astro
+<ResearchInsights 
+  title="Market Validation"
+  insights={[
+    {
+      finding: "Enterprise adoption leads consumer by 3-5 years",
+      confidence: "high",
+      sources: ["McKinsey Global Institute", "Forrester Research"],
+      methodology: "Survey of 1,200 enterprise decision makers",
+      implications: ["B2B market develops first", "Consumer trust follows proven B2B success"]
+    }
+  ]}
+  methodology={{
+    sampleSize: "1,200+ enterprises, 2,400+ consumers",
+    timeframe: "Q3 2024 - Q1 2025",
+    geography: "US, EU, Asia-Pacific",
+    confidence: "95%"
+  }}
+/>
+```
+
+**Props:**
+- `title?: string` - Research section title
+- `insights: Array<{finding, confidence, sources, methodology, implications}>` - Research findings
+- `methodology?: {sampleSize, timeframe, geography, confidence}` - Research methodology details
+
+**Features:**
+- Confidence level indicators with visual scales
+- Source attribution and linking
+- Methodology transparency section
+- Implication analysis with bullet points
+- Academic citation formatting
+- Expandable methodology details
