@@ -21,10 +21,11 @@ const { title, description = 'Umai Tech - AI, GenAI, ML Solutions and Insights',
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <!-- Favicon with cache busting -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2025" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2025" />
     <link rel="apple-touch-icon" sizes="180x180" href="/umai-tech-logo.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
