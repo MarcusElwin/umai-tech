@@ -56,7 +56,7 @@ const { companies } = Astro.props;
 
   <!-- Chart Container with 4-Cell Matrix -->
   <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-4 pb-1">
-    <div id="competitive-landscape-chart" class="w-full h-[480px] flex justify-center relative">
+    <div id="competitive-landscape-chart" class="w-full h-[480px] flex justify-center relative overflow-x-auto overflow-y-hidden">
       <!-- Matrix will be dynamically created -->
     </div>
     
@@ -146,15 +146,27 @@ const { companies } = Astro.props;
   // Import D3.js
   import('https://cdn.skypack.dev/d3@7').then(d3 => {
     
-    const margin = { top: 40, right: 60, bottom: 40, left: 120 };
-    const width = 900 - margin.left - margin.right;
-    const height = 450 - margin.bottom - margin.top;
+    // Responsive dimensions
+    const containerWidth = document.getElementById('competitive-landscape-chart').offsetWidth;
+    const isMobile = containerWidth < 640;
+    
+    const margin = { 
+      top: 40, 
+      right: isMobile ? 30 : 60, 
+      bottom: 40, 
+      left: isMobile ? 60 : 120 
+    };
+    
+    const width = Math.min(900, containerWidth) - margin.left - margin.right;
+    const height = isMobile ? 400 : 450 - margin.bottom - margin.top;
 
-    // Create SVG first
+    // Create SVG with viewBox for responsiveness
     const svg = d3.select('#competitive-landscape-chart')
       .append('svg')
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom);
+      .attr('viewBox', `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+      .attr('preserveAspectRatio', 'xMinYMin meet')
+      .attr('width', '100%')
+      .attr('height', '100%');
 
     const g = svg.append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
@@ -222,7 +234,7 @@ const { companies } = Astro.props;
 
     const sizeScale = d3.scaleSqrt()
       .domain([0, d3.max(companies, d => d.size)])
-      .range([12, 28]);
+      .range(isMobile ? [8, 20] : [12, 28]);
 
     // Add some jitter to prevent exact overlaps
     function addJitter(companies) {
