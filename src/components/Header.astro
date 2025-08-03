@@ -45,11 +45,66 @@ const navItems = [
       </div>
 
       <!-- Mobile menu button -->
-      <button class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Open mobile menu" aria-expanded="false">
+      <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Open mobile menu" aria-expanded="false">
         <svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
     </div>
   </nav>
+  
+  <!-- Mobile menu overlay -->
+  <div id="mobile-menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden md:hidden"></div>
+  
+  <!-- Mobile menu sidebar -->
+  <div id="mobile-menu" class="fixed right-0 top-0 h-full w-72 bg-white dark:bg-gray-900 shadow-xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+    <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+      <span class="text-lg font-semibold text-gray-900 dark:text-white">Menu</span>
+      <button id="mobile-menu-close" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Close mobile menu">
+        <svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <nav class="p-4">
+      {navItems.map((item) => (
+        <a href={item.href} class="block px-4 py-3 rounded-lg text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-umai-accent dark:hover:text-umai-accent transition-all">
+          {item.name}
+        </a>
+      ))}
+    </nav>
+  </div>
 </header>
+
+<script>
+  // Mobile menu functionality
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenuClose = document.getElementById('mobile-menu-close');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+  
+  function openMobileMenu() {
+    mobileMenu?.classList.remove('translate-x-full');
+    mobileMenuOverlay?.classList.remove('hidden');
+    mobileMenuButton?.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function closeMobileMenu() {
+    mobileMenu?.classList.add('translate-x-full');
+    mobileMenuOverlay?.classList.add('hidden');
+    mobileMenuButton?.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+  
+  mobileMenuButton?.addEventListener('click', openMobileMenu);
+  mobileMenuClose?.addEventListener('click', closeMobileMenu);
+  mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
+  
+  // Close menu on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !mobileMenu?.classList.contains('translate-x-full')) {
+      closeMobileMenu();
+    }
+  });
+</script>
