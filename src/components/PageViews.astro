@@ -20,52 +20,68 @@ const { slug, className = "" } = Astro.props;
 </div>
 
 <script>
-  interface ViewsData {
-    [slug: string]: number;
+  interface ViewsResponse {
+    views: number;
+    incremented?: boolean;
+    rateLimited?: boolean;
   }
 
-  function initPageViews() {
+  async function initPageViews() {
     // Get all pageview elements
     const pageViewElements = document.querySelectorAll('[data-slug]');
     
-    pageViewElements.forEach(element => {
+    for (const element of pageViewElements) {
       const slug = element.getAttribute('data-slug');
-      if (!slug) return;
+      if (!slug) continue;
       
-      // Get current views from localStorage
-      const views = getViews(slug);
-      
-      // Update display
-      const countElement = element.querySelector('.views-count');
-      if (countElement) {
-        countElement.textContent = views.toLocaleString();
-      }
-      
-      // Increment view count (with debouncing to prevent multiple counts)
-      if (!sessionStorage.getItem(`viewed-${slug}`)) {
-        incrementView(slug);
-        sessionStorage.setItem(`viewed-${slug}`, 'true');
+      const countElement = element.querySelector('.views-count') as HTMLElement;
+      if (!countElement) continue;
+
+      try {
+        // First, get current view count
+        const currentViews = await fetchViews(slug);
+        countElement.textContent = currentViews.toLocaleString();
         
-        // Update display after increment
-        setTimeout(() => {
-          const newViews = getViews(slug);
-          if (countElement) {
-            countElement.textContent = newViews.toLocaleString();
+        // Check if we've already counted this session
+        const sessionKey = `viewed-${slug}`;
+        if (!sessionStorage.getItem(sessionKey)) {
+          // Increment view count
+          const updatedViews = await incrementViews(slug);
+          if (updatedViews.incremented) {
+            countElement.textContent = updatedViews.views.toLocaleString();
+            sessionStorage.setItem(sessionKey, 'true');
           }
-        }, 100);
+        }
+      } catch (error) {
+        console.error('Failed to fetch/update view count:', error);
+        // Fallback to showing "---" or cached count
+        countElement.textContent = '---';
+      }
+    }
+  }
+
+  async function fetchViews(slug: string): Promise<number> {
+    const response = await fetch(`/api/views?slug=${encodeURIComponent(slug)}`);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    const data: ViewsResponse = await response.json();
+    return data.views;
+  }
+
+  async function incrementViews(slug: string): Promise<ViewsResponse> {
+    const response = await fetch(`/api/views?slug=${encodeURIComponent(slug)}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       }
     });
-  }
-
-  function getViews(slug: string): number {
-    const viewsData: ViewsData = JSON.parse(localStorage.getItem('blogViews') || '{}');
-    return viewsData[slug] || 0;
-  }
-
-  function incrementView(slug: string): void {
-    const viewsData: ViewsData = JSON.parse(localStorage.getItem('blogViews') || '{}');
-    viewsData[slug] = (viewsData[slug] || 0) + 1;
-    localStorage.setItem('blogViews', JSON.stringify(viewsData));
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    
+    return await response.json();
   }
 
   // Initialize when DOM is ready
