@@ -26,8 +26,7 @@ const {
   showVersions = true, 
   showImpact = true,
   maxVisible = 5,
-  defaultCollapsed = true,
-  collapsedHeight = "120px"
+  defaultCollapsed = true
 } = Astro.props;
 
 const typeColors = {
@@ -80,7 +79,7 @@ const visibleUpdates = maxVisible ? updates.slice(0, maxVisible) : updates;
   <!-- Updates Timeline -->
   <div id="update-tracker-content" class={`space-y-6 transition-all duration-300 ${defaultCollapsed ? 'hidden' : ''}`}>
     {visibleUpdates.map((update: any, index: number) => {
-      const colors = typeColors[update.type];
+      const colors = typeColors[update.type as keyof typeof typeColors];
       return (
         <div class={`bg-gradient-to-br ${colors.bg} rounded-xl ${colors.border} border p-6 relative`}>
           <!-- Update Header -->
@@ -118,7 +117,7 @@ const visibleUpdates = maxVisible ? updates.slice(0, maxVisible) : updates;
               </div>
             </div>
             {showImpact && update.impact && (
-              <span class={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${impactColors[update.impact]} capitalize`}>
+              <span class={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${update.impact ? impactColors[update.impact as keyof typeof impactColors] : ''} capitalize`}>
                 {update.impact} impact
               </span>
             )}
@@ -133,7 +132,7 @@ const visibleUpdates = maxVisible ? updates.slice(0, maxVisible) : updates;
               <div class="flex items-start space-x-3">
                 <div class="flex-shrink-0 w-5 h-5 mt-0.5">
                   <svg class={`w-4 h-4 ${colors.icon}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <Fragment set:html={actionIcons[change.action]} />
+                    <Fragment set:html={actionIcons[change.action as keyof typeof actionIcons]} />
                   </svg>
                 </div>
                 <div class="flex-1">
