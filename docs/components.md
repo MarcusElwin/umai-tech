@@ -531,6 +531,157 @@ This ensures visual consistency across all components while maintaining flexibil
 
 ## Blog-Specific Components
 
+### `InvestmentDashboard.astro`
+
+Interactive dashboard displaying agentic commerce investment landscape data including funding rounds, market statistics, and geographic distribution.
+
+```astro
+<InvestmentDashboard 
+  totalInvestment="$8.6B"
+  quarterlyData="Q3 2024"
+  fundingRounds={[
+    {
+      id: "company-1",
+      company: "Example Corp",
+      amount: "$50M",
+      valuation: "$200M",
+      stage: "Series A",
+      description: "AI commerce platform",
+      category: "platforms",
+      date: "2025"
+    }
+  ]}
+  marketStats={{
+    companiesTracked: "600+",
+    categories: "30",
+    revenueMultiple: "2-3x",
+    geographicSplit: [
+      { region: "United States", percentage: 70, focus: "AI platforms" }
+    ]
+  }}
+/>
+```
+
+**Props:**
+- `totalInvestment?: string` - Total investment amount (default: "$8.6B")
+- `quarterlyData?: string` - Quarter/period for data (default: "Q3 2024")
+- `fundingRounds: Array<FundingRound>` - Array of funding round data
+- `marketStats?: MarketStats` - Optional market statistics object
+
+**Types:**
+```typescript
+interface FundingRound {
+  id: string;
+  company: string;
+  amount: string;
+  valuation?: string;
+  stage: string;
+  description: string;
+  category: 'platforms' | 'checkout' | 'infrastructure' | 'specialized';
+  date?: string;
+}
+
+interface MarketStats {
+  companiesTracked: string;
+  categories: string;
+  revenueMultiple: string;
+  geographicSplit: Array<{
+    region: string;
+    percentage: number;
+    focus: string;
+  }>;
+}
+```
+
+**Features:**
+- Key metrics cards with gradient backgrounds
+- Interactive funding rounds table with category color coding
+- Geographic investment distribution with progress bars
+- Responsive design with hover effects
+- Category filtering and sorting capabilities
+
+---
+
+### `UpdateTracker.astro`
+
+Timeline-based component for tracking and displaying post updates, changes, and version history with categorized update types and impact levels.
+
+```astro
+<UpdateTracker 
+  updates={[
+    {
+      id: "v2.1",
+      date: "August 4, 2025",
+      version: "2.1",
+      type: "major",
+      title: "Major Enhancement",
+      description: "Comprehensive update with new sections and data",
+      impact: "high",
+      changes: [
+        {
+          action: "added",
+          item: "New Investment section",
+          detail: "Comprehensive funding analysis with $8.6B data"
+        },
+        {
+          action: "updated",
+          item: "Market projections",
+          detail: "Enhanced with $4.4T US market sizing"
+        }
+      ]
+    }
+  ]}
+  showVersions={true}
+  showImpact={true}
+  maxVisible={5}
+/>
+```
+
+**Props:**
+- `updates: Array<Update>` - Array of update objects (required)
+- `showVersions?: boolean` - Display version numbers (default: true)
+- `showImpact?: boolean` - Show impact level badges (default: true) 
+- `maxVisible?: number` - Limit visible updates with "show more" option
+- `defaultCollapsed?: boolean` - Start in collapsed state (default: true)
+- `collapsedHeight?: string` - Height when collapsed (default: "120px")
+
+**Types:**
+```typescript
+interface Update {
+  id: string;
+  date: string;
+  version?: string;
+  type: 'major' | 'minor' | 'data' | 'content';
+  title: string;
+  description: string;
+  changes: Array<{
+    action: 'added' | 'updated' | 'enhanced' | 'fixed';
+    item: string;
+    detail?: string;
+  }>;
+  impact?: 'high' | 'medium' | 'low';
+}
+```
+
+**Features:**
+- **Collapsible interface** with toggle button and smooth animations
+- Timeline-based layout with connecting lines
+- Color-coded update types (major=purple, minor=blue, data=green, content=amber)
+- Impact level badges (high=red, medium=yellow, low=gray)
+- Detailed change lists with action icons
+- Responsive design with proper dark mode support
+- Type legend for easy understanding
+- Accessibility features (ARIA labels, keyboard navigation)
+- JavaScript-free fallback (gracefully degrades)
+
+**Update Types:**
+- **Major**: Significant new sections or comprehensive analysis additions
+- **Minor**: Content improvements, clarifications, or structural changes
+- **Data**: Updated statistics, market figures, or research findings
+- **Content**: Editorial improvements, typo fixes, or formatting updates
+
+---
+
 ### `CapabilityCard.astro`
 
 Displays agent capabilities in a numbered grid format with icons and detailed descriptions.

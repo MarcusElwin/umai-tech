@@ -1,0 +1,239 @@
+---
+export interface Props {
+  updates: Array<{
+    id: string;
+    date: string;
+    version?: string;
+    type: 'major' | 'minor' | 'data' | 'content';
+    title: string;
+    description: string;
+    changes: Array<{
+      action: 'added' | 'updated' | 'enhanced' | 'fixed';
+      item: string;
+      detail?: string;
+    }>;
+    impact?: 'high' | 'medium' | 'low';
+  }>;
+  showVersions?: boolean;
+  showImpact?: boolean;
+  maxVisible?: number;
+  defaultCollapsed?: boolean;
+  collapsedHeight?: string;
+}
+
+const { 
+  updates, 
+  showVersions = true, 
+  showImpact = true,
+  maxVisible = 5,
+  defaultCollapsed = true
+} = Astro.props;
+
+const typeColors = {
+  major: { bg: 'from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20', border: 'border-purple-200 dark:border-purple-700', text: 'text-purple-700 dark:text-purple-300', icon: 'text-purple-500' },
+  minor: { bg: 'from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20', border: 'border-blue-200 dark:border-blue-700', text: 'text-blue-700 dark:text-blue-300', icon: 'text-blue-500' },
+  data: { bg: 'from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20', border: 'border-green-200 dark:border-green-700', text: 'text-green-700 dark:text-green-300', icon: 'text-green-500' },
+  content: { bg: 'from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20', border: 'border-amber-200 dark:border-amber-700', text: 'text-amber-700 dark:text-amber-300', icon: 'text-amber-500' }
+};
+
+const actionIcons = {
+  added: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>`,
+  updated: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>`,
+  enhanced: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>`,
+  fixed: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>`
+};
+
+const impactColors = {
+  high: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
+  medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
+  low: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+};
+
+const visibleUpdates = maxVisible ? updates.slice(0, maxVisible) : updates;
+---
+
+<div class="my-12">
+  <!-- Header -->
+  <div class="text-center mb-8">
+    <div class="flex items-center justify-center space-x-3 mb-3">
+      <h4 class="text-2xl font-semibold text-gray-900 dark:text-white">Post Update History</h4>
+      <button 
+        id="update-tracker-toggle" 
+        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+        aria-expanded={!defaultCollapsed}
+      >
+        <span id="update-tracker-toggle-text">{defaultCollapsed ? 'Show Updates' : 'Hide Updates'}</span>
+        <svg id="update-tracker-chevron" class={`w-4 h-4 ml-1 transition-transform ${defaultCollapsed ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+    </div>
+    <div id="update-tracker-description" class={defaultCollapsed ? 'hidden' : ''}>
+      <p class="text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+        Tracking major updates to this analysis as the agentic commerce landscape evolves. Stay current with the latest data and insights.
+      </p>
+      <p class="text-xs text-gray-500 dark:text-gray-500 mt-2 italic">Most recent updates first</p>
+    </div>
+  </div>
+
+  <!-- Updates Timeline -->
+  <div id="update-tracker-content" class={`space-y-6 transition-all duration-300 ${defaultCollapsed ? 'hidden' : ''}`}>
+    {visibleUpdates.map((update: any, index: number) => {
+      const colors = typeColors[update.type as keyof typeof typeColors];
+      return (
+        <div class={`bg-gradient-to-br ${colors.bg} rounded-xl ${colors.border} border p-6 relative`}>
+          <!-- Update Header -->
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <div class={`w-10 h-10 ${colors.bg} ${colors.border} border rounded-lg flex items-center justify-center`}>
+                <svg class={`w-5 h-5 ${colors.icon}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {update.type === 'major' && (
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                  )}
+                  {update.type === 'minor' && (
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  )}
+                  {update.type === 'data' && (
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2-2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                  )}
+                  {update.type === 'content' && (
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  )}
+                </svg>
+              </div>
+              <div>
+                <h5 class={`text-lg font-semibold ${colors.text}`}>{update.title}</h5>
+                <div class="flex items-center space-x-3 mt-1">
+                  <span class="text-sm text-gray-600 dark:text-gray-400">{update.date}</span>
+                  {showVersions && update.version && (
+                    <span class={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${colors.text} bg-white dark:bg-gray-800 border ${colors.border}`}>
+                      v{update.version}
+                    </span>
+                  )}
+                  <span class={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${colors.text} bg-white dark:bg-gray-800 border ${colors.border} capitalize`}>
+                    {update.type}
+                  </span>
+                </div>
+              </div>
+            </div>
+            {showImpact && update.impact && (
+              <span class={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${update.impact ? impactColors[update.impact as keyof typeof impactColors] : ''} capitalize`}>
+                {update.impact} impact
+              </span>
+            )}
+          </div>
+
+          <!-- Update Description -->
+          <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">{update.description}</p>
+
+          <!-- Changes List -->
+          <div class="space-y-2">
+            {update.changes.map((change: any) => (
+              <div class="flex items-start space-x-3">
+                <div class="flex-shrink-0 w-5 h-5 mt-0.5">
+                  <svg class={`w-4 h-4 ${colors.icon}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <Fragment set:html={actionIcons[change.action as keyof typeof actionIcons]} />
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <span class={`text-sm font-medium ${colors.text} capitalize`}>{change.action}</span>
+                  <span class="text-sm text-gray-700 dark:text-gray-300 ml-1">{change.item}</span>
+                  {change.detail && (
+                    <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{change.detail}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- Timeline connector (except for last item) -->
+          {index < visibleUpdates.length - 1 && (
+            <div class="absolute left-11 top-16 w-0.5 h-6 bg-gray-200 dark:bg-gray-600 -mb-6"></div>
+          )}
+        </div>
+      );
+    })}
+  </div>
+
+  <!-- Show More Link (if there are more updates) -->
+  {maxVisible && updates.length > maxVisible && (
+    <div class="text-center mt-8">
+      <button class="text-umai-accent hover:text-umai-accent/80 text-sm font-medium">
+        View {updates.length - maxVisible} more updates →
+      </button>
+    </div>
+  )}
+
+  <!-- Update Legend -->
+  <div id="update-tracker-legend" class={`mt-8 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 ${defaultCollapsed ? 'hidden' : ''}`}>
+    <h6 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Update Types</h6>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+      <div class="flex items-center space-x-2">
+        <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+        <span class="text-gray-600 dark:text-gray-400"><strong>Major:</strong> Significant new sections or analysis</span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+        <span class="text-gray-600 dark:text-gray-400"><strong>Minor:</strong> Content improvements or clarifications</span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+        <span class="text-gray-600 dark:text-gray-400"><strong>Data:</strong> Updated statistics or market figures</span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <div class="w-3 h-3 bg-amber-500 rounded-full"></div>
+        <span class="text-gray-600 dark:text-gray-400"><strong>Content:</strong> Editorial improvements or fixes</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  // Update tracker toggle functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.getElementById('update-tracker-toggle');
+    const content = document.getElementById('update-tracker-content');
+    const description = document.getElementById('update-tracker-description');
+    const legend = document.getElementById('update-tracker-legend');
+    const toggleText = document.getElementById('update-tracker-toggle-text');
+    const chevron = document.getElementById('update-tracker-chevron');
+    
+    if (toggle && content && description && legend && toggleText && chevron) {
+      toggle.addEventListener('click', function() {
+        const isCollapsed = content.classList.contains('hidden');
+        
+        if (isCollapsed) {
+          // Show content
+          content.classList.remove('hidden');
+          description.classList.remove('hidden');
+          legend.classList.remove('hidden');
+          toggleText.textContent = 'Hide Updates';
+          chevron.classList.add('rotate-180');
+          toggle.setAttribute('aria-expanded', 'true');
+        } else {
+          // Hide content
+          content.classList.add('hidden');
+          description.classList.add('hidden');
+          legend.classList.add('hidden');
+          toggleText.textContent = 'Show Updates';
+          chevron.classList.remove('rotate-180');
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  .update-tracker {
+    /* Additional custom styles if needed */
+  }
+  
+  #update-tracker-content {
+    overflow: hidden;
+  }
+  
+  .rotate-180 {
+    transform: rotate(180deg);
+  }
+</style>
