@@ -45,8 +45,54 @@ const { title, description = 'Umai Tech - AI, GenAI, ML Solutions and Insights',
     <meta name="author" content="Marcus Elwin" />
     <meta name="theme-color" content="#8B5CF6" />
     
+    <!-- AI/LLM Friendly Meta Tags -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="keywords" content="AI consulting, agentic commerce, strategic advisory, fintech, AI strategy, Marcus Elwin, artificial intelligence, e-commerce AI, payment systems, board advisory" />
+    <meta name="subject" content="AI Consulting and Strategic Advisory" />
+    <meta name="topic" content="Agentic Commerce and AI Strategy" />
+    <meta name="summary" content="Expert AI consulting focused on agentic commerce, strategic advisory, and fintech innovation by Marcus Elwin" />
+    
     <meta name="generator" content={Astro.generator} />
     <title>{title} | Umai Tech</title>
+    
+    <!-- JSON-LD Structured Data for AI/LLM Readability -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Umai Tech",
+        "url": "https://umai-tech.com",
+        "logo": "https://umai-tech.com/umai-tech-logo.png",
+        "description": "AI consulting and strategic advisory focused on agentic commerce, AI strategy, and fintech innovation",
+        "founder": {
+          "@type": "Person",
+          "name": "Marcus Elwin",
+          "jobTitle": "AI Consultant & Strategic Advisor",
+          "worksFor": {
+            "@type": "Organization",
+            "name": "Gumroad",
+            "jobTitle": "VP of Commerce"
+          },
+          "expertise": ["Agentic Commerce", "AI Strategy", "Fintech", "Product Strategy"],
+          "knowsAbout": ["Artificial Intelligence", "E-commerce", "Payment Systems", "Strategic Advisory"]
+        },
+        "sameAs": [
+          "https://umai-tech.com"
+        ],
+        "serviceType": [
+          "AI Consulting",
+          "Strategic Advisory", 
+          "Board Advisory",
+          "Product Strategy Consulting"
+        ],
+        "areaServed": "Global",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "Professional Services",
+          "url": "https://umai-tech.com/contact"
+        }
+      }
+    </script>
     
     <!-- Inter and Noto Sans JP fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

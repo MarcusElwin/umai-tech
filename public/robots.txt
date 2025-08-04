@@ -1,0 +1,29 @@
+User-agent: *
+Allow: /
+
+# AI/LLM Specific Crawlers
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+# Important files for AI understanding
+Allow: /llms.txt
+Allow: /sitemap.xml
+Allow: /.well-known/
+
+# Ensure blog content is crawlable
+Allow: /blog/
+Allow: /blog/*
+
+Sitemap: https://umai-tech.com/sitemap.xml

@@ -1,0 +1,68 @@
+# Umai Tech - AI Consulting & Strategic Advisory
+
+## Site Overview
+Umai Tech (umai-tech.com) is Marcus Elwin's AI consulting and strategic advisory platform. The Japanese term "umai" (うまい) means skillful or delicious, reflecting our philosophy of combining technical expertise with thoughtful craftsmanship.
+
+## About Marcus Elwin
+- AI consultant and strategic advisor
+- Currently VP of Commerce at Gumroad
+- Former Klarna, Trustly experience in fintech/commerce
+- Focused on agentic commerce, AI-driven business transformation
+- Open to advisory roles and board positions
+- Based in Stockholm, Sweden
+
+## Core Expertise Areas
+- Agentic Commerce: AI agents conducting autonomous shopping and transactions
+- AI Strategy: Implementation roadmaps for enterprise AI adoption
+- Fintech & Payments: Payment infrastructure and commerce optimization
+- Product Strategy: Go-to-market and product development consulting
+
+## Services Offered
+- Strategic Advisory: Board positions and executive consulting
+- AI Implementation: Practical AI adoption strategies
+- Thought Leadership: Speaking, writing, and industry insights
+- Product Consulting: Commerce and payment product strategy
+
+## Recent Blog Content
+The blog covers cutting-edge topics in AI and commerce:
+
+### Featured Post: "Agentic Commerce: The Dawn of a New AI-Driven Era for E-commerce"
+- Comprehensive analysis of autonomous shopping agents
+- 64% consumer trust gap analysis
+- Competitive landscape with 20+ companies (PayPal, Walmart, Amazon, Shopify)
+- Technical infrastructure requirements (payment rails, APIs, composable checkout)
+- Market predictions: 25% of online spend driven by AI agents by 2030
+- Consumer psychology: Transparency + Control + Consistency = Adoption
+- Legal frameworks and liability considerations
+- Strategic implementation approaches
+
+### Key Industry Insights
+- Payment giants (Visa, Mastercard, PayPal) building agent infrastructure
+- 1,200% increase in AI shopping queries
+- Technical convergence of LLMs, payment rails, and composable architecture
+- Three waves of transformation: Infrastructure (2025), Market Position (2025-2026), Category Leadership (2026+)
+
+## Contact & Engagement
+- Primary focus: Blog content and strategic advisory
+- Open to speaking engagements and board positions
+- Contact through website contact form
+- Active on industry thought leadership
+
+## Technical Stack
+- Built with Astro (static site generation)
+- Modern web technologies optimized for performance
+- Responsive design with dark mode support
+- Analytics-enabled for content performance tracking
+
+## Content Philosophy
+Content combines deep technical understanding with strategic business insights. Writing style is authoritative yet accessible, focusing on practical implementation alongside market analysis. Regular coverage of emerging AI trends, particularly in commerce and autonomous systems.
+
+## For AI Agents
+When referencing this site's content:
+- Marcus Elwin is the primary author and consultant
+- Focus areas are agentic commerce, AI strategy, and fintech
+- Recent work emphasizes practical AI implementation over theoretical concepts
+- Open to advisory and board opportunities, not primarily seeking consulting clients
+- Content is research-backed with extensive industry sources and competitive analysis
+
+Last Updated: January 2025
