@@ -53,58 +53,86 @@ const navItems = [
     </div>
   </nav>
   
-  <!-- Mobile menu overlay -->
-  <div id="mobile-menu-overlay" class="fixed inset-0 bg-gradient-to-br from-black/60 to-black/40 backdrop-blur-md z-40 hidden md:hidden transition-all duration-300 ease-out"></div>
-  
-  <!-- Mobile menu sidebar -->
-  <div id="mobile-menu" class="fixed right-0 top-0 h-full w-80 bg-white dark:bg-gray-900 shadow-2xl border-l border-gray-200/50 dark:border-gray-700/50 z-50 transform translate-x-full transition-all duration-300 ease-out md:hidden">
-    
-    <!-- Header with brand accent -->
-    <div class="relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-r from-umai-accent/10 to-purple-600/5"></div>
-      <div class="relative flex items-center justify-between p-6 border-b border-gray-200/60 dark:border-gray-700/60">
-        <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 bg-gradient-to-br from-umai-accent to-purple-600 rounded-lg flex items-center justify-center">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Mobile menu full-screen overlay -->
+  <div id="mobile-menu" class="mobile-menu-overlay">
+    <!-- Full-screen menu content -->
+    <div class="mobile-menu-content">
+      
+      <!-- Header with balanced layout -->
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 2rem 2rem 1rem 2rem;">
+        <!-- Logo - Left -->
+        <div>
+          <div class="w-12 h-12 bg-gradient-to-br from-umai-accent via-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-umai-accent/25">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" fill="white" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <span class="text-lg font-semibold text-gray-900 dark:text-white">Navigation</span>
         </div>
-        <button id="mobile-menu-close" class="p-2 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-200 group" aria-label="Close mobile menu">
-          <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Navigation Links -->
-    <nav class="p-6 space-y-2">
-      {navItems.map((item, index) => (
-        <a 
-          href={item.href} 
-          class="group flex items-center px-4 py-4 rounded-xl text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-umai-accent/10 hover:to-purple-600/5 hover:text-umai-accent dark:hover:text-umai-accent transition-all duration-200 border border-transparent hover:border-umai-accent/20"
-          style={`animation-delay: ${index * 50}ms`}
-        >
-          <div class="flex items-center space-x-3 w-full">
-            <div class="w-2 h-2 rounded-full bg-gradient-to-r from-umai-accent to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-            <span class="flex-1">{item.name}</span>
-            <svg class="w-4 h-4 opacity-0 group-hover:opacity-60 transform translate-x-0 group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        
+        <!-- Brand Text - Center -->
+        <div style="text-align: center; flex: 1;">
+          <span class="text-2xl font-light text-gray-900 dark:text-white tracking-wide">umai<span class="font-bold text-umai-accent">-tech</span></span>
+        </div>
+        
+        <!-- Close Button - Right -->
+        <div>
+          <button id="mobile-menu-close" class="relative p-3 rounded-full hover:bg-gray-100/60 dark:hover:bg-gray-800/60 transition-all duration-300 group" aria-label="Close mobile menu">
+            <svg class="w-6 h-6 text-gray-500 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
-          </div>
-        </a>
-      ))}
-    </nav>
+          </button>
+        </div>
+      </div>
 
-    <!-- Footer decoration -->
-    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-umai-accent/5 to-transparent pointer-events-none"></div>
-    <div class="absolute bottom-6 left-6 right-6">
-      <div class="text-center">
-        <div class="inline-flex items-center px-3 py-2 rounded-full bg-umai-accent/10 border border-umai-accent/20">
-          <div class="w-2 h-2 bg-umai-accent rounded-full animate-pulse mr-2"></div>
-          <span class="text-xs font-medium text-umai-accent">umai-tech</span>
+      <!-- Navigation Links - Temporal Style -->
+      <div class="flex-1 flex items-center justify-center px-8">
+        <nav class="w-full max-w-xs">
+          <div class="space-y-2">
+            {navItems.map((item, index) => (
+              <a 
+                href={item.href}
+                class="nav-item group relative block w-full text-center py-7 px-6 rounded-3xl text-2xl font-semibold text-gray-800 dark:text-gray-100 hover:text-umai-accent dark:hover:text-umai-accent transition-all duration-400 transform hover:scale-[1.01] active:scale-[0.99]"
+                style={`animation-delay: ${index * 100}ms; transform: translateY(40px); opacity: 0;`}
+              >
+                <!-- Sophisticated hover background -->
+                <div class="absolute inset-0 bg-gradient-to-r from-umai-accent/8 via-purple-500/6 to-indigo-600/8 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-400 transform scale-90 group-hover:scale-100 shadow-lg shadow-umai-accent/5"></div>
+                
+                <!-- Animated border -->
+                <div class="absolute inset-0 border-2 border-transparent group-hover:border-umai-accent/10 rounded-3xl transition-all duration-400"></div>
+                
+                <!-- Content with better spacing -->
+                <div class="relative">
+                  <span class="tracking-tight font-medium">{item.name}</span>
+                </div>
+                
+                <!-- Subtle bottom accent line -->
+                <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-umai-accent to-purple-500 group-hover:w-12 transition-all duration-500 rounded-full"></div>
+              </a>
+            ))}
+          </div>
+        </nav>
+      </div>
+
+      <!-- Enhanced Footer with Grid Layout -->
+      <div class="px-8 py-10">
+        <div class="grid grid-cols-1 gap-6 text-center">
+          <!-- Tagline Section -->
+          <div class="space-y-2">
+            <div class="text-base font-medium text-gray-600 dark:text-gray-300 tracking-wide">
+              AI Consulting & Strategic Advisory
+            </div>
+            <div class="text-sm text-gray-500 dark:text-gray-500">
+              Building the future of intelligent commerce
+            </div>
+          </div>
+          
+          <!-- Brand Badge -->
+          <div class="flex justify-center">
+            <div class="inline-flex items-center px-8 py-4 rounded-full bg-gradient-to-r from-umai-accent/15 via-purple-500/10 to-indigo-600/15 border border-umai-accent/25 backdrop-blur-sm shadow-lg shadow-umai-accent/10">
+              <div class="w-2.5 h-2.5 bg-gradient-to-r from-umai-accent to-purple-500 rounded-full animate-pulse mr-4"></div>
+              <span class="text-base font-semibold text-umai-accent tracking-wide">umai-tech.com</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -116,30 +144,175 @@ const navItems = [
   const mobileMenuButton = document.getElementById('mobile-menu-button');
   const mobileMenuClose = document.getElementById('mobile-menu-close');
   const mobileMenu = document.getElementById('mobile-menu');
-  const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
   
   function openMobileMenu() {
-    mobileMenu?.classList.remove('translate-x-full');
-    mobileMenuOverlay?.classList.remove('hidden');
-    mobileMenuButton?.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
+    console.log('Opening mobile menu...');
+    
+    if (mobileMenu) {
+      // Show menu with new CSS approach
+      mobileMenu.classList.add('show');
+      
+      mobileMenuButton?.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      
+      // Animate navigation items
+      setTimeout(() => {
+        const navItems = mobileMenu.querySelectorAll('nav a');
+        navItems.forEach((item, index) => {
+          setTimeout(() => {
+            (item as HTMLElement).style.transform = 'translateY(0px)';
+            (item as HTMLElement).style.opacity = '1';
+          }, index * 100);
+        });
+      }, 50);
+    }
   }
   
   function closeMobileMenu() {
-    mobileMenu?.classList.add('translate-x-full');
-    mobileMenuOverlay?.classList.add('hidden');
-    mobileMenuButton?.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
+    if (mobileMenu) {
+      mobileMenu.classList.remove('show');
+      mobileMenuButton?.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      
+      // Reset navigation items
+      const navItems = mobileMenu.querySelectorAll('nav a');
+      navItems.forEach((item) => {
+        (item as HTMLElement).style.transform = 'translateY(20px)';
+        (item as HTMLElement).style.opacity = '0';
+      });
+    }
   }
   
   mobileMenuButton?.addEventListener('click', openMobileMenu);
   mobileMenuClose?.addEventListener('click', closeMobileMenu);
-  mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
   
   // Close menu on escape key
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !mobileMenu?.classList.contains('translate-x-full')) {
+    if (e.key === 'Escape' && mobileMenu?.classList.contains('show')) {
       closeMobileMenu();
     }
   });
 </script>
+
+<style>
+  .mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 50%, #f3f4f6 100%);
+    display: none;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    backdrop-filter: blur(20px);
+  }
+  
+  .mobile-menu-overlay.show {
+    display: block;
+    opacity: 1;
+  }
+  
+  .mobile-menu-content {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    background: inherit;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Subtle background pattern */
+  .mobile-menu-content::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle at 25% 25%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+                      radial-gradient(circle at 75% 75%, rgba(99, 102, 241, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  
+  /* Navigation item enhancements */
+  .nav-item {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .nav-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.1), transparent);
+    transition: left 0.6s ease;
+  }
+  
+  .nav-item:hover::before {
+    left: 100%;
+  }
+  
+  /* Dark mode */
+  :global(.dark) .mobile-menu-overlay {
+    background: linear-gradient(135deg, #111827 0%, #0f172a 100%);
+  }
+  
+  :global(.dark) .mobile-menu-content::before {
+    background-image: radial-gradient(circle at 25% 25%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                      radial-gradient(circle at 75% 75%, rgba(99, 102, 241, 0.06) 0%, transparent 50%);
+  }
+  
+  /* Enhanced animations */
+  @keyframes slideInUp {
+    from {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeInScale {
+    from {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* Hide on desktop */
+  @media (min-width: 768px) {
+    .mobile-menu-overlay {
+      display: none !important;
+    }
+  }
+  
+  /* Touch-friendly spacing on very small screens */
+  @media (max-height: 640px) {
+    .nav-item {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+    
+    .mobile-menu-content > div:first-child {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+    
+    .mobile-menu-content > div:last-child {
+      padding-top: 1.5rem;
+      padding-bottom: 1.5rem;
+    }
+  }
+</style>
