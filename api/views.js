@@ -1,27 +1,73 @@
-// Vercel Function for page view tracking
-// This runs as a serverless function on Vercel
+// Vercel Function for page view tracking using Vercel KV (Redis)
+import { kv } from '@vercel/kv';
 
-// Simple in-memory storage (persists per function instance)
-let viewsStore = new Map();
+// Baseline counts from Vercel Analytics (latest data)
+const baselineCounts = {
+  'agentic-commerce-the-dawn-of-a-new-ai-driven-era-for-ecommerce': 157,
+  'unpopular-opinion-hard-good-ds': 4,
+  'prompt-eng-ner': 2,
+};
 
-// Initialize with baseline counts from Vercel Analytics
-const baselineCounts = new Map([
-  ['agentic-commerce-the-dawn-of-a-new-ai-driven-era-for-ecommerce', 149],
-  ['unpopular-opinion-hard-good-ds', 8],
-  ['ner-dspy', 3],
-]);
-
-// Initialize views store with baseline counts
-for (const [slug, count] of baselineCounts) {
-  if (!viewsStore.has(slug)) {
-    viewsStore.set(slug, count);
+async function getViews(slug) {
+  try {
+    // Try to get from KV store
+    const views = await kv.get(`views:${slug}`);
+    if (views !== null) {
+      return parseInt(views, 10);
+    }
+    
+    // If not in KV, check if we have a baseline count
+    if (baselineCounts[slug]) {
+      // Initialize KV with baseline count
+      await kv.set(`views:${slug}`, baselineCounts[slug]);
+      return baselineCounts[slug];
+    }
+    
+    // Default to 0 for new posts
+    await kv.set(`views:${slug}`, 0);
+    return 0;
+  } catch (error) {
+    console.error('Error getting views from KV:', error);
+    // Fallback to baseline or 0
+    return baselineCounts[slug] || 0;
   }
 }
 
-// Rate limiting storage (per function instance)
-let rateLimitStore = new Map();
+async function incrementViews(slug) {
+  try {
+    // Use atomic increment to avoid race conditions
+    const newViews = await kv.incr(`views:${slug}`);
+    return newViews;
+  } catch (error) {
+    console.error('Error incrementing views in KV:', error);
+    // Fallback: get current + 1
+    const current = await getViews(slug);
+    const newViews = current + 1;
+    await kv.set(`views:${slug}`, newViews);
+    return newViews;
+  }
+}
 
-export default function handler(req, res) {
+async function checkRateLimit(slug, ip) {
+  try {
+    const rateKey = `rate:${slug}:${ip}`;
+    const lastView = await kv.get(rateKey);
+    const now = Date.now();
+    
+    if (lastView && now - parseInt(lastView, 10) < 15 * 60 * 1000) {
+      return true; // Rate limited
+    }
+    
+    // Update rate limit
+    await kv.setex(rateKey, 900, now.toString()); // 15 minutes TTL
+    return false; // Not rate limited
+  } catch (error) {
+    console.error('Error checking rate limit:', error);
+    return false; // Allow on error
+  }
+}
+
+export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -38,38 +84,43 @@ export default function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    const views = viewsStore.get(slug) || 0;
-    return res.status(200).json({ views });
+    try {
+      const views = await getViews(slug);
+      return res.status(200).json({ views });
+    } catch (error) {
+      console.error('GET error:', error);
+      return res.status(500).json({ error: 'Failed to get views' });
+    }
   }
 
   if (req.method === 'POST') {
-    // Basic rate limiting - check if same IP viewed recently
-    const forwarded = req.headers['x-forwarded-for'];
-    const ip = Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(',')[0] || 'unknown';
-    const rateKey = `${slug}:${ip}`;
-    
-    const now = Date.now();
-    const lastView = rateLimitStore.get(rateKey) || 0;
-    
-    // 15 minute rate limit
-    if (now - lastView < 15 * 60 * 1000) {
-      const currentViews = viewsStore.get(slug) || 0;
+    try {
+      // Get IP for rate limiting
+      const forwarded = req.headers['x-forwarded-for'];
+      const ip = Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(',')[0] || 'unknown';
+      
+      // Check rate limit
+      const isRateLimited = await checkRateLimit(slug, ip);
+      
+      if (isRateLimited) {
+        const currentViews = await getViews(slug);
+        return res.status(200).json({ 
+          views: currentViews,
+          rateLimited: true 
+        });
+      }
+
+      // Increment view count
+      const newViews = await incrementViews(slug);
+
       return res.status(200).json({ 
-        views: currentViews,
-        rateLimited: true 
+        views: newViews,
+        incremented: true 
       });
+    } catch (error) {
+      console.error('POST error:', error);
+      return res.status(500).json({ error: 'Failed to increment views' });
     }
-
-    // Increment view count
-    const currentViews = viewsStore.get(slug) || 0;
-    const newViews = currentViews + 1;
-    viewsStore.set(slug, newViews);
-    rateLimitStore.set(rateKey, now);
-
-    return res.status(200).json({ 
-      views: newViews,
-      incremented: true 
-    });
   }
 
   return res.status(405).json({ error: 'Method not allowed' });
