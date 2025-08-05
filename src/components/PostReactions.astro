@@ -1,0 +1,241 @@
+---
+export interface Props {
+  slug: string;
+  className?: string;
+}
+
+const { slug, className = "" } = Astro.props;
+---
+
+<div class={`post-reactions ${className}`}>
+  <div class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 border border-gray-200 dark:border-gray-600">
+    <!-- Header -->
+    <div class="text-center mb-4">
+      <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Was this helpful?</h4>
+      <p class="text-sm text-gray-600 dark:text-gray-400">Let me know what you think!</p>
+    </div>
+    
+    <!-- Reactions Grid -->
+    <div id={`reactions-${slug}`} data-slug={slug} class="flex flex-wrap justify-center gap-3">
+      <!-- Reaction buttons will be populated by JavaScript -->
+      <div class="reaction-loading text-center py-4">
+        <div class="inline-flex items-center text-sm text-gray-500 dark:text-gray-400">
+          <svg class="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Loading reactions...
+        </div>
+      </div>
+    </div>
+    
+    <!-- Success/Error Messages -->
+    <div id={`reaction-message-${slug}`} class="hidden mt-4 text-center">
+      <div class="reaction-success hidden">
+        <p class="text-sm text-green-600 dark:text-green-400 font-medium">
+          ✨ Thanks for your feedback!
+        </p>
+      </div>
+      <div class="reaction-error hidden">
+        <p class="text-sm text-red-600 dark:text-red-400 font-medium">
+          ⏱️ Please wait before reacting again
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  interface Reaction {
+    emoji: string;
+    count: number;
+  }
+
+  interface ReactionsResponse {
+    reactions: Record<string, Reaction>;
+    added?: string;
+    rateLimited?: boolean;
+    message?: string;
+  }
+
+  async function initPostReactions() {
+    const reactionElements = document.querySelectorAll('[data-slug]');
+    
+    for (const element of reactionElements) {
+      const slug = element.getAttribute('data-slug');
+      if (!slug || !element.id.startsWith('reactions-')) continue;
+      
+      try {
+        await loadReactions(slug);
+      } catch (error) {
+        console.error('Failed to load reactions:', error);
+        showReactionError(slug, 'Failed to load reactions');
+      }
+    }
+  }
+
+  async function loadReactions(slug: string) {
+    const response = await fetch(`/api/reactions?slug=${encodeURIComponent(slug)}`);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    
+    const data: ReactionsResponse = await response.json();
+    renderReactions(slug, data.reactions);
+  }
+
+  function renderReactions(slug: string, reactions: Record<string, Reaction>) {
+    const container = document.getElementById(`reactions-${slug}`);
+    if (!container) return;
+
+    // Remove loading state
+    const loading = container.querySelector('.reaction-loading');
+    if (loading) loading.remove();
+
+    // Clear existing buttons
+    container.innerHTML = '';
+
+    // Create reaction buttons
+    for (const [type, reaction] of Object.entries(reactions)) {
+      const button = createReactionButton(slug, type, reaction);
+      container.appendChild(button);
+    }
+  }
+
+  function createReactionButton(slug: string, type: string, reaction: Reaction): HTMLElement {
+    const button = document.createElement('button');
+    button.className = `
+      reaction-btn group relative inline-flex items-center justify-center
+      px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600
+      rounded-xl hover:border-umai-accent hover:shadow-lg transform hover:scale-105
+      transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-umai-accent focus:ring-offset-2
+      disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
+    `.trim().replace(/\s+/g, ' ');
+    
+    button.innerHTML = `
+      <span class="text-2xl group-hover:scale-110 transition-transform duration-200">${reaction.emoji}</span>
+      <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-umai-accent transition-colors">
+        ${reaction.count}
+      </span>
+    `;
+    
+    button.addEventListener('click', () => addReaction(slug, type));
+    
+    return button;
+  }
+
+  async function addReaction(slug: string, reactionType: string) {
+    try {
+      // Disable all buttons during request
+      const container = document.getElementById(`reactions-${slug}`);
+      const buttons = container?.querySelectorAll('.reaction-btn') as NodeListOf<HTMLButtonElement>;
+      buttons?.forEach(btn => btn.disabled = true);
+
+      const response = await fetch(`/api/reactions?slug=${encodeURIComponent(slug)}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reactionType })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data: ReactionsResponse = await response.json();
+
+      if (data.rateLimited) {
+        showReactionError(slug, data.message || 'Please wait before reacting again');
+      } else {
+        showReactionSuccess(slug);
+        // Update UI with new counts
+        renderReactions(slug, data.reactions);
+      }
+    } catch (error) {
+      console.error('Failed to add reaction:', error);
+      showReactionError(slug, 'Failed to add reaction');
+    } finally {
+      // Re-enable buttons
+      const container = document.getElementById(`reactions-${slug}`);
+      const buttons = container?.querySelectorAll('.reaction-btn') as NodeListOf<HTMLButtonElement>;
+      buttons?.forEach(btn => btn.disabled = false);
+    }
+  }
+
+  function showReactionSuccess(slug: string) {
+    const messageContainer = document.getElementById(`reaction-message-${slug}`);
+    const successMsg = messageContainer?.querySelector('.reaction-success');
+    const errorMsg = messageContainer?.querySelector('.reaction-error');
+    
+    if (messageContainer && successMsg) {
+      messageContainer.classList.remove('hidden');
+      successMsg.classList.remove('hidden');
+      errorMsg?.classList.add('hidden');
+      
+      // Hide after 3 seconds
+      setTimeout(() => {
+        messageContainer.classList.add('hidden');
+        successMsg.classList.add('hidden');
+      }, 3000);
+    }
+  }
+
+  function showReactionError(slug: string, message: string) {
+    const messageContainer = document.getElementById(`reaction-message-${slug}`);
+    const errorMsg = messageContainer?.querySelector('.reaction-error');
+    const successMsg = messageContainer?.querySelector('.reaction-success');
+    
+    if (messageContainer && errorMsg) {
+      const errorText = errorMsg.querySelector('p');
+      if (errorText) errorText.textContent = `⏱️ ${message}`;
+      
+      messageContainer.classList.remove('hidden');
+      errorMsg.classList.remove('hidden');
+      successMsg?.classList.add('hidden');
+      
+      // Hide after 4 seconds
+      setTimeout(() => {
+        messageContainer.classList.add('hidden');
+        errorMsg.classList.add('hidden');
+      }, 4000);
+    }
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPostReactions);
+  } else {
+    initPostReactions();
+  }
+
+  // Also run on navigation for SPA-like behavior
+  document.addEventListener('astro:page-load', initPostReactions);
+</script>
+
+<style>
+  .post-reactions {
+    /* Custom styles if needed */
+  }
+  
+  .reaction-btn:hover {
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.15);
+  }
+  
+  .reaction-btn:active {
+    transform: scale(0.95);
+  }
+  
+  .reaction-btn:disabled {
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { 
+      opacity: 1; 
+    }
+    50% { 
+      opacity: 0.7; 
+    }
+  }
+</style>
