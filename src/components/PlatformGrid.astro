@@ -1,0 +1,152 @@
+---
+export interface Props {
+  title?: string;
+  categories: Array<{
+    name: string;
+    description: string;
+    platforms: Array<{
+      name: string;
+      arr?: string;
+      users?: string;
+      growth?: string;
+      description?: string;
+    }>;
+    color?: string;
+  }>;
+}
+
+const { title, categories } = Astro.props;
+
+// Function to get category colors
+function getCategoryColor(color?: string) {
+  const colors = {
+    'purple': '#8B5CF6', // Umai Purple
+    'blue': '#3B82F6', 
+    'green': '#10B981', 
+    'orange': '#F59E0B',
+    'pink': '#EC4899',
+    'indigo': '#6366F1',
+  };
+  return colors[color as keyof typeof colors] || '#8B5CF6';
+}
+
+// Function to get category icons
+function getCategoryIcon(categoryName: string) {
+  const icons = {
+    // Pure Vibe Coding - Chat/Conversation Icon (represents natural language interaction)
+    'Pure Vibe Coding': `
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+      <circle cx="8" cy="12" r="1" fill="currentColor"/>
+      <circle cx="12" cy="12" r="1" fill="currentColor"/>
+      <circle cx="16" cy="12" r="1" fill="currentColor"/>
+    `,
+    
+    // Established Platforms + AI - Building/Platform Icon (represents established infrastructure)
+    'Established Platforms + AI': `
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4a1 1 0 011-1h2a1 1 0 011 1v2"/>
+      <circle cx="17" cy="8" r="2" stroke-width="1.5" fill="none"/>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 8h2"/>
+    `,
+    
+    // Specialized & Emerging - Rocket/Innovation Icon (represents emerging tech and specialization)
+    'Specialized & Emerging': `
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z"/>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4"/>
+    `,
+    
+    // Legacy support
+    'Vibe Coding': `
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+    `,
+    'AI-Enhanced': `
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+    `,
+    'Specialized': `
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"/>
+    `,
+  };
+  return icons[categoryName as keyof typeof icons] || '<circle cx="12" cy="12" r="3"/>';
+}
+---
+
+<div class="platform-grid my-8">
+  {title && (
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+        <div class="w-1 h-5 bg-purple-500 rounded-full"></div>
+        {title}
+      </h3>
+    </div>
+  )}
+
+  <!-- Single Column Layout for Better Readability -->
+  <div class="space-y-8">
+    {categories.map((category) => (
+      <div class="category-section">
+        
+        <!-- Category Header - More Prominent -->
+        <div class="mb-6">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="flex items-center justify-center w-14 h-14 rounded-2xl text-white shadow-lg" style={`background: linear-gradient(135deg, ${getCategoryColor(category.color)}, ${getCategoryColor(category.color)}dd)`}>
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <Fragment set:html={getCategoryIcon(category.name)} />
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">{category.name}</h4>
+              <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">{category.description}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Platforms Grid - 2 Column Layout -->
+        <div class="grid gap-4 md:grid-cols-2">
+          {category.platforms.map((platform, index) => (
+            <div class="platform-card group p-6 rounded-2xl border border-gray-200/60 bg-gradient-to-br from-white via-gray-50/30 to-white dark:from-gray-900/80 dark:via-gray-800/50 dark:to-gray-900/80 dark:border-gray-700/40 shadow-sm hover:shadow-xl transition-all duration-300 hover:scale-[1.02] hover:border-purple-300 dark:hover:border-purple-600">
+              
+              <!-- Platform Header -->
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="flex items-center justify-center w-8 h-8 rounded-lg text-white text-sm font-bold" style={`background-color: ${getCategoryColor(category.color)}`}>
+                    {index + 1}
+                  </div>
+                  <h5 class="text-xl font-bold text-gray-900 dark:text-gray-100">{platform.name}</h5>
+                </div>
+                {platform.growth && (
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200/60 dark:border-green-700/40">
+                    {platform.growth}
+                  </span>
+                )}
+              </div>
+
+              <!-- Platform Description -->
+              {platform.description && (
+                <p class="text-sm text-gray-700 dark:text-gray-300 mb-4 leading-relaxed line-clamp-3">{platform.description}</p>
+              )}
+
+              <!-- Metrics Row -->
+              <div class="flex flex-wrap gap-3 pt-4 border-t border-gray-200/50 dark:border-gray-700/50">
+                {platform.arr && (
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full" style={`background-color: ${getCategoryColor(category.color)}`}></div>
+                    <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">ARR:</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">{platform.arr}</span>
+                  </div>
+                )}
+                {platform.users && (
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                    <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">Users:</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">{platform.users}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</div>

@@ -1,0 +1,349 @@
+---
+export interface Props {
+  title: string;
+  subtitle?: string;
+  data: Array<{
+    name: string;
+    visits: string;
+    share: string;
+    category?: string;
+    arr?: string;
+    users?: string;
+    description?: string;
+    growth?: string;
+  }>;
+  disclaimer?: string;
+}
+
+const { title, subtitle, data, disclaimer } = Astro.props;
+
+// Function to get category colors
+function getCategoryColor(category?: string) {
+  const colors = {
+    'vibe-coding': '#8B5CF6', // Umai Purple
+    'ai-enhanced': '#3B82F6', // Blue
+    'platform': '#10B981', // Green
+    'specialized': '#F59E0B', // Orange
+    'emerging': '#EC4899', // Pink
+  };
+  return colors[category as keyof typeof colors] || '#8B5CF6';
+}
+---
+
+<div class="market-share-chart my-8">
+  <!-- Header -->
+  <div class="mb-6">
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2 mb-2">
+      <div class="w-1 h-5 bg-purple-500 rounded-full"></div>
+      {title}
+    </h3>
+    {subtitle && (
+      <p class="text-sm text-gray-600 dark:text-gray-400">{subtitle}</p>
+    )}
+  </div>
+
+  <!-- Chart Container -->
+  <div class="rounded-xl border border-gray-200/60 bg-gradient-to-br from-gray-50/80 to-white/90 dark:from-gray-900/50 dark:to-gray-800/30 dark:border-gray-700/40 shadow-sm backdrop-blur-sm overflow-hidden">
+    
+    <!-- Interactive Bar Chart -->
+    <div id="market-share-bar-chart" class="w-full h-96 p-6">
+      <!-- D3.js chart will be rendered here -->
+    </div>
+
+    <!-- Summary Footer -->
+    <div class="bg-gray-50/50 dark:bg-gray-800/50 border-t border-gray-200/60 dark:border-gray-700/40 px-6 py-4">
+      <div class="flex items-center justify-between text-sm">
+        <span class="text-gray-600 dark:text-gray-400">Total measured traffic: {data.reduce((sum: number, item: any) => sum + parseFloat(item.visits.replace('M', '')), 0).toFixed(1)}M visits</span>
+        <span class="text-gray-600 dark:text-gray-400">Last 90 days</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Disclaimer -->
+  {disclaimer && (
+    <div class="mt-4 p-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200/60 dark:border-yellow-700/40">
+      <div class="flex items-start gap-2">
+        <svg class="w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+        </svg>
+        <p class="text-xs text-yellow-800 dark:text-yellow-200">{disclaimer}</p>
+      </div>
+    </div>
+  )}
+</div>
+
+<script is:inline define:vars={{ data, getCategoryColor }}>
+  // Import D3.js
+  import('https://cdn.skypack.dev/d3@7').then(d3 => {
+    console.log('D3.js loaded successfully, creating chart...');
+    
+    // Set up dimensions and margins
+    const container = document.getElementById('market-share-bar-chart');
+    const containerWidth = container.offsetWidth;
+    const margin = { top: 40, right: 60, bottom: 80, left: 80 };
+    const width = containerWidth - margin.left - margin.right;
+    const height = 300 - margin.top - margin.bottom;
+
+    // Create SVG
+    const svg = d3.select('#market-share-bar-chart')
+      .append('svg')
+      .attr('viewBox', `0 0 ${containerWidth} 300`)
+      .attr('width', '100%')
+      .attr('height', '100%');
+
+    const g = svg.append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    // Create gradients for bars
+    const defs = svg.append('defs');
+    
+    const categoryColors = {
+      'vibe-coding': '#8B5CF6',
+      'ai-enhanced': '#3B82F6', 
+      'platform': '#10B981',
+      'specialized': '#F59E0B',
+      'emerging': '#EC4899'
+    };
+
+    Object.entries(categoryColors).forEach(([category, color]) => {
+      const gradient = defs.append('linearGradient')
+        .attr('id', `gradient-${category}`)
+        .attr('x1', '0%').attr('y1', '0%')
+        .attr('x2', '0%').attr('y2', '100%');
+      
+      gradient.append('stop')
+        .attr('offset', '0%')
+        .attr('stop-color', color)
+        .attr('stop-opacity', 1);
+      
+      gradient.append('stop')
+        .attr('offset', '100%')
+        .attr('stop-color', color)
+        .attr('stop-opacity', 0.7);
+    });
+
+    // Process data
+    const chartData = data.map(d => ({
+      ...d,
+      visitsValue: parseFloat(d.visits.replace('M', '')),
+      shareValue: parseFloat(d.share.replace('%', ''))
+    }));
+
+    // Create scales
+    const xScale = d3.scaleBand()
+      .domain(chartData.map(d => d.name))
+      .range([0, width])
+      .padding(0.2);
+
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(chartData, d => d.visitsValue)])
+      .range([height, 0])
+      .nice();
+
+    // Remove any existing tooltips
+    d3.selectAll('.tooltip').remove();
+    
+    // Create tooltip
+    const tooltip = d3.select('body').append('div')
+      .attr('class', 'tooltip')
+      .style('position', 'absolute')
+      .style('background', 'rgba(17, 24, 39, 0.95)')
+      .style('color', 'white')
+      .style('padding', '12px 16px')
+      .style('border-radius', '8px')
+      .style('font-size', '14px')
+      .style('line-height', '1.4')
+      .style('box-shadow', '0 10px 25px rgba(0, 0, 0, 0.2)')
+      .style('pointer-events', 'none')
+      .style('opacity', 0)
+      .style('z-index', 1000)
+      .style('max-width', '320px')
+      .style('backdrop-filter', 'blur(8px)')
+      .style('border', '1px solid rgba(255, 255, 255, 0.1)')
+      .style('transition', 'opacity 0.2s ease-in-out');
+
+    // Add axes
+    g.append('g')
+      .attr('transform', `translate(0,${height})`)
+      .call(d3.axisBottom(xScale))
+      .selectAll('text')
+      .style('text-anchor', 'end')
+      .attr('dx', '-.8em')
+      .attr('dy', '.15em')
+      .attr('transform', 'rotate(-45)')
+      .style('font-size', '12px')
+      .style('font-weight', '600')
+      .style('fill', '#4b5563');
+
+    g.append('g')
+      .call(d3.axisLeft(yScale)
+        .ticks(5)
+        .tickFormat(d => `${d}M`)
+      )
+      .selectAll('text')
+      .style('font-size', '12px')
+      .style('font-weight', '600')
+      .style('fill', '#4b5563');
+
+    // Style axis lines
+    g.selectAll('.domain')
+      .style('stroke', '#9ca3af')
+      .style('stroke-width', 2);
+    
+    g.selectAll('.tick line')
+      .style('stroke', '#e5e7eb');
+
+    // Add grid lines
+    g.append('g')
+      .attr('class', 'grid')
+      .call(d3.axisLeft(yScale)
+        .ticks(5)
+        .tickSize(-width)
+        .tickFormat('')
+      )
+      .selectAll('line')
+      .style('stroke', '#f3f4f6')
+      .style('stroke-width', 1)
+      .style('opacity', 0.7);
+
+    // Add bars with animation
+    const bars = g.selectAll('.bar')
+      .data(chartData)
+      .enter()
+      .append('rect')
+      .attr('class', 'bar')
+      .attr('x', d => xScale(d.name))
+      .attr('width', xScale.bandwidth())
+      .attr('y', height)
+      .attr('height', 0)
+      .attr('fill', d => `url(#gradient-${d.category})`)
+      .attr('stroke', 'white')
+      .attr('stroke-width', 2)
+      .style('cursor', 'pointer')
+      .style('filter', 'drop-shadow(0 4px 12px rgba(0,0,0,0.15))')
+      .style('transition', 'all 0.3s ease');
+
+    // Animate bars on load
+    bars.transition()
+      .duration(800)
+      .delay((_, i) => i * 100)
+      .attr('y', d => yScale(d.visitsValue))
+      .attr('height', d => height - yScale(d.visitsValue));
+
+    // Add value labels on top of bars
+    const labels = g.selectAll('.bar-label')
+      .data(chartData)
+      .enter()
+      .append('text')
+      .attr('class', 'bar-label')
+      .attr('x', d => xScale(d.name) + xScale.bandwidth() / 2)
+      .attr('y', height)
+      .attr('text-anchor', 'middle')
+      .style('font-size', '12px')
+      .style('font-weight', '700')
+      .style('fill', '#374151')
+      .style('opacity', 0)
+      .text(d => `${d.visits} (${d.share})`);
+
+    // Animate labels
+    labels.transition()
+      .duration(800)
+      .delay((_, i) => i * 100 + 400)
+      .attr('y', d => yScale(d.visitsValue) - 8)
+      .style('opacity', 1);
+
+    // Add hover interactions
+    bars
+      .on('mouseover', function(_, d) {
+        console.log('Hovering over:', d.name);
+        
+        // Highlight bar
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .style('filter', 'drop-shadow(0 8px 24px rgba(0,0,0,0.3)) brightness(1.1)')
+          .attr('stroke-width', 3);
+
+        // Dim other bars
+        bars.filter(bar => bar !== d)
+          .transition()
+          .duration(200)
+          .style('opacity', 0.4);
+
+        // Show tooltip
+        let tooltipHtml = '<div style="font-weight: bold; margin-bottom: 8px;">' + d.name + '</div>';
+        tooltipHtml += '<div style="margin-bottom: 4px;">Traffic: <strong>' + d.visits + '</strong></div>';
+        tooltipHtml += '<div style="margin-bottom: 4px;">Market Share: <strong>' + d.share + '</strong></div>';
+        
+        if (d.arr) {
+          tooltipHtml += '<div style="margin-bottom: 4px;">ARR: <strong>' + d.arr + '</strong></div>';
+        }
+        if (d.users) {
+          tooltipHtml += '<div style="margin-bottom: 4px;">Users: <strong>' + d.users + '</strong></div>';
+        }
+        if (d.growth) {
+          tooltipHtml += '<div style="color: #10B981; margin-bottom: 4px; font-size: 13px;">Growth: ' + d.growth + '</div>';
+        }
+        
+        tooltipHtml += '<div style="color: #D1D5DB; margin-bottom: 8px; font-size: 12px; text-transform: capitalize;">';
+        tooltipHtml += 'Category: ' + (d.category ? d.category.replace('-', ' ') : 'Unknown') + '</div>';
+        
+        if (d.description) {
+          tooltipHtml += '<div style="color: #9CA3AF; font-size: 12px; line-height: 1.4; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">';
+          tooltipHtml += d.description + '</div>';
+        }
+        
+        // Position tooltip above the bar
+        const rect = this.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        
+        tooltip
+          .style('opacity', 1)
+          .html(tooltipHtml)
+          .style('left', (rect.left + scrollLeft + rect.width / 2) + 'px')
+          .style('top', (rect.top + scrollTop - 10) + 'px')
+          .style('transform', 'translateX(-50%) translateY(-100%)');
+      })
+      .on('mouseout', function() {
+        // Reset all bars
+        bars.transition()
+          .duration(200)
+          .style('filter', 'drop-shadow(0 4px 12px rgba(0,0,0,0.15))')
+          .style('opacity', 1)
+          .attr('stroke-width', 2);
+
+        // Hide tooltip
+        tooltip.style('opacity', 0);
+      });
+
+    // Add axis labels
+    g.append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 0 - margin.left)
+      .attr('x', 0 - (height / 2))
+      .attr('dy', '1em')
+      .style('text-anchor', 'middle')
+      .style('font-size', '14px')
+      .style('font-weight', '700')
+      .style('fill', '#374151')
+      .text('Monthly Visits (Millions)');
+
+    g.append('text')
+      .attr('transform', `translate(${width / 2}, ${height + margin.bottom - 10})`)
+      .style('text-anchor', 'middle')
+      .style('font-size', '14px')
+      .style('font-weight', '700')
+      .style('fill', '#374151')
+      .text('AI Development Platforms');
+
+  }).catch(error => {
+    console.error('Failed to load D3.js:', error);
+    // Fallback: show a simple message
+    document.getElementById('market-share-bar-chart').innerHTML = `
+      <div class="flex items-center justify-center h-full text-gray-500">
+        <p>Interactive chart requires JavaScript to be enabled</p>
+      </div>
+    `;
+  });
+</script>

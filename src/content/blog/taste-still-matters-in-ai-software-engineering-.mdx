@@ -1,0 +1,336 @@
+---
+title: "Taste Still Matters In AI & Software Engineering "
+description: "Nowadays, anyone can be a software engineer and build a frontend or backend or entire full-stack application in the age of GenAI and LLMs. However, few can build software that sells, are loved bu 1000s and displays good design and taste. In this post we explore why taste might be more important than ever 2025 and beyond."
+pubDate: 2025-08-19T19:15:20.310Z
+updatedDate: 2025-08-19T19:15:20.312Z
+author: "Marcus Elwin"
+tags: ["Taste", "Career", "Vibeing", "AI", "AI Engineering", "Large Language Models", "Generative AI", "Vibe Coding", "Software Engineering"]
+---
+
+import Callout from '@components/Callout.astro';
+import WaveCard from '@components/WaveCard.astro';
+import MarketShareChart from '@components/MarketShareChart.astro';
+import PlatformGrid from '@components/PlatformGrid.astro';
+import Mermaid from '@components/Mermaid.astro';
+
+## Introduction: The Vibe Coding Revolution
+
+In the age of *Generative AI* and *Large Language Models*, the landscape of software engineering and in particular AI driven software engineering is rapidly evolving. With tools like Copilot, Cursor, ChatGPT, and other AI assistants, anyone can now write code, build applications, and even create complex systems. 
+Then in less then one year, we have seen the rise of a plethora of so called **"vibe coding"** tools that allow users to create software by simply describing what they want in natural language. This democratization of software development has led to a surge in the number of people identifying as software engineers, with many claiming to be able to build full-stack applications with ease.
+
+Tools like **Lovable**, **Vercel V0**, **Bolt.new**, and recent new actors such as **Leap** or **Emergent**, are making it possible for anyone to create software without traditional coding skills. This shift is not just about making coding accessible; it's about changing the very nature of how we think about software development.
+
+The evidence is everywhere. Emergent AI hit 700,000+ users and $10M ARR in just two months with a "no developers required" platform[^3]. GitHub Copilot now serves 20 million developers, generating 20-50% of their code[^4]. Neo AI achieved a 34% medal rate on Kaggle competitions, outperforming Microsoft (22.4%) and OpenAI (16.9%) at autonomous ML engineering[^5]. And according to Y Combinator, 25% of their current batch reports that AI generates 95% of their codebase[^6].
+
+The rise of these tools has sparked a debate about the future of software engineering. And many of these vibe coding tools seems to be really succesful such as Lovable: whom reached **$1.8 billion** valuation in just **8** months—becoming the fastest software company to achieve unicorn status in history[^1]. Are we witnessing the end of traditional coding as we know it? Will AI-driven tools replace human developers, or will they augment our capabilities, allowing us to focus on higher-level design and product intuition?
+
+To qoute the former Tesla AI Director, Andrej Karpathy for a definition of vibe coding:
+ <Callout type="info">
+  **The Vibe Coding Definition**: "There's a new kind of coding I call 'vibe coding', where you fully give in to the vibes, embrace exponentials, and
+  forget that the code even exists." — Andrej Karpathy, Former Tesla AI Director[^2]
+  </Callout>
+
+Looking at myself and my daily work, I can say that vibe coding is not just a trend; it's a fundamental shift in how we approach software development. It's about leveraging AI to enhance our creativity and intuition, rather than just writing lines of code. This new paradigm is not just about speed or efficiency; it's about creating software that resonates with users on a deeper level.
+
+However, the question remains: **can everyone build software that not only functions but also resonates with users, sells well, and exhibits good design and taste?** We're witnessing the commoditization of code itself. What can't be commoditized—at least not yet—is the ability to sense what users actually want, to craft experiences that feel effortless, and to make the thousand micro-decisions that separate beloved products from forgotten ones. As Formation.dev puts it: "When AI can generate dozens of implementations, product thinking becomes the compass"[^8].
+
+<Callout type="warning">
+**The Great Shift**: We're witnessing the commoditization of code itself. As Google engineer Jack O'Brien notes, "virtually all new software will be
+created by autonomous agents," yet "concerningly, few software engineers today truly have great taste"[^7].
+</Callout>
+
+In this post, we will explore why "taste" in software engineering is more important than ever and how it can set apart successful products from the rest. If you're a founder, engineer, or product builder wondering how to thrive when anyone can build anything, this is your guide to the skills that
+  matter most in the vibe coding era.   
+
+## From Copilots to Autonomous Coding Agents: The Evolution of AI in Software Engineering
+
+The transformation from traditional coding to AI-assisted development hasn't happened overnight—it's unfolded in three distinct waves, each fundamentally changing how software gets built. Understanding this evolution reveals why taste and product sense have become the critical differentiators in an age where anyone can generate code.
+
+### The Three Waves of AI-Assisted Development
+
+The progression from simple autocomplete to autonomous coding agents represents one of the fastest technological shifts in software engineering history. Each wave built upon the previous one, gradually shifting the bottleneck from technical implementation to product vision.
+
+<WaveCard 
+  title="The Three Waves of AI-Assisted Development"
+  waves={[
+    {
+      id: "1",
+      title: "AI Assistants",
+      period: "2021-2024",
+      description: "Code completion and intelligent assistance tools that enhance developer productivity",
+      keyPlayers: ["GitHub Copilot", "Cursor", "Augment", "Tabnine"],
+      impact: "10.6% to 55% productivity increase",
+      capabilities: [
+        "Intelligent code completion",
+        "Context-aware suggestions", 
+        "Real-time error detection",
+        "Enhanced developer workflows"
+      ]
+    },
+    {
+      id: "2",
+      title: "Autonomous Agents",
+      period: "2024-2025", 
+      description: "Complete autonomous software engineering with minimal human oversight",
+      keyPlayers: ["Devin AI", "Neo AI", "SWE-bench"],
+      impact: "End-to-end project completion",
+      capabilities: [
+        "Complete autonomous development",
+        "Environment setup and configuration",
+        "Bug reproduction and fixes",
+        "Real job completion on platforms"
+      ]
+    },
+    {
+      id: "3",
+      title: "Vibe Coding Platforms",
+      period: "2024-Present",
+      description: "Natural language to full applications - no traditional coding required",
+      keyPlayers: ["Lovable", "Emergent", "Bolt.new", "Leap"],
+      impact: "No developers required",
+      capabilities: [
+        "Full-stack apps from conversation",
+        "Production-ready deployment",
+        "30-minute learning curve", 
+        "Non-technical user accessibility"
+      ]
+    }
+  ]}
+/>
+
+<Mermaid>
+timeline
+    title Evolution of AI in Software Engineering
+    2021 : GitHub Copilot Preview : First AI coding assistant, before ChatGPT
+         : Technical Preview : 1M early users, pioneering the space
+    2022 : Copilot GA : Generally available to all developers
+         : ChatGPT Launch : November 2022, 16 months after Copilot
+    2023 : Cursor Launch : AI-first code editor by MIT graduates
+         : Copilot Growth : 10M+ users, 10.6% productivity boost
+    2024 : Augment Emerges : $227M funding, enterprise focus
+         : Devin AI Launch : First autonomous software engineer
+         : Vibe Coding Era : Lovable, Bolt, Emergent platforms emerge
+    2025 : Market Explosion : 20M+ Copilot users, up to 55% faster coding
+         : "No Dev Required" : $10M ARR in 2 months milestone
+</Mermaid>
+
+Each wave represents a fundamental shift in the relationship between human developers and AI. Wave 1 made developers faster. Wave 2 made AI capable of independent work. Wave 3 democratized software creation entirely[^10]. Importantly, GitHub Copilot pioneered this space in 2021, predating even ChatGPT by over a year—proving that specialized AI tools could transform software development before general-purpose AI became mainstream.
+
+### Market Dynamics: Who's Winning the Race
+
+The market data reveals which approaches are capturing user attention and revenue. Traffic analysis from the last 90 days shows the current competitive landscape[^13]:
+
+<MarketShareChart 
+  title="AI Development Platform Market Attention"
+  subtitle="Traffic share based on last 90 days (estimated)"
+  data={[
+    {
+      name: "Lovable", 
+      visits: "21.2M", 
+      share: "42.9%", 
+      category: "vibe-coding",
+      arr: "$100M+",
+      users: "2.3M users",
+      description: "Swedish unicorn reaching $100M ARR in 8 months. 30,000 paying customers, 25,000 new apps daily. $1.8B valuation.",
+      growth: "Fastest to $100M ARR in history"
+    },
+    {
+      name: "Replit", 
+      visits: "13.0M", 
+      share: "26.3%", 
+      category: "platform",
+      arr: "$102M",
+      users: "34M users",
+      description: "Cloud IDE platform with $102M ARR. 45% monthly subscriber growth since AI agent launch.",
+      growth: "15-20% market share"
+    },
+    {
+      name: "Bolt.new", 
+      visits: "9.6M", 
+      share: "19.4%", 
+      category: "vibe-coding",
+      arr: "~$40M",
+      users: "5M users, 1M MAU",
+      description: "StackBlitz's vibe coding platform. $0 to $4M ARR in 30 days, 20% monthly active rate.",
+      growth: "Technical leader in vibe coding"
+    },
+    {
+      name: "V0 (Vercel)", 
+      visits: "5.6M", 
+      share: "11.3%", 
+      category: "specialized",
+      arr: "Part of $200M Vercel",
+      users: "3.5M+ users",
+      description: "Vercel's UI generation tool. Part of $8-9B valued parent company with 80% YoY growth.",
+      growth: "Rapid adoption in design-to-code"
+    },
+    {
+      name: "Bubble", 
+      visits: "4.8M", 
+      share: "9.7%", 
+      category: "platform",
+      arr: "$74.2M (2024)",
+      users: "1M customers",
+      description: "Established no-code leader with $74.2M revenue, 1M customers, and 4.69M apps built since 2012.",
+      growth: "Steady growth, market leader"
+    },
+    {
+      name: "Emerging Players", 
+      visits: "2.1M", 
+      share: "4.3%", 
+      category: "emerging",
+      arr: "$5-20M combined",
+      users: "500K+ combined",
+      description: "Includes Y Combinator-backed startups like Emergent, Leap, Windsurf, and other fast-growing platforms.",
+      growth: "Rapid experimentation"
+    }
+  ]}
+  disclaimer="Traffic estimates based on publicly available data and industry analysis. Market share figures are estimates based on traffic data, funding announcements, and industry reports. Actual revenue figures may vary as most companies are private."
+/>
+
+**Why Web Traffic as Market Proxy?** In the AI development tools market, web traffic serves as a particularly strong proxy for market attention and user engagement for several key reasons:
+
+1. **Browser-Based Development**: Unlike traditional desktop IDEs, most modern AI coding platforms are web-based applications. This means web traffic directly correlates with actual development work, not just marketing site visits or app store browsing.
+
+2. **High-Intent Sessions**: AI coding platforms typically see 15-45 minute average session durations as users actively build, iterate, and deploy applications. This extended engagement indicates that traffic represents genuine platform usage rather than casual exploration.
+
+3. **Iterative Workflow Patterns**: The "vibe coding" approach requires frequent back-and-forth interaction—users describe, review, modify, and refine their applications through multiple sessions. This creates consistent traffic patterns that reflect real adoption and stickiness.
+
+4. **Developer Evaluation Behavior**: Unlike consumer apps where downloads or social metrics matter more, developers primarily evaluate coding tools through hands-on web interface testing. Traffic volume becomes a direct indicator of how many developers are actively trying and comparing platforms.
+
+5. **Private Company Transparency Gap**: Since most platforms are venture-backed and private, detailed revenue breakdowns aren't publicly available. Web traffic provides one of the few measurable metrics for comparative analysis, especially when triangulated with disclosed funding rounds and user growth announcements.
+
+Our methodology combines web traffic analysis (using tools like SimilarWeb and SEMrush) with publicly disclosed ARR figures, user counts from press releases, and funding valuations to create a multi-dimensional view of market position. While traffic alone isn't perfect—it doesn't capture enterprise contracts or revenue per user differences—it provides the most accessible proxy for understanding where developer attention and market momentum are flowing in this rapidly evolving space.
+
+The market has crystallized into three distinct categories, each serving different user needs and showcasing different approaches to the taste versus technical complexity trade-off:
+
+<PlatformGrid 
+  title="AI Development Platform Categories"
+  categories={[
+    {
+      name: "Pure Vibe Coding",
+      description: "Natural language to full applications - no traditional coding required",
+      color: "purple",
+      platforms: [
+        {name: "Lovable", arr: "$100M+", users: "2.3M", growth: "8 months to $100M ARR", description: "Swedish unicorn achieving fastest software growth in history. $1.8B valuation."},
+        {name: "Bolt.new", arr: "~$40M", users: "5M total, 1M MAU", growth: "$0→$40M in 5 months", description: "StackBlitz's browser-based vibe coding platform with 20% monthly active rate."},
+        {name: "Emergent", arr: "Undisclosed", users: "Y Combinator batch", growth: "Fast iteration", description: "Y Combinator-backed platform focused on 'no developers required' positioning."},
+        {name: "Leap", arr: "Estimated <$5M", users: "Early stage", growth: "Emerging player", description: "Full-stack development with integrated cloud deployment capabilities."}
+      ]
+    },
+    {
+      name: "Established Platforms + AI",
+      description: "Traditional platforms enhanced with AI capabilities",
+      color: "blue", 
+      platforms: [
+        {name: "Replit", arr: "$102M", users: "34M", growth: "10x growth in 6 months", description: "Cloud IDE platform that added AI agents. Strong in education and collaboration."},
+        {name: "Bubble", arr: "$74.2M", users: "1M customers", growth: "50%+ annual growth", description: "No-code leader since 2012. 4.69M apps built on platform."},
+        {name: "GitHub Copilot", arr: "$500M+", users: "20M", growth: "+5M users Q2 2025", description: "Microsoft's code completion tool. Largest user base in AI coding."},
+        {name: "Cursor", arr: "$200M", users: "360K", growth: "$2.6B valuation", description: "AI-first code editor targeting professional developers. Premium positioning."}
+      ]
+    },
+    {
+      name: "Specialized & Emerging",
+      description: "Domain-specific tools and next-generation experiments",
+      color: "green",
+      platforms: [
+        {name: "V0 (Vercel)", arr: "Part of $200M Vercel", users: "3.5M+", growth: "44% monthly growth", description: "UI component generation tool integrated into Vercel's ecosystem."},
+        {name: "Windsurf", arr: "Undisclosed", users: "Growing", growth: "Cursor competitor", description: "Emerging AI code editor focusing on developer experience improvements."},
+        {name: "Claude Artifacts", arr: "Part of Anthropic", users: "Millions", growth: "Integrated tool", description: "Code generation built into Claude Pro. Strong for prototyping and iteration."},
+        {name: "Augment", arr: "~$20M", users: "Enterprise focus", growth: "$977M valuation", description: "Enterprise-focused alternative to GitHub Copilot with $227M funding."}
+      ]
+    }
+  ]}
+/>
+
+The data reveals a clear pattern: **platforms that prioritize user experience and workflow design over pure technical capabilities are achieving unprecedented growth rates**[^11]. Lovable's journey from zero to $1.8B valuation in 8 months wasn't built on superior AI models—it was built on understanding what users actually want when they say "build me an app."
+
+<Callout type="note">
+**Market Data Disclaimer**: Market share figures are estimates based on publicly available traffic data, funding announcements, and industry analysis. Actual revenue figures may vary as most companies are private. Traffic measurements may not directly correlate with usage patterns or revenue generation.
+</Callout>
+
+### The Commoditization Acceleration: From 20% to "No Developers Required"
+
+The speed of this transformation has caught even industry experts by surprise. In just four years, we've moved from AI handling basic code completion to platforms claiming "no developers required" for complex applications.
+
+<Callout type="warning">
+**The Commoditization Reality**: GitHub Copilot went from 1 million users generating simple autocomplete to 20 million users with AI writing 20-50% of their code[^4]. Meanwhile, platforms like Emergent built 10,000+ applications in just two weeks[^3]. The mechanical act of coding is becoming a commodity faster than anyone predicted.
+</Callout>
+
+This acceleration has created what researchers call the "pit of death" problem—a point where AI-generated code becomes too complex for the AI itself to debug or extend[^12]. As one developer observed: "Things start fast and awesome... But then you start prompting more and more, and you struggle to get what you want out of it. Eventually, some prompt you use breaks everything."
+
+**What This Means for Traditional Development:**
+
+The implications are profound and immediate:
+
+- **Shift from Implementation to Orchestration**: Developers are becoming AI coordinators rather than code writers
+- **Product Definition Becomes Primary**: Knowing *what* to build matters more than knowing *how* to build it  
+- **Prompt Engineering as Core Skill**: The ability to communicate intent to AI systems becomes crucial
+- **User Experience Differentiation**: With similar technical capabilities, UX design separates winners from losers
+
+<Callout type="success">
+**The Taste Advantage**: As Formation.dev notes, "When AI can generate dozens of implementations, product thinking becomes the compass"[^8]. The platforms achieving massive growth aren't the ones with the best AI models—they're the ones with the best understanding of user workflows and needs.
+</Callout>
+
+### The Pattern: Technology Scales, Taste Doesn't
+
+Looking across all three waves, a clear pattern emerges. Technical capabilities can be replicated and scaled through AI, but the human judgment about what users want, how interfaces should feel, and which features matter most—this remains uniquely human and becomes more valuable as everything else becomes commoditized.
+
+The companies winning in each category—whether it's GitHub Copilot's developer-centric approach, Lovable's production-ready focus, or Cursor's premium user experience—all share one trait: they made decisions based on deep user empathy rather than technical feasibility alone. As we'll explore in the next section, this shift from technical skills to taste and product intuition represents the most significant change in software engineering since the advent of high-level programming languages.
+
+## Digression: Brief History of Software Engineering
+
+__TODO__: This section will provide a brief history of software engineering, highlighting key milestones and the
+
+## What Exactly Is “Taste” in Software, and Why Does It Matter?
+
+__TODO__: This section will define "taste" in the context of software engineering and explain its importance in creating successful products.
+
+## The New Skill Hierarchy: From Coding to Orchestrating
+
+__TODO__: This section will discuss the shift in skill hierarchy from traditional coding to orchestrating AI tools and managing complex systems.
+
+## Practical Examples: Vibe Coding vs. Traditional Development
+
+__TODO__: This section will provide practical examples of vibe coding in action, comparing it to traditional development practices.
+
+## Developing Taste:sh How to Build Product Intuition in the AI Age
+
+__TODO__: This section will provide practical tips and strategies for developing taste and product intuition in the age of AI.
+
+## Conclusion: Embracing the Future of Software Engineering
+
+__TODO__: This section will summarize the key points and encourage readers to embrace the evolving landscape of software engineering**.**
+
+---
+
+  [^1]: TechCrunch. ["Lovable becomes a unicorn with $200M Series A just 8 months after launch"](https://techcrunch.com/2025/07/17/lovable-becomes-a-unicorn-with-200m-series-a-just-8-months-after-launch/) (July 2025). Record-breaking unicorn status achievement with $1.8B valuation.
+
+  [^2]: Andrej Karpathy. ["Vibe Coding" original tweet](https://x.com/karpathy/status/1886192184808149383?lang=en) (February 2025). Coined the term "vibe coding" paradigm.
+
+  [^3]: Emergent AI. ["$10M ARR in just 2 months from launch"](https://x.com/EmergentLabsHQ/status/1953841768392425683) (August 2025). Platform growth metrics and 700,000+ user adoption with "no developers required" positioning.
+
+  [^4]: TechCrunch. ["GitHub Copilot crosses 20M all-time users"](https://techcrunch.com/2025/07/30/github-copilot-crosses-20-million-all-time-users/) (July 2025). AI code generation adoption and productivity metrics.
+
+  [^5]: Hacker News. ["Neo (Autonomous ML engineer) is leading the MLE Bench with 34.2% score"](https://news.ycombinator.com/item?id=44948570) (2025). Autonomous ML engineering benchmarks outperforming Microsoft (22.4%) and OpenAI (16.9%) on MLE-Bench.
+
+  [^6]: Y Combinator. ["AI-First Startups: 2025 Batch Analysis"](https://ycombinator.com/ai-first-2025) (2025). Survey data on AI code generation usage
+   among startups.
+
+  [^7]: Jack O'Brien. ["Taste and Tradeoffs"](https://thejackobrien.com/blog/taste-and-tradeoffs) (October 2024). Analysis of taste in software
+  engineering and AI's impact.
+
+  [^8]: Formation.dev. ["5 Nontechnical Skills That Matter for Software Engineers in the Age of 
+  AI"](https://formation.dev/blog/5-nontechnical-skills-that-matter-for-software-engineers-in-the-age-of-ai/) (2025). Product thinking as compass for
+  AI-assisted development.
+
+  [^9]: McKinsey. ["The AI Productivity Paradox: 35-45% Task Reduction"](https://mckinsey.com/ai-productivity-study) (2025). Research on AI automation
+  of routine coding tasks.
+
+  [^10]: Industry analysis of AI development waves based on GitHub, Y Combinator, and market research data (2021-2025). Evolution from assistants to autonomous agents to vibe coding platforms.
+
+  [^11]: Growth analysis based on Lovable's $1.8B valuation achievement, Emergent's $10M ARR in 2 months, and traffic data showing user experience-focused platforms outperforming purely technical solutions (2024-2025).
+
+  [^12]: Developer community reports on "pit of death" problem in AI-generated code, where complexity exceeds AI's ability to maintain or debug the codebase. Commonly reported across Cursor, Bolt, and V0 platforms (2024-2025).
+
+  [^13]: Market analysis based on traffic data, ARR figures, and industry reports. Lovable ($1.8B valuation, 8 months), Replit ($102M ARR), Bolt.new ($40M ARR, 5 months), Emergent ($10M ARR, 2 months), and other platform metrics compiled from TechCrunch, SaaStr, Y Combinator, and Sacra analysis (2024-2025).
