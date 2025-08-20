@@ -11,6 +11,8 @@ export interface Props {
     users?: string;
     description?: string;
     growth?: string;
+    arrValue?: string;
+    usersValue?: string;
   }>;
   disclaimer?: string;
 }
@@ -45,14 +47,39 @@ function getCategoryColor(category?: string) {
   <!-- Chart Container -->
   <div class="rounded-xl border border-gray-200/60 bg-gradient-to-br from-gray-50/80 to-white/90 dark:from-gray-900/50 dark:to-gray-800/30 dark:border-gray-700/40 shadow-sm backdrop-blur-sm overflow-hidden">
     
-    <!-- Chart Header with Copy Button -->
+    <!-- Chart Header with Metric Toggle and Copy Button -->
     <div class="flex items-center justify-between p-4 border-b border-gray-200/40 dark:border-gray-700/40">
-      <div class="flex items-center gap-2">
-        <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-        </svg>
-        <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Interactive Market Data</span>
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">Interactive Market Data</span>
+        </div>
+        
+        <!-- Metric Toggle -->
+        <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+          <button 
+            class="metric-toggle active px-3 py-1 text-xs font-medium rounded-md transition-colors bg-purple-500 text-white"
+            data-metric="arr"
+          >
+            ARR
+          </button>
+          <button 
+            class="metric-toggle px-3 py-1 text-xs font-medium rounded-md transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+            data-metric="users"
+          >
+            Users
+          </button>
+          <button 
+            class="metric-toggle px-3 py-1 text-xs font-medium rounded-md transition-colors text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+            data-metric="visits"
+          >
+            Web Traffic
+          </button>
+        </div>
       </div>
+      
       <button 
         id="copy-markdown-btn" 
         class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
@@ -142,12 +169,20 @@ function getCategoryColor(category?: string) {
         .attr('stop-opacity', 0.7);
     });
 
-    // Process data
-    const chartData = data.map(d => ({
+    // Process data with multiple metrics
+    const baseChartData = data.map(d => ({
       ...d,
-      visitsValue: parseFloat(d.visits.replace('M', '')),
-      shareValue: parseFloat(d.share.replace('%', ''))
+      visitsValue: parseFloat(d.visits.replace(/[^\d.]/g, '') || '0'),
+      shareValue: parseFloat(d.share.replace('%', '')),
+      arrValue: d.arrValue ? parseFloat(d.arrValue.replace('M', '')) : parseFloat(d.visits.replace(/[^\d.]/g, '') || '0'),
+      usersValue: d.usersValue ? parseFloat(d.usersValue.replace('M', '')) : 
+                  d.users ? parseFloat(d.users.replace(/[^\d.]/g, '')) : 1
     }));
+
+    let currentMetric = 'arr';
+    
+    // Sort initial data by ARR (default metric)
+    const chartData = [...baseChartData].sort((a, b) => b.arrValue - a.arrValue);
 
     // Create scales
     const xScale = d3.scaleBand()
@@ -155,10 +190,41 @@ function getCategoryColor(category?: string) {
       .range([0, width])
       .padding(0.2);
 
-    const yScale = d3.scaleLinear()
-      .domain([0, d3.max(chartData, d => d.visitsValue)])
+    let yScale = d3.scaleLinear()
+      .domain([0, d3.max(chartData, d => d.arrValue)])
       .range([height, 0])
       .nice();
+
+    // Function to get current metric value
+    function getMetricValue(d, metric) {
+      switch(metric) {
+        case 'arr': return d.arrValue;
+        case 'users': return d.usersValue;
+        case 'visits': return d.visitsValue;
+        default: return d.arrValue;
+      }
+    }
+
+    // Function to get metric label
+    function getMetricLabel(metric) {
+      switch(metric) {
+        case 'arr': return 'ARR (Millions)';
+        case 'users': return 'Users (Millions)';
+        case 'visits': return 'Monthly Visits (Millions)';
+        default: return 'ARR (Millions)';
+      }
+    }
+
+    // Function to get metric display value
+    function getMetricDisplay(d, metric) {
+      const value = getMetricValue(d, metric);
+      switch(metric) {
+        case 'arr': return `$${value}M`;
+        case 'users': return `${value}M`;
+        case 'visits': return `${value}M`;
+        default: return `$${value}M`;
+      }
+    }
 
     // Remove any existing tooltips
     d3.selectAll('.tooltip').remove();
@@ -183,10 +249,12 @@ function getCategoryColor(category?: string) {
       .style('transition', 'opacity 0.2s ease-in-out');
 
     // Add axes
-    g.append('g')
+    const xAxis = g.append('g')
+      .attr('class', 'x-axis')
       .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(xScale))
-      .selectAll('text')
+      .call(d3.axisBottom(xScale));
+      
+    xAxis.selectAll('text')
       .style('text-anchor', 'end')
       .attr('dx', '-.8em')
       .attr('dy', '.15em')
@@ -195,12 +263,14 @@ function getCategoryColor(category?: string) {
       .style('font-weight', '600')
       .style('fill', '#4b5563');
 
-    g.append('g')
+    const yAxis = g.append('g')
+      .attr('class', 'y-axis')
       .call(d3.axisLeft(yScale)
         .ticks(5)
-        .tickFormat(d => `${d}M`)
-      )
-      .selectAll('text')
+        .tickFormat(d => `$${d}M`)
+      );
+      
+    yAxis.selectAll('text')
       .style('font-size', '12px')
       .style('font-weight', '600')
       .style('fill', '#4b5563');
@@ -243,12 +313,91 @@ function getCategoryColor(category?: string) {
       .style('filter', 'drop-shadow(0 4px 12px rgba(0,0,0,0.15))')
       .style('transition', 'all 0.3s ease');
 
+    // Function to update chart for different metrics
+    function updateChart(metric) {
+      currentMetric = metric;
+      
+      // Sort data by the selected metric
+      const sortedData = [...baseChartData].sort((a, b) => getMetricValue(b, metric) - getMetricValue(a, metric));
+      
+      // Update x-scale domain with sorted order
+      xScale.domain(sortedData.map(d => d.name));
+      
+      // Update scale domain
+      yScale.domain([0, d3.max(chartData, d => getMetricValue(d, metric))]).nice();
+      
+      // Update x-axis with new order
+      g.select('.x-axis')
+        .transition()
+        .duration(500)
+        .call(d3.axisBottom(xScale))
+        .selectAll('text')
+        .style('text-anchor', 'end')
+        .attr('dx', '-.8em')
+        .attr('dy', '.15em')
+        .attr('transform', 'rotate(-45)')
+        .style('font-size', '12px')
+        .style('font-weight', '600')
+        .style('fill', '#4b5563');
+      
+      // Update y-axis
+      g.select('.y-axis')
+        .transition()
+        .duration(500)
+        .call(d3.axisLeft(yScale)
+          .ticks(5)
+          .tickFormat(d => {
+            switch(metric) {
+              case 'arr': return `$${d}M`;
+              case 'users': return `${d}M`;
+              case 'visits': return `${d}M`;
+              default: return `$${d}M`;
+            }
+          })
+        );
+      
+      // Update y-axis label
+      g.select('.y-axis-label')
+        .transition()
+        .duration(500)
+        .text(getMetricLabel(metric));
+      
+      // Update bars with new positions and values
+      const barsUpdate = g.selectAll('.bar')
+        .data(sortedData, d => d.name);
+        
+      barsUpdate.transition()
+        .duration(500)
+        .attr('x', d => xScale(d.name))
+        .attr('y', d => yScale(getMetricValue(d, metric)))
+        .attr('height', d => height - yScale(getMetricValue(d, metric)));
+      
+      // Update labels with new positions and values
+      const labelsUpdate = g.selectAll('.bar-label')
+        .data(sortedData, d => d.name);
+        
+      labelsUpdate.transition()
+        .duration(500)
+        .attr('x', d => xScale(d.name) + xScale.bandwidth() / 2)
+        .attr('y', d => yScale(getMetricValue(d, metric)) - 8)
+        .text(d => {
+          const value = getMetricValue(d, metric);
+          const share = d.share;
+          switch(metric) {
+            case 'arr': return `$${value}M (${share})`;
+            case 'users': return `${value}M (${share})`;
+            case 'visits': return `${value}M (${share})`;
+            default: return `$${value}M (${share})`;
+          }
+        });
+    }
+
     // Animate bars on load
     bars.transition()
       .duration(800)
       .delay((_, i) => i * 100)
-      .attr('y', d => yScale(d.visitsValue))
-      .attr('height', d => height - yScale(d.visitsValue));
+      .attr('y', d => yScale(getMetricValue(d, currentMetric)))
+      .attr('height', d => height - yScale(getMetricValue(d, currentMetric)));
 
     // Add value labels on top of bars
     const labels = g.selectAll('.bar-label')
@@ -263,13 +412,22 @@ function getCategoryColor(category?: string) {
       .style('font-weight', '700')
       .style('fill', '#374151')
       .style('opacity', 0)
-      .text(d => `${d.visits} (${d.share})`);
+      .text(d => {
+        const value = getMetricValue(d, currentMetric);
+        const share = d.share;
+        switch(currentMetric) {
+          case 'arr': return `$${value}M (${share})`;
+          case 'users': return `${value}M (${share})`;
+          case 'visits': return `${value}M (${share})`;
+          default: return `$${value}M (${share})`;
+        }
+      });
 
     // Animate labels
     labels.transition()
       .duration(800)
       .delay((_, i) => i * 100 + 400)
-      .attr('y', d => yScale(d.visitsValue) - 8)
+      .attr('y', d => yScale(getMetricValue(d, currentMetric)) - 8)
       .style('opacity', 1);
 
     // Add hover interactions
@@ -473,6 +631,25 @@ function getCategoryColor(category?: string) {
           button.classList.add('text-gray-600', 'dark:text-gray-400');
         }, 2000);
       }
+    });
+
+    // Metric toggle functionality
+    document.querySelectorAll('.metric-toggle').forEach(button => {
+      button.addEventListener('click', function() {
+        const metric = this.getAttribute('data-metric');
+        
+        // Update active state
+        document.querySelectorAll('.metric-toggle').forEach(btn => {
+          btn.classList.remove('active', 'bg-purple-500', 'text-white');
+          btn.classList.add('text-gray-600', 'dark:text-gray-400');
+        });
+        
+        this.classList.add('active', 'bg-purple-500', 'text-white');
+        this.classList.remove('text-gray-600', 'dark:text-gray-400');
+        
+        // Update chart
+        updateChart(metric);
+      });
     });
 
   }).catch(error => {
