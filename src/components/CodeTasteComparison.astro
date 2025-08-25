@@ -1,0 +1,261 @@
+---
+export interface Props {
+  comparisons: Array<{
+    title: string;
+    description: string;
+    traditional: {
+      label: string;
+      code: string;
+      issues: string[];
+    };
+    tasteful: {
+      label: string;
+      code: string;
+      benefits: string[];
+    };
+  }>;
+}
+
+const { comparisons } = Astro.props;
+---
+
+<div class="code-taste-comparison my-12">
+  <!-- Header -->
+  <div class="bg-gradient-to-r from-umai-gray-50 to-white dark:from-umai-gray-800 dark:to-umai-gray-700 rounded-xl border border-umai-gray-200 dark:border-umai-gray-600 p-6 mb-6">
+    <div class="flex items-start justify-between gap-4">
+      <div class="flex-1">
+        <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Taste in Action: Code Examples</h4>
+        <p class="text-gray-600 dark:text-gray-400 mb-4">
+          See how taste transforms technically correct code into user-delighted experiences
+        </p>
+        
+        <!-- Collapse Toggle -->
+        <button 
+          id="comparison-toggle" 
+          class="flex items-center space-x-2 text-sm text-umai-accent hover:text-umai-accent/80 transition-colors focus:outline-none"
+          aria-expanded="false"
+          aria-controls="comparison-content"
+        >
+          <span id="comparison-toggle-text">Show Examples</span>
+          <svg id="comparison-toggle-icon" class="w-4 h-4 transition-transform duration-200 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Legend -->
+      <div class="flex items-center gap-4 shrink-0 text-sm">
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 rounded bg-red-100 border border-red-300"></div>
+          <span class="text-gray-600 dark:text-gray-400">Technical Focus</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 rounded bg-green-100 border border-green-300"></div>
+          <span class="text-gray-600 dark:text-gray-400">Taste-Driven</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Collapsible Content -->
+  <div id="comparison-content" class="hidden transition-all duration-300 ease-in-out overflow-hidden">
+    <div class="space-y-8">
+      {comparisons.map((comparison: any, index: number) => (
+        <div class="comparison-example">
+          <!-- Example Header -->
+          <div class="mb-6">
+            <h5 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+              <span class="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-sm font-bold">
+                {index + 1}
+              </span>
+              {comparison.title}
+            </h5>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">
+              {comparison.description}
+            </p>
+          </div>
+
+          <!-- Side-by-side comparison -->
+          <div class="grid lg:grid-cols-2 gap-6">
+            
+            <!-- Traditional Approach -->
+            <div class="traditional-code">
+              <div class="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40 rounded-lg overflow-hidden">
+                <div class="bg-red-100 dark:bg-red-900/50 px-4 py-3 border-b border-red-200 dark:border-red-800/40">
+                  <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                    </svg>
+                    <span class="font-semibold text-red-800 dark:text-red-300">
+                      {comparison.traditional.label}
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="p-4">
+                  <pre class="text-sm text-gray-800 dark:text-gray-200 overflow-x-auto whitespace-pre-wrap font-mono leading-relaxed">
+                    <code>{comparison.traditional.code}</code>
+                  </pre>
+                </div>
+                
+                <!-- Issues -->
+                <div class="bg-red-100/50 dark:bg-red-900/30 px-4 py-3 border-t border-red-200 dark:border-red-800/40">
+                  <h6 class="text-sm font-semibold text-red-800 dark:text-red-300 mb-2 flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Issues:
+                  </h6>
+                  <ul class="space-y-1">
+                    {comparison.traditional.issues.map((issue: string) => (
+                      <li class="text-sm text-red-700 dark:text-red-400 flex items-start gap-2">
+                        <div class="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 flex-shrink-0"></div>
+                        <span>{issue}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tasteful Approach -->
+            <div class="tasteful-code">
+              <div class="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/40 rounded-lg overflow-hidden">
+                <div class="bg-green-100 dark:bg-green-900/50 px-4 py-3 border-b border-green-200 dark:border-green-800/40">
+                  <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="font-semibold text-green-800 dark:text-green-300">
+                      {comparison.tasteful.label}
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="p-4">
+                  <pre class="text-sm text-gray-800 dark:text-gray-200 overflow-x-auto whitespace-pre-wrap font-mono leading-relaxed">
+                    <code>{comparison.tasteful.code}</code>
+                  </pre>
+                </div>
+                
+                <!-- Benefits -->
+                <div class="bg-green-100/50 dark:bg-green-900/30 px-4 py-3 border-t border-green-200 dark:border-green-800/40">
+                  <h6 class="text-sm font-semibold text-green-800 dark:text-green-300 mb-2 flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Taste Benefits:
+                  </h6>
+                  <ul class="space-y-1">
+                    {comparison.tasteful.benefits.map((benefit: string) => (
+                      <li class="text-sm text-green-700 dark:text-green-400 flex items-start gap-2">
+                        <div class="w-1.5 h-1.5 rounded-full bg-green-500 mt-2 flex-shrink-0"></div>
+                        <span>{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    
+    <!-- Key Insight -->
+    <div class="mt-8 p-6 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/40 rounded-xl">
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 rounded-xl bg-purple-500 flex items-center justify-center shadow-lg flex-shrink-0">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
+        </div>
+        <div>
+          <h5 class="text-lg font-bold text-purple-900 dark:text-purple-100 mb-2">The Taste Difference</h5>
+          <p class="text-purple-800 dark:text-purple-200 leading-relaxed">
+            Both code examples work, but the taste-driven approach considers the full user journey, 
+            business context, and system architecture. When AI can generate any code, 
+            <strong>the ability to envision and guide toward the better solution becomes your competitive advantage.</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initCodeComparison() {
+    const toggle = document.getElementById('comparison-toggle');
+    const content = document.getElementById('comparison-content');
+    const icon = document.getElementById('comparison-toggle-icon');
+    const text = document.getElementById('comparison-toggle-text');
+    
+    if (!toggle || !content || !icon || !text) return;
+    
+    let isExpanded = false;
+    
+    toggle.addEventListener('click', () => {
+      isExpanded = !isExpanded;
+      
+      if (isExpanded) {
+        content.classList.remove('hidden');
+        content.style.maxHeight = content.scrollHeight + 'px';
+        icon.style.transform = 'rotate(0deg)';
+        text.textContent = 'Hide Examples';
+        toggle.setAttribute('aria-expanded', 'true');
+      } else {
+        content.style.maxHeight = '0px';
+        icon.style.transform = 'rotate(180deg)';
+        text.textContent = 'Show Examples';
+        toggle.setAttribute('aria-expanded', 'false');
+        
+        setTimeout(() => {
+          content.classList.add('hidden');
+        }, 300);
+      }
+    });
+  }
+  
+  // Initialize on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCodeComparison);
+  } else {
+    initCodeComparison();
+  }
+  
+  // Re-initialize on navigation (for SPAs)
+  (globalThis as any).initCodeComparison = initCodeComparison;
+</script>
+
+<style>
+  #comparison-content {
+    transition: max-height 0.3s ease-out;
+  }
+  
+  .comparison-example {
+    position: relative;
+  }
+  
+  .comparison-example::after {
+    content: '';
+    position: absolute;
+    bottom: -4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+  }
+  
+  .comparison-example:last-child::after {
+    display: none;
+  }
+  
+  pre {
+    background: transparent;
+  }
+  
+  code {
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  }
+</style>
