@@ -140,6 +140,42 @@ pnpm new-post    # Interactive blog post creation
 pnpm new-post:quick # Quick blog post creation (requires args)
 ```
 
+### Commit Convention
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) for automated semantic versioning:
+
+```bash
+# Feature (minor version bump)
+feat: add new interactive component
+feat(components): implement CodeTasteComparison with syntax highlighting
+
+# Bug fix (patch version bump)
+fix: resolve TypeScript errors in ReviewNote component
+fix(build): update deprecated substr method to slice
+
+# Breaking change (major version bump)
+feat!: redesign component API
+feat(components)!: change prop structure for better TypeScript support
+
+# Other types (no version bump)
+docs: update README with component documentation
+style: improve code formatting
+refactor: simplify component logic
+test: add unit tests for components
+chore: update dependencies
+```
+
+**Release Process:**
+- Commits to `main` branch trigger automatic releases
+- Version numbers are automatically determined from commit messages
+- Changelog is automatically generated
+- GitHub releases are created with build artifacts
+
+**PR Version Preview:**
+- Pull requests automatically get comments showing version impact
+- See what version bump your changes will trigger before merging
+- Helps with code review and release planning
+
 ### Creating Blog Posts
 
 #### Interactive Mode
