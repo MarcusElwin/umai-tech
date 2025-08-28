@@ -46,25 +46,19 @@ jobs:
         CURRENT_VERSION=$(node -p "require('./package.json').version")
         echo "Current version: $CURRENT_VERSION"
         
-        # Fetch main branch for comparison
-        git fetch origin main:main
+        # Use GitHub context to get the base branch SHA
+        BASE_SHA="${{ github.event.pull_request.base.sha }}"
+        HEAD_SHA="${{ github.event.pull_request.head.sha }}"
         
-        # Debug git information
-        echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
-        echo "Current HEAD: $(git rev-parse HEAD)"
-        echo "Main branch: $(git rev-parse main)"
+        echo "Base SHA (from GitHub): $BASE_SHA"
+        echo "Head SHA (from GitHub): $HEAD_SHA"
         
-        # Analyze commits to determine release type
-        # Get commits between base branch and current HEAD
-        BASE_SHA=$(git merge-base main HEAD)
-        echo "Base SHA: $BASE_SHA"
-        
-        # Get commits with error handling
-        COMMITS=$(git log --format="%s" $BASE_SHA..HEAD 2>/dev/null || echo "")
+        # Get commits between base and head using GitHub's provided SHAs
+        COMMITS=$(git log --format="%s" $BASE_SHA..$HEAD_SHA 2>/dev/null || echo "")
         
         echo "Commits to analyze:"
         if [ -z "$COMMITS" ]; then
-          echo "No commits found between $BASE_SHA and HEAD"
+          echo "No commits found between $BASE_SHA and $HEAD_SHA"
         else
           echo "$COMMITS"
         fi
