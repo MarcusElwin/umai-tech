@@ -34,7 +34,7 @@ export interface Props {
 const { comparisons } = Astro.props;
 
 // Generate unique ID for this component instance
-const componentId = `comparison-${Math.random().toString(36).substr(2, 9)}`;
+const componentId = `comparison-${Math.random().toString(36).slice(2, 11)}`;
 
 // Function to detect language from code content
 function detectLanguage(code: string, fallback: string = 'javascript'): string {

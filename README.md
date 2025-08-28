@@ -50,12 +50,49 @@ pnpm astro check
 - **TypeScript Ready** - Full type safety with zero errors
 - **Vercel Analytics** - Built-in performance and usage tracking
 
+## 🧩 Interactive Components
+
+### Code Comparison Components
+- **CodeTasteComparison** - Collapsible side-by-side code comparisons with syntax highlighting (Shiki)
+  - Shows traditional vs taste-driven approaches
+  - Syntax highlighting for TypeScript, JavaScript, Python, and more
+  - Expandable with smooth animations
+  - Issues vs benefits breakdown
+
+- **CaseStudyComparison** - Business case study comparisons
+  - Real-world examples (Linear vs Jira, Notion vs Confluence)
+  - Metrics with custom SVG icons
+  - Collapsible detailed breakdowns
+  - Color-coded winners vs traditional approaches
+
+### Content Visualization
+- **TastePillars** - Interactive skill hierarchy display
+  - Collapsible detailed examples
+  - Priority-based visual hierarchy (Critical/High/Medium)
+  - Improved contrast and readability
+  - Responsive card layout
+
+### Interactive Elements
+All comparison components feature:
+- Unique component IDs to prevent conflicts
+- Smooth expand/collapse animations
+- Accessibility-compliant ARIA attributes
+- Consistent "Show/Hide" toggle patterns
+- Debug-friendly console logging
+- Dark mode support
+
 ## 📁 Project Structure
 
 ```
 umai-tech/
 ├── src/
-│   ├── components/        # Reusable UI components
+│   ├── components/           # Reusable UI components
+│   │   ├── CodeTasteComparison.astro   # Interactive code comparisons
+│   │   ├── CaseStudyComparison.astro   # Business case studies  
+│   │   ├── TastePillars.astro          # Skill hierarchy display
+│   │   ├── MarketShareChart.astro      # Data visualizations
+│   │   ├── InteractiveCV.astro         # Resume component
+│   │   └── ...                         # Other components
 │   ├── content/          # Blog content (MDX)
 │   ├── layouts/          # Page layout templates
 │   ├── pages/            # Route pages
@@ -79,8 +116,17 @@ For detailed documentation, see the [`docs/`](./docs/) folder:
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 20+ (specified in `.nvmrc`)
 - pnpm 10.13.1+
+
+### Key Dependencies
+
+- **Astro 5.12.3** - Static site generator
+- **Tailwind CSS 3.4.17** - Utility-first CSS framework
+- **TypeScript 5.8.3** - Type safety and better developer experience
+- **Shiki 3.12.0** - Syntax highlighting for code blocks
+- **MDX** - Markdown with JSX components for rich blog content
+- **Vercel Analytics & Speed Insights** - Performance monitoring
 
 ### Available Scripts
 

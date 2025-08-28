@@ -24,9 +24,52 @@ export interface Props {
 }
 
 const { studies } = Astro.props;
+
+// Generate unique ID for this component instance
+const componentId = `case-study-${Math.random().toString(36).slice(2, 11)}`;
 ---
 
-<div class="case-study-comparison my-12 space-y-12">
+<div class="case-study-comparison my-12">
+  <!-- Header -->
+  <div class="bg-gradient-to-r from-umai-gray-50 to-white dark:from-umai-gray-800 dark:to-umai-gray-700 rounded-xl border border-umai-gray-200 dark:border-umai-gray-600 p-6 mb-6">
+    <div class="flex items-start justify-between gap-4">
+      <div class="flex-1">
+        <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Business Case Studies</h4>
+        <p class="text-gray-600 dark:text-gray-400 mb-4">
+          Real-world examples of how taste-driven decisions create massive business value
+        </p>
+        
+        <!-- Collapse Toggle -->
+        <button 
+          id={`${componentId}-toggle`}
+          class="flex items-center space-x-2 text-sm text-umai-accent hover:text-umai-accent/80 transition-colors focus:outline-none"
+          aria-expanded="false"
+          aria-controls={`${componentId}-content`}
+        >
+          <span id={`${componentId}-toggle-text`}>Show Case Studies</span>
+          <svg id={`${componentId}-toggle-icon`} class="w-4 h-4 transition-transform duration-200 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Legend -->
+      <div class="flex items-center gap-4 shrink-0 text-sm">
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 rounded bg-orange-100 border border-orange-300"></div>
+          <span class="text-gray-700 dark:text-gray-300">Traditional Approach</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 rounded bg-green-100 border border-green-300"></div>
+          <span class="text-gray-700 dark:text-gray-300">Taste-Driven Winner</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Collapsible Content -->
+  <div id={`${componentId}-content`} class="hidden transition-all duration-300 ease-in-out overflow-hidden">
+    <div class="space-y-12">
   {studies.map((study, index) => {
     const winnerColor = study.winner.color || 'green';
     const colorClasses = {
@@ -218,7 +261,72 @@ const { studies } = Astro.props;
       </div>
     );
   })}
+    </div>
+  </div>
 </div>
+
+<script is:inline define:vars={{ componentId }}>
+  (function() {
+    const currentComponentId = componentId;
+    console.log('🔍 Initializing CaseStudyComparison for:', currentComponentId);
+    
+    function initThisCaseStudy() {
+      const toggle = document.getElementById(`${currentComponentId}-toggle`);
+      const content = document.getElementById(`${currentComponentId}-content`);
+      const icon = document.getElementById(`${currentComponentId}-toggle-icon`);
+      const text = document.getElementById(`${currentComponentId}-toggle-text`);
+      
+      console.log('🎯 Elements for', currentComponentId, ':', { toggle: !!toggle, content: !!content, icon: !!icon, text: !!text });
+      
+      if (!toggle || !content || !icon || !text) {
+        console.log('❌ Missing elements for', currentComponentId, ', retrying...');
+        setTimeout(initThisCaseStudy, 100);
+        return;
+      }
+      
+      console.log('✅ All elements found for', currentComponentId, ', adding click listener');
+      
+      let isExpanded = false;
+      
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log('🖱️ Toggle clicked for', currentComponentId, '! Current state:', isExpanded);
+        isExpanded = !isExpanded;
+        
+        if (isExpanded) {
+          console.log('📖 Expanding content for', currentComponentId);
+          content.classList.remove('hidden');
+          content.style.maxHeight = content.scrollHeight + 'px';
+          icon.style.transform = 'rotate(0deg)';
+          text.textContent = 'Hide Case Studies';
+          toggle.setAttribute('aria-expanded', 'true');
+        } else {
+          console.log('📕 Collapsing content for', currentComponentId);
+          content.style.maxHeight = '0px';
+          icon.style.transform = 'rotate(180deg)';
+          text.textContent = 'Show Case Studies';
+          toggle.setAttribute('aria-expanded', 'false');
+          
+          setTimeout(() => {
+            content.classList.add('hidden');
+          }, 300);
+        }
+      });
+      
+      console.log('🎉 CaseStudyComparison initialized successfully for', currentComponentId);
+    }
+    
+    // Multiple initialization strategies
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initThisCaseStudy);
+    } else {
+      initThisCaseStudy();
+    }
+    
+    // Also try after a delay to catch any dynamic loading
+    setTimeout(initThisCaseStudy, 100);
+  })();
+</script>
 
 <style>
   .case-study {

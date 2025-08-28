@@ -148,8 +148,9 @@ const priorityStyle = getPriorityStyle(priority);
     const dismissButtons = document.querySelectorAll('.review-dismiss');
     
     dismissButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        const reviewNote = this.closest('.review-note') as HTMLElement;
+      button.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement;
+        const reviewNote = target.closest('.review-note') as HTMLElement;
         if (reviewNote) {
           // Fade out animation
           reviewNote.style.transition = 'opacity 0.3s ease, transform 0.3s ease';

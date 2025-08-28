@@ -80,18 +80,18 @@ function getColorStyle(color: string) {
       
       <!-- Priority Legend -->
       <div class="flex items-center gap-2 shrink-0">
-        <div class="text-xs text-gray-500 dark:text-gray-400 mr-2">Priority:</div>
+        <div class="text-xs text-gray-700 dark:text-gray-300 mr-2">Priority:</div>
         <div class="flex items-center gap-1.5">
           <div class="w-3 h-3 rounded-full bg-orange-600"></div>
-          <span class="text-xs text-gray-600 dark:text-gray-400">Critical</span>
+          <span class="text-xs text-gray-700 dark:text-gray-300">Critical</span>
         </div>
         <div class="flex items-center gap-1.5">
           <div class="w-3 h-3 rounded-full bg-blue-500"></div>
-          <span class="text-xs text-gray-600 dark:text-gray-400">High</span>
+          <span class="text-xs text-gray-700 dark:text-gray-300">High</span>
         </div>
         <div class="flex items-center gap-1.5">
           <div class="w-3 h-3 rounded-full bg-green-500"></div>
-          <span class="text-xs text-gray-600 dark:text-gray-400">Medium</span>
+          <span class="text-xs text-gray-700 dark:text-gray-300">Medium</span>
         </div>
       </div>
     </div>
@@ -145,7 +145,7 @@ function getColorStyle(color: string) {
                   {pillar.examples.slice(0, 3).map((example: string) => (
                     <div class="flex items-start gap-2 text-xs">
                       <div class={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${colorStyle.iconBg}`}></div>
-                      <span class="text-gray-600 dark:text-gray-400 leading-tight">{example}</span>
+                      <span class="text-gray-800 dark:text-gray-200 leading-tight">{example}</span>
                     </div>
                   ))}
                 </div>
