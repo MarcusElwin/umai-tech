@@ -53,10 +53,10 @@ function getTypeStyle(type: string) {
       label: 'Polish & Refine'
     },
     'fact-check': {
-      color: '#EF4444',
-      bgColor: 'bg-red-50/80 dark:bg-red-950/30',
-      borderColor: 'border-red-200/60 dark:border-red-800/40',
-      textColor: 'text-red-700 dark:text-red-300',
+      color: '#F97316',
+      bgColor: 'bg-orange-50/80 dark:bg-orange-950/30',
+      borderColor: 'border-orange-200/60 dark:border-orange-800/40',
+      textColor: 'text-orange-700 dark:text-orange-300',
       icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
       label: 'Fact Check'
     },
@@ -78,7 +78,7 @@ function getPriorityStyle(priority: string) {
     'low': { color: 'bg-gray-400', label: 'Low' },
     'medium': { color: 'bg-yellow-500', label: 'Medium' },
     'high': { color: 'bg-orange-500', label: 'High' },
-    'urgent': { color: 'bg-red-500', label: 'Urgent' }
+    'urgent': { color: 'bg-orange-600', label: 'Urgent' }
   };
   return styles[priority as keyof typeof styles] || styles['medium'];
 }

@@ -623,11 +623,11 @@ function getCategoryColor(category?: string) {
       } catch (error) {
         console.error('Failed to copy to clipboard:', error);
         buttonText.textContent = 'Failed';
-        button.classList.add('text-red-600', 'dark:text-red-400');
+        button.classList.add('text-orange-600', 'dark:text-orange-400');
         
         setTimeout(() => {
           buttonText.textContent = originalText;
-          button.classList.remove('text-red-600', 'dark:text-red-400');
+          button.classList.remove('text-orange-600', 'dark:text-orange-400');
           button.classList.add('text-gray-600', 'dark:text-gray-400');
         }, 2000);
       }

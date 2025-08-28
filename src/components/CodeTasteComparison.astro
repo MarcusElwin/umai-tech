@@ -1,22 +1,107 @@
 ---
+import { codeToHtml } from 'shiki';
+
+interface ComparisonItem {
+  title: string;
+  description: string;
+  traditional: {
+    label: string;
+    code: string;
+    language?: string;
+    issues: string[];
+  };
+  tasteful: {
+    label: string;
+    code: string;
+    language?: string;
+    benefits: string[];
+  };
+}
+
+interface ProcessedComparisonItem extends ComparisonItem {
+  traditional: ComparisonItem['traditional'] & {
+    highlightedCode: string;
+  };
+  tasteful: ComparisonItem['tasteful'] & {
+    highlightedCode: string;
+  };
+}
+
 export interface Props {
-  comparisons: Array<{
-    title: string;
-    description: string;
-    traditional: {
-      label: string;
-      code: string;
-      issues: string[];
-    };
-    tasteful: {
-      label: string;
-      code: string;
-      benefits: string[];
-    };
-  }>;
+  comparisons: Array<ComparisonItem>;
 }
 
 const { comparisons } = Astro.props;
+
+// Generate unique ID for this component instance
+const componentId = `comparison-${Math.random().toString(36).substr(2, 9)}`;
+
+// Function to detect language from code content
+function detectLanguage(code: string, fallback: string = 'javascript'): string {
+  const trimmed = code.trim();
+  
+  // Python detection
+  if (/^#.*python|import\s+\w+|def\s+\w+|from\s+\w+\s+import/.test(trimmed)) {
+    return 'python';
+  }
+  
+  // TypeScript/JavaScript detection
+  if (/interface\s+\w+|type\s+\w+|const\s+\w+:|async\s+\w+|class\s+\w+/.test(trimmed)) {
+    return 'typescript';
+  }
+  
+  // Bash/Shell detection
+  if (/^#!/.test(trimmed) || /^\w+:\s*\d+%/.test(trimmed)) {
+    return 'bash';
+  }
+  
+  // HTML detection
+  if (/<[a-zA-Z][\s\S]*>/.test(trimmed)) {
+    return 'html';
+  }
+  
+  // CSS detection
+  if (/\{[\s\S]*\}|@media|@import/.test(trimmed)) {
+    return 'css';
+  }
+  
+  // JSON detection
+  if (/^\s*[{\[]/.test(trimmed)) {
+    return 'json';
+  }
+  
+  return fallback;
+}
+
+// Process comparisons with syntax highlighting
+const processedComparisons: ProcessedComparisonItem[] = await Promise.all(
+  comparisons.map(async (comparison: ComparisonItem): Promise<ProcessedComparisonItem> => {
+    const traditionalLang = comparison.traditional.language || detectLanguage(comparison.traditional.code);
+    const tastefulLang = comparison.tasteful.language || detectLanguage(comparison.tasteful.code);
+    
+    const traditionalHtml = await codeToHtml(comparison.traditional.code, {
+      lang: traditionalLang,
+      theme: 'github-dark'
+    });
+    
+    const tastefulHtml = await codeToHtml(comparison.tasteful.code, {
+      lang: tastefulLang,
+      theme: 'github-dark'
+    });
+    
+    return {
+      ...comparison,
+      traditional: {
+        ...comparison.traditional,
+        highlightedCode: traditionalHtml
+      },
+      tasteful: {
+        ...comparison.tasteful,
+        highlightedCode: tastefulHtml
+      }
+    };
+  })
+);
 ---
 
 <div class="code-taste-comparison my-12">
@@ -31,13 +116,13 @@ const { comparisons } = Astro.props;
         
         <!-- Collapse Toggle -->
         <button 
-          id="comparison-toggle" 
+          id={`${componentId}-toggle`}
           class="flex items-center space-x-2 text-sm text-umai-accent hover:text-umai-accent/80 transition-colors focus:outline-none"
           aria-expanded="false"
-          aria-controls="comparison-content"
+          aria-controls={`${componentId}-content`}
         >
-          <span id="comparison-toggle-text">Show Examples</span>
-          <svg id="comparison-toggle-icon" class="w-4 h-4 transition-transform duration-200 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <span id={`${componentId}-toggle-text`}>Show Examples</span>
+          <svg id={`${componentId}-toggle-icon`} class="w-4 h-4 transition-transform duration-200 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
           </svg>
         </button>
@@ -46,7 +131,7 @@ const { comparisons } = Astro.props;
       <!-- Legend -->
       <div class="flex items-center gap-4 shrink-0 text-sm">
         <div class="flex items-center gap-2">
-          <div class="w-3 h-3 rounded bg-red-100 border border-red-300"></div>
+          <div class="w-3 h-3 rounded bg-orange-100 border border-orange-300"></div>
           <span class="text-gray-600 dark:text-gray-400">Technical Focus</span>
         </div>
         <div class="flex items-center gap-2">
@@ -58,9 +143,9 @@ const { comparisons } = Astro.props;
   </div>
 
   <!-- Collapsible Content -->
-  <div id="comparison-content" class="hidden transition-all duration-300 ease-in-out overflow-hidden">
+  <div id={`${componentId}-content`} class="hidden transition-all duration-300 ease-in-out overflow-hidden">
     <div class="space-y-8">
-      {comparisons.map((comparison: any, index: number) => (
+      {processedComparisons.map((comparison: ProcessedComparisonItem, index: number) => (
         <div class="comparison-example">
           <!-- Example Header -->
           <div class="mb-6">
@@ -80,27 +165,25 @@ const { comparisons } = Astro.props;
             
             <!-- Traditional Approach -->
             <div class="traditional-code">
-              <div class="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40 rounded-lg overflow-hidden">
-                <div class="bg-red-100 dark:bg-red-900/50 px-4 py-3 border-b border-red-200 dark:border-red-800/40">
+              <div class="bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800/40 rounded-lg overflow-hidden">
+                <div class="bg-orange-100 dark:bg-orange-900/50 px-4 py-3 border-b border-orange-200 dark:border-orange-800/40">
                   <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
                     </svg>
-                    <span class="font-semibold text-red-800 dark:text-red-300">
+                    <span class="font-semibold text-orange-800 dark:text-orange-300">
                       {comparison.traditional.label}
                     </span>
                   </div>
                 </div>
                 
-                <div class="p-4">
-                  <pre class="text-sm text-gray-800 dark:text-gray-200 overflow-x-auto whitespace-pre-wrap font-mono leading-relaxed">
-                    <code>{comparison.traditional.code}</code>
-                  </pre>
+                <div class="shiki-container">
+                  <Fragment set:html={comparison.traditional.highlightedCode} />
                 </div>
                 
                 <!-- Issues -->
-                <div class="bg-red-100/50 dark:bg-red-900/30 px-4 py-3 border-t border-red-200 dark:border-red-800/40">
-                  <h6 class="text-sm font-semibold text-red-800 dark:text-red-300 mb-2 flex items-center gap-1">
+                <div class="bg-orange-100/50 dark:bg-orange-900/30 px-4 py-3 border-t border-orange-200 dark:border-orange-800/40">
+                  <h6 class="text-sm font-semibold text-orange-800 dark:text-orange-300 mb-2 flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -108,8 +191,8 @@ const { comparisons } = Astro.props;
                   </h6>
                   <ul class="space-y-1">
                     {comparison.traditional.issues.map((issue: string) => (
-                      <li class="text-sm text-red-700 dark:text-red-400 flex items-start gap-2">
-                        <div class="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 flex-shrink-0"></div>
+                      <li class="text-sm text-orange-700 dark:text-orange-400 flex items-start gap-2">
+                        <div class="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 flex-shrink-0"></div>
                         <span>{issue}</span>
                       </li>
                     ))}
@@ -132,10 +215,8 @@ const { comparisons } = Astro.props;
                   </div>
                 </div>
                 
-                <div class="p-4">
-                  <pre class="text-sm text-gray-800 dark:text-gray-200 overflow-x-auto whitespace-pre-wrap font-mono leading-relaxed">
-                    <code>{comparison.tasteful.code}</code>
-                  </pre>
+                <div class="shiki-container">
+                  <Fragment set:html={comparison.tasteful.highlightedCode} />
                 </div>
                 
                 <!-- Benefits -->
@@ -183,48 +264,67 @@ const { comparisons } = Astro.props;
   </div>
 </div>
 
-<script>
-  function initCodeComparison() {
-    const toggle = document.getElementById('comparison-toggle');
-    const content = document.getElementById('comparison-content');
-    const icon = document.getElementById('comparison-toggle-icon');
-    const text = document.getElementById('comparison-toggle-text');
+<script is:inline define:vars={{ componentId }}>
+  (function() {
+    const currentComponentId = componentId;
+    console.log('🔍 Initializing CodeComparison for:', currentComponentId);
     
-    if (!toggle || !content || !icon || !text) return;
-    
-    let isExpanded = false;
-    
-    toggle.addEventListener('click', () => {
-      isExpanded = !isExpanded;
+    function initThisComparison() {
+      const toggle = document.getElementById(`${currentComponentId}-toggle`);
+      const content = document.getElementById(`${currentComponentId}-content`);
+      const icon = document.getElementById(`${currentComponentId}-toggle-icon`);
+      const text = document.getElementById(`${currentComponentId}-toggle-text`);
       
-      if (isExpanded) {
-        content.classList.remove('hidden');
-        content.style.maxHeight = content.scrollHeight + 'px';
-        icon.style.transform = 'rotate(0deg)';
-        text.textContent = 'Hide Examples';
-        toggle.setAttribute('aria-expanded', 'true');
-      } else {
-        content.style.maxHeight = '0px';
-        icon.style.transform = 'rotate(180deg)';
-        text.textContent = 'Show Examples';
-        toggle.setAttribute('aria-expanded', 'false');
-        
-        setTimeout(() => {
-          content.classList.add('hidden');
-        }, 300);
+      console.log('🎯 Elements for', currentComponentId, ':', { toggle: !!toggle, content: !!content, icon: !!icon, text: !!text });
+      
+      if (!toggle || !content || !icon || !text) {
+        console.log('❌ Missing elements for', currentComponentId, ', retrying...');
+        setTimeout(initThisComparison, 100);
+        return;
       }
-    });
-  }
-  
-  // Initialize on load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCodeComparison);
-  } else {
-    initCodeComparison();
-  }
-  
-  // Re-initialize on navigation (for SPAs)
-  (globalThis as any).initCodeComparison = initCodeComparison;
+      
+      console.log('✅ All elements found for', currentComponentId, ', adding click listener');
+      
+      let isExpanded = false;
+      
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log('🖱️ Toggle clicked for', currentComponentId, '! Current state:', isExpanded);
+        isExpanded = !isExpanded;
+        
+        if (isExpanded) {
+          console.log('📖 Expanding content for', currentComponentId);
+          content.classList.remove('hidden');
+          content.style.maxHeight = content.scrollHeight + 'px';
+          icon.style.transform = 'rotate(0deg)';
+          text.textContent = 'Hide Examples';
+          toggle.setAttribute('aria-expanded', 'true');
+        } else {
+          console.log('📕 Collapsing content for', currentComponentId);
+          content.style.maxHeight = '0px';
+          icon.style.transform = 'rotate(180deg)';
+          text.textContent = 'Show Examples';
+          toggle.setAttribute('aria-expanded', 'false');
+          
+          setTimeout(() => {
+            content.classList.add('hidden');
+          }, 300);
+        }
+      });
+      
+      console.log('🎉 CodeComparison initialized successfully for', currentComponentId);
+    }
+    
+    // Multiple initialization strategies
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initThisComparison);
+    } else {
+      initThisComparison();
+    }
+    
+    // Also try after a delay to catch any dynamic loading
+    setTimeout(initThisComparison, 100);
+  })();
 </script>
 
 <style>
@@ -257,5 +357,27 @@ const { comparisons } = Astro.props;
   
   code {
     font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  }
+  
+  /* Shiki container styles */
+  .shiki-container {
+    @apply overflow-hidden;
+  }
+  
+  .shiki-container pre {
+    @apply !m-0 !p-4 !bg-transparent overflow-x-auto text-sm leading-relaxed;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace !important;
+  }
+  
+  .shiki-container code {
+    @apply !bg-transparent;
+    font-family: inherit;
+  }
+  
+  /* Ensure proper text wrapping and scrolling */
+  .shiki-container pre code {
+    white-space: pre;
+    word-wrap: normal;
+    word-break: normal;
   }
 </style>
