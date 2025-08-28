@@ -46,26 +46,31 @@ jobs:
         CURRENT_VERSION=$(node -p "require('./package.json').version")
         echo "Current version: $CURRENT_VERSION"
         
-        # Use GitHub context to get the base branch SHA
-        BASE_SHA="${{ github.event.pull_request.base.sha }}"
-        HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+        # Fetch the base branch and set up proper refs
+        git fetch origin ${{ github.event.pull_request.base.ref }}:base-branch
+        git fetch origin ${{ github.event.pull_request.head.ref }}:pr-branch
         
-        echo "Base SHA (from GitHub): $BASE_SHA"
-        echo "Head SHA (from GitHub): $HEAD_SHA"
+        # Use the fetched branch refs instead of SHAs
+        echo "Base branch: ${{ github.event.pull_request.base.ref }}"
+        echo "PR branch: ${{ github.event.pull_request.head.ref }}"
         
-        # Get commits between base and head using GitHub's provided SHAs
-        COMMITS=$(git log --format="%s" $BASE_SHA..$HEAD_SHA 2>/dev/null || echo "")
+        # Find merge base and get commits
+        MERGE_BASE=$(git merge-base base-branch pr-branch)
+        echo "Merge base: $MERGE_BASE"
+        
+        # Get commits from merge base to PR head
+        COMMITS=$(git log --format="%s" $MERGE_BASE..pr-branch 2>/dev/null || echo "")
         
         echo "Commits to analyze:"
         if [ -z "$COMMITS" ]; then
-          echo "No commits found between $BASE_SHA and $HEAD_SHA"
+          echo "No commits found between $MERGE_BASE and pr-branch"
           echo "Trying alternative approach with --oneline..."
-          COMMITS=$(git log --oneline $BASE_SHA..$HEAD_SHA 2>/dev/null || echo "")
+          COMMITS=$(git log --oneline $MERGE_BASE..pr-branch 2>/dev/null || echo "")
           if [ -n "$COMMITS" ]; then
             echo "Found commits with --oneline:"
             echo "$COMMITS"
             # Extract just the commit messages (everything after the first space)
-            COMMITS=$(git log --format="%s" $BASE_SHA..$HEAD_SHA 2>/dev/null || echo "")
+            COMMITS=$(git log --format="%s" $MERGE_BASE..pr-branch 2>/dev/null || echo "")
           fi
         else
           echo "$COMMITS"
