@@ -46,9 +46,12 @@ jobs:
         CURRENT_VERSION=$(node -p "require('./package.json').version")
         echo "Current version: $CURRENT_VERSION"
         
+        # Fetch main branch for comparison
+        git fetch origin main:main
+        
         # Analyze commits to determine release type
         # Get commits between base branch and current HEAD
-        BASE_SHA=$(git merge-base origin/main HEAD)
+        BASE_SHA=$(git merge-base main HEAD)
         COMMITS=$(git log --format="%s" $BASE_SHA..HEAD)
         
         echo "Commits to analyze:"
