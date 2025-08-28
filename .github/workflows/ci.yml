@@ -49,13 +49,25 @@ jobs:
         # Fetch main branch for comparison
         git fetch origin main:main
         
+        # Debug git information
+        echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
+        echo "Current HEAD: $(git rev-parse HEAD)"
+        echo "Main branch: $(git rev-parse main)"
+        
         # Analyze commits to determine release type
         # Get commits between base branch and current HEAD
         BASE_SHA=$(git merge-base main HEAD)
-        COMMITS=$(git log --format="%s" $BASE_SHA..HEAD)
+        echo "Base SHA: $BASE_SHA"
+        
+        # Get commits with error handling
+        COMMITS=$(git log --format="%s" $BASE_SHA..HEAD 2>/dev/null || echo "")
         
         echo "Commits to analyze:"
-        echo "$COMMITS"
+        if [ -z "$COMMITS" ]; then
+          echo "No commits found between $BASE_SHA and HEAD"
+        else
+          echo "$COMMITS"
+        fi
         
         # Initialize variables
         HAS_BREAKING=false
@@ -63,15 +75,27 @@ jobs:
         HAS_FIX=false
         
         # Check commit messages for conventional commit patterns
-        while IFS= read -r commit; do
-          if echo "$commit" | grep -qE "^[a-z]+(\(.+\))?!:|BREAKING CHANGE:"; then
-            HAS_BREAKING=true
-          elif echo "$commit" | grep -qE "^feat(\(.+\))?:"; then
-            HAS_FEAT=true
-          elif echo "$commit" | grep -qE "^fix(\(.+\))?:"; then
-            HAS_FIX=true
-          fi
-        done <<< "$COMMITS"
+        if [ -n "$COMMITS" ]; then
+          while IFS= read -r commit; do
+            if [ -n "$commit" ]; then
+              echo "Analyzing commit: $commit"
+              if echo "$commit" | grep -qE "^[a-z]+(\(.+\))?!:|BREAKING CHANGE:"; then
+                HAS_BREAKING=true
+                echo "  -> Breaking change detected"
+              elif echo "$commit" | grep -qE "^feat(\(.+\))?:"; then
+                HAS_FEAT=true
+                echo "  -> Feature detected"
+              elif echo "$commit" | grep -qE "^fix(\(.+\))?:"; then
+                HAS_FIX=true
+                echo "  -> Fix detected"
+              else
+                echo "  -> Non-release commit"
+              fi
+            fi
+          done <<< "$COMMITS"
+        else
+          echo "No commits to analyze - this may be a merge commit or no changes"
+        fi
         
         # Determine release type and next version
         if [ "$HAS_BREAKING" = true ]; then
