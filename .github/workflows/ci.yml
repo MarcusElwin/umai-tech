@@ -42,52 +42,72 @@ jobs:
       if: github.event_name == 'pull_request'
       id: version-check
       run: |
-        # Install semantic-release if not already installed
-        npm install -g semantic-release
-        
-        # Run semantic-release in dry-run mode to see what version would be released
-        NEXT_VERSION=$(npx semantic-release --dry-run --no-ci 2>/dev/null | grep -o "The next release version is [0-9.]*" | sed 's/The next release version is //' || echo "no-release")
+        # Get current version
         CURRENT_VERSION=$(node -p "require('./package.json').version")
+        echo "Current version: $CURRENT_VERSION"
+        
+        # Analyze commits to determine release type
+        # Get commits between base branch and current HEAD
+        BASE_SHA=$(git merge-base origin/main HEAD)
+        COMMITS=$(git log --format="%s" $BASE_SHA..HEAD)
+        
+        echo "Commits to analyze:"
+        echo "$COMMITS"
+        
+        # Initialize variables
+        HAS_BREAKING=false
+        HAS_FEAT=false
+        HAS_FIX=false
+        
+        # Check commit messages for conventional commit patterns
+        while IFS= read -r commit; do
+          if echo "$commit" | grep -qE "^[a-z]+(\(.+\))?!:|BREAKING CHANGE:"; then
+            HAS_BREAKING=true
+          elif echo "$commit" | grep -qE "^feat(\(.+\))?:"; then
+            HAS_FEAT=true
+          elif echo "$commit" | grep -qE "^fix(\(.+\))?:"; then
+            HAS_FIX=true
+          fi
+        done <<< "$COMMITS"
+        
+        # Determine release type and next version
+        if [ "$HAS_BREAKING" = true ]; then
+          RELEASE_TYPE="major"
+          CURRENT_MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
+          NEXT_MAJOR=$((CURRENT_MAJOR + 1))
+          NEXT_VERSION="$NEXT_MAJOR.0.0"
+          VERSION_MESSAGE="🚨 **MAJOR** release: $CURRENT_VERSION → $NEXT_VERSION (Breaking changes detected)"
+        elif [ "$HAS_FEAT" = true ]; then
+          RELEASE_TYPE="minor"
+          CURRENT_MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
+          CURRENT_MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
+          NEXT_MINOR=$((CURRENT_MINOR + 1))
+          NEXT_VERSION="$CURRENT_MAJOR.$NEXT_MINOR.0"
+          VERSION_MESSAGE="✨ **MINOR** release: $CURRENT_VERSION → $NEXT_VERSION (New features added)"
+        elif [ "$HAS_FIX" = true ]; then
+          RELEASE_TYPE="patch"
+          CURRENT_MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
+          CURRENT_MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
+          CURRENT_PATCH=$(echo $CURRENT_VERSION | cut -d. -f3)
+          NEXT_PATCH=$((CURRENT_PATCH + 1))
+          NEXT_VERSION="$CURRENT_MAJOR.$CURRENT_MINOR.$NEXT_PATCH"
+          VERSION_MESSAGE="🐛 **PATCH** release: $CURRENT_VERSION → $NEXT_VERSION (Bug fixes)"
+        else
+          RELEASE_TYPE="none"
+          NEXT_VERSION="$CURRENT_VERSION"
+          VERSION_MESSAGE="No version bump - only non-release commits detected (docs, chore, style, etc.)"
+        fi
+        
+        echo "Release type: $RELEASE_TYPE"
+        echo "Next version: $NEXT_VERSION"
         
         echo "current-version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
         echo "next-version=$NEXT_VERSION" >> $GITHUB_OUTPUT
-        
-        # Determine release type
-        if [ "$NEXT_VERSION" = "no-release" ]; then
-          echo "release-type=none" >> $GITHUB_OUTPUT
-          echo "version-message=No version bump - only non-release commits detected" >> $GITHUB_OUTPUT
-        else
-          # Calculate release type based on version comparison
-          if [ "$NEXT_VERSION" != "$CURRENT_VERSION" ]; then
-            CURRENT_MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
-            CURRENT_MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
-            CURRENT_PATCH=$(echo $CURRENT_VERSION | cut -d. -f3)
-            
-            NEXT_MAJOR=$(echo $NEXT_VERSION | cut -d. -f1)
-            NEXT_MINOR=$(echo $NEXT_VERSION | cut -d. -f2)
-            NEXT_PATCH=$(echo $NEXT_VERSION | cut -d. -f3)
-            
-            if [ "$NEXT_MAJOR" -gt "$CURRENT_MAJOR" ]; then
-              echo "release-type=major" >> $GITHUB_OUTPUT
-              echo "version-message=🚨 **MAJOR** release: $CURRENT_VERSION → $NEXT_VERSION (Breaking changes detected)" >> $GITHUB_OUTPUT
-            elif [ "$NEXT_MINOR" -gt "$CURRENT_MINOR" ]; then
-              echo "release-type=minor" >> $GITHUB_OUTPUT
-              echo "version-message=✨ **MINOR** release: $CURRENT_VERSION → $NEXT_VERSION (New features added)" >> $GITHUB_OUTPUT
-            elif [ "$NEXT_PATCH" -gt "$CURRENT_PATCH" ]; then
-              echo "release-type=patch" >> $GITHUB_OUTPUT
-              echo "version-message=🐛 **PATCH** release: $CURRENT_VERSION → $NEXT_VERSION (Bug fixes)" >> $GITHUB_OUTPUT
-            else
-              echo "release-type=none" >> $GITHUB_OUTPUT
-              echo "version-message=No version bump - no release commits detected" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "release-type=none" >> $GITHUB_OUTPUT
-            echo "version-message=No version bump - no release commits detected" >> $GITHUB_OUTPUT
-          fi
-        fi
+        echo "release-type=$RELEASE_TYPE" >> $GITHUB_OUTPUT
+        echo "version-message=$VERSION_MESSAGE" >> $GITHUB_OUTPUT
       
     - name: Comment version info on PR
-      if: github.event_name == 'pull_request' && steps.version-check.outputs.release-type != 'none'
+      if: github.event_name == 'pull_request'
       uses: actions/github-script@v7
       with:
         script: |
@@ -103,18 +123,23 @@ jobs:
             comment.body.includes('📦 **Version Impact**')
           );
           
-          const commentBody = `## 📦 **Version Impact**
+          const releaseType = '${{ steps.version-check.outputs.release-type }}';
+          const releaseMessage = releaseType === 'none' 
+            ? 'This PR will **not trigger a release** when merged to main.'
+            : `This PR will trigger a **${releaseType}** release when merged to main.`;
+            
+          const commentBody = \`## 📦 **Version Impact**
           
           ${{ steps.version-check.outputs.version-message }}
           
-          **Current version:** \`v${{ steps.version-check.outputs.current-version }}\`
-          **Next version:** \`v${{ steps.version-check.outputs.next-version }}\`
-          **Release type:** \`${{ steps.version-check.outputs.release-type }}\`
+          **Current version:** \\\`v${{ steps.version-check.outputs.current-version }}\\\`
+          **Next version:** \\\`v${{ steps.version-check.outputs.next-version }}\\\`
+          **Release type:** \\\`${releaseType}\\\`
           
-          This PR will trigger a **${{ steps.version-check.outputs.release-type }}** release when merged to main.
+          \${releaseMessage}
           
           ---
-          <sub>🤖 This comment is automatically updated by the CI workflow</sub>`;
+          <sub>🤖 This comment is automatically updated by the CI workflow</sub>\`;
           
           if (botComment) {
             // Update existing comment
