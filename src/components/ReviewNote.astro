@@ -1,0 +1,195 @@
+---
+export interface Props {
+  type?: 'review' | 'update' | 'expand' | 'polish' | 'fact-check' | 'rewrite';
+  priority?: 'low' | 'medium' | 'high' | 'urgent';
+  note?: string;
+  author?: string;
+  date?: string;
+  section?: string;
+}
+
+const { 
+  type = 'review', 
+  priority = 'medium',
+  note,
+  author = 'Author',
+  date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+  section
+} = Astro.props;
+
+// Function to get type styles
+function getTypeStyle(type: string) {
+  const styles = {
+    'review': {
+      color: '#3B82F6',
+      bgColor: 'bg-blue-50/80 dark:bg-blue-950/30',
+      borderColor: 'border-blue-200/60 dark:border-blue-800/40',
+      textColor: 'text-blue-700 dark:text-blue-300',
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>',
+      label: 'Review Needed'
+    },
+    'update': {
+      color: '#10B981',
+      bgColor: 'bg-green-50/80 dark:bg-green-950/30',
+      borderColor: 'border-green-200/60 dark:border-green-800/40',
+      textColor: 'text-green-700 dark:text-green-300',
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>',
+      label: 'Update Required'
+    },
+    'expand': {
+      color: '#8B5CF6',
+      bgColor: 'bg-purple-50/80 dark:bg-purple-950/30',
+      borderColor: 'border-purple-200/60 dark:border-purple-800/40',
+      textColor: 'text-purple-700 dark:text-purple-300',
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"/>',
+      label: 'Needs Expansion'
+    },
+    'polish': {
+      color: '#F59E0B',
+      bgColor: 'bg-amber-50/80 dark:bg-amber-950/30',
+      borderColor: 'border-amber-200/60 dark:border-amber-800/40',
+      textColor: 'text-amber-700 dark:text-amber-300',
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>',
+      label: 'Polish & Refine'
+    },
+    'fact-check': {
+      color: '#F97316',
+      bgColor: 'bg-orange-50/80 dark:bg-orange-950/30',
+      borderColor: 'border-orange-200/60 dark:border-orange-800/40',
+      textColor: 'text-orange-700 dark:text-orange-300',
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+      label: 'Fact Check'
+    },
+    'rewrite': {
+      color: '#6B7280',
+      bgColor: 'bg-gray-50/80 dark:bg-gray-950/30',
+      borderColor: 'border-gray-200/60 dark:border-gray-800/40',
+      textColor: 'text-gray-700 dark:text-gray-300',
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>',
+      label: 'Rewrite Needed'
+    }
+  };
+  return styles[type as keyof typeof styles] || styles['review'];
+}
+
+// Function to get priority indicator
+function getPriorityStyle(priority: string) {
+  const styles = {
+    'low': { color: 'bg-gray-400', label: 'Low' },
+    'medium': { color: 'bg-yellow-500', label: 'Medium' },
+    'high': { color: 'bg-orange-500', label: 'High' },
+    'urgent': { color: 'bg-orange-600', label: 'Urgent' }
+  };
+  return styles[priority as keyof typeof styles] || styles['medium'];
+}
+
+const typeStyle = getTypeStyle(type);
+const priorityStyle = getPriorityStyle(priority);
+---
+
+<div class={`review-note relative ${typeStyle.bgColor} ${typeStyle.borderColor} border rounded-lg p-3 my-3 transition-all duration-200 hover:shadow-md`}>
+  <!-- Left accent line -->
+  <div class="absolute left-0 top-0 bottom-0 w-1 rounded-l-lg" style={`background-color: ${typeStyle.color}`}></div>
+  
+  <div class="flex items-start gap-3 pl-2">
+    <!-- Icon -->
+    <div class={`flex-shrink-0 mt-0.5`} style={`color: ${typeStyle.color}`}>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <Fragment set:html={typeStyle.icon} />
+      </svg>
+    </div>
+    
+    <div class="flex-1 min-w-0">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-2">
+          <span class={`text-sm font-semibold ${typeStyle.textColor}`}>
+            {typeStyle.label}
+          </span>
+          {section && (
+            <span class="text-xs px-2 py-0.5 rounded-full bg-white/60 dark:bg-gray-800/60 text-gray-600 dark:text-gray-400">
+              {section}
+            </span>
+          )}
+        </div>
+        
+        <!-- Priority & Metadata -->
+        <div class="flex items-center gap-2 text-xs">
+          <div class={`w-2 h-2 rounded-full ${priorityStyle.color}`} title={`${priorityStyle.label} priority`}></div>
+          <span class="text-gray-500 dark:text-gray-400">{author}</span>
+          <span class="text-gray-400 dark:text-gray-500">•</span>
+          <span class="text-gray-500 dark:text-gray-400">{date}</span>
+        </div>
+      </div>
+      
+      <!-- Note Content -->
+      {note && (
+        <div class={`text-sm ${typeStyle.textColor} opacity-90 leading-relaxed`}>
+          <p>{note}</p>
+        </div>
+      )}
+    </div>
+    
+    <!-- Dismiss Button -->
+    <button 
+      class="review-dismiss flex-shrink-0 opacity-50 hover:opacity-100 transition-opacity p-1 hover:bg-white/20 dark:hover:bg-gray-800/20 rounded text-gray-500 dark:text-gray-400"
+      title="Mark as resolved"
+      aria-label="Dismiss review note"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  function initReviewNotes() {
+    const dismissButtons = document.querySelectorAll('.review-dismiss');
+    
+    dismissButtons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement;
+        const reviewNote = target.closest('.review-note') as HTMLElement;
+        if (reviewNote) {
+          // Fade out animation
+          reviewNote.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+          reviewNote.style.opacity = '0';
+          reviewNote.style.transform = 'translateX(10px)';
+          
+          setTimeout(() => {
+            reviewNote.remove();
+          }, 300);
+        }
+      });
+    });
+  }
+  
+  // Initialize on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReviewNotes);
+  } else {
+    initReviewNotes();
+  }
+  
+  // Re-initialize on navigation (for SPAs)
+  (globalThis as any).initReviewNotes = initReviewNotes;
+</script>
+
+<style>
+  .review-note {
+    backdrop-filter: blur(2px);
+  }
+  
+  .review-note:hover {
+    transform: translateY(-1px);
+  }
+  
+  .review-dismiss:hover {
+    transform: scale(1.1);
+  }
+  
+  .review-dismiss:active {
+    transform: scale(0.95);
+  }
+</style>
