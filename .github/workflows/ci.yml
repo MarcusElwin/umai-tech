@@ -149,18 +149,18 @@ jobs:
             ? 'This PR will **not trigger a release** when merged to main.'
             : `This PR will trigger a **${releaseType}** release when merged to main.`;
             
-          const commentBody = \`## 📦 **Version Impact**
+          const commentBody = `## 📦 **Version Impact**
           
           ${{ steps.version-check.outputs.version-message }}
           
-          **Current version:** \\\`v${{ steps.version-check.outputs.current-version }}\\\`
-          **Next version:** \\\`v${{ steps.version-check.outputs.next-version }}\\\`
-          **Release type:** \\\`${releaseType}\\\`
+          **Current version:** \`v${{ steps.version-check.outputs.current-version }}\`
+          **Next version:** \`v${{ steps.version-check.outputs.next-version }}\`
+          **Release type:** \`${releaseType}\`
           
-          \${releaseMessage}
+          ${releaseMessage}
           
           ---
-          <sub>🤖 This comment is automatically updated by the CI workflow</sub>\`;
+          <sub>🤖 This comment is automatically updated by the CI workflow</sub>`;
           
           if (botComment) {
             // Update existing comment
