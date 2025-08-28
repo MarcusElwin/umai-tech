@@ -59,8 +59,23 @@ jobs:
         echo "Commits to analyze:"
         if [ -z "$COMMITS" ]; then
           echo "No commits found between $BASE_SHA and $HEAD_SHA"
+          echo "Trying alternative approach with --oneline..."
+          COMMITS=$(git log --oneline $BASE_SHA..$HEAD_SHA 2>/dev/null || echo "")
+          if [ -n "$COMMITS" ]; then
+            echo "Found commits with --oneline:"
+            echo "$COMMITS"
+            # Extract just the commit messages (everything after the first space)
+            COMMITS=$(git log --format="%s" $BASE_SHA..$HEAD_SHA 2>/dev/null || echo "")
+          fi
         else
           echo "$COMMITS"
+        fi
+        
+        if [ -n "$COMMITS" ]; then
+          COMMIT_COUNT=$(echo "$COMMITS" | wc -l)
+          echo "Number of commits found: $COMMIT_COUNT"
+        else
+          echo "Number of commits found: 0"
         fi
         
         # Initialize variables
