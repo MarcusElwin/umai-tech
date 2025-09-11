@@ -100,7 +100,7 @@ function getEraIcon(version: string) {
                 <!-- Right: Key Innovation + Chevron -->
                 <div class="flex items-center gap-4">
                   <div class="text-right max-w-xs">
-                    <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{era.keyInnovation}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">{era.keyInnovation}</p>
                   </div>
                   <svg class="w-5 h-5 text-gray-400 transition-transform duration-200 era-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -149,21 +149,18 @@ function getEraIcon(version: string) {
                     <div>
                       <h6 class="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2">Characteristics</h6>
                       <div class="flex flex-wrap gap-2">
-                        {era.characteristics.slice(0, 3).map((char) => (
+                        {era.characteristics.map((char) => (
                           <span class="inline-flex items-center px-2 py-1 rounded-md text-xs border" style={`background-color: ${getEraColor(era.color)}15; border-color: ${getEraColor(era.color)}30; color: ${getEraColor(era.color)}`}>
                             {char}
                           </span>
                         ))}
-                        {era.characteristics.length > 3 && (
-                          <span class="text-xs text-gray-500">+{era.characteristics.length - 3} more</span>
-                        )}
                       </div>
                     </div>
                     
                     <div>
                       <h6 class="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2">Examples</h6>
                       <div class="flex flex-wrap gap-2">
-                        {era.examples.slice(0, 4).map((example) => (
+                        {era.examples.map((example) => (
                           <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                             {example}
                           </span>
@@ -176,7 +173,7 @@ function getEraIcon(version: string) {
                   <div>
                     <h6 class="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide mb-2">Testing Approach</h6>
                     <ul class="space-y-1">
-                      {era.testingApproach.slice(0, 4).map((test) => (
+                      {era.testingApproach.map((test) => (
                         <li class="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
                           <div class="w-1 h-1 rounded-full mt-2 flex-shrink-0" style={`background-color: ${getEraColor(era.color)}`}></div>
                           <span>{test}</span>

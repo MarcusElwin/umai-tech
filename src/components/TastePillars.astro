@@ -99,16 +99,16 @@ function getColorStyle(color: string) {
 
   <!-- Collapsible Content -->
   <div id="pillars-content" class="hidden transition-all duration-300 ease-in-out overflow-hidden">
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
       {pillars.map((pillar: any) => {
         const importanceStyle = getImportanceStyle(pillar.importance);
         const colorStyle = getColorStyle(pillar.color);
         
         return (
-          <div class={`pillar-card ${importanceStyle.bg} ${importanceStyle.border} ${importanceStyle.ring} border rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 relative`}>
+          <div class={`pillar-card ${importanceStyle.bg} ${importanceStyle.border} ${importanceStyle.ring} border rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-visible`}>
             
             <!-- Priority Badge -->
-            <div class={`absolute -top-2 -right-2 ${importanceStyle.badge} text-xs font-bold px-2 py-1 rounded-full shadow-lg`}>
+            <div class={`absolute top-2 right-2 ${importanceStyle.badge} text-xs font-bold px-2.5 py-1 rounded-full shadow-md z-10`}>
               {importanceStyle.priority}
             </div>
 
@@ -140,34 +140,13 @@ function getColorStyle(color: string) {
                 </svg>
                 Key Examples:
               </h6>
-              <div class="space-y-1">
-                <div class={`examples-visible-${pillar.id}`}>
-                  {pillar.examples.slice(0, 3).map((example: string) => (
-                    <div class="flex items-start gap-2 text-xs">
-                      <div class={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${colorStyle.iconBg}`}></div>
-                      <span class="text-gray-800 dark:text-gray-200 leading-tight">{example}</span>
-                    </div>
-                  ))}
-                </div>
-                {pillar.examples.length > 3 && (
-                  <>
-                    <div class={`examples-hidden-${pillar.id} hidden space-y-1`}>
-                      {pillar.examples.slice(3).map((example: string) => (
-                        <div class="flex items-start gap-2 text-xs">
-                          <div class={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${colorStyle.iconBg}`}></div>
-                          <span class="text-gray-600 dark:text-gray-400 leading-tight">{example}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <button 
-                      class={`examples-toggle-${pillar.id} text-xs text-gray-500 dark:text-gray-500 italic hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer transition-colors border-none bg-transparent p-0`}
-                      onclick={`toggleExamples('${pillar.id}')`}
-                    >
-                      <span class={`show-more-${pillar.id}`}>+{pillar.examples.length - 3} more examples</span>
-                      <span class={`show-less-${pillar.id} hidden`}>Show less</span>
-                    </button>
-                  </>
-                )}
+              <div class="space-y-1.5">
+                {pillar.examples.map((example: string) => (
+                  <div class="flex items-start gap-2 text-xs">
+                    <div class={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${colorStyle.iconBg}`}></div>
+                    <span class="text-gray-700 dark:text-gray-300 leading-relaxed">{example}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -235,29 +214,6 @@ function getColorStyle(color: string) {
   
   // Re-initialize on navigation (for SPAs)
   (globalThis as any).initTastePillars = initTastePillars;
-  
-  // Toggle examples function
-  function toggleExamples(pillarId: string) {
-    const hiddenExamples = document.querySelector(`.examples-hidden-${pillarId}`);
-    const showMore = document.querySelector(`.show-more-${pillarId}`);
-    const showLess = document.querySelector(`.show-less-${pillarId}`);
-    
-    if (hiddenExamples && showMore && showLess) {
-      const isHidden = hiddenExamples.classList.contains('hidden');
-      
-      if (isHidden) {
-        hiddenExamples.classList.remove('hidden');
-        showMore.classList.add('hidden');
-        showLess.classList.remove('hidden');
-      } else {
-        hiddenExamples.classList.add('hidden');
-        showMore.classList.remove('hidden');
-        showLess.classList.add('hidden');
-      }
-    }
-  }
-  
-  (globalThis as any).toggleExamples = toggleExamples;
 </script>
 
 <style>
