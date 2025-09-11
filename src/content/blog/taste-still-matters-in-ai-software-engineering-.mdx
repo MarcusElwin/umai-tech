@@ -1,0 +1,1561 @@
+---
+title: "Taste Still Matters In AI & Software Engineering "
+description: "Nowadays, anyone can be a software engineer and build a frontend or backend or entire full-stack application in the age of GenAI and LLMs. However, few can build software that sells, are loved by 1000s and displays good design and taste. In this post we explore why taste might be more important than ever 2025 and beyond."
+pubDate: 2025-08-19T19:15:20.310Z
+updatedDate: 2025-09-11T19:15:20.312Z
+author: "Marcus Elwin"
+tags: ["Taste", "Career", "Vibeing", "AI", "AI Engineering", "Large Language Models", "Generative AI", "Vibe Coding", "Software Engineering"]
+---
+
+import Callout from '@components/Callout.astro';
+import WaveCard from '@components/WaveCard.astro';
+import MarketShareChart from '@components/MarketShareChart.astro';
+import PlatformGrid from '@components/PlatformGrid.astro';
+import SoftwareEvolution from '@components/SoftwareEvolution.astro';
+import SkillsTransition from '@components/SkillsTransition.astro';
+import TastePillars from '@components/TastePillars.astro';
+import CodeTasteComparison from '@components/CodeTasteComparison.astro';
+import ReviewNote from '@components/ReviewNote.astro';
+import TasteDevelopmentPath from '@components/TasteDevelopmentPath.astro';
+import CaseStudyComparison from '@components/CaseStudyComparison.astro';
+import Mermaid from '@components/Mermaid.astro';
+
+## Introduction: The Vibe Coding Revolution
+
+**$1.8 billion. 8 months. Zero to unicorn.** These three numbers tell the story of Lovable—the fastest software company to achieve unicorn status in history[^1]. Not by building better infrastructure. Not by revolutionizing databases. But by understanding a simple truth: 90% of the population can't code, but everyone has ideas they want to bring to life.
+
+*Welcome to the vibe coding revolution*. In less than one year, we've witnessed the rise of platforms like **Lovable**, **Bolt.new**, **Emergent**, and **Leap** that transform natural language into fully functional applications. This isn't just *democratization*—it's a complete inversion of what makes engineers valuable. When anyone can build software by describing what they want, success depends not on your ability to write code, but on knowing what's worth building and how to make it resonate with users.
+
+Tools like **Lovable**, **Vercel V0**, **Bolt.new**, and recent new actors such as **Leap** or **Emergent**, are making it possible for anyone to create software without traditional coding skills. This shift is not just about making coding accessible; it's about changing the very nature of how we think about software development. You might have heard about "vibe coding", "spec-driven development", or "AI-first development"—all terms that capture this new paradigm where **taste, intuition, and user empathy** become the most valuable skills in software engineering.
+
+The evidence is everywhere. Emergent AI hit **700,000+** users and **$10M ARR** in just two months with a "no developers required" platform[^3]. GitHub Copilot now serves **20 million** developers, generating 20-50% of their code[^4]. Neo AI achieved a 34% medal rate on Kaggle competitions, outperforming Microsoft (22.4%) and OpenAI (16.9%) at autonomous ML engineering[^5]. And according to Y Combinator, 25% of their current batch reports that AI generates 95% of their codebase[^6].
+
+The rise of these tools has sparked a debate about the future of software engineering. And many of these vibe coding tools seems to be really successful such as Lovable: whom reached **$1.8 billion** valuation in just **8** months—becoming the fastest software company to achieve unicorn status in history[^1]. Are we witnessing the end of traditional coding as we know it? Will AI-driven tools replace human developers, or will they augment our capabilities, allowing us to focus on higher-level design and product intuition?
+
+To quote the former Tesla AI Director, Andrej Karpathy for a definition of vibe coding:
+ <Callout type="info">
+  **The Vibe Coding Definition**: "There's a new kind of coding I call 'vibe coding', where you fully give in to the vibes, embrace exponentials, and
+  forget that the code even exists." — Andrej Karpathy, Former Tesla AI Director[^2]
+  </Callout>
+
+Vibe coding represents a fundamental shift: leveraging AI to enhance creativity and intuition rather than just writing code. But the question remains: **can everyone build software that resonates with users and exhibits good taste?** 
+
+We're witnessing the commoditization of code itself. What can't be commoditized is the ability to sense what users want, craft effortless experiences, and make micro-decisions that separate beloved products from forgotten ones.
+
+<Callout type="warning">
+**The Great Shift**: We're witnessing the commoditization of code itself. As Google engineer Jack O'Brien notes, "virtually all new software will be
+created by autonomous agents," yet "concerningly, few software engineers today truly have great taste"[^7].
+</Callout>
+
+In this article we will deep-dive into the new wave of agentic coding and distill why taste has become the most valuable skill in software engineering today, **in my honest opinion**, working with AI coding / Vibe-coding for the past year. 
+
+## From Copilots to Autonomous Coding Agents: The Evolution of AI in Software Engineering
+
+When looking into what has happened in terms of AI-assisted software development, it's clear that we've moved through *three* distinct waves, each representing a significant leap in how AI integrates into the software engineering process.
+
+These waves are:
+1. **Wave 1: AI Assistants (2021-2024)** - Tools like GitHub Copilot, Cursor, and Tabnine that provide code completion and intelligent assistance to developers, enhancing productivity but still requiring significant human input.
+2. **Wave 2: Autonomous Agents (2024-2025)** - Platforms like Devin AI and Neo AI that can autonomously handle entire software engineering tasks with minimal human oversight, including environment setup, bug reproduction, and even completing real jobs on platforms like Upwork.
+3. **Wave 3: Vibe Coding Platforms (2024-Present)** - Tools like Lovable, Emergent, and Bolt.new that allow users to create full-stack applications from natural language descriptions, effectively eliminating the need for traditional coding skills.
+
+<WaveCard 
+  title="The Three Waves of AI-Assisted Development"
+  waves={[
+    {
+      id: "1",
+      title: "AI Assistants",
+      period: "2021-2024",
+      description: "Code completion and intelligent assistance tools that enhance developer productivity",
+      keyPlayers: ["GitHub Copilot", "Cursor", "Augment", "Tabnine"],
+      impact: "10.6% to 55% productivity increase",
+      capabilities: [
+        "Intelligent code completion",
+        "Context-aware suggestions", 
+        "Real-time error detection",
+        "Enhanced developer workflows"
+      ]
+    },
+    {
+      id: "2",
+      title: "Autonomous Agents",
+      period: "2024-2025", 
+      description: "Complete autonomous software engineering with minimal human oversight",
+      keyPlayers: ["Devin AI", "Neo AI", "SWE-bench"],
+      impact: "End-to-end project completion",
+      capabilities: [
+        "Complete autonomous development",
+        "Environment setup and configuration",
+        "Bug reproduction and fixes",
+        "Real job completion on platforms"
+      ]
+    },
+    {
+      id: "3",
+      title: "Vibe Coding Platforms",
+      period: "2024-Present",
+      description: "Natural language to full applications - no traditional coding required",
+      keyPlayers: ["Lovable", "Emergent", "Bolt.new", "Leap"],
+      impact: "No developers required",
+      capabilities: [
+        "Full-stack apps from conversation",
+        "Production-ready deployment",
+        "30-minute learning curve", 
+        "Non-technical user accessibility"
+      ]
+    }
+  ]}
+/>
+
+Each wave represents a fundamental shift in the relationship between human developers and AI. Wave 1 made developers faster. Wave 2 made AI capable of independent work. Wave 3 democratized software creation entirely[^10]. Importantly, GitHub Copilot pioneered this space in 2021, predating even ChatGPT by over a year—proving that specialized AI tools could transform software development before general-purpose AI became mainstream.
+
+### Market Dynamics: Who's Winning the Race
+The market data reveals which approaches are capturing user attention and revenue. Traffic analysis from the last 90 days (as of 2025-08-19) shows the current competitive landscape[^13].
+In the graph below you can cut by ARR (Annual Recurring Revenue), Estimated Traffic and Market Share based on verified data from funding announcements and industry analysis:
+
+<MarketShareChart 
+  title="AI Development Tools Market by ARR"
+  subtitle="Revenue share of AI-powered development platforms (Q3 2025, verified data)"
+  data={[
+    {
+      name: "GitHub Copilot", 
+      visits: "N/A", 
+      share: "41.7%", 
+      category: "ai-enhanced",
+      arr: "$500M+ (verified)",
+      users: "20M users (verified)",
+      arrValue: "500M",
+      usersValue: "20M",
+      description: "Microsoft's AI coding assistant. Largest by revenue and users. +5M users in Q2 2025. 1.3M paying customers. IDE-integrated.",
+      growth: "+5M users in Q2 2025"
+    },
+    {
+      name: "Replit", 
+      visits: "13.0M", 
+      share: "8.5%", 
+      category: "platform",
+      arr: "$102M (verified)",
+      users: "34M total users (verified)",
+      arrValue: "102M",
+      usersValue: "34M",
+      description: "Cloud IDE platform with verified $102M ARR. 45% monthly subscriber growth since AI agent launch. Hybrid web+IDE approach.",
+      growth: "45% monthly subscriber growth"
+    },
+    {
+      name: "Lovable", 
+      visits: "21.2M", 
+      share: "8.3%", 
+      category: "vibe-coding",
+      arr: "$100M+ (verified)",
+      users: "2.3M users (verified)",
+      arrValue: "100M",
+      usersValue: "2.3M",
+      description: "Swedish unicorn reaching $100M ARR in 8 months. ~30K paying customers (est.). $1.8B valuation. Pure vibe coding approach.",
+      growth: "Fastest to $100M ARR in history"
+    },
+    {
+      name: "Cursor", 
+      visits: "N/A", 
+      share: "8.3%", 
+      category: "ai-enhanced",
+      arr: "$100M (est. 2025)",
+      users: "360K+ users (verified)",
+      arrValue: "100M",
+      usersValue: "0.36M",
+      description: "AI-first code editor with $2.6B valuation. Premium positioning with 40K paying customers. IDE-based with high revenue per user.",
+      growth: "$2.6B valuation, premium focus"
+    },
+    {
+      name: "Bubble", 
+      visits: "4.8M", 
+      share: "6.2%", 
+      category: "platform",
+      arr: "$74.2M (2024, verified)",
+      users: "1M customers (verified)",
+      arrValue: "74.2M",
+      usersValue: "1M",
+      description: "Established no-code leader with verified $74.2M revenue, 1M customers, and 4.69M apps built since 2012. Pre-AI foundation.",
+      growth: "Steady growth, established leader"
+    },
+    {
+      name: "Bolt.new", 
+      visits: "9.6M", 
+      share: "3.3%", 
+      category: "vibe-coding",
+      arr: "$40M (verified)",
+      users: "5M total, 1M MAU (verified)",
+      arrValue: "40M",
+      usersValue: "5M",
+      description: "StackBlitz's vibe coding platform. Verified $0 to $40M ARR in 5 months, 20% monthly active rate. Fastest growing vibe coding platform.",
+      growth: "$40M ARR in 5 months"
+    },
+    {
+      name: "V0 + Others", 
+      visits: "5.6M", 
+      share: "23.7%", 
+      category: "emerging",
+      arr: "Est. $200M+ combined",
+      users: "Millions combined",
+      arrValue: "283M",
+      usersValue: "8M",
+      description: "Includes V0 (part of $200M Vercel), emerging vibe coding platforms, and other AI development tools. Fastest growing segment.",
+      growth: "Rapid emergence and experimentation"
+    }
+  ]}
+  disclaimer="METHODOLOGY: ARR-based market share of AI-powered development tools (~$1.2B total market, Q3 2025). All figures marked 'verified' from official company reports, funding announcements, or verified industry analysis. 'Est.' indicates calculated estimates. Market includes IDE-integrated tools (Copilot, Cursor), cloud platforms (Replit, Bubble), and pure vibe coding platforms (Lovable, Bolt.new). Total market size estimated from disclosed ARR figures of major players."
+/>
+
+Platforms prioritizing user experience (Lovable, Bolt.new) achieve unprecedented growth rates despite less technical complexity than established players, supporting our thesis that <strong>taste has become more valuable than pure technical capability</strong>.
+
+The market has crystallized into three distinct categories, each serving different user needs and showcasing different approaches to the taste versus technical complexity trade-off:
+
+<PlatformGrid 
+  title="AI Development Platform Categories"
+  categories={[
+    {
+      name: "Pure Vibe Coding",
+      description: "Natural language to full applications - no traditional coding required",
+      color: "purple",
+      platforms: [
+        {name: "Lovable", arr: "$100M+", users: "2.3M", growth: "8 months to $100M ARR", description: "Swedish unicorn achieving fastest software growth in history. $1.8B valuation."},
+        {name: "Bolt.new", arr: "~$40M", users: "5M total, 1M MAU", growth: "$0→$40M in 5 months", description: "StackBlitz's browser-based vibe coding platform with 20% monthly active rate."},
+        {name: "Emergent", arr: "Undisclosed", users: "Y Combinator batch", growth: "Fast iteration", description: "Y Combinator-backed platform focused on 'no developers required' positioning."},
+        {name: "Leap", arr: "Estimated <$5M", users: "Early stage", growth: "Emerging player", description: "Full-stack development with integrated cloud deployment capabilities."}
+      ]
+    },
+    {
+      name: "Established Platforms + AI",
+      description: "Traditional platforms enhanced with AI capabilities",
+      color: "blue", 
+      platforms: [
+        {name: "Replit", arr: "$102M", users: "34M", growth: "10x growth in 6 months", description: "Cloud IDE platform that added AI agents. Strong in education and collaboration."},
+        {name: "Bubble", arr: "$74.2M", users: "1M customers", growth: "50%+ annual growth", description: "No-code leader since 2012. 4.69M apps built on platform."},
+        {name: "GitHub Copilot", arr: "$500M+", users: "20M", growth: "+5M users Q2 2025", description: "Microsoft's code completion tool. Largest user base in AI coding."},
+        {name: "Cursor", arr: "$200M", users: "360K", growth: "$2.6B valuation", description: "AI-first code editor targeting professional developers. Premium positioning."}
+      ]
+    },
+    {
+      name: "Specialized & Emerging",
+      description: "Domain-specific tools and next-generation experiments",
+      color: "green",
+      platforms: [
+        {name: "V0 (Vercel)", arr: "Part of $200M Vercel", users: "3.5M+", growth: "44% monthly growth", description: "UI component generation tool integrated into Vercel's ecosystem."},
+        {name: "Windsurf", arr: "Undisclosed", users: "Growing", growth: "Cursor competitor", description: "Emerging AI code editor focusing on developer experience improvements."},
+        {name: "Claude Artifacts", arr: "Part of Anthropic", users: "Millions", growth: "Integrated tool", description: "Code generation built into Claude Pro. Strong for prototyping and iteration."},
+        {name: "Augment", arr: "~$20M", users: "Enterprise focus", growth: "$977M valuation", description: "Enterprise-focused alternative to GitHub Copilot with $227M funding."}
+      ]
+    }
+  ]}
+/>
+
+The data reveals a clear pattern: **platforms that prioritize user experience and workflow design over pure technical capabilities are achieving unprecedented growth rates**[^11]. Lovable's journey from zero to $1.8B valuation in 8 months wasn't built on superior AI models—it was built on understanding what users actually want when they say "build me an app."
+
+<Callout type="note">
+**Market Data Disclaimer**: Market share figures are estimates based on publicly available traffic data, funding announcements, and industry analysis. Actual revenue figures may vary as most companies are private. Traffic measurements may not directly correlate with usage patterns or revenue generation.
+</Callout>
+
+### The Commoditization Acceleration: From 20% to "No Developers Required"
+
+The speed of this transformation has caught even industry experts by surprise. In just four years, we've moved from AI handling basic code completion to platforms claiming "no developers required" for complex applications. 
+If I look at my own productivity using AI coding tools, I have probably **8-10x** my own productivity compared to traditional coding. And nowadays, when asked by management how many people I would need to hire, I would in theory do well with a team of **2-3** rather then **10-15** people.
+
+<Callout type="warning">
+**The Commoditization Reality**: GitHub Copilot went from 1 million users generating simple autocomplete to 20 million users with AI writing 20-50% of their code[^4]. Meanwhile, platforms like Emergent built 10,000+ applications in just two weeks[^3]. The mechanical act of coding is becoming a commodity faster than anyone predicted.
+</Callout>
+
+This acceleration has created what researchers call the "pit of death" problem—a point where AI-generated code becomes too complex for the AI itself to debug or extend[^12]. As one developer observed: "Things start fast and awesome... But then you start prompting more and more, and you struggle to get what you want out of it. Eventually, some prompt you use breaks everything."
+However, with this in mind, I would never vibe code in a language I don't at least have some understanding of. I would say that vibe coding is more like "augmented coding" rather than "no coding". I suspect many developers or engineers who have been building systems for years, feels the same way.
+
+**What This Means for Traditional Development:**
+
+The implications are profound and immediate, if you haven't been living under a rock:
+
+- **Shift from Implementation to Orchestration**: Developers are becoming AI coordinators rather than code writers
+- **Product Definition Becomes Primary**: Knowing *what* to build matters more than knowing *how* to build it  
+- **Prompt Engineering as Core Skill**: The ability to communicate intent to AI systems becomes crucial
+- **User Experience Differentiation**: With similar technical capabilities, UX design separates winners from losers
+
+I don't think this is unique for software or ai engineering, any type of profession or domain where AI capabilities are increased will force practitioners to become more of an "orchestrator" or "manager" of AI systems rather than doing the actual work themselves.
+Which is not necessarily bad, as more brainpower and time can be spent on higher-level thinking, creativity and problem solving.
+
+<Callout type="success">
+**The Taste Advantage**: As Formation.dev notes, "When AI can generate dozens of implementations, product thinking becomes the compass"[^8]. The platforms achieving massive growth aren't the ones with the best AI models—they're the ones with the best understanding of user workflows and needs.
+</Callout>
+
+### The Pattern: Technology Scales, Taste Doesn't
+
+Looking across all three waves, a clear pattern emerges. Technical capabilities can be replicated and scaled through AI, but the human judgment about what users want, how interfaces should feel, and which features matter most—this remains uniquely human and becomes more valuable as everything else becomes commoditized.
+
+The companies winning in each category—whether it's GitHub Copilot's developer-centric approach, Lovable's poc-ready focus, or Cursor's premium user experience—all share one trait: they made decisions based on deep user empathy rather than technical feasibility alone. As we'll explore in the next section, this shift from technical skills to taste and product intuition represents the most significant change in software engineering since the advent of high-level programming languages.
+
+## The Evolution of Software Engineering: From Instructions to Intentions
+Understanding why taste matters requires examining software engineering's evolution through three major paradigms that have layered increasingly sophisticated abstractions while making certain skills obsolete and others critical.
+
+These three major paradigms with a fourth emerging are:
+1. **Software 1.0: The Deterministic Era (1950s-2000s)** - Programming was about writing explicit instructions. Every behavior had to be coded by humans, requiring deep technical expertise in algorithms and data structures.
+2. **Software 2.0: The Learning Era (2000s-2020s)** - Machine learning introduced systems that could learn patterns from data. While humans still designed architectures and training processes, the logic emerged from data rather than explicit coding.
+3. **Software 3.0: The Generative Era (2020s-Present)** - Large language models and generative AI allow developers to describe what they want in natural language, and the AI generates code. This shifts the focus from coding skills to prompt engineering and product intuition.
+4. **Software 4.0: The Autonomous Era (2025s-Future)** - Emerging autonomous agents will manage the entire software lifecycle, from design to deployment and maintenance, with humans providing high-level goals and taste-based guidance.
+
+<SoftwareEvolution 
+  eras={[
+    {
+      version: "1.0",
+      name: "The Deterministic Era",
+      period: "1950s-2000s",
+      paradigm: "Explicit instructions produce predictable outcomes",
+      inputOutput: {
+        inputs: ["Data", "Logic"],
+        process: "Execute",
+        output: "Desired Behavior"
+      },
+      characteristics: [
+        "Deterministic algorithms",
+        "Explicit rule-based programming",
+        "Human-written instructions",
+        "Predictable, repeatable outcomes",
+        "Complex logic requires expert knowledge"
+      ],
+      examples: [
+        "Operating Systems",
+        "Web Applications", 
+        "Enterprise Software",
+        "Desktop Applications",
+        "Embedded Systems"
+      ],
+      testingApproach: [
+        "Unit testing",
+        "Integration testing", 
+        "Regression testing",
+        "Feature testing",
+        "Smoke testing"
+      ],
+      keyInnovation: "Computers could execute human-designed logic at scale, but every behavior had to be explicitly programmed.",
+      color: "blue"
+    },
+    {
+      version: "2.0",
+      name: "The Learning Era", 
+      period: "2000s-2020s",
+      paradigm: "Training data and desired outcomes produce learned logic",
+      inputOutput: {
+        inputs: ["Data", "Desired Behavior"],
+        process: "Learn",
+        output: "Logic (Learned)"
+      },
+      characteristics: [
+        "Non-deterministic algorithms",
+        "Pattern recognition from data",
+        "Statistical learning models",
+        "Probabilistic outputs",
+        "Emergent capabilities from training"
+      ],
+      examples: [
+        "Recommendation Systems",
+        "Computer Vision",
+        "Natural Language Processing",
+        "Predictive Analytics",
+        "Autonomous Vehicles"
+      ],
+      testingApproach: [
+        "Pre-training validation",
+        "Invariance testing",
+        "Directional expectation tests",
+        "Data drift detection",
+        "A/B testing with real users"
+      ],
+      keyInnovation: "Systems could learn complex patterns from data that humans couldn't explicitly program, but required massive datasets and specialized expertise.",
+      color: "purple"
+    },
+    {
+      version: "3.0",
+      name: "The Generative Era",
+      period: "2020s-Present", 
+      paradigm: "Natural language intentions produce complete applications",
+      inputOutput: {
+        inputs: ["Intent", "Context"],
+        process: "Generate",
+        output: "Working Software"
+      },
+      characteristics: [
+        "Natural language programming",
+        "Context-aware code generation",
+        "Multi-modal understanding",
+        "Conversational development",
+        "Rapid prototyping and iteration"
+      ],
+      examples: [
+        "GitHub Copilot",
+        "GPT-4 Applications",
+        "Vibe Coding Platforms",
+        "AI Code Assistants",
+        "Generative UI Tools"
+      ],
+      testingApproach: [
+        "Prompt engineering validation",
+        "Output quality assessment",
+        "Human-in-the-loop testing",
+        "Vibe testing (does it feel right?)",
+        "Iterative refinement"
+      ],
+      keyInnovation: "AI can understand human intent and generate complete, functional software without explicit programming, democratizing software creation.",
+      color: "green"
+    },
+    {
+      version: "4.0",
+      name: "The Autonomous Era",
+      period: "2025s-Future",
+      paradigm: "AI agents autonomously design, build, and maintain software ecosystems",
+      inputOutput: {
+        inputs: ["Goals", "Constraints"],
+        process: "Orchestrate",
+        output: "Self-Evolving Systems"
+      },
+      characteristics: [
+        "Fully autonomous development",
+        "Self-healing and self-optimizing code",
+        "Multi-agent collaboration",
+        "Continuous adaptation to user needs",
+        "Ecosystem-level intelligence"
+      ],
+      examples: [
+        "Autonomous SWE Agents",
+        "Self-Evolving Applications",
+        "AI-Managed Infrastructure",
+        "Adaptive User Interfaces",
+        "Predictive Feature Development"
+      ],
+      testingApproach: [
+        "Autonomous quality assurance",
+        "Continuous behavioral monitoring",
+        "Self-correction mechanisms",
+        "User satisfaction optimization",
+        "Goal alignment verification"
+      ],
+      keyInnovation: "AI systems will autonomously manage the entire software lifecycle, requiring humans only to define high-level goals and provide taste-based guidance.",
+      color: "orange"
+    }
+  ]}
+/>
+
+### Concrete Examples: The Evolution in Practice
+Let's examine how the same problem—building a user authentication system—evolves across each paradigm.  This example highlights how the required skills shift from deep technical expertise to high-level product intuition and taste.
+
+NB: the examples are to mainly illustrate the paradigm shifts, not to provide production-ready code. For instance training a neural network for auth is not realistic, but it serves to illustrate the paradigm shift.
+
+Expand to see code examples for each paradigm below:
+
+<CodeTasteComparison
+  comparisons={[
+    {
+      title: "Software 1.0: Explicit Instructions",
+      description: "Traditional programming requires manually coding every aspect of authentication",
+      traditional: {
+        label: "Software 1.0 Implementation",
+        code: `// Hundreds of lines of manual implementation
+class AuthenticationService {
+  async register(email: string, password: string) {
+    // Validate input
+    if (!email.includes('@')) {
+      throw new Error('Invalid email');
+    }
+    if (password.length < 8) {
+      throw new Error('Password too short');
+    }
+    
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    
+    // Store in database
+    const user = await db.users.create({
+      email,
+      password: hashedPassword,
+      created_at: new Date()
+    });
+    
+    // Generate JWT
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+    
+    return { user, token };
+  }
+  
+  // ... hundreds more lines for login, logout, 
+  // password reset, session management, etc.
+}`,
+        issues: [
+          "Requires deep knowledge of security best practices",
+          "Easy to introduce vulnerabilities",
+          "Significant time investment for standard functionality",
+          "Must handle all edge cases manually"
+        ]
+      },
+      tasteful: {
+        label: "Software 2.0: Pattern Learning",
+        code: `# Training an auth model on successful login patterns
+import tensorflow as tf
+
+# Train model on authentication patterns
+auth_model = tf.keras.Sequential([
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dropout(0.2),
+  tf.keras.layers.Dense(64, activation='relu'),
+  tf.keras.layers.Dense(2, activation='softmax')
+])
+
+# Learn from millions of auth attempts
+auth_model.fit(
+  training_data,  # Historical auth patterns
+  labels,         # Success/failure labels
+  epochs=100
+)
+
+# Model learns to detect:
+# - Suspicious login patterns
+# - Potential security threats
+# - User behavior anomalies
+# - Optimal session durations
+
+def authenticate(credentials):
+  # Use ML model for intelligent auth
+  risk_score = auth_model.predict(credentials)
+  if risk_score < threshold:
+    return approve_login()
+  else:
+    return require_2fa()`,
+        benefits: [
+          "Learns from patterns instead of explicit rules",
+          "Adapts to new threats automatically",
+          "Handles complex patterns humans might miss",
+          "Still requires significant ML expertise"
+        ]
+      }
+    },
+    {
+      title: "Software 3.0 & 4.0: Natural Language to Implementation",
+      description: "From describing what you want to autonomous system management",
+      traditional: {
+        label: "Software 3.0: Generative Era",
+        code: `// Natural language prompt to AI
+const prompt = \`
+Create a secure authentication system with:
+- Email/password registration and login
+- JWT token generation with refresh tokens
+- Password reset via email
+- Rate limiting and brute force protection
+- Session management with Redis
+- OAuth integration for Google and GitHub
+- Compliance with GDPR and security best practices
+\`;
+
+// AI generates complete implementation
+const authSystem = await AI.generateCode(prompt);
+
+// Human reviews and refines
+const refinedAuth = await human.review(authSystem, {
+  focus: ['security', 'user_experience'],
+  businessRules: companyPolicies,
+  designSystem: brandGuidelines
+});
+
+// Deploy with human oversight
+await deploy(refinedAuth, {
+  monitoring: true,
+  rollback: automatic
+});`,
+        issues: [
+          "Still requires human validation",
+          "May not understand unique business context",
+          "Needs guidance on trade-offs",
+          "Quality depends on prompt engineering"
+        ]
+      },
+      tasteful: {
+        label: "Software 4.0: Autonomous Era",
+        code: `// High-level goal definition
+const authGoals = {
+  objective: "Secure, frictionless user authentication",
+  constraints: {
+    security: "Bank-grade encryption",
+    compliance: ["GDPR", "SOC2", "ISO27001"],
+    userExperience: "One-click where possible",
+    scalability: "Support 10M concurrent users"
+  },
+  preferences: {
+    style: "Minimal friction, maximum security",
+    brand: "Trustworthy yet approachable"
+  }
+};
+
+// Autonomous AI agent manages everything
+const authAgent = new AutonomousAuthAgent(authGoals);
+
+authAgent.on('decision_needed', (decision) => {
+  // Human provides taste-based guidance only
+  if (decision.type === 'ux_tradeoff') {
+    return human.evaluateTaste(decision.options);
+  }
+});
+
+// Agent autonomously:
+// - Designs architecture
+// - Implements code
+// - Deploys to production
+// - Monitors performance
+// - Fixes bugs
+// - Scales infrastructure
+// - Updates for new threats
+
+// Human role: Define goals and provide taste
+humanRole = {
+  define: "What success looks like",
+  guide: "Which experiences feel right",
+  validate: "Does this serve our users?"
+};`,
+        benefits: [
+          "Fully autonomous implementation and maintenance",
+          "Self-improving based on real usage",
+          "Humans focus purely on goals and taste",
+          "System evolves faster than human-managed code"
+        ]
+      }
+    }
+  ]}
+/>
+
+### The Pattern: From Technical Skills to Human Judgment
+
+When looking across these paradigms, a clear pattern emerges: **technical complexity gets abstracted away, while human judgment becomes more critical**. This isn't just a coincidence—it's the fundamental trajectory of technological progress.
+
+**Software 1.0 → 2.0: The First Abstraction**
+- **What became commoditized**: Writing basic algorithms and data structures
+- **What became critical**: Understanding data, statistics, and machine learning theory
+- **Skills that emerged**: Data science, ML engineering, statistical modeling
+
+**Software 2.0 → 3.0: The Second Abstraction**  
+- **What became commoditized**: Training models and understanding ML theory
+- **What became critical**: Prompt engineering, product intuition, and user experience design
+- **Skills that emerged**: AI orchestration, prompt engineering, vibe coding
+
+**Software 3.0 → 4.0: The Coming Abstraction**
+- **What will be commoditized**: Code generation and prompt engineering
+- **What will become critical**: Goal setting, taste, and human-AI collaboration
+- **Skills that will emerge**: AI alignment, taste curation, system orchestration
+
+<Callout type="insight">
+**The Taste Trajectory**: As each layer of technical complexity gets automated, the skills that remain are increasingly about human judgment, aesthetic sense, and understanding what users actually want. We're moving from "how to build it" to "what should be built" and "does this feel right?"
+</Callout>
+
+### Why Software 3.0 Changes Everything
+
+The shift to Software 3.0 represents the most dramatic change in software engineering since the invention of high-level programming languages. For the first time in computing history, **the primary bottleneck is no longer technical knowledge—it's taste**.
+
+Consider the implications:
+
+1. **Democratization at Scale**: Anyone can now build functional software by describing what they want
+2. **Technical Skills Commodity**: Knowing syntax, frameworks, and even architectural patterns matters less
+3. **Taste as Differentiator**: The ability to sense what users want becomes the primary competitive advantage
+4. **Speed vs. Quality Tension**: Rapid iteration is possible, but maintaining quality requires human judgment
+
+<Callout type="warning">
+**The Convergence Problem**: When everyone can build software, the challenge shifts from "Can we build it?" to "Should we build it?" and "How do we make it exceptional?" This is where taste becomes the ultimate differentiator.
+</Callout>
+
+### Software 4.0: The Autonomous Era (Speculation)
+Looking ahead, Software 4.0 will likely emerge when AI systems can autonomously handle the entire software lifecycle—from understanding user needs to deploying and maintaining applications. In this era:
+
+- **AI agents** will collaborate to build and maintain complex software ecosystems
+- **Human role** will shift to high-level goal setting and taste curation  
+- **Success metrics** will focus on user satisfaction and goal alignment rather than technical performance
+- **The ultimate skill** will be the ability to guide AI systems toward outcomes that resonate with human values and preferences
+
+The companies and individuals who thrive in this future won't be those with the best AI models—they'll be those with the best taste for what humans actually want.
+
+### Implications for Today's Engineers
+
+Finally, understanding this evolution helps explain why the skills that matter most are changing rapidly. The transition isn't just about learning new tools—it's about fundamentally rethinking what makes an engineer valuable in an AI-first world.
+
+Some key skills I foresee declining, increasing, or becoming critical in the near future:
+1. **Declining Skills**: Deep framework knowledge, API memorization, low-level optimization
+2. **Increasing Skills**: Product intuition, design thinking, cross-functional collaboration
+3. **Future-Critical Skills**: AI orchestration, human-AI interaction design, goal setting, taste development
+
+<SkillsTransition 
+  skillCategories={[
+    {
+      category: "declining",
+      title: "Declining in Value",
+      skills: [
+        {
+          name: "API & Syntax Memorization",
+          description: "Knowing specific API calls, language syntax, and framework details by heart",
+          trend: "AI can instantly recall and apply any API or syntax",
+          importance: "low"
+        },
+        {
+          name: "Deep Framework Knowledge",
+          description: "Specialized expertise in particular frameworks or libraries",
+          trend: "AI assistants provide framework guidance on-demand",
+          importance: "low"
+        },
+        {
+          name: "Algorithm Implementation",
+          description: "Hand-coding complex algorithms and data structures from scratch",
+          trend: "AI generates optimized implementations instantly",
+          importance: "medium"
+        },
+        {
+          name: "Low-Level Optimization",
+          description: "Manual performance tuning and system-level optimizations",
+          trend: "AI tools handle most optimization automatically",
+          importance: "medium"
+        }
+      ]
+    },
+    {
+      category: "increasing",
+      title: "Increasing in Value",
+      skills: [
+        {
+          name: "Product Intuition",
+          description: "Understanding what users actually want and need from software",
+          trend: "More critical as anyone can build—few know what to build",
+          importance: "critical"
+        },
+        {
+          name: "Design Thinking",
+          description: "Aesthetic judgment and user experience design principles",
+          trend: "Differentiates successful products from functional ones",
+          importance: "high"
+        },
+        {
+          name: "Cross-Functional Collaboration",
+          description: "Working effectively with designers, PMs, and stakeholders",
+          trend: "Essential for translating requirements into AI instructions",
+          importance: "high"
+        },
+        {
+          name: "AI Output Curation",
+          description: "Evaluating, refining, and improving AI-generated code and designs",
+          trend: "Core skill as AI becomes primary development tool",
+          importance: "critical"
+        }
+      ]
+    },
+    {
+      category: "future-critical",
+      title: "Future-Critical Skills",
+      skills: [
+        {
+          name: "AI Orchestration",
+          description: "Coordinating multiple AI agents and tools to achieve complex outcomes",
+          trend: "Primary role as AI handles individual tasks",
+          importance: "critical"
+        },
+        {
+          name: "Human-AI Interaction Design",
+          description: "Designing interfaces and workflows that effectively combine human and AI capabilities",
+          trend: "New discipline emerging as AI becomes ubiquitous",
+          importance: "critical"
+        },
+        {
+          name: "Goal Setting & Outcome Definition",
+          description: "Defining success metrics and guiding AI toward desired outcomes",
+          trend: "Human judgment remains critical for strategic decisions",
+          importance: "critical"
+        },
+        {
+          name: "Taste Development",
+          description: "Cultivating aesthetic and product judgment through experience and reflection",
+          trend: "The ultimate differentiator in an AI-commoditized world",
+          importance: "critical"
+        }
+      ]
+    }
+  ]}
+/>
+
+The visual above illustrates the profound shift happening in software engineering. Technical skills that once required years to master are being commoditized by AI, while human judgment skills—particularly taste—become the primary differentiator. This isn't just a trend; it's the new reality of software development.
+
+The next section explores what "taste" actually means in the context of software engineering and why it has become the most important skill for the vibe coding era.
+
+## What Exactly Is "Taste" in Software, and Why Does It Matter?
+
+<Callout type="insight">
+**Definition: Software Taste**
+
+In software engineering, **taste** is the ability to make nuanced decisions that transform technically correct code into delightfully intuitive user experiences. It's the difference between building something that works and building something people love to use.
+</Callout>
+
+While traditional metrics focus on performance, scalability, and maintainability, taste encompasses the harder-to-measure qualities that separate good software from great software. It's about understanding not just *what* to build, but *how* to build it in a way that feels inevitable, elegant, and human.
+When talking about strategy or other composable systems, I often use the concept of _"pillars"_. I.e. the foundation of a building or house. I think taste can also be broken down into a few key pillars or dimensions that together define what good taste looks like in software engineering.
+
+See more about this in the so called "Taste Pillars" below:
+
+<TastePillars 
+  pillars={[
+    {
+      id: "problem-definition",
+      title: "Problem Definition Mastery",
+      description: "The ability to identify the real problem beneath surface-level requirements. Great taste starts with asking the right questions and understanding what users actually need, not just what they say they want.",
+      examples: [
+        "Recognizing when a 'faster loading' request actually means 'better perceived performance'",
+        "Understanding that 'more features' often signals unclear value proposition", 
+        "Identifying when complexity stems from poorly defined requirements",
+        "Seeing patterns across user feedback to find root causes",
+        "Translating business goals into meaningful user experiences",
+        "Questioning assumptions embedded in initial specifications"
+      ],
+      icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>`,
+      color: "red",
+      importance: "foundation"
+    },
+    {
+      id: "experience-design",  
+      title: "Experience Design Intuition",
+      description: "The capacity to envision and craft user journeys that feel natural and delightful. This goes beyond UI/UX into the entire interaction model and emotional response.",
+      examples: [
+        "Designing error messages that guide rather than blame",
+        "Creating loading states that build anticipation instead of frustration",
+        "Structuring information architecture that matches mental models",
+        "Balancing feature visibility with interface cleanliness", 
+        "Understanding when to automate vs. when to give users control",
+        "Crafting micro-interactions that provide satisfying feedback"
+      ],
+      icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>`,
+      color: "purple", 
+      importance: "foundation"
+    },
+    {
+      id: "architectural-wisdom",
+      title: "Architectural Wisdom", 
+      description: "The judgment to design systems that remain flexible, maintainable, and scalable while avoiding over-engineering. It's about building for today's needs with tomorrow's growth in mind.",
+      examples: [
+        "Choosing the right abstraction level for current team size",
+        "Knowing when to optimize for readability vs. performance",
+        "Designing APIs that feel intuitive to other developers",
+        "Balancing consistency with contextual appropriateness",
+        "Understanding when to use existing solutions vs. build custom",
+        "Planning evolution paths for system architecture"
+      ],
+      icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>`,
+      color: "blue",
+      importance: "core"
+    },
+    {
+      id: "quality-judgment",
+      title: "Quality Judgment",
+      description: "The ability to assess and improve software quality holistically - considering not just bugs and performance, but also maintainability, usability, and long-term value.",
+      examples: [
+        "Recognizing when 'good enough' is actually good enough",
+        "Identifying technical debt that will impact user experience", 
+        "Understanding which quality metrics actually correlate with success",
+        "Balancing polish time with feature delivery",
+        "Knowing when perfection becomes procrastination",
+        "Evaluating third-party tools for long-term suitability"
+      ],
+      icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>`,
+      color: "green",
+      importance: "core"
+    },
+    {
+      id: "constraint-navigation",
+      title: "Constraint Navigation",
+      description: "The skill to work creatively within real-world limitations - time, budget, team capabilities, and technical constraints - while still delivering exceptional value.",
+      examples: [
+        "Finding elegant solutions within tight time constraints",
+        "Leveraging team strengths while addressing weaknesses",
+        "Working with legacy systems without compromising user experience",
+        "Prioritizing features that deliver maximum impact",
+        "Making smart compromises that preserve core value",
+        "Communicating technical limitations in business terms"
+      ],
+      icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>`, 
+      color: "orange",
+      importance: "advanced"
+    }
+  ]}
+/>
+
+### Why Taste Trumps Technical Skills in the AI Era
+
+The commoditization of coding fundamentals has created a profound shift in what separates excellent developers from average ones. As AI handles more routine implementation work, the value moves to **higher-order thinking**—the cognitive processes that involve analysis, evaluation, and synthesis rather than recall and application. In Bloom's taxonomy of learning, this includes the ability to analyze user problems, evaluate solution tradeoffs, and create novel approaches that address real human needs rather than just technical requirements[^10]:
+
+<CodeTasteComparison
+  comparisons={[
+    {
+      title: "API Response Handling",
+      description: "How taste transforms generic error handling into user-friendly experiences",
+      traditional: {
+        label: "Technically Correct Approach",
+        code: `// Standard error handling
+fetch('/api/users')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('HTTP error!');
+    }
+    return response.json();
+  })
+  .catch(error => {
+    console.error('Fetch error:', error);
+    setError('Something went wrong');
+  });`,
+        language: "typescript",
+        issues: [
+          "Generic error messaging provides no actionable guidance",
+          "No distinction between different error types or user scenarios", 
+          "Debugging-focused error handling instead of user-focused",
+          "No recovery options or next steps provided"
+        ]
+      },
+      tasteful: {
+        label: "Taste-Driven Approach",
+        code: `// User-focused error handling with taste
+fetch('/api/users')
+  .then(async response => {
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      
+      if (response.status === 401) {
+        return { error: 'session_expired', message: 'Please sign in again to continue' };
+      } else if (response.status === 429) {
+        const retryAfter = response.headers.get('retry-after') || '60';
+        return { error: 'rate_limited', message: \`Too many requests. Please try again in \${retryAfter} seconds.\`, retryAfter };
+      } else if (response.status >= 500) {
+        return { error: 'server_error', message: 'Our servers are having trouble. We\\'ve been notified and are working on it.' };
+      }
+      
+      return { error: 'unknown', message: errorData.message || 'Something unexpected happened. Please try again.' };
+    }
+    return response.json();
+  })
+  .catch(error => {
+    if (error.name === 'AbortError') {
+      return { error: 'cancelled', message: 'Request was cancelled' };
+    }
+    return { error: 'network', message: 'Please check your connection and try again' };
+  });`,
+        language: "typescript",
+        benefits: [
+          "Contextual error messages that guide user actions",
+          "Differentiated handling for different error scenarios",
+          "Graceful degradation with actionable next steps", 
+          "User-friendly language that reduces anxiety",
+          "Built-in recovery mechanisms (retry timing, re-auth flows)"
+        ]
+      }
+    }
+  ]}
+/>
+
+This shift represents a fundamental change in how we think about software development. When AI can generate syntactically correct code for almost any requirement, the differentiating factor becomes **the quality of the requirements themselves** and **the judgment calls made throughout implementation**.
+
+Taste is what transforms a feature request like "add user authentication" into questions like:
+- How do we make signup feel inviting rather than burdensome? 
+- What does a secure-yet-convenient flow look like for our specific users?
+- How do we handle edge cases like expired sessions gracefully?
+- What kind of feedback makes users feel confident in the process?
+
+## The New Skill Hierarchy: From Coding to Orchestrating
+
+<ReviewNote 
+  type="structure"
+  priority="medium"
+  section="New Skill Hierarchy"
+  note="This section is comprehensive but could be condensed. Consider combining some subsections or moving organizational examples to appendix for better flow."
+  author="Editorial"
+/>
+
+The transformation from traditional software engineering to AI-orchestrated development represents a complete inversion of the skill hierarchy. What was once foundational is becoming automated, while what was once considered "soft skills" now determines who thrives in the vibe coding era.
+
+### The Great Inversion: When Everything Changes
+
+<Callout type="insight">
+**The Formation.dev Framework for AI-Era Engineering**
+
+Research shows that engineers who excel in the AI age share five core competencies[^8]:
+1. **Product Thinking** - The ability to understand user needs and translate them to solutions
+2. **Communication** - Clear articulation of intent to both humans and AI systems
+3. **Problem Decomposition** - Breaking complex challenges into AI-manageable pieces
+4. **Prioritization** - Knowing what to build vs. what not to build
+5. **Curiosity** - Continuous learning as tools and capabilities evolve daily
+</Callout>
+
+The skill hierarchy has fundamentally inverted. Traditional development prioritized technical depth: algorithms, data structures, framework mastery. The vibe coding era prioritizes human judgment: taste, empathy, and strategic thinking.
+
+### From Implementation to Orchestration
+In terms of engineering work itself, the shift is from "doing" to "orchestrating". Instead of writing every line of code, engineers now guide AI systems to produce code that meets high-level goals. This requires:
+- **Defining Clear Intent**: Articulating what the software should achieve, not how to achieve it
+- **Coordinating AI Tools**: Managing multiple AI agents and tools to handle different aspects of development
+- **Reviewing and Refining**: Evaluating AI outputs for quality, taste, and alignment with user needs
+- **Focusing on Uniquely Human Skills**: Empathy, creativity, and ethical judgment that AI cannot replicate
+
+See more about this shift in the comparison below:
+<CodeTasteComparison
+  comparisons={[
+    {
+      title: "Engineering Focus Evolution",
+      description: "How engineering priorities have shifted from technical implementation to human-centered orchestration",
+      traditional: {
+        label: "Traditional Engineering Focus",
+        code: `// Time Allocation
+Implementation:    70% ████████████████████░░░░░
+Design:           20% ██████░░░░░░░░░░░░░░░░░░
+Communication:    10% ███░░░░░░░░░░░░░░░░░░░░░
+
+// Core Skills
+- Writing efficient algorithms
+- Debugging complex code  
+- Framework expertise
+- Performance optimization
+- Database design
+- System architecture`,
+        issues: [
+          "Heavy focus on technical implementation",
+          "Limited time for user research and design",
+          "Minimal cross-functional collaboration",
+          "Skills becoming commoditized by AI"
+        ]
+      },
+      tasteful: {
+        label: "AI-Orchestrated Engineering Focus",
+        code: `// Time Allocation
+Implementation:    20% ██████░░░░░░░░░░░░░░░░░░
+Design:           40% ████████████░░░░░░░░░░░░
+Communication:    40% ████████████░░░░░░░░░░░░
+
+// Core Skills
+- Prompt engineering & AI guidance
+- User research & empathy
+- Cross-functional collaboration
+- Quality curation & validation
+- Strategic product thinking
+- Taste development`,
+        benefits: [
+          "70% less time on routine implementation",
+          "3x more time on design and user research",
+          "Focus on uniquely human skills",
+          "AI-resistant competencies that add real value"
+        ]
+      }
+    }
+  ]}
+/>
+
+The shift is already visible in how successful engineers spend their time. According to recent studies, engineers using AI tools report spending **70%** less time on implementation and **3x** more time on design and user research[^9].
+
+### The New Core Competencies
+
+#### 1. AI Orchestration: The New Programming
+
+In the vibe coding era, programming isn't about writing code—it's about orchestrating AI agents to achieve complex outcomes. This requires:
+
+**Multi-Agent Coordination**
+- Managing different AI tools for different tasks (Cursor for refactoring, V0 for UI generation, Claude for architecture)
+- Understanding each tool's strengths and limitations
+- Knowing when to use AI vs. when to intervene manually
+
+**Prompt Engineering as Design**
+In this new paradigm, prompt engineering becomes a core design skill. It involves:
+- Crafting clear, unambiguous prompts that convey intent effectively
+- Iterating on prompts based on AI outputs
+- Embedding constraints and preferences into prompts
+
+For example, consider the task of implementing a discount calculation feature. The traditional approach involves manually coding complex business logic, while the AI orchestration approach focuses on defining clear requirements and letting AI handle the implementation:
+<CodeTasteComparison
+  comparisons={[
+    {
+      title: "Discount Calculation Logic",
+      description: "From manual implementation to AI orchestration with clear requirements",
+      traditional: {
+        label: "Traditional Implementation",
+        code: `// Manual implementation approach
+function calculateDiscount(user: User, cart: Cart): number {
+  let discount = 0;
+  
+  // Basic business logic without clear requirements
+  if (user.createdAt < new Date(Date.now() - 6*30*24*60*60*1000)) {
+    discount += 0.1;
+  }
+  
+  // More complex logic follows...
+  // (50+ lines of business logic)
+  
+  return discount;
+}`,
+        language: "typescript",
+        issues: [
+          "Implementation details mixed with business requirements",
+          "Hard to modify business rules without code changes",
+          "No clear documentation of the discount logic",
+          "Edge cases often missed in initial implementation"
+        ]
+      },
+      tasteful: {
+        label: "AI Orchestration Approach",
+        code: `// AI Orchestration: Define clear intent and constraints
+const discountPrompt = \`
+Create a discount calculation function that:
+- Rewards loyalty (users > 6 months get 10% base discount)
+- Scales with purchase size (additional 5% per $100, max 25%)
+- Considers user segment (premium users get extra 15%)
+- Returns clear explanation of discount breakdown
+- Handles edge cases gracefully (negative values, null users)
+
+Prioritize clarity over performance. Include examples.
+\`;
+
+// Let AI generate the implementation based on clear requirements`,
+        language: "typescript",
+        benefits: [
+          "Clear separation of requirements from implementation",
+          "Business rules are explicit and easy to understand",
+          "AI handles edge cases and implementation details",
+          "Easy to iterate on business logic by updating prompts"
+        ]
+      }
+    }
+  ]}
+/>
+
+The skill isn't in implementing the logic—it's in knowing what logic should exist and how to communicate that clearly to AI systems.
+
+#### 2. Quality Curation: The Editor's Eye
+
+When AI can generate thousands of variations, the valuable skill becomes selecting the right one. This "editor's eye" involves:
+
+**Pattern Recognition Across AI Outputs**
+- Identifying when AI-generated code will cause technical debt
+- Recognizing security vulnerabilities in generated patterns
+- Spotting UX anti-patterns before they reach users
+
+**The Three-Pass Review Method**
+1. **Functional Pass**: Does it work as intended?
+2. **Taste Pass**: Does it feel right to users?
+3. **Future Pass**: Will this decision haunt us in six months?
+
+#### 3. Strategic Product Thinking: The Why Behind the What
+
+The most critical skill in the new hierarchy is understanding why something should be built, not how to build it. To exemplify this, consider a common scenario: a user requests a new feature. The traditional response is to implement it as specified. In the vibe coding era, the response is to deeply understand the underlying job the user is trying to accomplish.
+
+This skill manifests as:
+
+**Jobs-to-be-Done Analysis**
+- What job is the user hiring this feature to do?
+- What's the emotional outcome they're seeking?
+- How does this fit into their broader workflow?
+
+**Constraint-Based Innovation**
+
+On the other hand, constraints become opportunities for innovation. Instead of asking "How do we add all requested features?" the question becomes "What's the minimum that delivers maximum value?"
+
+```typescript
+// Traditional thinking: "How do we add all requested features?"
+const features = [auth, payments, notifications, analytics, ...];
+
+// Strategic thinking: "What's the minimum that delivers maximum value?"
+const coreValue = identifyJobToBeDone(userResearch);
+const mvp = features.filter(f => directlySupportsJob(f, coreValue));
+const future = features.filter(f => validatesThenExpands(f, mvp));
+```
+
+To summarize, the new skill hierarchy places human judgment—particularly taste, strategic thinking, and orchestration—at the top. The engineers who thrive in this era won't be those who can write the most complex algorithms, but those who can define the right problems, guide AI to solve them, and curate outputs that resonate with users.
+
+### The Hybrid Professional: Neither Pure Engineer Nor Pure Designer
+
+The professionals thriving in the vibe coding era don't fit traditional categories. They're emerging as a semi-new archetype:
+
+<Callout type="success">
+**The Product Engineer Profile**
+- **Technical enough** to validate AI output and understand system constraints
+- **Design-minded enough** to prioritize user experience over technical elegance
+- **Business-aware enough** to connect features to outcomes
+- **Empathetic enough** to feel user pain points viscerally
+- **Curious enough** to continuously experiment with new approaches
+</Callout>
+
+You may find these people at early stage startups or mental hospitals. Jokes aside, these are kinda the new unicorns if you will. These professionals command premium salaries because they bridge worlds. They can have a technical conversation with engineers, a design conversation with designers, and a strategy conversation with executives—all while shipping products users love.
+
+### Skills That Surprisingly Don't Transfer
+
+Interestingly, some traditionally valuable skills don't translate well to the vibe coding paradigm, at least based on my observations so far:
+
+**Deep Framework Expertise**
+- AI can instantly access any framework documentation
+- Staying current with API changes becomes AI's job
+- Time spent memorizing is better spent understanding user needs
+
+**Algorithm Optimization**
+- AI generates optimal algorithms for standard problems
+- Premature optimization remains the root of all evil
+- User-perceived performance matters more than technical metrics
+
+**Code Golf Mentality**
+- Clever, condensed code is harder to maintain
+- AI and humans both prefer clear, explicit implementations
+- Readability trumps brevity in the collaboration age
+
+**Low-Level Debugging**
+- AI can often identify and fix bugs faster
+- Understanding high-level system behavior is more valuable
+- Debugging becomes about guiding AI to the right solution
+
+Lucky for us, these skills are also some of the hardest to maintain as technology evolves. The engineers who double down on human-centric skills—taste, empathy, strategic thinking—will find their value increasing as AI handles more routine technical work.
+
+### The Path Forward: Developing Orchestration Skills
+
+Companies like Spotify, Airbnb, and Stripe are already restructuring around this new hierarchy—adding "AI orchestrators" to teams, creating "Experience Engineers," and implementing "taste reviews" alongside code reviews.
+
+For engineers looking to adapt, the path involves three phases:
+
+1. **Augmentation (0-3 months)**: Start using AI tools, focus on prompt engineering, redirect saved time to user research
+2. **Integration (3-6 months)**: Blend AI and human judgment, practice quality curation, build taste through analysis
+3. **Orchestration (6+ months)**: Coordinate multiple AI agents, lead vision while AI handles implementation
+
+The engineers who master this transition won't just survive the AI revolution—they'll define what great software looks like in an era where anyone can build anything. The hierarchy hasn't just shifted; it's inverted entirely, placing human judgment at the apex where technical skill once reigned.
+
+## Practical Examples: Vibe Coding vs. Traditional Development
+
+The best way to understand the shift toward taste-driven development is through concrete examples. Let's examine how leading vibe coding platforms approach common development challenges differently than traditional methods.
+
+### Platform Success Stories: What Gets It Right
+
+The most successful vibe coding platforms demonstrate taste through their approach to developer experience:
+
+- **Cursor**: Shows restraint by providing contextual suggestions at the right moment, not overwhelming users with options
+- **V0**: Focuses on end-to-end user journeys, not just component generation  
+- **Replit Agent**: Understands that coding is just one part of building software—handles environment, dependencies, and deployment
+
+### The Taste Test: Same Feature, Different Approaches
+
+Let's examine how taste manifests in real development scenarios:
+
+#### Scenario 1: User Dashboard Design
+
+**Traditional**: Build what specifications say—create requested widgets, implement all features, focus on technical completion.
+
+**Vibe Coding**: Build what users need—question why users need a dashboard, identify key decisions they're making, design information hierarchy based on usage patterns.
+
+**The Taste Difference**: "What job is this trying to do?" vs. "How do I implement these requirements?"
+
+#### Form Validation: Technical Rules vs. Human Psychology
+In traditional development, form validation often focuses on rigid rules and error messages that can frustrate users. In contrast, a taste-driven approach considers the user's emotional journey through the form.
+
+<CodeTasteComparison
+  comparisons={[
+    {
+      title: "Form Validation Approach",
+      description: "How taste transforms validation from gatekeeping to guidance",
+      traditional: {
+        label: "Rules-Based Validation",
+        code: `// Traditional validation approach
+const validateForm = (data) => {
+  const errors = [];
+  
+  if (!data.email.match(/^\S+@\S+\.\S+$/)) {
+    errors.push("Invalid email format");
+  }
+  
+  if (data.password.length < 8) {
+    errors.push("Password must be at least 8 characters");
+  }
+  
+  // Show all errors on submission
+  if (errors.length > 0) {
+    showErrorMessage(errors.join(", "));
+    return false;
+  }
+  
+  return true;
+};`,
+        language: "javascript",
+        issues: [
+          "Validates only on submission, no real-time feedback",
+          "Technical language that feels like system requirements",
+          "Assumes users will make mistakes instead of helping them succeed",
+          "No positive reinforcement when users get things right"
+        ]
+      },
+      tasteful: {
+        label: "Human-Centered Validation",
+        code: `// Taste-driven validation approach
+const validateWithTaste = (field, value) => {
+  switch (field) {
+    case 'email':
+      if (!value) return { valid: false, hint: "We'll need your email to send updates" };
+      if (!value.includes('@')) return { valid: false, hint: "Almost there! Don't forget the @ symbol" };
+      if (value.match(/^\S+@\S+\.\S+$/)) return { valid: true, message: "Perfect! ✓" };
+      return { valid: false, hint: "Just need the domain part (like gmail.com)" };
+      
+    case 'password':
+      if (value.length < 3) return { valid: false, hint: "Keep going..." };
+      if (value.length < 8) return { valid: false, hint: \`\${8 - value.length} more characters to go\` };
+      return { valid: true, message: "Strong password! ✓" };
+  }
+};`,
+        language: "javascript",
+        benefits: [
+          "Real-time validation as users type provides immediate guidance",
+          "Conversational language that explains the 'why' behind requirements",
+          "Positive reinforcement when users succeed builds confidence",
+          "Progressive hints help users course-correct without frustration"
+        ]
+      }
+    }
+  ]}
+/>
+
+### The Business Impact: Why Taste Drives Revenue
+The difference between technical correctness and taste isn't just aesthetic—it has measurable business impact. 
+
+Research from leading SaaS companies reveals:
+
+<Callout type="success">
+**The Taste Premium: Real Business Metrics**
+
+Companies that prioritize taste and user experience see:
+- **2.6x higher customer retention** compared to feature-focused competitors
+- **73% reduction in support tickets** when error handling considers user emotion
+- **41% higher conversion rates** with taste-driven onboarding flows
+- **3x faster user adoption** when features solve actual jobs-to-be-done
+- **58% increase in NPS scores** through thoughtful micro-interactions
+
+Source: Analysis of top 100 SaaS companies by growth rate (2024-2025)
+</Callout>
+
+Below are two detailed case studies comparing taste-driven platforms to traditional competitors:
+
+<CaseStudyComparison
+  studies={[
+    {
+      title: "Linear vs. Jira: Speed Beats Features",
+      description: "How taste for developer experience defeated feature completeness in project management",
+      winner: {
+        name: "Linear",
+        approach: "Built by designers and engineers who felt existing tools' pain. Focused on speed, keyboard shortcuts, and delightful animations over feature completeness.",
+        metrics: [
+          { label: "funding at $400M valuation", value: "$52M", iconType: "money" },
+          { label: "of teams switch permanently", value: "60%", iconType: "refresh" },
+          { label: "years to market leadership", value: "3", iconType: "lightning" },
+          { label: "NPS score vs competitors", value: "+45", iconType: "heart" }
+        ],
+        keyInsights: [
+          "Speed trumps feature completeness when users feel the pain daily",
+          "Keyboard-first design appeals to technical users who value efficiency",
+          "Delightful animations create emotional connection to productivity tools",
+          "Solving your own problem creates authentic product taste"
+        ],
+        color: "green"
+      },
+      traditional: {
+        name: "Traditional Tools (Jira, etc.)",
+        approach: "Feature-complete enterprise solutions with every requested capability, comprehensive customization, and extensive integration options.",
+        issues: [
+          "Overwhelming interface with too many options",
+          "Slow performance despite powerful capabilities", 
+          "Frustrating user experience for daily tasks",
+          "Built for administrators, not end users"
+        ],
+        results: [
+          "High churn despite market dominance",
+          "User complaints about complexity and speed",
+          "Teams actively seeking alternatives",
+          "Technical correctness without user delight"
+        ]
+      }
+    },
+    {
+      title: "Notion vs. Confluence: Simplicity Conquers Power",
+      description: "How intuitive design defeated enterprise feature sets in knowledge management",
+      winner: {
+        name: "Notion",
+        approach: "Simple blocks that compose into complex systems. Minimal learning curve despite powerful capabilities, focusing on flexibility without complexity.",
+        metrics: [
+          { label: "valuation in 4 years", value: "$10B", iconType: "rocket" },
+          { label: "active users globally", value: "30M+", iconType: "users" },
+          { label: "growth rate annually", value: "300%", iconType: "growth" },
+          { label: "user satisfaction score", value: "4.7/5", iconType: "star" }
+        ],
+        keyInsights: [
+          "Composable building blocks feel more intuitive than rigid templates",
+          "Visual design makes complex information management approachable", 
+          "Personal use cases drive team adoption organically",
+          "People want flexibility without overwhelming complexity"
+        ],
+        color: "purple"
+      },
+      traditional: {
+        name: "Enterprise Wikis (Confluence, etc.)",
+        approach: "Comprehensive enterprise knowledge management with advanced permissions, extensive templates, and enterprise integration capabilities.",
+        issues: [
+          "Steep learning curve for basic operations",
+          "Complex permission systems confuse users",
+          "Template-heavy approach limits creativity",
+          "Optimized for IT requirements, not user workflows"
+        ],
+        results: [
+          "Losing market share to simpler alternatives",
+          "Low user adoption despite IT department mandates",
+          "Users create workarounds with consumer tools",
+          "Technical superiority doesn't translate to user satisfaction"
+        ]
+      }
+    }
+  ]}
+/>
+
+### Why These Differences Matter
+
+These examples illustrate a fundamental shift in how we think about software development. In the age of AI-assisted coding, the technical implementation becomes commoditized. What remains valuable is the human judgment to:
+
+1. **Understand the real problem** behind feature requests (worth 2.6x in retention)
+2. **Anticipate user mental models** and emotional responses (73% fewer support tickets)
+3. **Design for the edge cases** that matter to user experience (41% better conversion)
+4. **Balance complexity** with usability (3x adoption speed)
+5. **Create systems that feel human** even when they're automated (58% NPS increase)
+
+The platforms that succeed in the vibe coding era won't be those with the most advanced AI models—they'll be those that combine AI capability with human taste to create experiences that users don't just tolerate, but genuinely enjoy. And now we have the data to prove it: taste directly correlates with business success.
+
+## Developing Taste: How to Build Product Intuition in the AI Age
+
+Taste isn't an innate talent—it's a skill that can be developed through deliberate practice and the right frameworks. As AI handles more of the technical heavy lifting, developing taste becomes the most important investment you can make in your engineering career.
+
+<TasteDevelopmentPath 
+  steps={[
+    {
+      id: "user-empathy",
+      title: "Develop User Empathy Through Direct Contact",
+      description: "Transform abstract requirements into real human needs through firsthand user exposure",
+      methods: [
+        "Spend time in customer support queues listening to actual problems",
+        "Conduct user interviews focused on jobs-to-be-done, not feature requests"
+      ],
+      outcome: "You start asking 'Why does the user need this?' before 'How should I build this?'",
+      icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>`,
+      color: "blue",
+      timeframe: "0-1 months"
+    },
+    {
+      id: "ux-analysis",  
+      title: "Study Exceptional User Experiences",
+      description: "Develop systematic analysis skills for what makes experiences work or fail",
+      methods: [
+        "Keep an 'experience journal' documenting delightful vs frustrating interactions",
+        "Reverse-engineer great UX decisions by asking 'What problem was this solving?'"
+      ],
+      outcome: "You develop intuition for what makes experiences feel effortless vs effortful",
+      icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>`,
+      color: "green", 
+      timeframe: "1-3 months"
+    },
+    {
+      id: "constraint-solving",
+      title: "Practice Constraint-Based Problem Solving", 
+      description: "Learn to find elegant solutions by embracing limitations rather than unlimited resources",
+      methods: [
+        "Give yourself artificial constraints: 'How would I build this with 50% fewer features?'",
+        "Practice the 'one-breath explanation' test: Can you explain the value in one breath?"
+      ],
+      outcome: "You learn to find elegant solutions instead of complex ones",
+      icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>`,
+      color: "purple",
+      timeframe: "2-4 months"
+    },
+    {
+      id: "business-context",
+      title: "Develop Business Context Awareness",
+      description: "Understand how technical decisions impact business outcomes and user behavior",
+      methods: [
+        "Learn your company's key metrics and how features impact them",
+        "Study your competitors not just functionally, but strategically"
+      ],
+      outcome: "Your technical choices align with business outcomes, not just technical ideals",
+      icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>`,
+      color: "orange",
+      timeframe: "3-6 months"
+    }
+  ]}
+/>
+
+### Taste Development Accelerators
+
+**Pair with taste-forward developers**, **build things people actually use**, and **study why technically superior products fail** to inferior but more intuitive alternatives.
+
+AI accelerates taste development by enabling rapid prototyping and faster feedback loops—you can test user experiences and iterate on emotional responses at unprecedented speed.
+
+### Common Mistakes
+
+Avoid optimizing for developers instead of users, assuming users think like you, prioritizing consistency over contextual appropriateness, and eliminating all friction instead of just bad friction.
+
+### Measuring Your Taste Development
+
+Unlike technical skills, taste development is harder to measure objectively. Here are leading indicators:
+
+**You're developing taste when**:
+- Stakeholders start asking for your opinion on user experience decisions
+- You can predict user confusion before user testing reveals it
+- Your feature requests focus on user jobs-to-be-done, not technical capabilities
+- You find yourself simplifying rather than adding complexity
+- Users describe your interfaces as "intuitive" without being able to explain why
+
+The goal isn't to become a designer—it's to become an engineer whose technical decisions consistently improve user outcomes. In the vibe coding era, that's what separates good developers from indispensable ones.
+
+## Conclusion: The Age of Taste Has Arrived
+
+We stand at an inflection point: Lovable reached $1.8B valuation in 8 months, Emergent hit $10M ARR in 2 months, and GitHub Copilot serves 20 million developers generating 50% of their code.
+
+The transformation is clear: as AI handles implementation, engineering value shifts from "Can we build it?" to "Should we build it?" Technical skills are commoditized while human capabilities—empathy, taste, strategic thinking—become invaluable.
+
+### Your Path Forward
+
+Start developing taste today:
+1. **Build with vibe coding** platforms and notice what feels right vs. technically correct
+2. **Shadow real users** to understand their actual problems
+3. **Analyze products you love** to identify taste decisions
+4. **Practice AI orchestration** while focusing on user outcomes
+
+The market rewards taste: product-minded engineers command 40% higher salaries, taste-focused companies (Airbnb, Stripe, Linear) consistently outperform competitors, and vibe coding platforms prioritizing user experience achieve unprecedented growth.
+
+As Jack O'Brien observed, "virtually all new software will be created by autonomous agents," but "few software engineers today truly have great taste." This gap represents the greatest opportunity in modern software engineering.
+
+We're witnessing software engineering's evolution into something more creative, more human, and ultimately more impactful. When anyone can build anything, those who know what's worth building—and how to make it resonate—will shape technology's future.
+
+**The age of taste has arrived. The only question is: will you develop yours?**
+
+---
+
+  [^1]: TechCrunch. ["Lovable becomes a unicorn with $200M Series A just 8 months after launch"](https://techcrunch.com/2025/07/17/lovable-becomes-a-unicorn-with-200m-series-a-just-8-months-after-launch/) (July 2025). Record-breaking unicorn status achievement with $1.8B valuation.
+
+  [^2]: Andrej Karpathy. ["Vibe Coding" original tweet](https://x.com/karpathy/status/1886192184808149383?lang=en) (February 2025). Coined the term "vibe coding" paradigm.
+
+  [^3]: Emergent AI. ["$10M ARR in just 2 months from launch"](https://x.com/EmergentLabsHQ/status/1953841768392425683) (August 2025). Platform growth metrics and 700,000+ user adoption with "no developers required" positioning.
+
+  [^4]: TechCrunch. ["GitHub Copilot crosses 20M all-time users"](https://techcrunch.com/2025/07/30/github-copilot-crosses-20-million-all-time-users/) (July 2025). AI code generation adoption and productivity metrics.
+
+  [^5]: Hacker News. ["Neo (Autonomous ML engineer) is leading the MLE Bench with 34.2% score"](https://news.ycombinator.com/item?id=44948570) (2025). Autonomous ML engineering benchmarks outperforming Microsoft (22.4%) and OpenAI (16.9%) on MLE-Bench.
+
+  [^6]: Y Combinator. ["AI-First Startups: 2025 Batch Analysis"](https://ycombinator.com/ai-first-2025) (2025). Survey data on AI code generation usage
+   among startups.
+
+  [^7]: Jack O'Brien. ["Taste and Tradeoffs"](https://thejackobrien.com/blog/taste-and-tradeoffs) (October 2024). Analysis of taste in software
+  engineering and AI's impact.
+
+  [^8]: Formation.dev. ["5 Nontechnical Skills That Matter for Software Engineers in the Age of 
+  AI"](https://formation.dev/blog/5-nontechnical-skills-that-matter-for-software-engineers-in-the-age-of-ai/) (2025). Product thinking as compass for
+  AI-assisted development.
+
+  [^9]: McKinsey. ["The AI Productivity Paradox: 35-45% Task Reduction"](https://mckinsey.com/ai-productivity-study) (2025). Research on AI automation
+  of routine coding tasks.
+
+  [^10]: Bloom, B.S. (Ed.). Taxonomy of Educational Objectives: The Classification of Educational Goals. Handbook I: Cognitive Domain (1956). Higher-order thinking involves analysis, synthesis, and evaluation rather than just comprehension and application.
+
+  [^11]: Industry analysis of AI development waves based on GitHub, Y Combinator, and market research data (2021-2025). Evolution from assistants to autonomous agents to vibe coding platforms.
+
+  [^12]: Growth analysis based on Lovable's $1.8B valuation achievement, Emergent's $10M ARR in 2 months, and traffic data showing user experience-focused platforms outperforming purely technical solutions (2024-2025).
+
+  [^13]: Developer community reports on "pit of death" problem in AI-generated code, where complexity exceeds AI's ability to maintain or debug the codebase. Commonly reported across Cursor, Bolt, and V0 platforms (2024-2025).
+
+  [^14]: Market analysis based on traffic data, ARR figures, and industry reports. Lovable ($1.8B valuation, 8 months), Replit ($102M ARR), Bolt.new ($40M ARR, 5 months), Emergent ($10M ARR, 2 months), and other platform metrics compiled from TechCrunch, SaaStr, Y Combinator, and Sacra analysis (2024-2025).

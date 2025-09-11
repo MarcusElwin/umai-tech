@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -32,6 +37,168 @@ jobs:
       
     - name: Build project
       run: pnpm build
+      
+    - name: Check potential version bump
+      if: github.event_name == 'pull_request'
+      id: version-check
+      run: |
+        # Get current version
+        CURRENT_VERSION=$(node -p "require('./package.json').version")
+        echo "Current version: $CURRENT_VERSION"
+        
+        # Fetch the base branch and set up proper refs
+        git fetch origin ${{ github.event.pull_request.base.ref }}:base-branch
+        git fetch origin ${{ github.event.pull_request.head.ref }}:pr-branch
+        
+        # Use the fetched branch refs instead of SHAs
+        echo "Base branch: ${{ github.event.pull_request.base.ref }}"
+        echo "PR branch: ${{ github.event.pull_request.head.ref }}"
+        
+        # Find merge base and get commits
+        MERGE_BASE=$(git merge-base base-branch pr-branch)
+        echo "Merge base: $MERGE_BASE"
+        
+        # Get commits from merge base to PR head
+        COMMITS=$(git log --format="%s" $MERGE_BASE..pr-branch 2>/dev/null || echo "")
+        
+        echo "Commits to analyze:"
+        if [ -z "$COMMITS" ]; then
+          echo "No commits found between $MERGE_BASE and pr-branch"
+          echo "Trying alternative approach with --oneline..."
+          COMMITS=$(git log --oneline $MERGE_BASE..pr-branch 2>/dev/null || echo "")
+          if [ -n "$COMMITS" ]; then
+            echo "Found commits with --oneline:"
+            echo "$COMMITS"
+            # Extract just the commit messages (everything after the first space)
+            COMMITS=$(git log --format="%s" $MERGE_BASE..pr-branch 2>/dev/null || echo "")
+          fi
+        else
+          echo "$COMMITS"
+        fi
+        
+        if [ -n "$COMMITS" ]; then
+          COMMIT_COUNT=$(echo "$COMMITS" | wc -l)
+          echo "Number of commits found: $COMMIT_COUNT"
+        else
+          echo "Number of commits found: 0"
+        fi
+        
+        # Initialize variables
+        HAS_BREAKING=false
+        HAS_FEAT=false
+        HAS_FIX=false
+        
+        # Check commit messages for conventional commit patterns
+        if [ -n "$COMMITS" ]; then
+          while IFS= read -r commit; do
+            if [ -n "$commit" ]; then
+              echo "Analyzing commit: $commit"
+              if echo "$commit" | grep -qE "^[a-z]+(\(.+\))?!:|BREAKING CHANGE:"; then
+                HAS_BREAKING=true
+                echo "  -> Breaking change detected"
+              elif echo "$commit" | grep -qE "^feat(\(.+\))?:"; then
+                HAS_FEAT=true
+                echo "  -> Feature detected"
+              elif echo "$commit" | grep -qE "^fix(\(.+\))?:"; then
+                HAS_FIX=true
+                echo "  -> Fix detected"
+              else
+                echo "  -> Non-release commit"
+              fi
+            fi
+          done <<< "$COMMITS"
+        else
+          echo "No commits to analyze - this may be a merge commit or no changes"
+        fi
+        
+        # Determine release type and next version
+        if [ "$HAS_BREAKING" = true ]; then
+          RELEASE_TYPE="major"
+          CURRENT_MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
+          NEXT_MAJOR=$((CURRENT_MAJOR + 1))
+          NEXT_VERSION="$NEXT_MAJOR.0.0"
+          VERSION_MESSAGE="🚨 **MAJOR** release: $CURRENT_VERSION → $NEXT_VERSION (Breaking changes detected)"
+        elif [ "$HAS_FEAT" = true ]; then
+          RELEASE_TYPE="minor"
+          CURRENT_MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
+          CURRENT_MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
+          NEXT_MINOR=$((CURRENT_MINOR + 1))
+          NEXT_VERSION="$CURRENT_MAJOR.$NEXT_MINOR.0"
+          VERSION_MESSAGE="✨ **MINOR** release: $CURRENT_VERSION → $NEXT_VERSION (New features added)"
+        elif [ "$HAS_FIX" = true ]; then
+          RELEASE_TYPE="patch"
+          CURRENT_MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
+          CURRENT_MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
+          CURRENT_PATCH=$(echo $CURRENT_VERSION | cut -d. -f3)
+          NEXT_PATCH=$((CURRENT_PATCH + 1))
+          NEXT_VERSION="$CURRENT_MAJOR.$CURRENT_MINOR.$NEXT_PATCH"
+          VERSION_MESSAGE="🐛 **PATCH** release: $CURRENT_VERSION → $NEXT_VERSION (Bug fixes)"
+        else
+          RELEASE_TYPE="none"
+          NEXT_VERSION="$CURRENT_VERSION"
+          VERSION_MESSAGE="No version bump - only non-release commits detected (docs, chore, style, etc.)"
+        fi
+        
+        echo "Release type: $RELEASE_TYPE"
+        echo "Next version: $NEXT_VERSION"
+        
+        echo "current-version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+        echo "next-version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+        echo "release-type=$RELEASE_TYPE" >> $GITHUB_OUTPUT
+        echo "version-message=$VERSION_MESSAGE" >> $GITHUB_OUTPUT
+      
+    - name: Comment version info on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+          
+          // Check if bot already commented
+          const botComment = comments.find(comment => 
+            comment.user.type === 'Bot' && 
+            comment.body.includes('📦 **Version Impact**')
+          );
+          
+          const releaseType = '${{ steps.version-check.outputs.release-type }}';
+          const releaseMessage = releaseType === 'none' 
+            ? 'This PR will **not trigger a release** when merged to main.'
+            : `This PR will trigger a **${releaseType}** release when merged to main.`;
+            
+          const commentBody = `## 📦 **Version Impact**
+          
+          ${{ steps.version-check.outputs.version-message }}
+          
+          **Current version:** \`v${{ steps.version-check.outputs.current-version }}\`
+          **Next version:** \`v${{ steps.version-check.outputs.next-version }}\`
+          **Release type:** \`${releaseType}\`
+          
+          ${releaseMessage}
+          
+          ---
+          <sub>🤖 This comment is automatically updated by the CI workflow</sub>`;
+          
+          if (botComment) {
+            // Update existing comment
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: botComment.id,
+              body: commentBody
+            });
+          } else {
+            // Create new comment
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: commentBody
+            });
+          }
       
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
