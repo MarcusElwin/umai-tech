@@ -1,0 +1,173 @@
+---
+export interface Props {
+  title: string;
+  provider: string;
+  description: string;
+  type?: 'implementation' | 'specification';
+  features: string[];
+  codeExample?: string;
+  defaultExpanded?: boolean;
+}
+
+const { title, provider, description, type = 'implementation', features, codeExample, defaultExpanded = false } = Astro.props;
+
+const typeStyles = {
+  implementation: {
+    container: 'bg-blue-50/80 border-blue-200/60 dark:bg-blue-950/30 dark:border-blue-800/40',
+    icon: 'text-blue-600 dark:text-blue-400',
+    title: 'text-blue-800 dark:text-blue-300',
+    content: 'text-blue-700 dark:text-blue-200',
+    accent: 'bg-blue-500',
+    badge: 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
+  },
+  specification: {
+    container: 'bg-purple-50/80 border-purple-200/60 dark:bg-purple-950/30 dark:border-purple-800/40',
+    icon: 'text-purple-600 dark:text-purple-400',
+    title: 'text-purple-800 dark:text-purple-300',
+    content: 'text-purple-700 dark:text-purple-200',
+    accent: 'bg-purple-500',
+    badge: 'bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200'
+  }
+};
+
+const icons = {
+  implementation: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h12a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1V8z" clip-rule="evenodd" />
+  </svg>`,
+  specification: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 01-1.447.894L10 15.618l-4.553 1.276A1 1 0 014 16V4zm4.553 8.894L10 12.382l1.447.512A1 1 0 0013 12V6a1 1 0 10-2 0v4.382l-.553-.276a1 1 0 00-.894 0L9 10.618V6a1 1 0 10-2 0v6a1 1 0 001.553.894z" clip-rule="evenodd" />
+  </svg>`
+};
+
+const styles = typeStyles[type];
+const uniqueId = `impl-${Math.random().toString(36).substring(2, 11)}`;
+---
+
+<div class={`implementation-example relative border rounded-xl p-4 my-4 ${styles.container} backdrop-blur-sm`}>
+  <!-- Accent line -->
+  <div class={`absolute left-0 top-0 bottom-0 w-1 rounded-l-xl ${styles.accent}`}></div>
+  
+  <!-- Clickable Header -->
+  <button 
+    class="w-full text-left focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-umai-accent dark:focus:ring-offset-umai-gray-800"
+    onclick={`toggleImplementation('${uniqueId}')`}
+  >
+    <div class="flex items-start gap-3 mb-3">
+      <div class={`flex-shrink-0 ${styles.icon}`}>
+        <Fragment set:html={icons[type]} />
+      </div>
+      <div class="flex-1 min-w-0 flex items-center justify-between">
+        <div class="flex items-center gap-3 flex-wrap">
+          <h4 class={`text-sm font-semibold ${styles.title} leading-tight`}>
+            {title}
+          </h4>
+          <span class={`px-2 py-1 rounded-full text-xs font-medium ${styles.badge}`}>
+            {type === 'implementation' ? 'Implementation' : 'Specification'}
+          </span>
+          <span class={`text-xs ${styles.content} opacity-75`}>
+            by {provider}
+          </span>
+        </div>
+        <svg 
+          class={`w-4 h-4 transition-transform duration-200 ${styles.icon} ml-2 flex-shrink-0`}
+          id={`${uniqueId}-icon`}
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke="currentColor"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+    </div>
+  </button>
+
+  <!-- Always visible description -->
+  <div class={`text-sm ${styles.content} leading-relaxed mb-3 ml-8`}>
+    {description}
+  </div>
+
+  <!-- Expandable Content -->
+  <div 
+    class={`overflow-hidden transition-all duration-300 ${defaultExpanded ? '' : 'max-h-0'}`}
+    id={`${uniqueId}-content`}
+  >
+    <div class="ml-8 pt-3 border-t border-current/20">
+      <!-- Features -->
+      <div class="mb-4">
+        <h5 class={`text-sm font-semibold ${styles.title} mb-3`}>Key Features:</h5>
+        <ul class="space-y-2">
+          {features.map((feature: string) => (
+            <li class={`flex items-start text-sm ${styles.content}`}>
+              <div class={`w-1.5 h-1.5 rounded-full ${styles.accent} mt-2 mr-3 flex-shrink-0`}></div>
+              {feature}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Code Example (if provided) -->
+      {codeExample && (
+        <div class="mt-4">
+          <h5 class={`text-sm font-semibold ${styles.title} mb-2`}>Example Configuration:</h5>
+          <pre class="bg-umai-gray-900 dark:bg-umai-gray-950 text-umai-gray-100 p-4 rounded-lg text-sm overflow-x-auto"><code>{codeExample}</code></pre>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
+<style>
+  .implementation-example {
+    transition: all 0.2s ease;
+  }
+  
+  .implementation-example:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .implementation-example :global(code) {
+    @apply text-xs px-1.5 py-0.5 rounded font-mono;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .implementation-example :global(strong) {
+    @apply font-semibold;
+  }
+</style>
+
+<script>
+  function toggleImplementation(id: string) {
+    const content = document.getElementById(`${id}-content`);
+    const icon = document.getElementById(`${id}-icon`);
+    
+    if (!content || !icon) return;
+    
+    const isExpanded = !content.classList.contains('max-h-0');
+    
+    if (isExpanded) {
+      // Collapse
+      content.style.maxHeight = content.scrollHeight + 'px';
+      requestAnimationFrame(() => {
+        content.classList.add('max-h-0');
+        content.style.maxHeight = '';
+      });
+      icon.style.transform = 'rotate(0deg)';
+    } else {
+      // Expand
+      content.classList.remove('max-h-0');
+      content.style.maxHeight = content.scrollHeight + 'px';
+      icon.style.transform = 'rotate(180deg)';
+      
+      // Reset max-height after animation
+      setTimeout(() => {
+        if (!content.classList.contains('max-h-0')) {
+          content.style.maxHeight = 'none';
+        }
+      }, 300);
+    }
+  }
+
+  // Make function globally available
+  (globalThis as any).toggleImplementation = toggleImplementation;
+</script>

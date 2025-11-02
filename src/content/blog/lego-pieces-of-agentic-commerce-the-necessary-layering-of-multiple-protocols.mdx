@@ -1,0 +1,875 @@
+---
+title: "The Lego Bricks of Agentic Commerce: How 8 Protocols Snap Together to Power AI Shopping"
+description: "The year 2025 marks a turning point for AI agents in commerce. Following OpenAI and Stripe's September announcements of InstantCheckout and the Agentic Commerce Protocol (ACP), we're witnessing the inflection point where AI agents transition from conversational assistants to autonomous buyers. While generative AI has struggled to deliver tangible value in many domains despite years of hype, agentic commerce stands out as the breakthrough application where autonomous agents are already generating real transactions and revenue."
+pubDate: 2025-10-19T12:32:02.606Z
+updatedDate: 2025-11-02T12:32:02.614ZI
+author: "Marcus Elwin"
+tags: ["Agentic Commerce", "Generative AI", "Payments", "Checkout", "Protocols", "E-commerce", "AI Agents", "Artificial Intelligence", "Payment Infrastructure"]
+---
+
+import Callout from '@components/Callout.astro';
+import ImplementationExample from '@components/ImplementationExample.astro';
+import TextWallComparison from '@components/TextWallComparison.astro';
+import PrettyTable from '@components/PrettyTable.astro';
+
+## Introduction
+
+Since the inception of e-commerce, the digital shopping experience has evolved through countless technological leaps. From static catalogs to dynamic marketplaces. From desktop browsers to mobile apps. 
+
+Today, we stand at the threshold of perhaps the most transformative shift yet: **AI agents that can autonomously navigate, evaluate, and transact in online marketplaces on our behalf**.
+
+The emergence of AI agents capable of *product discovery*, *price comparison*, *cart management*, and *autonomous purchasing* represents a monumental technical challenge. For years, this vision felt like distant science fiction—AI could chat about products endlessly, but the moment you said "buy it," the illusion shattered. The agent would redirect you to a traditional checkout, forcing you to manually enter all the information it already knew.
+
+Everything changed in September 2025 with OpenAI's launch of [InstantCheckout](https://openai.com/index/buy-it-in-chatgpt/), powered by the Agentic Commerce Protocol (ACP). Suddenly, completing purchases directly within ChatGPT became reality. But here's what most people don't realize: **ACP is just one piece of a much larger puzzle**.
+
+Like Lego blocks that snap together to build complex structures, I would argue that **eight specialized protocols** now work in concert to enable true agentic commerce. Each protocol solves a specific challenge—identity verification, payment authorization, user interface rendering, fraud prevention—and together they form the complete infrastructure that makes autonomous AI shopping possible.
+
+<Callout type="info" title="The Protocol Stack">
+Think of these protocols as the "TCP/IP of commerce"—invisible to users but essential for every transaction. Just as the internet required standardized protocols to connect billions of devices, agentic commerce needs these eight protocols to connect AI agents, merchants, and payment systems seamlessly.
+</Callout>
+
+This article explores these **eight essential protocols** that form the backbone of agentic commerce, revealing how they work individually and—more importantly—how they interconnect to transform AI agents from conversational assistants into autonomous economic actors.
+
+<Callout type="note" title="Author's Perspective">
+**Important Note**: The analysis and integration patterns presented in this article represent the author's perspective on how these emerging protocols could work together to enable seamless agentic commerce. While some protocols like MCP, A2A, and ACP are already live, the complete integration described here reflects a forward-looking view of how the ecosystem might evolve in the near future. Not all implementations and integrations described are currently available in production.
+</Callout>
+
+## Quick Reference: The 8 Protocols
+As a quick reference, here is an overview of the eight protocols that we argue in this article make up the agentic commerce stack. Obiosuly there are more protocols involved in the broader AI and e-commerce ecosystem, but these eight are the core building blocks that specifically enable autonomous AI shopping:
+
+<PrettyTable
+  title="Agentic Commerce Protocol Stack"
+  headers={["Protocol", "Provider", "Layer", "Primary Function", "Status"]}
+>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell"><span class="pretty-table-term"><a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener noreferrer">MCP</a></span></td>
+    <td class="pretty-table-cell">Anthropic</td>
+    <td class="pretty-table-cell">Foundation</td>
+    <td class="pretty-table-cell">Agent-to-system communication</td>
+    <td class="pretty-table-cell"><span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-xs font-semibold">Live</span></td>
+  </tr>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell"><span class="pretty-table-term"><a href="https://a2a-protocol.org/" target="_blank" rel="noopener noreferrer">A2A</a></span></td>
+    <td class="pretty-table-cell">Google</td>
+    <td class="pretty-table-cell">Communication</td>
+    <td class="pretty-table-cell">Agent-to-agent collaboration</td>
+    <td class="pretty-table-cell"><span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-xs font-semibold">Live</span></td>
+  </tr>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell"><span class="pretty-table-term"><a href="https://shopify.engineering/mcp-ui-breaking-the-text-wall" target="_blank" rel="noopener noreferrer">MCP-UI</a></span></td>
+    <td class="pretty-table-cell">Shopify</td>
+    <td class="pretty-table-cell">User Interface</td>
+    <td class="pretty-table-cell">Rich interactive components</td>
+    <td class="pretty-table-cell"><span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-xs font-semibold">Live</span></td>
+  </tr>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell"><span class="pretty-table-term"><a href="https://docs.ag-ui.com/" target="_blank" rel="noopener noreferrer">AG-UI</a></span></td>
+    <td class="pretty-table-cell">Community</td>
+    <td class="pretty-table-cell">User Interface</td>
+    <td class="pretty-table-cell">Event-based UI communication</td>
+    <td class="pretty-table-cell"><span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full text-xs font-semibold">Preview</span></td>
+  </tr>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell"><span class="pretty-table-term"><a href="https://www.agenticcommerce.dev/" target="_blank" rel="noopener noreferrer">ACP</a></span></td>
+    <td class="pretty-table-cell">Stripe/OpenAI</td>
+    <td class="pretty-table-cell">Commerce</td>
+    <td class="pretty-table-cell">End-to-end checkout flow</td>
+    <td class="pretty-table-cell"><span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-xs font-semibold">Live</span></td>
+  </tr>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell"><span class="pretty-table-term"><a href="https://ap2-protocol.org/" target="_blank" rel="noopener noreferrer">AP2</a></span></td>
+    <td class="pretty-table-cell">Google</td>
+    <td class="pretty-table-cell">Payments</td>
+    <td class="pretty-table-cell">Payment authorization</td>
+    <td class="pretty-table-cell"><span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-xs font-semibold">Live</span></td>
+  </tr>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell"><span class="pretty-table-term"><a href="https://www.x402.org/" target="_blank" rel="noopener noreferrer">x402</a></span></td>
+    <td class="pretty-table-cell">Coinbase/Cloudflare</td>
+    <td class="pretty-table-cell">Payments</td>
+    <td class="pretty-table-cell">Agent micropayments</td>
+    <td class="pretty-table-cell"><span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-xs font-semibold">Live</span></td>
+  </tr>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell"><span class="pretty-table-term"><a href="https://developer.visa.com/capabilities/trusted-agent-protocol/overview" target="_blank" rel="noopener noreferrer">TAP</a></span></td>
+    <td class="pretty-table-cell">Visa</td>
+    <td class="pretty-table-cell">Trust & Security</td>
+    <td class="pretty-table-cell">Agent identity verification</td>
+    <td class="pretty-table-cell"><span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-xs font-semibold">Live</span></td>
+  </tr>
+</PrettyTable>
+
+## The 5-Layer Protocol Stack
+What has become more obvious to me the last few weeks and months is that the agentic commerce ecosystem isn't a *monolith* but rather a *stack* of interlocking protocols, each addressing a specific layer of functionality required for AI agents to shop autonomously.
+Hence the metaphor of "Lego blocks"—each protocol is a distinct piece that can be combined in various ways to build the complete agentic commerce experience.
+
+<Callout type="insight" title="Key Architectural Principle">
+Each layer builds on the one below it. You can't implement Layer 4 (Commerce & Payments) without Layer 1 (Foundation). This dependency structure is intentional—it ensures security, reliability, and interoperability.
+</Callout>
+
+Below is an overview of the five layers and their corresponding protocols:
+
+<div class="my-12 flex flex-col items-center">
+  <div class="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg p-6">
+    <img src="/images/blog/lego-pieces-of-agentic-commerce-the-necessary-layering-of-multiple-protocols/layering_agentic_commerce.svg" alt="The 5-Layer Agentic Commerce Protocol Stack" class="w-full h-auto" />
+  </div>
+  <div class="mt-4 text-center max-w-3xl">
+    <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+      **Figure 1**: *The 5-Layer Agentic Commerce Protocol Stack* - Each layer builds upon the foundation below, from MCP at the base through communication, UI, commerce/payments, to trust & security at the top. The eight protocols (MCP, A2A, MCP-UI, AG-UI, ACP, AP2, x402, TAP) work together like Lego blocks to enable autonomous AI shopping.
+    </p>
+  </div>
+</div>
+
+## Layer 1: Foundation
+The first layer is the foundational protocols that enable AI agents to interact with e-commerce systems at a basic level. Turns out that the *Model Context Protocol* or MCP for short has emerged as the de facto standard for structuring and exchanging data between AI models and external systems[^1]. Often via APIs or tool or function definitions.
+
+<div class="my-8 flex flex-col items-center">
+  <div class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg p-6">
+    <img src="/images/blog/lego-pieces-of-agentic-commerce-the-necessary-layering-of-multiple-protocols/focus_mcp.svg" alt="MCP Foundation Layer Focus" class="w-full h-auto" />
+  </div>
+  <div class="mt-4 text-center max-w-2xl">
+    <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+      **Figure 2**: *Foundation Layer - Model Context Protocol (MCP)* - The foundational blue layer highlighted in the protocol stack, showing MCP as the base that all other protocols build upon for agent-to-system communication.
+    </p>
+  </div>
+</div>
+
+### What It Is?
+The **Model Context Protocol** (MCP), introduced by Anthropic in November 2024[^2], is often called the "USB-C for AI." It's the foundational layer that connects AI agents to external data sources, tools, and systems.
+Just as USB-C standardized how devices connect to peripherals, MCP standardizes how AI agents connect to merchant systems, product catalogs, inventory databases, and commerce APIs.
+
+### Technical Architecture
+MCP uses as standard **client-server architecture** with three components:
+1. **MCP Hosts**: AI applications (ChatGPT, Claude, etc.)
+2. **MCP Clients**: Connection layers that manage communication
+3. **MCP Servers**: External services exposing capabilities
+
+The communication protocol uses the ***JSON-RPC 2.0*** specification over HTTPS, enabling structured requests and responses between agents and services. The connections are also stateful and bidirectional, allowing for ongoing dialogues.    
+There are also three so called *primatives* or capabilities that MCP defines:
+- **Tools**: Functions or APIs that agents can invoke to perform actions (e.g., search products, add to cart).
+- **Resources**: Data structures that represent entities providing contextual information (e.g., product details, user profiles).
+- **Prompts**: Reusable text templates that guide agent behavior during interactions (e.g. system prompts, few-shot examples).
+
+It might sound a bit abstract, but MCP essentially provides the *plumbing* that allows AI agents to understand and manipulate e-commerce data in a structured way.
+However, MCP itself is not built specifically for commerce. This is where the **Agentic Commerce Protocol** (ACP) comes in, that we will cover in a later section.
+
+Nonetheless, it might be helpful to understand how MCP and ACP relate to each other:
+
+<Callout type="info" title="MCP vs ACP: How They Work Together">
+**MCP (Model Context Protocol)** is a standardized communication layer that enables AI agents to connect with ANY external system—databases, APIs, tools, or business systems. It solves the "how do we talk" problem.
+
+**ACP (Agentic Commerce Protocol)** is a commerce-specific specification that defines checkout workflows, payment token exchange, and order management. It solves the "how do we buy" problem.
+
+**The relationship:**
+- ACP can be implemented using MCP (as an MCP server) OR as a traditional REST API
+- MCP enables the connection; ACP defines the commerce interaction model
+- You can use MCP without ACP (customer service, data analysis, etc.)
+- You can use ACP without MCP (direct REST API implementation)
+- Together with MCP, ACP benefits from standardized agent-to-system communication
+
+**Think of it this way:** MCP is the standardized connector (like USB-C), while ACP is the specialized protocol for commerce transactions (like how payment cards work through that connector). You can plug many things into USB-C, but when you want to do commerce, ACP defines how that specific transaction should work.
+</Callout>
+
+### Why it matters for E-commerce
+
+Without MCP, every AI agent needs **custom integration** with every merchant's backend. A single merchant would need custom integrations for ChatGPT, Claude, Gemini, and every new AI platform that emerges. Multiply thousands of merchants by dozens of AI platforms, and you get millions of potential integration points—an impossible maintenance burden.
+
+With MCP, merchants implement one MCP server (often provided by their checkout or payment provider), and instantly become discoverable to any MCP-compatible agent. This enables powerful capabilities like product discovery where agents can query catalogs and filter results, cart management for adding items and updating quantities, order processing to initiate checkout flows and apply discounts, and personalization based on user profiles and preferences.
+
+Forward-thinking checkout and payment providers are already building MCP servers as a service for their merchants. If your provider isn't offering this yet, it's worth asking why—because merchants using MCP-enabled checkout solutions have a huge potential of capturing sales from the growing segment of AI-assisted shoppers, while others are being left behind.
+
+<Callout type="insight" title="Key Takeaway">
+ChatGPT doesn't need custom integrations with thousands of individual merchants—it uses the standard MCP protocol that any modern checkout platform can implement once for all their merchants. This is why forward-thinking checkout providers are racing to add MCP support: it's a single integration that makes all their merchants AI-ready.
+</Callout>
+
+## Layer 2: Communication
+The second layer focuses on the protocols that enable **direct** communication and collaboration between different AI agents used in commerce scenarios. This is where the **Agent-to-Agent Communication Protocol** (A2A) comes into play.
+MCP handles agent-to-system communication, but A2A enables agents to talk directly to each other—sharing context, negotiating actions, and coordinating workflows.
+
+<div class="my-8 flex flex-col items-center">
+  <div class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg p-6">
+    <img src="/images/blog/lego-pieces-of-agentic-commerce-the-necessary-layering-of-multiple-protocols/focus_a2a.svg" alt="A2A Communication Layer Focus" class="w-full h-auto" />
+  </div>
+  <div class="mt-4 text-center max-w-2xl">
+    <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+      **Figure 3**: *Communication Layer - Agent-to-Agent Protocol (A2A)* - The communication orange layer highlighted in the protocol stack, showing A2A as the unified communication layer between different agents.
+    </p>
+  </div>
+</div>
+
+### What It Is?
+
+Announced by Google in April 2025, **A2A** (Agent-to-Agent) is an open standard that enables seamless communication and collaboration between AI agents[^3]. While MCP connects agents to systems, **A2A connects agents to each other**.
+
+The protocol provides a "common language for agents built using diverse frameworks and by different vendors," breaking down technological silos to foster true agent interoperability.
+
+Think of MCP as the telephone line to a business, and A2A as the internal phone system allowing different departments to coordinate with each other.
+
+### Technical Architecture
+
+A2A uses standard web technologies for secure, standardized agent-to-agent communication:
+
+**Core Technologies:**
+- **HTTP**: For reliable message transport
+- **JSON-RPC**: For structured communication protocols  
+- **Server-Sent Events (SSE)**: For real-time streaming and long-running operations
+
+**Key Capabilities:**
+1. **Agent Discovery**: Agents can find and identify each other's capabilities
+2. **Secure Authentication**: Enterprise-grade security for agent-to-agent connections
+3. **Message Exchange**: Structured communication with full context preservation
+4. **Streaming Operations**: Support for long-running, asynchronous workflows
+5. **Modality Independence**: Works across text, structured data, and API calls
+
+The beauty of A2A is that it preserves agent autonomy while enabling collaboration—each agent maintains its specialized functions while participating in larger workflows.
+A part of this autonomy is that these agents can be built on different underlying architectures (LLMs, architecture, tools, etc.) and still interoperate seamlessly via A2A.
+
+However for this agents to access merchant systems, they still need MCP as the foundational layer. Hence, A2A and MCP are complementary protocols that together enable both agent-to-system and agent-to-agent communication:
+
+<Callout type="info" title="A2A vs MCP: How They Work Together">
+**The relationship:**
+- MCP enables agents to access merchant systems, product catalogs, and payment APIs (vertical communication)
+- A2A enables those same agents to coordinate with each other across different systems (horizontal communication)
+- MCP solves "How do I talk to the inventory system?" while A2A solves "How do I coordinate with the shipping agent?"
+- Together, they create a comprehensive communication fabric where agents can both access systems (MCP) and collaborate with each other (A2A)
+
+**Think of it this way:** MCP is like having direct phone lines to every department in a company, while A2A is like having a conference call system that allows all the departments to coordinate together. You need both for complex operations that span multiple systems and require collaboration.
+</Callout>
+
+### Why it matters for E-commerce
+
+Complex commerce transactions often require multiple specialized agents working together. Your personal shopping agent coordinating with the merchant's customer service agent to negotiate bulk pricing. The customization agent configuring product options. Shipping logistics agents coordinating delivery schedules. Payment authorization agents verifying credentials. 
+
+Without A2A, each agent operates in isolation, requiring human intervention to coordinate between them.
+
+With A2A, these agents can negotiate, share information, and coordinate actions autonomously in real-time. The merchant's inventory management agent can directly inform your shopping agent about stock levels across warehouses, while the customization agent verifies engraving options and communicates lead times—all happening seamlessly behind the scenes.
+
+This autonomous coordination transforms complex, multi-step transactions from tedious human-managed processes into smooth, automated workflows. Instead of you having to relay information between different systems and agents, A2A enables them to work together directly while keeping you informed of progress and asking only for the decisions that matter.
+
+<Callout type="insight" title="Key Takeaway">
+A2A eliminates the "telephone game" problem in multi-agent commerce. Rather than humans acting as intermediaries between specialized agents, A2A enables direct agent-to-agent coordination while preserving human control over final decisions. This is crucial for complex purchases involving customization, bulk orders, or multi-vendor coordination.
+</Callout>
+
+## Layer 3: User interface
+The third layer focuses on the protocols that define how AI agents render and interact with user interfaces in commerce scenarios. This is where the **MCP-UI Protocol** and similar protocols comes into play.
+While MCP handles the data exchange between agents and systems, MCP-UI standardizes how agents present rich, interactive user interfaces to users during commerce interactions.
+AG-UI is another protocol that aims to standardize agent-generated UIs, and OpenAI's apps SDK with widgets also targets similar use cases.
+<div class="my-8 flex flex-col items-center">
+  <div class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg p-6">
+    <img src="/images/blog/lego-pieces-of-agentic-commerce-the-necessary-layering-of-multiple-protocols/focus_mcp_ui.png" alt="MCP-UI User Interface Layer Focus" class="w-full h-auto" />
+  </div>
+  <div class="mt-4 text-center max-w-2xl">
+    <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+      **Figure 4**: *User Interface Layer - MCP-UI Protocol* - The user interface green layer highlighted in the protocol stack, showing MCP-UI as the standardized way for agents to render interactive UIs.
+    </p>
+  </div>
+</div>
+
+### What It Is?
+
+**MCP-UI**, introduced by Liad Yosef at Shopify represents a fundamental shift in how AI agents interact with users by "breaking the text wall"[^4]. The protocol extends the Model Context Protocol to enable AI agents to return fully interactive UI components that capture the complexity of real shopping experiences, rather than limiting interactions to text descriptions.
+
+The UI layer also includes **AG-UI** (Agent-User Interaction), a community-driven lightweight protocol focused on event-based communication between agents and user applications[^5], and **OpenAI's Apps SDK**, currently in preview, which provides a comprehensive framework for building interactive applications within ChatGPT[^6].
+
+While these protocols take different technical approaches, they all address the same core limitation: **how to move beyond text-only agent interactions to rich, visual commerce experiences that match user expectations**.
+
+<Callout type="info" title="MCP-UI vs AG-UI vs OpenAI Apps SDK: How They Work Together">
+**The relationship:**
+- **MCP-UI** extends the Model Context Protocol specifically for rich UI components with an intent-based system for commerce interactions
+- **AG-UI** provides a lightweight, event-based protocol for agent-user communication with focus on streaming and multimodal interactions
+- **OpenAI Apps SDK** offers a comprehensive development framework for building native ChatGPT applications with quality and safety standards
+
+**Complementary approaches:**
+- MCP-UI focuses on **interactive commerce components** (product cards, checkout forms, variant selectors)
+- AG-UI emphasizes **flexible communication patterns** (streaming, sub-agents, human-in-the-loop)
+- OpenAI Apps SDK provides **platform-specific integration** (native ChatGPT experience, design guidelines)
+
+**Think of it this way:** MCP-UI is like building interactive product displays, AG-UI is like creating flexible conversation flows, and OpenAI Apps SDK is like developing native mobile apps. You might use MCP-UI for product presentation, AG-UI for complex workflows, and Apps SDK for ChatGPT-specific features—or combine them for comprehensive agentic commerce experiences.
+</Callout>
+
+### Technical Architecture
+
+**MCP-UI Core Innovation:**
+
+**Intent System:**
+- Interactive components communicate with AI agents without directly modifying state
+- Components "bubble up intents" that agents interpret, such as:
+  - `view_details` - User wants more product information
+  - `checkout` - User ready to purchase
+  - `notify` - User wants price alerts
+  - `ui-size-change` - User selects different product variant
+
+**Three UI Delivery Methods:**
+1. **Inline HTML**: Direct HTML content rendered in sandboxed iframes
+2. **Remote Resources**: External URLs loaded securely
+3. **Remote DOM**: Real-time DOM manipulation for dynamic interfaces
+
+**Key Technical Features:**
+- **Adaptive Styling**: Components automatically match host environment themes
+- **State Management**: Maintains user interactions across conversation turns
+- **Complex Commerce Logic**: Supports variant selection, bundle pricing, subscription options, real-time inventory
+
+**AG-UI Architecture:**
+- **Event-based Protocol**: Handles streaming, long-running interactions
+- **Multimodal Support**: Text, media, and structured data integration
+- **Sub-agent Composition**: Nested agent interactions within UI components
+
+**OpenAI Apps SDK:**
+- **Native Integration**: Components designed to feel native to ChatGPT
+- **MCP Server Foundation**: Built on Model Context Protocol infrastructure
+- **Developer Workflow**: Plan → Build → Deploy with comprehensive guidelines
+- **Quality Standards**: Emphasis on safety, security, and policy compliance
+
+### Why it matters for E-commerce
+
+Commerce inherently requires visual decision-making and interactive engagement. When customers shop for products, they need to see images, compare options, select variants, and interact with familiar e-commerce patterns. Size selectors. Color options. Quantity controls. 
+
+Traditional text-based AI interactions force users to imagine products based on descriptions—creating friction that kills conversions.
+
+To examplify the difference, consider the following comparison between a traditional text-based product description and an MCP-UI rendered product card:
+
+<TextWallComparison />
+
+This transformation directly impacts conversion rates. E-commerce psychology shows that visual product presentation, social proof through reviews, and interactive selection tools drive purchase decisions. MCP-UI brings these proven conversion optimization techniques directly into agent conversations.
+
+The protocol enables complex commerce interactions that would be impossible through text alone—bundle configurations where selecting one item affects pricing of others, subscription option toggles, real-time inventory updates that show "Only 3 left in stock," and comparative product displays that highlight differences between models.
+
+Merchants implementing MCP-UI, AG-UI or using the OpenAI Apps SDK can showcase products with the same visual richness and interactive functionality as their traditional e-commerce sites, while competitors remain limited to text descriptions that fail to capture product appeal or enable efficient decision-making.
+
+<Callout type="insight" title="Key Takeaway">
+MCP-UI, AG-UI or OpenAI Apps SDK all aims at eliminating the "text wall" that separates AI agents from effective commerce. Instead of forcing users to imagine products from descriptions, agents can display interactive components with images, reviews, variant selectors, and purchase buttons. This brings proven e-commerce UX patterns directly into AI conversations, transforming agents from information providers into visual shopping interfaces.
+</Callout>
+
+## Layer 4: Commerce & Payments
+The fourth layer focuses on the protocols that define how AI agents execute commerce transactions and payment processing. This is where the **Agentic Commerce Protocol** (ACP) and payment tokenization protocols like AP2 and x402 come into play.
+While MCP-UI handles the user interface and MCP/A2A handle communication, ACP standardizes the actual checkout workflows, order management, and payment authorization required for completing purchases.
+Similaly, AP2 and x402 provide standardized ways for agents to securely handle payment tokens and authorize transactions.
+
+<div class="my-8 flex flex-col items-center">
+  <div class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg p-6">
+    <img src="/images/blog/lego-pieces-of-agentic-commerce-the-necessary-layering-of-multiple-protocols/focus_acp.png" alt="Commerce & Payments Layer Focus" class="w-full h-auto" />
+  </div>
+  <div class="mt-4 text-center max-w-2xl">
+    <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+      **Figure 5**: *Commerce & Payments Layer - ACP and Payment Token Protocols* - The commerce and payments purple layer highlighted in the protocol stack, showing ACP and payment token protocols as the standardized way for agents to execute transactions.
+    </p>
+  </div>
+</div>
+
+### What It Is?
+
+The fourth layer contains **three complementary protocols** that work together to handle the complete commerce transaction flow—from product discovery to payment settlement. Each protocol addresses different aspects of the payment and commerce challenge.
+
+**Agentic Commerce Protocol (ACP)**, developed jointly by Stripe and OpenAI, is the comprehensive end-to-end commerce standard that defines how AI agents, businesses, and buyers complete purchases through standardized workflows[^7]. Launched in September 2025, ACP is "an open standard for programmatic commerce flows between buyers, AI agents, and businesses" that enables complete transactions without leaving the AI interface. 
+
+**InstantCheckout in ChatGPT is one implementation of ACP**, currently limited to merchants using OpenAI's Product Feed format. However, the ACP specification itself is open and vendor-neutral—any checkout provider can implement ACP to enable agent commerce across multiple AI platforms. A crucial component is **Shared Payment Tokens (SPT)**, which allow secure payment credential exchange between agents and merchants without exposing sensitive card details.
+
+**Agent Payments Protocol (AP2)**, announced by Google in collaboration with over 60 organizations including Coinbase, American Express, Mastercard, and PayPal[^8], focuses specifically on payment authorization using cryptographically-signed digital contracts called "Mandates." AP2 solves the critical question: How do you prove that an AI agent has permission to spend your money? Through Verifiable Credentials that create an audit trail linking payment methods to verified transaction contents.
+
+**x402 Protocol**, jointly developed by Coinbase and Cloudflare, activates the dormant HTTP 402 "Payment Required" status code to enable frictionless agent-to-agent micropayments[^9]. While ACP and AP2 handle human-initiated transactions, x402 enables autonomous agents to pay for services like API calls, data access, and computational resources without human intervention.
+
+<Callout type="info" title="ACP vs AP2 vs x402: How They Work Together">
+**The relationship:**
+- **ACP** handles the complete commerce workflow (product discovery → cart → checkout → fulfillment) for human-initiated purchases
+- **AP2** provides cryptographic payment authorization with verifiable digital credentials for secure transaction proof
+- **x402** enables autonomous agent-to-agent micropayments using HTTP 402 status codes for service-to-service transactions
+
+**Complementary use cases:**
+- ACP for "user wants to buy a Lakers jersey through ChatGPT"
+- AP2 for "prove this $89.99 purchase was authorized by the actual user"  
+- x402 for "agent needs to pay $0.001 to access product pricing API"
+
+**Think of it this way:** ACP is the complete shopping mall experience, AP2 is the security guard checking your payment authorization, and x402 is the vending machine that takes exact change. Together, they enable both human-driven commerce and autonomous agent operations.
+</Callout>
+
+### Technical Architecture
+
+The Agentic Commerce Protocol defines a **comprehensive interaction model and open standard** for connecting buyers, their AI agents, and businesses to complete purchases seamlessly. The protocol consists of two core API specifications:
+
+**Agentic Checkout API**: This specification defines the complete checkout session lifecycle with five core endpoints - `create`, `update`, `retrieve`, `complete`, and `cancel` checkout sessions. It handles everything from item management to fulfillment options while preserving existing commerce infrastructure.
+
+**Delegated Payment API**: This specification enables secure payment tokenization with controlled allowances, allowing AI platforms to process payments without becoming the merchant of record. It supports card payments with constraints like maximum amounts, currency limits, and merchant-specific controls.
+
+**Product Discovery Implementation**: For ACP to work, AI agents need access to structured product catalogs. OpenAI's InstantCheckout uses a specific feed format that differs from more common standards like Google Shopping Feed format:
+
+<ImplementationExample
+  title="Product Feed Specification"
+  provider="OpenAI InstantCheckout"
+  type="specification"
+  description="OpenAI's InstantCheckout requires merchants to provide structured product feeds that AI agents can discover and parse. This implementation demonstrates how the open ACP standard can be adapted for specific platform needs."
+  features={[
+    "Structured data formats: TSV, CSV, XML, or JSON",
+    "Real-time updates every 15 minutes for inventory accuracy", 
+    "Product metadata: IDs, pricing, availability, images, variants",
+    "Merchant controls: enable_search and enable_checkout flags per product",
+    "Geographic targeting and currency support"
+  ]}
+  defaultExpanded={true}
+/>
+
+**Payment Processing Implementation**: See below how Stripe implements the Delegated Payment Specification, demonstrating that while ACP is an open protocol, payment processors can build their own compliant implementations:
+
+<ImplementationExample
+  title="Shared Payment Tokens (SPT)"
+  provider="Stripe"
+  type="implementation"
+  description="Stripe's implementation of the Delegated Payment Specification creates virtualized payment methods that never expose raw card details. This is one example of how payment processors can implement the open ACP standard."
+  features={[
+    "Virtualized payment methods with no raw card exposure",
+    "Configurable limits: currency, maximum amount, expiration windows",
+    "Real-time risk scoring and fraud prevention",
+    "Single-use tokens bound to specific merchants and amounts",
+    "PCI DSS compliant tokenization with instant processing"
+  ]}
+  codeExample={`{
+  "payment_method": "pm_1ABC123",
+  "amount_limit": 10000,
+  "currency": "usd", 
+  "merchant_id": "acct_merchant123",
+  "expires_at": "2025-10-19T15:00:00Z",
+  "usage_limit": 1
+}`}
+/>
+
+**ACP Ecosystem**: As an open protocol, ACP has enabled multiple implementations beyond OpenAI's InstantCheckout. The ecosystem includes production-ready checkout gateways[^10], compliance validation tools[^11], and various architectural approaches (serverless, microservices, etc.). This demonstrates the protocol's flexibility and vendor independence.
+
+**Implementation Validation**: The ACP community has developed validation tooling including CLI validators that run comprehensive test suites covering happy paths, edge cases, and error scenarios to ensure implementations comply with the official OpenAPI specification. This enables any company to validate their ACP implementation before going live.
+
+Continuing with InstantCheckout specifically, it is worth mentioning some of the **current limitations** of this particular implementation:
+<Callout type="warning" title="Current InstantCheckout Limitations">
+**Important constraints in ChatGPT's InstantCheckout implementation:**
+- **Single-item checkout only**: No multi-product carts currently supported
+- **Limited geographic availability**: US-only launch (Etsy, expanding to Shopify merchants)
+- **Minimal merchant data sharing**: Limited analytics and customer relationship data
+- **No subscription/recurring payments**: One-time purchases only
+- **No native returns process**: Post-purchase support limited
+
+Note: These are specific to OpenAI's current InstantCheckout implementation. ACP as an open protocol supports broader capabilities, and other platforms may implement different feature sets following the Delegated Payment Specification.
+</Callout>
+
+We will likely see these limitations addressed over time as the protocol matures and more platforms adopt it.
+
+Google's Agent Payments Protocol implements a **cryptographic mandate system** built on W3C Verifiable Credentials standards. AP2 uses a three-tier mandate hierarchy:
+1. **Intent Mandates**: High-level authorization for purchase categories
+2. **Cart Mandates**: Specific transaction details with cryptographic signatures
+3. **Payment Mandates**: Final authorization with exact amounts and merchant IDs
+
+The mandate system uses ECDSA digital signatures with P-256 curve, time-bound tokens that expire after 5 minutes, and unique nonces to prevent replay attacks. Each mandate contains the user ID, agent ID, merchant ID, transaction details, and a cryptographic signature that can be verified against the user's public key.
+
+The x402 protocol leverages **HTTP status codes and blockchain infrastructure** for instant micropayments. When an agent requests a paid resource, the service returns "HTTP 402 Payment Required" with payment details. The agent automatically pays in cryptocurrency (typically USDC on Base or Polygon) and includes the transaction hash as proof. The entire flow completes in under 2 seconds with minimal implementation overhead—often just a single line of middleware code.
+
+These protocols can work together in a single transaction: ACP manages the shopping experience, AP2 provides cryptographic proof of authorization, and x402 enables the agent to pay for auxiliary services like shipping APIs or tax calculations.
+
+### Why it matters for E-commerce
+
+These three protocols together solve the fundamental challenge of AI commerce: enabling agents to make purchases that are secure, authorized, and autonomous. 
+
+For human-initiated commerce, ACP is establishing itself as the emerging standard for AI shopping. The protocol's open specification has enabled multiple implementations beyond OpenAI's InstantCheckout, with various companies building production-ready ACP checkout gateways using different architectural approaches, demonstrating the protocol's flexibility and vendor independence.
+
+**The open protocol approach means merchants have choices**: they can integrate with existing ACP implementations for immediate access to AI platforms, work with checkout providers who offer ACP support, or build their own ACP-compliant system using the official OpenAPI specifications. This prevents vendor lock-in while ensuring compatibility across the growing AI commerce ecosystem.
+
+The protocol's **five core checkout endpoints** (create, update, retrieve, complete, cancel) provide a standardized interaction model that works regardless of the underlying implementation. Combined with the Delegated Payment API's tokenization system, merchants maintain control as the merchant of record while enabling secure AI-mediated transactions.
+
+While still in early days with limitations like single-item checkout, the protocol ensures merchants maintain control over pricing, inventory, and customer relationships while reaching entirely new audiences through AI interfaces. AP2 adds the critical security layer by requiring cryptographic proof for every transaction, preventing unauthorized purchases while enabling streamlined AI commerce.
+
+x402 enables the true autonomous economy where agents can independently access services and operate without human intervention. A research agent can automatically pay microfees to access premium data APIs, or a content creation agent can pay for image generation services—all through instant cryptocurrency micropayments that would be impossible with traditional payment rails due to transaction fees. This opens entirely new revenue streams for API providers who can now monetize at the micro-transaction level.
+
+Merchants adopting this protocol stack can offer customers the choice between traditional checkout (manual, multi-step) and AI-powered checkout (conversational, one-tap). Early adopters are capturing significant market share from the growing segment of users who prefer conversational shopping experiences. The protocols also enable new business models where services can be priced granularly based on actual usage rather than broad subscription tiers.
+
+<Callout type="insight" title="Key Takeaway">
+ACP is emerging as the foundational protocol for agentic commerce, with its open specification enabling multiple production implementations beyond just OpenAI's InstantCheckout. The growing ecosystem includes various checkout providers, validation tools, and architectural approaches that ensure implementation quality and flexibility. This vendor-independent approach positions ACP as the HTTP of AI commerce—a truly open standard that prevents lock-in while enabling interoperability. While AP2 provides essential security infrastructure and x402 enables autonomous micropayments, ACP's standardized checkout session lifecycle and delegated payment tokenization create the foundation that all AI commerce platforms can build upon. Merchants implementing ACP gain access to the entire ecosystem, not just a single platform.
+</Callout>
+
+## Layer 5: Trust & Security
+The fifth and final layer addresses a critical question: **How do merchants distinguish legitimate AI agents from malicious bots?** While the previous layers handle communication, UI, and transactions, this layer ensures that all interactions are secure and trustworthy.
+<div class="my-8 flex flex-col items-center">
+  <div class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg p-6">
+    <img src="/images/blog/lego-pieces-of-agentic-commerce-the-necessary-layering-of-multiple-protocols/focus_tap.png" alt="Trust & Security Layer Focus" class="w-full h-auto" />
+  </div>
+  <div class="mt-4 text-center max-w-2xl">
+    <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+      **Figure 6**: *Trust & Security Layer* - The trust and security gray layer highlighted in the protocol stack, showing the foundational role of trust and security protocols.
+    </p>
+  </div>
+</div>
+
+### What It Is
+As AI agents become primary commerce interfaces, merchants face an impossible choice: block all automated traffic and lose valuable agent-driven sales, or allow all automated traffic and accept security risks from scrapers and malicious actors. **Visa's Trusted Agent Protocol (TAP) solves this dilemma** by providing cryptographic verification of agent identity and intent[^12].
+
+<ImplementationExample
+  title="Visa Trusted Agent Protocol (TAP)"
+  provider="Visa"
+  description="Cryptographic agent identity verification at the CDN/proxy layer using RFC 9421 compliant signatures"
+  type="specification"
+  features={[
+    "RFC 9421 HTTP Message Signatures for cryptographic verification",
+    "CDN/proxy-level verification before requests reach merchant backend",
+    "Agent registry maintained by Visa with public keys and reputation data",
+    "Time-bound, non-replayable signatures prevent replay attacks",
+    "Consumer identifier passing for personalized shopping experiences"
+  ]}
+  codeExample={`// TAP signature verification at CDN layer
+{
+  "keyid": "chatgpt-2025",
+  "algorithm": "rsa-pss-sha512", 
+  "created": 1735689722,
+  "expires": 1735690022,
+  "signature": "QIb7mOTtfyZr8VLvkX7fEjRuBWVkRY...",
+  "nonce": "7b3c9f1e-4a5d-6c8e-9f0a-1b2c3d4e5f6g"
+}`}
+  defaultExpanded={false}
+/>
+
+### Technical Architecture
+
+**TAP Verification Flow:**
+
+1. **Agent Request Generation**: AI agent creates RFC 9421 compliant signature with timestamp, nonce, and key identifier
+2. **CDN Interception**: Request hits merchant's CDN/proxy layer before reaching backend systems
+3. **Registry Lookup**: CDN queries Visa's agent registry to validate public key and reputation
+4. **Signature Verification**: Cryptographic validation of signature components and freshness check
+5. **Request Processing**: Verified requests forwarded with consumer identifiers; invalid requests blocked
+
+**What TAP Provides to Merchants:**
+
+**Agent Intent Verification:**
+- Confirms the agent is Visa-trusted
+- Indicates intent to browse or purchase
+- Distinguishes shopping agents from scrapers
+
+**Consumer Recognition (with consent):**
+- Customer loyalty account or token ID
+- Device identifiers for returning customers
+- Location parameters (country, postal code)
+
+**Payment Information:**
+- Payment Account References (PARs) for cards on file
+- Hashed credentials for validation
+- Pre-fill data for streamlined checkout
+
+**Security Mechanisms:**
+- **Non-replayable signatures** with unique nonces prevent replay attacks
+- **Time-bound credentials** expire within 5-minute windows to ensure freshness
+- **Agent-specific keys** provide cryptographic identity verification
+- **Merchant-domain binding** prevents cross-site signature reuse
+
+**Implementation Options:**
+- **CDN Integration** (Recommended): Cloudflare, Fastly, Akamai provide TAP support
+- **Proxy Layer**: Deploy TAP-aware reverse proxy for signature verification
+- **Application Level**: Implement verification directly in application code
+
+### Why It Matters for E-commerce
+
+**The Bot Problem**: E-commerce sites receive millions of automated requests daily. Traditional bot detection systems block legitimate shopping agents along with malicious scrapers, preventing merchants from participating in the growing agent commerce ecosystem.
+
+**TAP enables merchants to:**
+- **Verify agent legitimacy** cryptographically before processing any requests
+- **Distinguish shopping agents** from malicious scrapers and bots
+- **Receive verified consumer data** for personalized experiences without privacy concerns
+- **Maintain security posture** while participating in agent commerce
+- **Works with existing checkout infrastructure** - no need to implement InstantCheckout or ACP to benefit from TAP
+
+**Real-World Impact:**
+- **Without TAP**: ChatGPT request → bot detection triggered → request blocked → user gets error → abandoned purchase
+- **With TAP**: ChatGPT provides signature → CDN verifies with Visa → request approved → personalized shopping experience
+
+**Business Benefits:**
+- **Immediate bot protection** without blocking legitimate agent traffic
+- **Pre-fill checkout** with verified consumer identifiers enabling one-tap purchase
+- **Personalize experience** using location and payment hints for customization
+- **Consumer data enrichment** through verified agent credentials  
+- **Competitive advantage** in emerging agent commerce market
+- **Future-proof security** as agent interactions scale across the industry
+- **Allow agent browsing** without triggering bot detection systems
+
+<Callout type="insight" title="Key Takeaway">
+Visa's Trusted Agent Protocol provides a practical solution to the bot dilemma facing e-commerce merchants. By enabling cryptographic verification of AI agents at the CDN/proxy layer, TAP allows merchants to securely participate in the growing agent commerce ecosystem without sacrificing security. Legitimate shopping agents can be distinguished from malicious bots, enabling personalized experiences while maintaining robust bot protection. As agent interactions scale, TAP offers a future-proof security framework that balances openness with trust.
+</Callout>
+
+## How they Snap Together: A Real-World Example
+
+Now that you understand each protocol, let's see how they work together in a complete transaction. This is where the "Lego pieces" metaphor becomes clear—each protocol handles one specific piece, and together they create **seamless commerce**.
+
+**Why do we need multiple protocols instead of just one?** 
+
+Just as you wouldn't build a house with only one type of Lego piece, commerce requires specialized protocols for different challenges. A single "super-protocol" would be rigid, vendor-specific, and impossible to evolve. Instead, this modular approach allows:
+
+- **Different companies** to innovate on different layers
+- **Merchants** to adopt protocols incrementally  
+- **Standards** to evolve independently without breaking the entire stack
+- **Competition** to drive better implementations at each layer
+
+Let's see all eight protocols working together in a real purchase.
+
+<Callout type="note" title="Real-World Implementation Note">
+In the examples below, we show direct merchant implementation for clarity. However, in practice, many merchants would and should rely on their **checkout providers** (such as Kustom, Shopify, Stripe Checkout, or Bolt etc) to handle protocol implementation on their behalf. As discussed in [AP2 Issue #36](https://github.com/google-agentic-commerce/AP2/issues/36), checkout providers often serve as intermediaries, managing the complex protocol integrations while merchants focus on their core business. The protocols work the same way—the implementation just happens at the checkout provider layer rather than directly at the merchant.
+</Callout>
+
+### The Scenario
+
+You're chatting with ChatGPT and say: **"Find me a Lakers jersey under $100"**
+
+### Step 0: Agent Verification (Visa TAP)
+
+Before any commerce can happen, the merchant needs to verify that ChatGPT is a legitimate agent, not a malicious bot.
+
+```mermaid
+sequenceDiagram
+    participant ChatGPT
+    participant CDN as Merchant CDN<br/>(TAP Verification)
+    
+    ChatGPT->>CDN: GET /products (with TAP signature)
+    CDN->>CDN: Verify signature against Visa registry
+    CDN->>CDN: Confirm ChatGPT is trusted agent
+    CDN->>ChatGPT: Approved + consumer identifiers
+```
+
+*Figure 7: Visa TAP agent verification happens at the CDN level before any commerce requests reach the merchant's backend.*
+
+**Without TAP**, the merchant's bot detection would block ChatGPT's request, and the entire transaction would fail before it starts.
+
+### Steps 1-2: Product Discovery & Display (MCP/ACP + MCP-UI)
+
+Now ChatGPT can search the merchant's catalog and display results using rich UI components.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant ChatGPT
+    participant MCP as MCP Server<br/>(Checkout Provider)
+    participant Merchant
+    
+    User->>ChatGPT: "Find Lakers jersey under $100"
+    ChatGPT->>MCP: searchProducts(query="Lakers jersey", max_price=100)
+    MCP->>Merchant: Query product database
+    Merchant->>MCP: Product data (JSON)
+    MCP->>ChatGPT: Structured product results
+    ChatGPT->>ChatGPT: Render product cards with MCP-UI/AG-UI/Apps SDK
+    ChatGPT->>User: Display interactive product cards
+```
+
+*Figure 8: Product discovery through MCP/ACP with rich UI rendering via MCP-UI components.*
+
+**MCP/ACP provides the standardized interface** that lets ChatGPT access any merchant's catalog, while **MCP-UI ensures consistency** across different AI platforms.
+
+### Step 3: Add to Cart (MCP/ACP)
+
+When you select a product, the shopping workflow continues seamlessly through the same protocol interface.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant ChatGPT
+    participant MCP as MCP Server<br/>(Checkout Provider)
+    participant Merchant
+    
+    User->>ChatGPT: Select jersey, size L
+    ChatGPT->>MCP: addToCart(productId, size="L", qty=1)
+    MCP->>Merchant: Add to cart
+    Merchant->>MCP: Cart updated
+    MCP->>ChatGPT: Cart confirmation
+    ChatGPT->>User: "Added to cart. Ready to checkout?"
+```
+
+*Figure 9: Seamless cart management through standardized MCP/ACP interface.*
+
+### Steps 4-5: Checkout & Payment Authorization (ACP + AP2)
+
+The checkout process begins with pricing calculation, followed by secure payment authorization.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant ChatGPT
+    participant Merchant
+    
+    User->>ChatGPT: "Buy it"
+    ChatGPT->>Merchant: ACP: initiate_checkout(cart_id)
+    Merchant->>ChatGPT: Pricing: $89.99 + $8 shipping + $8.17 tax = $106.16
+    ChatGPT->>User: "Confirm payment: $106.16"
+    User->>ChatGPT: Approve payment
+    ChatGPT->>ChatGPT: Generate VDC (Verifiable Digital Credential)
+    ChatGPT->>Merchant: Payment credentials + VDC
+```
+
+*Figure 10: Checkout initiation and payment authorization through ACP and AP2 protocols.*
+
+**ACP handles the complex checkout logistics** while **AP2 enables secure payment delegation** where you authorize the agent to pay on your behalf.
+
+### Steps 6-7: Payment Processing & Order Confirmation
+
+Finally, the payment is processed through existing infrastructure and the order is created.
+
+```mermaid
+sequenceDiagram
+    participant ChatGPT
+    participant Merchant
+    participant Stripe
+    
+    Merchant->>Stripe: Process payment ($106.16)
+    Stripe->>Stripe: Charge payment method
+    Stripe->>Merchant: Payment successful
+    Merchant->>Merchant: Create order in system
+    Merchant->>ChatGPT: Order confirmation
+    ChatGPT->>User: "Order placed! Arrives Oct 25"
+```
+
+*Figure 11: Payment processing and order confirmation using existing payment infrastructure.*
+
+**The beauty: no changes required** to existing payment systems. The merchant receives the same payment data they always have.
+
+
+### The Power of Protocols Working Together
+
+Notice what happened: **Eight different protocols, potentially from eight different companies, seamlessly coordinated** to complete your purchase. You experienced it as a single, fluid conversation, but behind the scenes:
+
+- **Visa TAP** verified the agent
+- **MCP/ACP** enabled product discovery and cart management  
+- **MCP-UI** rendered the shopping interface
+- **A2A** could coordinate with other agents if needed
+- **AG-UI** managed the interactive elements
+- **ACP** handled checkout orchestration
+- **AP2** secured payment authorization
+- **x402** enables micropayments for future use cases
+
+This modular approach means **each protocol can evolve independently** while maintaining compatibility with the others. Merchants can adopt them incrementally, and developers can innovate at each layer without breaking the entire system.
+
+## Why Merchants & Checkout Providers Should Care
+
+### The Market Opportunity
+
+Agent-driven commerce represents a fundamental shift in how consumers discover and purchase products. While still early, the adoption trajectory suggests significant business implications for both merchants and checkout providers.
+
+**Market Indicators:**
+- ChatGPT's InstantCheckout launched in September 2025 with immediate user adoption
+- Industry analysts project agent commerce growth in the coming years
+- Early protocol implementations are already showing real transaction volume
+
+**For Merchants:**
+
+The opportunity lies in accessing new customer acquisition channels. Merchants who implement these protocols can potentially:
+- Reach users who prefer conversational shopping experiences
+- Appear in agent-driven product recommendations
+- Reduce dependency on traditional advertising channels
+- Provide differentiated customer experiences
+
+### For Checkout Providers: Strategic Considerations
+
+Checkout providers face a strategic decision about protocol implementation timing and approach.
+
+**Implementation Considerations:**
+- Protocol complexity requires significant engineering investment
+- Each protocol solves specific technical challenges in the agent commerce flow
+- Modular implementation allows for incremental rollout
+- Early implementation may provide competitive positioning
+
+**Business Model Implications:**
+- Merchants increasingly evaluate providers on agent commerce capabilities
+- Protocol implementation could justify premium pricing tiers
+- Abstraction of complexity provides value to merchant customers
+- Market timing affects competitive dynamics
+
+<Callout type="note" title="Implementation Reality">
+The technical complexity of implementing multiple protocols simultaneously is significant. Most successful rollouts focus on core protocols first (MCP/ACP for basic commerce flows) before adding advanced capabilities like payment delegation or fraud prevention layers.
+</Callout>
+
+### The Technical Landscape
+
+**Current State:**
+- Some protocols are production-ready (MCP, A2A, ACP)
+- Others are in active development or early implementation
+- Integration patterns are still evolving
+- Standards continue to mature
+
+**Implementation Path:**
+Rather than implementing all protocols simultaneously, most organizations adopt an incremental approach:
+
+1. **Foundation**: Start with basic product discovery (MCP/ACP)
+2. **Interface**: Add rich UI components (MCP-UI)
+3. **Payments**: Integrate payment authorization (AP2)
+4. **Security**: Implement agent verification (TAP)
+5. **Advanced**: Add specialized capabilities as needed
+
+This measured approach allows organizations to learn and adapt while building capabilities that create business value.
+
+## The Missing Pieces & What's Next
+
+While the eight protocols provide a solid foundation, several critical gaps remain before agentic commerce can serve enterprise-scale and complex use cases.
+
+<PrettyTable
+  title="Key Missing Capabilities"
+  headers={["Feature Gap", "Impact", "Needed For"]}
+>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell"><span class="pretty-table-term">Subscription Support</span></td>
+    <td class="pretty-table-cell">No recurring payments or lifecycle management</td>
+    <td class="pretty-table-cell">SaaS, Media, Retail subscriptions</td>
+  </tr>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell"><span class="pretty-table-term">B2B Payment Terms</span></td>
+    <td class="pretty-table-cell">No net terms, purchase orders, or approval workflows</td>
+    <td class="pretty-table-cell">Enterprise procurement</td>
+  </tr>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell"><span class="pretty-table-term">Inventory Reservation</span></td>
+    <td class="pretty-table-cell">No hold mechanism during checkout</td>
+    <td class="pretty-table-cell">Limited inventory, high-demand products</td>
+  </tr>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell"><span class="pretty-table-term">Complex Tax Handling</span></td>
+    <td class="pretty-table-cell">Missing VAT, exemptions, cross-border rules</td>
+    <td class="pretty-table-cell">International and B2B commerce</td>
+  </tr>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell"><span class="pretty-table-term">Split Payments</span></td>
+    <td class="pretty-table-cell">Single payment method limitation</td>
+    <td class="pretty-table-cell">Gift cards, partial payments, mixed methods</td>
+  </tr>
+  <tr class="pretty-table-row">
+    <td class="pretty-table-cell"><span class="pretty-table-term">Marketplace Support</span></td>
+    <td class="pretty-table-cell">No multi-party payment distribution</td>
+    <td class="pretty-table-cell">Platform commerce, multiple sellers</td>
+  </tr>
+</PrettyTable>
+
+<Callout type="insight" title="The Evolution Ahead">
+These gaps represent opportunities rather than fundamental flaws. Just as e-commerce evolved from basic online catalogs to today's sophisticated platforms, agentic commerce is in its infrastructure phase. The modular protocol stack allows capabilities to be added incrementally without rebuilding the foundation.
+
+**Near-term development** focuses on core protocol stabilization and broader payment provider ecosystem growth. **Medium-term** will bring enterprise features like B2B payments and complex tax handling. **Long-term** evolution includes industry-specific extensions and advanced AI-to-AI commerce automation.
+</Callout>
+
+The missing pieces will likely spawn specialized solutions, additional protocol layers, or extensions to existing standards. Cross-industry working groups are already forming around these complex use cases, with regulatory bodies beginning to address agent commerce frameworks.
+
+## Conclusion
+
+Agentic commerce isn't a single breakthrough—it's the convergence of eight specialized protocols working together like Lego blocks. From MCP's foundational connectivity to TAP's security verification, each protocol solves one piece of the autonomous shopping puzzle.
+
+The real power emerges from their modularity. Merchants can adopt protocols incrementally, developers can innovate at each layer independently, and the entire ecosystem can evolve without breaking existing implementations. We're witnessing the early infrastructure phase of what may become as transformative as the shift from physical to digital commerce.
+
+For businesses, the question isn't whether agentic commerce will happen—it's whether you'll be ready when your customers start shopping through AI agents. The protocols are live, the implementations are growing, and the foundation is being laid today.
+
+---
+
+[^1]: MCP Specification. ["Model Context Protocol Latest Specification"](https://modelcontextprotocol.io/specification/latest). Official technical specification for the Model Context Protocol.
+
+[^2]: Anthropic. ["Introducing the Model Context Protocol"](https://www.anthropic.com/news/model-context-protocol) (November 2024). Official announcement and introduction of MCP.
+
+[^3]: A2A Protocol. ["What is A2A?"](https://a2a-protocol.org/latest/topics/what-is-a2a/) (2025). Official documentation explaining the Agent-to-Agent communication protocol.
+
+[^4]: Shopify Engineering. ["MCP UI: Breaking the Text Wall"](https://shopify.engineering/mcp-ui-breaking-the-text-wall) (2025). Introduction of MCP-UI protocol by Shopify's CTO for interactive AI interfaces.
+
+[^5]: AG-UI Protocol. ["Introduction to AG-UI"](https://docs.ag-ui.com/introduction) (2025). Documentation for the Agent-User Interaction protocol for event-based communication.
+
+[^6]: OpenAI. ["Apps SDK"](https://developers.openai.com/apps-sdk) (2025). Official documentation for building interactive applications within ChatGPT.
+
+[^7]: Stripe & OpenAI. ["Agentic Commerce Protocol"](https://www.agenticcommerce.dev/) (2025). Open standard for programmatic commerce flows between AI agents and businesses.
+
+[^8]: Google Cloud. ["Announcing Agent Payments Protocol (AP2)"](https://cloud.google.com/blog/products/ai-machine-learning/announcing-agents-to-payments-ap2-protocol) (2025). Google's protocol for secure agent payment authorization.
+
+[^9]: Coinbase & Cloudflare. ["x402 Protocol"](https://www.x402.org/) (2025). HTTP 402-based protocol for autonomous agent micropayments.
+
+[^10]: Nekuda AI. ["ACP Checkout Gateway"](https://github.com/nekuda-ai/ACP-Checkout-Gateway) (2025). Serverless, production-ready ACP implementation using AWS Lambda with event-driven architecture.
+
+[^11]: Nekuda AI. ["ACP Validator CLI"](https://github.com/nekuda-ai/acp-validator-cli) (2025). Comprehensive testing tool with 151 test cases for validating ACP Checkout API implementations against official specifications.
+
+[^12]: Visa. ["Trusted Agent Protocol Overview"](https://developer.visa.com/capabilities/trusted-agent-protocol/overview) (2025). Official documentation for Visa's cryptographic agent identity verification protocol.
