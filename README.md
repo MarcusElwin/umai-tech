@@ -72,6 +72,21 @@ pnpm astro check
   - Improved contrast and readability
   - Responsive card layout
 
+- **TextWallComparison** - Text vs rich UI experience comparison
+  - Side-by-side comparison of text-based vs visual interfaces
+  - Interactive product card examples
+  - Demonstrates the value of rich UI components
+  - Perfect for showcasing UX improvements
+
+### Protocol & Implementation Components
+- **ImplementationExample** - Protocol implementation showcase
+  - Expandable/collapsible display of technical specifications
+  - Supports both "implementation" and "specification" types
+  - Color-coded by type (blue for implementations, purple for specifications)
+  - Code examples with syntax highlighting
+  - Feature lists and provider attribution
+  - Used for documenting API protocols and technical standards
+
 ### Interactive Elements
 All comparison components feature:
 - Unique component IDs to prevent conflicts

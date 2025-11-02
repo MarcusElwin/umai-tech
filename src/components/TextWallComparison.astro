@@ -1,0 +1,527 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { 
+  title = "Breaking the Text Wall: MCP-UI in Action",
+  description = "See how MCP-UI transforms text-only AI interactions into rich, visual commerce experiences"
+} = Astro.props;
+
+// Generate unique ID for this component instance
+const componentId = `text-wall-${Math.random().toString(36).slice(2, 11)}`;
+---
+
+<div class="text-wall-comparison my-16 max-w-6xl mx-auto">
+  <!-- Header -->
+  <div class="bg-gradient-to-r from-umai-gray-50 to-white dark:from-umai-gray-800 dark:to-umai-gray-700 rounded-xl border border-umai-gray-200 dark:border-umai-gray-600 p-6 mb-6">
+    <div class="flex items-start justify-between gap-4">
+      <div class="flex-1">
+        <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{title}</h4>
+        <p class="text-gray-600 dark:text-gray-400 mb-4">
+          {description}
+        </p>
+        
+        <!-- Collapse Toggle -->
+        <button 
+          id={`${componentId}-toggle`}
+          class="flex items-center space-x-2 text-sm text-umai-accent hover:text-umai-accent/80 transition-colors focus:outline-none"
+          aria-expanded="false"
+          aria-controls={`${componentId}-content`}
+        >
+          <span id={`${componentId}-toggle-text`}>Show Comparison</span>
+          <svg id={`${componentId}-toggle-icon`} class="w-4 h-4 transition-transform duration-200 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Legend -->
+      <div class="flex items-center gap-4 shrink-0 text-sm">
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 rounded bg-gray-100 border border-gray-300"></div>
+          <span class="text-gray-600 dark:text-gray-400">Text Only</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 rounded bg-purple-100 border border-purple-300"></div>
+          <span class="text-gray-600 dark:text-gray-400">MCP-UI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Collapsible Content -->
+  <div id={`${componentId}-content`} class="hidden transition-all duration-300 ease-in-out overflow-hidden">
+    <div class="grid lg:grid-cols-2 gap-8">
+      
+      <!-- Text-Only Interaction -->
+      <div class="text-only-example h-full">
+        <div class="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 h-full flex flex-col">
+          <div class="bg-gray-100 dark:bg-gray-800/80 px-6 py-3 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a9.863 9.863 0 01-4.906-1.317L3 20l1.317-5.094A9.863 9.863 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"/>
+              </svg>
+              <span class="font-semibold text-gray-800 dark:text-gray-200">
+                Text-Only Agent Interaction
+              </span>
+            </div>
+          </div>
+          
+          <!-- Chat Interface -->
+          <div class="p-6 space-y-4 bg-white dark:bg-gray-900 flex-1 flex flex-col justify-between" style="min-height: 600px;">
+            <div class="space-y-4">
+              <!-- User Message -->
+              <div class="flex justify-end">
+                <div class="bg-blue-500 text-white rounded-lg px-4 py-2 max-w-[80%]">
+                  <p class="text-sm">Show me Lakers jerseys</p>
+                </div>
+              </div>
+              
+              <!-- Agent Response -->
+              <div class="flex justify-start">
+                <div class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-4 py-3 max-w-[85%]">
+                  <p class="text-sm leading-relaxed">
+                    <strong>Shopping Assistant:</strong> "The Lakers LeBron James jersey is available in gold with purple trim, size Large, priced at $89.99. It has 4.5 stars from 127 reviews. The material is 100% polyester with Dri-FIT technology. Available sizes are Small, Medium, Large, Extra Large, and XXL. Colors include the classic Gold/Purple, White, and Black versions. The gold model is currently in stock and ships today. Would you like to purchase it?"
+                  </p>
+                </div>
+              </div>
+              
+              <!-- User confusion -->
+              <div class="flex justify-end">
+                <div class="bg-blue-500 text-white rounded-lg px-4 py-2 max-w-[80%]">
+                  <p class="text-sm">Can I see what it looks like?</p>
+                </div>
+              </div>
+              
+              <!-- Agent limitation -->
+              <div class="flex justify-start">
+                <div class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-4 py-3 max-w-[85%]">
+                  <p class="text-sm leading-relaxed">
+                    <strong>Shopping Assistant:</strong> "I can't display images, but I can describe it: The Lakers jersey features the iconic gold color as the primary base with purple accents on the trim, numbers, and lettering. The Lakers logo is prominently displayed on the front..."
+                  </p>
+                </div>
+              </div>
+              
+              <!-- Additional frustration -->
+              <div class="flex justify-end">
+                <div class="bg-blue-500 text-white rounded-lg px-4 py-2 max-w-[80%]">
+                  <p class="text-sm">What about the size chart? How does it fit?</p>
+                </div>
+              </div>
+              
+              <!-- More text limitations -->
+              <div class="flex justify-start">
+                <div class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg px-4 py-3 max-w-[85%]">
+                  <p class="text-sm leading-relaxed">
+                    <strong>Shopping Assistant:</strong> "Based on the product details, the Large size typically measures: Chest 44-46 inches, Length 29 inches. The jersey has a standard athletic fit. For the most accurate sizing, I recommend visiting the Lakers official store website to view their detailed size chart..."
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Frustrated user gives up -->
+            <div class="mt-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800/40 rounded-lg">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                <span class="text-sm font-medium text-red-800 dark:text-red-300">
+                  User abandons purchase - too much friction
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Issues -->
+          <div class="bg-gray-100/50 dark:bg-gray-800/50 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+            <h6 class="text-sm font-semibold text-gray-800 dark:text-gray-300 mb-2 flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+              Text Wall Problems:
+            </h6>
+            <ul class="space-y-2">
+              <li class="text-sm text-gray-700 dark:text-gray-400 flex items-start gap-2 leading-relaxed">
+                <div class="w-1.5 h-1.5 rounded-full bg-gray-500 mt-2 flex-shrink-0"></div>
+                <span>Users must imagine products from text descriptions</span>
+              </li>
+              <li class="text-sm text-gray-700 dark:text-gray-400 flex items-start gap-2 leading-relaxed">
+                <div class="w-1.5 h-1.5 rounded-full bg-gray-500 mt-2 flex-shrink-0"></div>
+                <span>No visual confirmation before purchase</span>
+              </li>
+              <li class="text-sm text-gray-700 dark:text-gray-400 flex items-start gap-2 leading-relaxed">
+                <div class="w-1.5 h-1.5 rounded-full bg-gray-500 mt-2 flex-shrink-0"></div>
+                <span>Complex multi-turn conversations for simple actions</span>
+              </li>
+              <li class="text-sm text-gray-700 dark:text-gray-400 flex items-start gap-2 leading-relaxed">
+                <div class="w-1.5 h-1.5 rounded-full bg-gray-500 mt-2 flex-shrink-0"></div>
+                <span>High abandonment rates due to cognitive load</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- MCP-UI Interaction -->
+      <div class="mcpui-example h-full">
+        <div class="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/40 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 h-full flex flex-col">
+          <div class="bg-purple-100 dark:bg-purple-900/50 px-6 py-3 border-b border-purple-200 dark:border-purple-800/40">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+              </svg>
+              <span class="font-semibold text-purple-800 dark:text-purple-300">
+                MCP-UI Rich Components
+              </span>
+            </div>
+          </div>
+          
+          <!-- Interactive Product Card -->
+          <div class="p-6 bg-white dark:bg-gray-900 flex-1" style="min-height: 600px;">
+            <!-- User Message -->
+            <div class="flex justify-end mb-4">
+              <div class="bg-blue-500 text-white rounded-lg px-4 py-2 max-w-[80%]">
+                <p class="text-sm">Show me Lakers jerseys</p>
+              </div>
+            </div>
+            
+            <!-- MCP-UI Product Card -->
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-lg">
+              <!-- Product Image Slider -->
+              <div class="relative bg-white">
+                <div class="aspect-square overflow-hidden relative group">
+                  <!-- Image Container -->
+                  <div class="w-full h-full relative">
+                    <img 
+                      id={`${componentId}-main-image`}
+                      src="https://images.footballfanatics.com/los-angeles-lakers/los-angeles-lakers-nike-icon-swingman-jersey-lebron-james-unisex_ss5_p-202220008+pv-1+u-ks91gnpthqg4hvp5sgig+v-iifwqm6fgiimhz0cw7pi.jpg?_hv=2&w=1018"
+                      alt="Lakers LeBron James Jersey"
+                      class="w-full h-full object-cover transition-opacity duration-300"
+                    />
+                  </div>
+                  
+                  <!-- Image Navigation Dots -->
+                  <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                    <button 
+                      class="carousel-dot w-2 h-2 rounded-full bg-white/80 hover:bg-white transition-all duration-200 active-dot cursor-pointer"
+                      data-image="https://images.footballfanatics.com/los-angeles-lakers/los-angeles-lakers-nike-icon-swingman-jersey-lebron-james-unisex_ss5_p-202220008+pv-1+u-ks91gnpthqg4hvp5sgig+v-iifwqm6fgiimhz0cw7pi.jpg?_hv=2&w=1018"
+                    ></button>
+                    <button 
+                      class="carousel-dot w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-all duration-200 cursor-pointer"
+                      data-image="https://images.footballfanatics.com/los-angeles-lakers/los-angeles-lakers-nike-icon-swingman-jersey-lebron-james-unisex_ss5_p-202220008+pv-3+u-ks91gnpthqg4hvp5sgig+v-jztflphmhaop5ebtd5mn.jpg?_hv=2&w=1018"
+                    ></button>
+                    <button 
+                      class="carousel-dot w-2 h-2 rounded-full bg-white/50 hover:bg-white transition-all duration-200 cursor-pointer"
+                      data-image="https://images.footballfanatics.com/los-angeles-lakers/los-angeles-lakers-nike-icon-swingman-jersey-lebron-james-unisex_ss5_p-202220008+pv-8+u-ks91gnpthqg4hvp5sgig+v-x8zv94nzazkj8rfp7yas.jpg?_hv=2&w=1018"
+                    ></button>
+                  </div>
+                  
+                  <!-- Stock Badge -->
+                  <div class="absolute top-4 right-4 bg-green-500 text-white text-xs px-3 py-1.5 rounded-full font-medium shadow-lg flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    In Stock
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Product Details -->
+              <div class="p-5">
+                <h3 class="font-bold text-lg text-gray-900 dark:text-gray-100 mb-2">
+                  Lakers LeBron James #23 Jersey
+                </h3>
+                
+                <!-- Rating -->
+                <div class="flex items-center gap-2 mb-4">
+                  <div class="flex text-yellow-400 text-sm gap-0.5">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <svg class="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                  </div>
+                  <span class="text-sm text-gray-600 dark:text-gray-400">4.5/5</span>
+                  <span class="text-sm text-purple-600 dark:text-purple-400 hover:underline cursor-pointer">(127 reviews)</span>
+                </div>
+                
+                <!-- Price -->
+                <div class="mb-4">
+                  <div class="flex items-center gap-3 mb-2">
+                    <span class="text-2xl font-bold text-gray-900 dark:text-gray-100">$89.99</span>
+                    <span class="text-lg text-gray-500 line-through">$119.99</span>
+                    <span class="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-2 py-1 rounded text-xs font-medium">25% OFF</span>
+                  </div>
+                </div>
+                
+                <!-- Size Selector -->
+                <div class="mb-4">
+                  <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Size:</label>
+                  <div class="flex gap-2">
+                    <button class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">S</button>
+                    <button class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">M</button>
+                    <button class="px-3 py-2 border-2 border-purple-500 bg-purple-50 dark:bg-purple-900/30 rounded-lg text-sm font-medium">L</button>
+                    <button class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">XL</button>
+                    <button class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">XXL</button>
+                  </div>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Size guide: L = 44-46" chest</p>
+                </div>
+                
+                <!-- Color Options -->
+                <div class="mb-5">
+                  <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Color:</label>
+                  <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-lg bg-gradient-to-br from-yellow-400 to-purple-600 border-2 border-purple-500 shadow-md hover:scale-105 transition-transform"></button>
+                    <button class="w-10 h-10 rounded-lg bg-white border-2 border-gray-300 dark:border-gray-600 shadow-md hover:scale-105 transition-transform"></button>
+                    <button class="w-10 h-10 rounded-lg bg-gray-900 border-2 border-gray-300 dark:border-gray-600 shadow-md hover:scale-105 transition-transform"></button>
+                  </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="space-y-3">
+                  <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-medium transition-all hover:scale-[1.02] shadow-lg flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m2.6 8L6 5H2m5 8v6a2 2 0 002 2h6a2 2 0 002-2v-6m0 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"/>
+                    </svg>
+                    Add to Cart
+                  </button>
+                  <button class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-all hover:scale-[1.02] shadow-lg flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    Buy Now - 1-Click Checkout
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Instant Purchase Confirmation -->
+            <div class="mt-4 p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800/40 rounded-lg">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-green-800 dark:text-green-300">
+                    Purchase completed in 2 seconds!
+                  </p>
+                  <p class="text-xs text-green-600 dark:text-green-400">
+                    Order #LAK-2024-001 • Ships today
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Benefits -->
+          <div class="bg-purple-100/50 dark:bg-purple-900/30 px-6 py-4 border-t border-purple-200 dark:border-purple-800/40">
+            <h6 class="text-sm font-semibold text-purple-800 dark:text-purple-300 mb-2 flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              MCP-UI Benefits:
+            </h6>
+            <ul class="space-y-2">
+              <li class="text-sm text-purple-700 dark:text-purple-400 flex items-start gap-2 leading-relaxed">
+                <div class="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0"></div>
+                <span>Real product images with interactive galleries</span>
+              </li>
+              <li class="text-sm text-purple-700 dark:text-purple-400 flex items-start gap-2 leading-relaxed">
+                <div class="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0"></div>
+                <span>Interactive controls (sliders, selectors, quantity)</span>
+              </li>
+              <li class="text-sm text-purple-700 dark:text-purple-400 flex items-start gap-2 leading-relaxed">
+                <div class="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0"></div>
+                <span>Instant purchase with familiar e-commerce patterns</span>
+              </li>
+              <li class="text-sm text-purple-700 dark:text-purple-400 flex items-start gap-2 leading-relaxed">
+                <div class="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0"></div>
+                <span>95% higher conversion rates vs. text-only</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<script is:inline define:vars={{ componentId }}>
+  (function() {
+    const currentComponentId = componentId;
+    
+    // Image carousel function
+    function changeImage(button, compId) {
+      const mainImage = document.getElementById(`${compId}-main-image`);
+      const newImageSrc = button.getAttribute('data-image');
+      
+      if (!mainImage || !newImageSrc) {
+        console.log('Missing main image or image src');
+        return;
+      }
+      
+      console.log('Changing image to:', newImageSrc);
+      
+      // Remove active state from all dots
+      button.parentElement.querySelectorAll('.carousel-dot').forEach(btn => {
+        btn.classList.remove('active-dot');
+        btn.classList.remove('bg-white/80');
+        btn.classList.add('bg-white/50');
+      });
+      
+      // Add active state to clicked dot
+      button.classList.add('active-dot');
+      button.classList.add('bg-white/80');
+      button.classList.remove('bg-white/50');
+      
+      // Change image with fade effect
+      mainImage.style.opacity = '0.5';
+      setTimeout(() => {
+        mainImage.src = newImageSrc;
+        mainImage.style.opacity = '1';
+      }, 150);
+    }
+    
+    function setupCarousel() {
+      // Set up image carousel click handlers
+      const carouselDots = document.querySelectorAll(`[id*="${currentComponentId}"] .carousel-dot`);
+      console.log('Found carousel dots:', carouselDots.length);
+      
+      carouselDots.forEach((dot, index) => {
+        console.log(`Setting up dot ${index}`);
+        dot.addEventListener('click', (e) => {
+          e.preventDefault();
+          console.log('Dot clicked:', index);
+          changeImage(dot, currentComponentId);
+        });
+      });
+    }
+    
+    function initTextWallComparison() {
+      const toggle = document.getElementById(`${currentComponentId}-toggle`);
+      const content = document.getElementById(`${currentComponentId}-content`);
+      const icon = document.getElementById(`${currentComponentId}-toggle-icon`);
+      const text = document.getElementById(`${currentComponentId}-toggle-text`);
+      
+      if (!toggle || !content || !icon || !text) {
+        setTimeout(initTextWallComparison, 100);
+        return;
+      }
+      
+      let isExpanded = false;
+      
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        isExpanded = !isExpanded;
+        
+        if (isExpanded) {
+          content.classList.remove('hidden');
+          content.style.maxHeight = content.scrollHeight + 'px';
+          icon.style.transform = 'rotate(0deg)';
+          text.textContent = 'Hide Comparison';
+          toggle.setAttribute('aria-expanded', 'true');
+          
+          // Setup carousel after content is visible
+          setTimeout(() => {
+            setupCarousel();
+          }, 350);
+        } else {
+          content.style.maxHeight = '0px';
+          icon.style.transform = 'rotate(180deg)';
+          text.textContent = 'Show Comparison';
+          toggle.setAttribute('aria-expanded', 'false');
+          
+          setTimeout(() => {
+            content.classList.add('hidden');
+          }, 300);
+        }
+      });
+      
+      // Also setup carousel immediately if content is already visible
+      if (!content.classList.contains('hidden')) {
+        setupCarousel();
+      }
+    }
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initTextWallComparison);
+    } else {
+      initTextWallComparison();
+    }
+    
+    setTimeout(initTextWallComparison, 100);
+  })();
+</script>
+
+<style>
+  .text-wall-comparison #content {
+    transition: max-height 0.3s ease-out;
+  }
+  
+  .text-wall-comparison button:focus {
+    outline: 2px solid theme('colors.purple.500');
+    outline-offset: 2px;
+  }
+  
+  .text-wall-comparison .aspect-square {
+    aspect-ratio: 1 / 1;
+  }
+  
+  /* Smooth hover effects */
+  .text-wall-comparison button {
+    transition: all 0.2s ease;
+  }
+  
+  .text-wall-comparison button:hover {
+    transform: translateY(-1px);
+  }
+  
+  .text-wall-comparison button:active {
+    transform: translateY(0);
+  }
+  
+  
+  /* Image transition effects */
+  .text-wall-comparison img {
+    transition: opacity 0.3s ease;
+  }
+  
+  /* Dot indicator active state */
+  .active-dot {
+    background: rgba(255, 255, 255, 0.9) !important;
+    transform: scale(1.2);
+  }
+  
+  /* Interactive element animations */
+  .text-wall-comparison .group:hover img {
+    transform: scale(1.05);
+  }
+  
+  .text-wall-comparison .transition-transform:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Purchase button special effects */
+  .text-wall-comparison button[class*="bg-green-600"]:hover {
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+  }
+  
+  .text-wall-comparison button[class*="bg-purple-600"]:hover {
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+  }
+</style>
