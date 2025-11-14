@@ -2,26 +2,26 @@
 const features = [
   {
     title: 'GenAI Solutions',
-    description: 'Custom language models and AI agents tailored to your business needs.',
+    description: 'Exploring language models and AI agents for innovative applications.',
     icon: 'lightning',
     accent: 'from-purple-500 to-purple-600',
   },
   {
     title: 'Machine Learning',
-    description: 'Advanced ML models for prediction, classification, and optimization.',
+    description: 'Researching ML models for prediction, classification, and optimization.',
     icon: 'brain',
     accent: 'from-purple-600 to-purple-700',
   },
   {
     title: 'Data Engineering',
-    description: 'Scalable data pipelines and infrastructure for AI-driven insights.',
+    description: 'Designing scalable data pipelines and infrastructure for AI-driven insights.',
     icon: 'database',
     accent: 'from-purple-500 to-purple-600',
   },
   {
-    title: 'Consulting',
-    description: 'Expert guidance on AI strategy and implementation roadmaps.',
-    icon: 'consulting',
+    title: 'Technical Writing',
+    description: 'Sharing insights and knowledge about AI, ML, and data engineering.',
+    icon: 'writing',
     accent: 'from-purple-600 to-purple-700',
   },
 ];
@@ -37,8 +37,8 @@ function getIcon(iconName: string) {
     database: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
     </svg>`,
-    consulting: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+    writing: `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
     </svg>`
   };
   return icons[iconName as keyof typeof icons] || icons.lightning;
@@ -49,10 +49,10 @@ function getIcon(iconName: string) {
   <div class="max-w-6xl mx-auto">
     <div class="mb-16">
       <h2 class="text-3xl sm:text-4xl font-light text-gray-900 dark:text-white mb-4">
-        Our <span class="font-normal text-umai-accent">Expertise</span>
+        Our <span class="font-normal text-umai-accent">Interest Areas</span>
       </h2>
       <p class="text-base text-umai-gray-600 dark:text-umai-gray-400 max-w-2xl">
-        Delivering intelligent solutions that drive innovation and growth
+        Topics we explore and write about on our blog
       </p>
     </div>
 
@@ -79,8 +79,8 @@ function getIcon(iconName: string) {
 
     <!-- Call to action -->
     <div class="mt-16 text-center">
-      <a href="/services" class="inline-flex items-center text-sm font-medium text-umai-accent hover:text-umai-accent-dark transition-colors group">
-        <span>Explore all services</span>
+      <a href="/blog" class="inline-flex items-center text-sm font-medium text-umai-accent hover:text-umai-accent-dark transition-colors group">
+        <span>Read more on our blog</span>
         <svg class="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
