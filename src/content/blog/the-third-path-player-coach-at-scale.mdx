@@ -9,7 +9,8 @@ tags: ["AI Engineering", "Career", "Leadership", "Player-Coach", "AI Tools", "So
 import Callout from '@components/Callout.astro';
 import ThreePathsComparison from '@components/ThreePathsComparison.astro';
 import CareerFilter from '@components/CareerFilter.astro';
-import Mermaid from '@components/Mermaid.astro';
+import CareerPathEvolution from '@components/CareerPathEvolution.astro';
+import LeverageFormula from '@components/LeverageFormula.astro';
 
 Two years ago at Pocketlaw, I was Lead AI Engineer with a team of one junior developer. A traditional company would have staffed that function with 3-5 people and made me a pure manager—roadmap ownership, sprint planning, 1:1s, stakeholder alignment, maybe a Jira board to groom. Instead, I shipped.
 
@@ -19,6 +20,10 @@ The industry is calling this the **"Super IC"** phenomenon. But that framing mis
 
 <Callout type="insight" title="The Core Thesis">
 AI tools don't just make individuals more productive—they collapse the artificial boundary between "leading" and "doing" that organizations created as a bandwidth hack. The most interesting career path isn't choosing between them; it's refusing to choose.
+</Callout>
+
+<Callout type="info" title="This Isn't Coming—It's Here">
+**90% of engineering teams** now use AI coding tools, up from 61% in 2024[^7]. Windsurf reports ~95% of their code is AI-written. Cursor says 40-50% of their own codebase is AI-generated. Claude Code is credited with driving Anthropic to a $1B run-rate. The infrastructure for this shift isn't speculative—it's deployed and accelerating.
 </Callout>
 
 ## The Conventional Wisdom: Pick Your Lane
@@ -114,28 +119,7 @@ This was always a compromise, not an ideal. The best technical leaders I've know
 
 What AI tools change isn't just individual productivity—they change the **leverage equation** that forced this tradeoff in the first place.
 
-```mermaid
-graph LR
-    subgraph "Traditional Model"
-        A[Senior Engineer] --> B{Choose}
-        B -->|Management Track| C[Scale Judgment via Others]
-        B -->|IC Track| D[Direct Output Only]
-        C --> E[Stop Shipping]
-        D --> F[Limited Leverage]
-    end
-
-    subgraph "AI-Enabled Model"
-        G[Senior Engineer] --> H[Both Paths]
-        H --> I[Scale Judgment via AI + Others]
-        H --> J[Direct Output via AI]
-        I --> K[Keep Shipping]
-        J --> L[Strategic Leverage]
-    end
-
-    style H fill:#22c55e
-    style K fill:#22c55e
-    style L fill:#22c55e
-```
+<CareerPathEvolution />
 
 ## Why the Player-Coach Failed Before
 
@@ -221,29 +205,7 @@ Think this is theoretical? The data says otherwise. Solo founders rose from **23
 These aren't Super ICs grinding 100-hour weeks. They're Player-Coaches applying strategic judgment through AI leverage. The "one-person billion-dollar company" that Sam Altman predicted isn't a fantasy anymore—it's the logical endpoint of context-rich founders directing AI at scale.
 </Callout>
 
-```mermaid
-graph TD
-    subgraph "Context Sources"
-        A[Historical Decisions] --> E[Deep Context]
-        B[Political Landscape] --> E
-        C[Technical Debt Map] --> E
-        D[Strategic Priorities] --> E
-    end
-
-    subgraph "AI Capabilities"
-        F[Code Generation] --> I[AI Fluency]
-        G[Pattern Recognition] --> I
-        H[Rapid Prototyping] --> I
-    end
-
-    E --> J[Context-Directed AI]
-    I --> J
-
-    J --> K[Player-Coach Leverage]
-
-    style J fill:#8b5cf6
-    style K fill:#22c55e
-```
+<LeverageFormula />
 
 ## The Real Filter: Artifacts vs. Meetings
 
@@ -352,6 +314,16 @@ I've been living this for two years across two companies. It's not theoretical. 
 The question isn't whether you'll become a Super IC or a Product Engineer. The question is whether you'll build the context and judgment that lets you do both—or whether you'll let an artificial tradeoff define your ceiling.
 </Callout>
 
+## Further Reading
+
+If this resonated, here are the voices shaping this conversation:
+
+- **[The 70% Problem](https://addyo.substack.com/p/the-70-problem-hard-truths-about)** by Addy Osmani — Why AI completes 70% of the work but the remaining 30% requires human expertise
+- **[Vibe Engineering](https://simonwillison.net/2025/Mar/19/vibe-engineering/)** by Simon Willison — The responsible counterpart to "vibe coding" for experienced engineers
+- **[AI & Software Development](https://tidyfirst.substack.com/p/ai-and-software-development)** by Kent Beck — "Augmented coding" as a framework for AI-assisted development
+- **[Being a Player Coach](https://andybudd.com/archives/2024/11/being-a-player-coach-is-it-the-best-or-the-worst-of-both-worlds)** by Andy Budd — The historical critique this post responds to
+- **[How AI Will Change Software Engineering](https://newsletter.pragmaticengineer.com/p/how-ai-will-change-software-engineering)** by Gergely Orosz — Industry-wide data on the shift
+
 ---
 
 *Marcus is the AI Lead at Kustom, a Nordic fintech company. He writes about AI-assisted development at [umai-tech.com](https://umai-tech.com).*
@@ -367,3 +339,5 @@ The question isn't whether you'll become a Super IC or a Product Engineer. The q
 [^5]: Tobi Lütke, Shopify CEO, internal memo 2024. Established policy requiring teams to demonstrate AI inadequacy before requesting additional headcount.
 
 [^6]: FourWeekMBA analysis of startup data 2015-2024. Solo founders increased from 23.7% to 36.3% of startups, with 52.3% of successful exits coming from solo-led companies.
+
+[^7]: Jellyfish State of Engineering Management Report 2025. AI coding tool adoption increased from 61% to 90% of engineering teams year-over-year.
