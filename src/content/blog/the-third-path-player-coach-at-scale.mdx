@@ -114,7 +114,7 @@ But descriptions only tell part of the story. Let's visualize how these archetyp
 
 <ProfileComparison
   title="Skill Profile Comparison"
-  subtitle="Toggle profiles on/off to compare. Notice how the Player-Coach maintains balance across all dimensions."
+  subtitle="Toggle profiles on/off to compare archetypes—including the mythical ones."
   profiles={[
     {
       id: "super-ic",
@@ -151,11 +151,37 @@ But descriptions only tell part of the story. Let's visualize how these archetyp
         aiLeverage: 85,
         leadership: 75
       }
+    },
+    {
+      id: "unicorn",
+      name: "Unicorn (Myth)",
+      color: "red",
+      skills: {
+        output: 98,
+        strategy: 95,
+        context: 95,
+        aiLeverage: 95,
+        leadership: 95
+      }
+    },
+    {
+      id: "renaissance",
+      name: "Renaissance Engineer",
+      color: "orange",
+      skills: {
+        output: 70,
+        strategy: 75,
+        context: 60,
+        aiLeverage: 45,
+        leadership: 70
+      }
     }
   ]}
 />
 
 The radar tells the story: the Super IC spikes on output and AI leverage but craters on strategy and leadership. The Product Engineer inverts this—strong strategy, weaker direct output. The Player-Coach doesn't win any single dimension outright, but maintains **competitive scores across all five**. That balance is what AI makes possible.
+
+Toggle on the **Unicorn** to see the mythical ideal—near-perfect scores everywhere. It's included as a reminder of what we're *not* claiming. The **Renaissance Engineer** shows the pre-AI attempt at breadth: decent across the board, but constrained by human bandwidth, and notably weak on AI leverage because the model predates modern tooling. The Player-Coach isn't trying to be either myth—it's a pragmatic middle ground enabled by new technology.
 
 ## The Flaw in the Binary
 

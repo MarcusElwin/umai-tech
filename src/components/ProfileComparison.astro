@@ -60,7 +60,9 @@ const gridLevels = [25, 50, 75, 100];
 const colorMap: Record<string, { fill: string; stroke: string; bg: string; text: string }> = {
   blue: { fill: 'rgba(59, 130, 246, 0.2)', stroke: '#3b82f6', bg: 'bg-blue-500', text: 'text-blue-600 dark:text-blue-400' },
   purple: { fill: 'rgba(139, 92, 246, 0.2)', stroke: '#8b5cf6', bg: 'bg-purple-500', text: 'text-purple-600 dark:text-purple-400' },
-  green: { fill: 'rgba(34, 197, 94, 0.2)', stroke: '#22c55e', bg: 'bg-green-500', text: 'text-green-600 dark:text-green-400' }
+  green: { fill: 'rgba(34, 197, 94, 0.2)', stroke: '#22c55e', bg: 'bg-green-500', text: 'text-green-600 dark:text-green-400' },
+  orange: { fill: 'rgba(249, 115, 22, 0.2)', stroke: '#f97316', bg: 'bg-orange-500', text: 'text-orange-600 dark:text-orange-400' },
+  red: { fill: 'rgba(239, 68, 68, 0.2)', stroke: '#ef4444', bg: 'bg-red-500', text: 'text-red-600 dark:text-red-400' }
 };
 ---
 
@@ -235,7 +237,7 @@ const colorMap: Record<string, { fill: string; stroke: string; bg: string; text:
         <div class="text-sm">
           <p class="text-green-800 dark:text-green-200 font-medium mb-1">Notice the Pattern</p>
           <p class="text-green-700 dark:text-green-300 leading-relaxed">
-            The Player-Coach doesn't max out every dimension—that would be the unicorn myth. Instead, it maintains <strong>balanced high scores</strong> across all five, enabled by AI leverage filling gaps that would otherwise require choosing between paths.
+            Toggle all five profiles to see the full picture. The Unicorn (red) shows the unrealistic ideal—near-perfect everywhere. The Renaissance Engineer (orange) shows the pre-AI attempt: spread thin, notably weak on AI leverage. The Player-Coach (green) isn't chasing mythical perfection—it achieves <strong>balanced high scores</strong> through strategic AI leverage.
           </p>
         </div>
       </div>
