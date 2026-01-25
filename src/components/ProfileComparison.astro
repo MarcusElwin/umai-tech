@@ -24,13 +24,38 @@ const {
   subtitle = "Compare the skill emphasis across different engineering archetypes"
 } = Astro.props;
 
-// Skill labels
+// Skill labels with descriptions
 const skillLabels = [
-  { key: 'output', label: 'Output', shortLabel: 'Output' },
-  { key: 'strategy', label: 'Strategy', shortLabel: 'Strategy' },
-  { key: 'context', label: 'Context', shortLabel: 'Context' },
-  { key: 'aiLeverage', label: 'AI Leverage', shortLabel: 'AI' },
-  { key: 'leadership', label: 'Leadership', shortLabel: 'Lead' }
+  {
+    key: 'output',
+    label: 'Output',
+    shortLabel: 'Output',
+    description: 'Direct shipping capacity—PRs merged, features delivered, bugs fixed. The raw productive throughput of hands-on engineering work.'
+  },
+  {
+    key: 'strategy',
+    label: 'Strategy',
+    shortLabel: 'Strategy',
+    description: 'Product thinking and technical vision. Ability to see the bigger picture, make architectural tradeoffs, and align work with business outcomes.'
+  },
+  {
+    key: 'context',
+    label: 'Context',
+    shortLabel: 'Context',
+    description: 'Organizational knowledge depth—understanding why systems exist, who the stakeholders are, and how decisions ripple across teams.'
+  },
+  {
+    key: 'aiLeverage',
+    label: 'AI Leverage',
+    shortLabel: 'AI',
+    description: 'Proficiency with AI coding assistants. How effectively you multiply your output through prompt engineering, context management, and AI-augmented workflows.'
+  },
+  {
+    key: 'leadership',
+    label: 'Leadership',
+    shortLabel: 'Lead',
+    description: 'People and team influence—mentoring, code review quality, driving alignment, and elevating those around you without formal authority.'
+  }
 ];
 
 const centerX = 150;
@@ -228,6 +253,36 @@ const colorMap: Record<string, { fill: string; stroke: string; bg: string; text:
       </div>
     </div>
 
+    {/* Dimension Explanations - Collapsible */}
+    <div class="border-t border-gray-200 dark:border-gray-700">
+      <button
+        type="button"
+        class="dimension-toggle w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+      >
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">What do these dimensions mean?</span>
+        </div>
+        <svg class="dimension-chevron w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </button>
+      <div class="dimension-content hidden px-4 pb-4">
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {skillLabels.map((skill) => (
+            <div class="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">{skill.label}</span>
+              </div>
+              <p class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{skill.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
     {/* Insight */}
     <div class="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-t border-green-200 dark:border-green-800">
       <div class="flex items-start gap-3">
@@ -275,6 +330,24 @@ const colorMap: Record<string, { fill: string; stroke: string; bg: string; text:
           }
         });
       });
+
+      // Dimension explanations toggle
+      var dimensionToggle = document.querySelector('.dimension-toggle');
+      var dimensionContent = document.querySelector('.dimension-content');
+      var dimensionChevron = document.querySelector('.dimension-chevron');
+
+      if (dimensionToggle && dimensionContent && dimensionChevron) {
+        dimensionToggle.addEventListener('click', function() {
+          var isHidden = dimensionContent.classList.contains('hidden');
+          if (isHidden) {
+            dimensionContent.classList.remove('hidden');
+            dimensionChevron.style.transform = 'rotate(180deg)';
+          } else {
+            dimensionContent.classList.add('hidden');
+            dimensionChevron.style.transform = 'rotate(0deg)';
+          }
+        });
+      }
     }
 
     if (document.readyState === 'loading') {
