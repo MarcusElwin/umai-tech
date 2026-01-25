@@ -25,10 +25,6 @@ The industry is calling this the **"Super IC"** phenomenon. But that framing mis
 AI tools don't just make individuals more productive—they collapse the artificial boundary between "leading" and "doing" that organizations created as a bandwidth hack. The most interesting career path isn't choosing between them; it's refusing to choose.
 </Callout>
 
-<Callout type="info" title="This Isn't Coming—It's Here">
-**90% of engineering teams** now use AI coding tools, up from 61% in 2024[^7]. Windsurf reports ~95% of their code is AI-written. Cursor says 40-50% of their own codebase is AI-generated. Claude Code is credited with driving Anthropic to a $1B run-rate. The infrastructure for this shift isn't speculative—it's deployed and accelerating.
-</Callout>
-
 ## The Conventional Wisdom: Pick Your Lane
 
 The discourse right now says AI coding tools are bifurcating engineering careers. You have two paths to stay relevant:
@@ -104,90 +100,12 @@ The message seems clear: pick a lane or get run over.
       ],
       examples: ["Technical Leads", "Principal Engineers", "AI-First Founders"],
       icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>',
-      color: "green",
-      highlighted: true
+      color: "green"
     }
   ]}
 />
 
-But descriptions only tell part of the story. Let's visualize how these archetypes differ across five key dimensions:
-
-- **Output** — Direct shipping capacity. PRs merged, features delivered, bugs fixed. The raw productive throughput of hands-on engineering work.
-- **Strategy** — Product thinking and technical vision. The ability to see the bigger picture, make architectural tradeoffs, and align work with business outcomes.
-- **Context** — Organizational knowledge depth. Understanding *why* systems exist, who the stakeholders are, and how decisions ripple across teams.
-- **AI Leverage** — Proficiency with AI coding assistants. How effectively you multiply your output through prompt engineering, context management, and AI-augmented workflows.
-- **Leadership** — People and team influence. Mentoring, code review quality, driving alignment, and elevating those around you—often without formal authority.
-
-<ProfileComparison
-  title="Skill Profile Comparison"
-  subtitle="Toggle profiles on/off to compare archetypes—including the mythical ones."
-  profiles={[
-    {
-      id: "super-ic",
-      name: "Super IC",
-      color: "blue",
-      skills: {
-        output: 95,
-        strategy: 45,
-        context: 40,
-        aiLeverage: 90,
-        leadership: 25
-      }
-    },
-    {
-      id: "product-engineer",
-      name: "Product Engineer",
-      color: "purple",
-      skills: {
-        output: 60,
-        strategy: 90,
-        context: 70,
-        aiLeverage: 65,
-        leadership: 55
-      }
-    },
-    {
-      id: "player-coach",
-      name: "Player-Coach",
-      color: "green",
-      skills: {
-        output: 80,
-        strategy: 85,
-        context: 90,
-        aiLeverage: 85,
-        leadership: 75
-      }
-    },
-    {
-      id: "unicorn",
-      name: "Unicorn (Myth)",
-      color: "red",
-      skills: {
-        output: 98,
-        strategy: 95,
-        context: 95,
-        aiLeverage: 95,
-        leadership: 95
-      }
-    },
-    {
-      id: "renaissance",
-      name: "Renaissance Engineer",
-      color: "orange",
-      skills: {
-        output: 70,
-        strategy: 75,
-        context: 60,
-        aiLeverage: 45,
-        leadership: 70
-      }
-    }
-  ]}
-/>
-
-The radar tells the story: the Super IC spikes on output and AI leverage but craters on strategy and leadership. The Product Engineer inverts this—strong strategy, weaker direct output. The Player-Coach doesn't win any single dimension outright, but maintains **competitive scores across all five**. That balance is what AI makes possible.
-
-Toggle on the **Unicorn** to see the mythical ideal—near-perfect scores everywhere. It's included as a reminder of what we're *not* claiming. The **Renaissance Engineer** shows the pre-AI attempt at breadth: decent across the board, but constrained by human bandwidth, and notably weak on AI leverage because the model predates modern tooling. The Player-Coach isn't trying to be either myth—it's a pragmatic middle ground enabled by new technology.
+But there's a third option emerging—one that refuses to accept this binary. Before I explain why it works, let's understand why the choice ever existed in the first place.
 
 ## The Flaw in the Binary
 
@@ -284,6 +202,85 @@ They're not wrong—they're just *pre-AI* thinking. The T-shape and V-shape stil
 Your shape doesn't change. Your **effective surface area** does.
 </Callout>
 
+Now that we've defined the Player-Coach and distinguished it from similar-sounding myths, let's visualize how these archetypes actually differ. I'll compare them across five key dimensions:
+
+- **Output** — Direct shipping capacity. PRs merged, features delivered, bugs fixed. The raw productive throughput of hands-on engineering work.
+- **Strategy** — Product thinking and technical vision. The ability to see the bigger picture, make architectural tradeoffs, and align work with business outcomes.
+- **Context** — Organizational knowledge depth. Understanding *why* systems exist, who the stakeholders are, and how decisions ripple across teams.
+- **AI Leverage** — Proficiency with AI coding assistants. How effectively you multiply your output through prompt engineering, context management, and AI-augmented workflows.
+- **Leadership** — People and team influence. Mentoring, code review quality, driving alignment, and elevating those around you—often without formal authority.
+
+<ProfileComparison
+  title="Skill Profile Comparison"
+  subtitle="Toggle profiles on/off to compare archetypes—including the mythical ones."
+  profiles={[
+    {
+      id: "super-ic",
+      name: "Super IC",
+      color: "blue",
+      skills: {
+        output: 95,
+        strategy: 45,
+        context: 40,
+        aiLeverage: 90,
+        leadership: 25
+      }
+    },
+    {
+      id: "product-engineer",
+      name: "Product Engineer",
+      color: "purple",
+      skills: {
+        output: 60,
+        strategy: 90,
+        context: 70,
+        aiLeverage: 65,
+        leadership: 55
+      }
+    },
+    {
+      id: "player-coach",
+      name: "Player-Coach",
+      color: "green",
+      skills: {
+        output: 80,
+        strategy: 85,
+        context: 90,
+        aiLeverage: 85,
+        leadership: 75
+      }
+    },
+    {
+      id: "unicorn",
+      name: "Unicorn (Myth)",
+      color: "red",
+      skills: {
+        output: 98,
+        strategy: 95,
+        context: 95,
+        aiLeverage: 95,
+        leadership: 95
+      }
+    },
+    {
+      id: "renaissance",
+      name: "Renaissance Engineer",
+      color: "orange",
+      skills: {
+        output: 70,
+        strategy: 75,
+        context: 60,
+        aiLeverage: 45,
+        leadership: 70
+      }
+    }
+  ]}
+/>
+
+The radar tells the story: the Super IC spikes on output and AI leverage but craters on strategy and leadership. The Product Engineer inverts this—strong strategy, weaker direct output. The Player-Coach doesn't win any single dimension outright, but maintains **competitive scores across all five**. That balance is what AI makes possible.
+
+Toggle on the **Unicorn** to see the mythical ideal—near-perfect scores everywhere. It's included as a reminder of what we're *not* claiming. The **Renaissance Engineer** shows the pre-AI attempt at breadth: decent across the board, but constrained by human bandwidth, and notably weak on AI leverage because the model predates modern tooling. The Player-Coach isn't trying to be either myth—it's a pragmatic middle ground enabled by new technology.
+
 <Callout type="success" title="What This Looks Like in Practice">
 Last quarter at Kustom, I shipped three major systems while also: defining our AI product strategy for 2025, managing stakeholder relationships across 5 departments, mentoring two junior engineers, and presenting to the board. This wasn't superhuman effort—it was strategic application of AI tools where my context gave them maximum leverage.
 </Callout>
@@ -305,7 +302,11 @@ Super ICs get leverage from AI, but they often lack strategic altitude. Product 
 </Callout>
 
 <Callout type="success" title="The Market Is Already Validating This">
-Think this is theoretical? The data says otherwise. Solo founders rose from **23.7% to 36.3%** of all startups between 2015-2024[^6]. More striking: **52.3% of successful exits** now come from solo-led companies. Base44's founder sold his company for ~$80M after building it as a **one-person startup in six months**.
+Think this is theoretical? The data says otherwise.
+
+**Adoption:** 90% of engineering teams now use AI coding tools, up from 61% in 2024[^7]. Windsurf reports ~95% of their code is AI-written. Cursor says 40-50% of their own codebase is AI-generated.
+
+**Solo founder explosion:** Solo founders rose from **23.7% to 36.3%** of all startups between 2015-2024[^6]. More striking: **52.3% of successful exits** now come from solo-led companies. Base44's founder sold his company for ~$80M after building it as a **one-person startup in six months**.
 
 These aren't Super ICs grinding 100-hour weeks. They're Player-Coaches applying strategic judgment through AI leverage. The "one-person billion-dollar company" that Sam Altman predicted isn't a fantasy anymore—it's the logical endpoint of context-rich founders directing AI at scale.
 </Callout>
@@ -443,15 +444,7 @@ These aren't the same skills that made you a good IC or a good manager. They're 
   ]}
 />
 
-### The Five Core Competencies
-
-**1. Context Engineering** — This isn't prompt engineering (that's table stakes). It's knowing which pieces of your organizational knowledge, technical history, and strategic context will make AI output actually useful versus generically correct. The lead who can articulate "here's what we tried last year and why it failed" gets dramatically better AI output than someone starting from scratch.
-
-**2. Rapid Validation** — When AI generates code at 10x speed, your bottleneck becomes *evaluation* speed. Can you quickly assess whether generated code is correct, secure, maintainable, and aligned with system patterns? This is the new rate-limiting skill.
-
-**3. Strategic Altitude Maintenance** — The hardest skill: staying zoomed out enough to make good decisions while zoomed in enough to ship. Most people drift toward one extreme. I use timeboxed "player" and "coach" blocks to prevent drift.
-
-**4. AI Skepticism** — AI is confidently incorrect often enough that blind trust is career-limiting. You need calibrated skepticism—not paranoia, but pattern-matched vigilance.
+The radar captures the balance, but one quote from Addy Osmani captures the mindset:
 
 <Citation
   author="Addy Osmani"
@@ -462,7 +455,7 @@ These aren't the same skills that made you a good IC or a good manager. They're 
 What distinguishes great developers is knowing when AI is wrong.
 </Citation>
 
-**5. Delegation Judgment** — Not everything deserves your direct attention. The Player-Coach still delegates—to humans for people-intensive work, to AI for implementation-heavy work, and keeps the judgment-intensive work for themselves.
+That skepticism—calibrated, not paranoid—is what separates Player-Coaches from engineers who let AI drive.
 
 ## The Uncomfortable Truth
 
