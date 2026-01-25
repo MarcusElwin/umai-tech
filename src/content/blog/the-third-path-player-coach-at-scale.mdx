@@ -9,6 +9,7 @@ tags: ["AI Engineering", "Career", "Leadership", "Player-Coach", "AI Tools", "So
 import Callout from '@components/Callout.astro';
 import Citation from '@components/Citation.astro';
 import ThreePathsComparison from '@components/ThreePathsComparison.astro';
+import ProfileComparison from '@components/ProfileComparison.astro';
 import CareerFilter from '@components/CareerFilter.astro';
 import CareerPathEvolution from '@components/CareerPathEvolution.astro';
 import LeverageFormula from '@components/LeverageFormula.astro';
@@ -109,6 +110,53 @@ The message seems clear: pick a lane or get run over.
   ]}
 />
 
+But descriptions only tell part of the story. Let's visualize how these archetypes differ across five key dimensions: raw output capacity, strategic thinking, organizational context, AI leverage, and people leadership.
+
+<ProfileComparison
+  title="Skill Profile Comparison"
+  subtitle="Toggle profiles on/off to compare. Notice how the Player-Coach maintains balance across all dimensions."
+  profiles={[
+    {
+      id: "super-ic",
+      name: "Super IC",
+      color: "blue",
+      skills: {
+        output: 95,
+        strategy: 45,
+        context: 40,
+        aiLeverage: 90,
+        leadership: 25
+      }
+    },
+    {
+      id: "product-engineer",
+      name: "Product Engineer",
+      color: "purple",
+      skills: {
+        output: 60,
+        strategy: 90,
+        context: 70,
+        aiLeverage: 65,
+        leadership: 55
+      }
+    },
+    {
+      id: "player-coach",
+      name: "Player-Coach",
+      color: "green",
+      skills: {
+        output: 80,
+        strategy: 85,
+        context: 90,
+        aiLeverage: 85,
+        leadership: 75
+      }
+    }
+  ]}
+/>
+
+The radar tells the story: the Super IC spikes on output and AI leverage but craters on strategy and leadership. The Product Engineer inverts this—strong strategy, weaker direct output. The Player-Coach doesn't win any single dimension outright, but maintains **competitive scores across all five**. That balance is what AI makes possible.
+
 ## The Flaw in the Binary
 
 Here's what bothers me about this framing: it assumes the IC/manager split was ever natural. It wasn't. It was a bandwidth hack.
@@ -121,7 +169,11 @@ This was always a compromise, not an ideal. The best technical leaders I've know
 
 What AI tools change isn't just individual productivity—they change the **leverage equation** that forced this tradeoff in the first place.
 
+Here's the shift visualized:
+
 <CareerPathEvolution />
+
+The traditional model forced a binary fork—you chose scaling through others (management) or scaling through yourself (IC). Either path had a ceiling. The AI-enabled model collapses this fork. You can now scale through *both* paths simultaneously because the execution bottleneck that forced the choice no longer applies.
 
 ## Why the Player-Coach Failed Before
 
@@ -226,7 +278,11 @@ Think this is theoretical? The data says otherwise. Solo founders rose from **23
 These aren't Super ICs grinding 100-hour weeks. They're Player-Coaches applying strategic judgment through AI leverage. The "one-person billion-dollar company" that Sam Altman predicted isn't a fantasy anymore—it's the logical endpoint of context-rich founders directing AI at scale.
 </Callout>
 
+This is why context becomes the ultimate competitive advantage. Let me break down the formula:
+
 <LeverageFormula />
+
+The inputs matter more than the tool. Give two engineers the same AI assistant—one with deep organizational context, one without—and you'll see dramatically different outputs. The context-rich engineer gets production-ready code that fits the system. The context-poor engineer gets generic solutions that require extensive rework.
 
 ## The Real Filter: Artifacts vs. Meetings
 
@@ -294,7 +350,9 @@ The Tobi Lütke mandate at Shopify—"demonstrate why you cannot get what you wa
 
 ## Skills for the Player-Coach Era
 
-Knowing the destination isn't enough—you need the skills to get there. Here's what I've found actually matters:
+Knowing the destination isn't enough—you need the skills to get there. Here's what I've found actually matters.
+
+These aren't the same skills that made you a good IC or a good manager. They're a new synthesis—the competencies that let you operate in both modes while AI handles the translation between them. Click any skill in the radar to see how to develop it:
 
 <SkillsRadar
   title="The Player-Coach Competency Model"

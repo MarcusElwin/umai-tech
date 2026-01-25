@@ -1,0 +1,306 @@
+---
+export interface Profile {
+  id: string;
+  name: string;
+  color: string;
+  skills: {
+    output: number;      // Direct output/shipping capacity
+    strategy: number;    // Strategic thinking/product sense
+    context: number;     // Organizational context depth
+    aiLeverage: number;  // AI tool proficiency
+    leadership: number;  // Team/people leadership
+  };
+}
+
+export interface Props {
+  profiles: Profile[];
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  profiles,
+  title = "Archetype Skill Profiles",
+  subtitle = "Compare the skill emphasis across different engineering archetypes"
+} = Astro.props;
+
+// Skill labels
+const skillLabels = [
+  { key: 'output', label: 'Output', shortLabel: 'Output' },
+  { key: 'strategy', label: 'Strategy', shortLabel: 'Strategy' },
+  { key: 'context', label: 'Context', shortLabel: 'Context' },
+  { key: 'aiLeverage', label: 'AI Leverage', shortLabel: 'AI' },
+  { key: 'leadership', label: 'Leadership', shortLabel: 'Lead' }
+];
+
+const centerX = 150;
+const centerY = 150;
+const maxRadius = 110;
+
+function getPosition(index: number, radius: number, total: number = 5) {
+  const angle = (index * 2 * Math.PI / total) - Math.PI / 2;
+  return {
+    x: centerX + radius * Math.cos(angle),
+    y: centerY + radius * Math.sin(angle)
+  };
+}
+
+function getPolygonPoints(profile: Profile) {
+  const skillKeys = ['output', 'strategy', 'context', 'aiLeverage', 'leadership'];
+  return skillKeys.map((key, i) => {
+    const value = profile.skills[key as keyof typeof profile.skills];
+    const radius = (value / 100) * maxRadius;
+    const pos = getPosition(i, radius);
+    return `${pos.x},${pos.y}`;
+  }).join(' ');
+}
+
+const gridLevels = [25, 50, 75, 100];
+
+const colorMap: Record<string, { fill: string; stroke: string; bg: string; text: string }> = {
+  blue: { fill: 'rgba(59, 130, 246, 0.2)', stroke: '#3b82f6', bg: 'bg-blue-500', text: 'text-blue-600 dark:text-blue-400' },
+  purple: { fill: 'rgba(139, 92, 246, 0.2)', stroke: '#8b5cf6', bg: 'bg-purple-500', text: 'text-purple-600 dark:text-purple-400' },
+  green: { fill: 'rgba(34, 197, 94, 0.2)', stroke: '#22c55e', bg: 'bg-green-500', text: 'text-green-600 dark:text-green-400' }
+};
+---
+
+<div class="profile-comparison my-10">
+  <div class="bg-gradient-to-br from-umai-gray-50 to-white dark:from-umai-gray-800 dark:to-umai-gray-700 rounded-xl border border-umai-gray-200 dark:border-umai-gray-600 overflow-hidden">
+    {/* Header */}
+    <div class="p-6 border-b border-umai-gray-200 dark:border-umai-gray-600">
+      <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-1">{title}</h4>
+      <p class="text-gray-600 dark:text-gray-400 text-sm">{subtitle}</p>
+    </div>
+
+    <div class="p-6">
+      <div class="flex flex-col lg:flex-row items-start gap-8">
+        {/* Radar Chart */}
+        <div class="relative flex-shrink-0">
+          <svg width="300" height="300" class="comparison-radar">
+            {/* Grid */}
+            {gridLevels.map((level) => {
+              const radius = (level / 100) * maxRadius;
+              const points = Array.from({ length: 5 }, (_, i) => {
+                const pos = getPosition(i, radius);
+                return `${pos.x},${pos.y}`;
+              }).join(' ');
+              return (
+                <polygon
+                  points={points}
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1"
+                  class="text-gray-200 dark:text-gray-700"
+                />
+              );
+            })}
+
+            {/* Axis lines */}
+            {skillLabels.map((_, i) => {
+              const pos = getPosition(i, maxRadius);
+              return (
+                <line
+                  x1={centerX}
+                  y1={centerY}
+                  x2={pos.x}
+                  y2={pos.y}
+                  stroke="currentColor"
+                  stroke-width="1"
+                  class="text-gray-200 dark:text-gray-700"
+                />
+              );
+            })}
+
+            {/* Labels */}
+            {skillLabels.map((skill, i) => {
+              const labelPos = getPosition(i, maxRadius + 20);
+              return (
+                <text
+                  x={labelPos.x}
+                  y={labelPos.y}
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                  class="text-xs font-medium fill-gray-600 dark:fill-gray-400"
+                >
+                  {skill.shortLabel}
+                </text>
+              );
+            })}
+
+            {/* Profile polygons */}
+            {profiles.map((profile) => {
+              const colors = colorMap[profile.color] || colorMap.blue;
+              return (
+                <polygon
+                  points={getPolygonPoints(profile)}
+                  fill={colors.fill}
+                  stroke={colors.stroke}
+                  stroke-width="2"
+                  class={`profile-area profile-${profile.id}`}
+                  data-profile={profile.id}
+                />
+              );
+            })}
+
+            {/* Profile points */}
+            {profiles.map((profile) => {
+              const colors = colorMap[profile.color] || colorMap.blue;
+              const skillKeys = ['output', 'strategy', 'context', 'aiLeverage', 'leadership'];
+              return skillKeys.map((key, i) => {
+                const value = profile.skills[key as keyof typeof profile.skills];
+                const radius = (value / 100) * maxRadius;
+                const pos = getPosition(i, radius);
+                return (
+                  <circle
+                    cx={pos.x}
+                    cy={pos.y}
+                    r="4"
+                    fill={colors.stroke}
+                    class={`profile-point profile-${profile.id}`}
+                    data-profile={profile.id}
+                  />
+                );
+              });
+            })}
+          </svg>
+        </div>
+
+        {/* Legend and Controls */}
+        <div class="flex-1 w-full space-y-6">
+          {/* Profile toggles */}
+          <div class="space-y-3">
+            <h5 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Profiles</h5>
+            {profiles.map((profile) => {
+              const colors = colorMap[profile.color] || colorMap.blue;
+              return (
+                <label class="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked
+                    class="profile-toggle sr-only"
+                    data-profile={profile.id}
+                  />
+                  <div class={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${colors.text} border-current group-hover:scale-110`}>
+                    <svg class="w-3 h-3 checkmark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class={`w-3 h-3 rounded-full ${colors.bg}`}></div>
+                    <span class="font-medium text-gray-900 dark:text-gray-100">{profile.name}</span>
+                  </div>
+                </label>
+              );
+            })}
+          </div>
+
+          {/* Skill breakdown */}
+          <div class="space-y-3">
+            <h5 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Skill Comparison</h5>
+            <div class="space-y-2">
+              {skillLabels.map((skill) => (
+                <div class="space-y-1">
+                  <div class="text-xs text-gray-600 dark:text-gray-400">{skill.label}</div>
+                  <div class="flex gap-1">
+                    {profiles.map((profile) => {
+                      const colors = colorMap[profile.color] || colorMap.blue;
+                      const value = profile.skills[skill.key as keyof typeof profile.skills];
+                      return (
+                        <div class="flex-1">
+                          <div class="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div
+                              class={`h-full rounded-full transition-all ${colors.bg}`}
+                              style={`width: ${value}%`}
+                              data-profile={profile.id}
+                            ></div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Insight */}
+    <div class="p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-t border-green-200 dark:border-green-800">
+      <div class="flex items-start gap-3">
+        <svg class="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+        </svg>
+        <div class="text-sm">
+          <p class="text-green-800 dark:text-green-200 font-medium mb-1">Notice the Pattern</p>
+          <p class="text-green-700 dark:text-green-300 leading-relaxed">
+            The Player-Coach doesn't max out every dimension—that would be the unicorn myth. Instead, it maintains <strong>balanced high scores</strong> across all five, enabled by AI leverage filling gaps that would otherwise require choosing between paths.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function() {
+    function initProfileComparison() {
+      var toggles = document.querySelectorAll('.profile-toggle');
+
+      toggles.forEach(function(toggle) {
+        toggle.addEventListener('change', function(e) {
+          var input = e.target;
+          if (!input) return;
+          var profileId = input.getAttribute('data-profile');
+          var isChecked = input.checked;
+
+          // Toggle visibility of profile elements
+          var elements = document.querySelectorAll('[data-profile="' + profileId + '"]');
+          elements.forEach(function(el) {
+            if (el.tagName === 'INPUT') return;
+            el.style.opacity = isChecked ? '1' : '0.1';
+            el.style.pointerEvents = isChecked ? 'auto' : 'none';
+          });
+
+          // Toggle checkmark visibility
+          var parent = toggle.parentElement;
+          if (parent) {
+            var checkmark = parent.querySelector('.checkmark');
+            if (checkmark) {
+              checkmark.style.opacity = isChecked ? '1' : '0';
+            }
+          }
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initProfileComparison);
+    } else {
+      initProfileComparison();
+    }
+  })();
+</script>
+
+<style>
+  .profile-area {
+    transition: all 0.3s ease;
+  }
+
+  .profile-point {
+    transition: all 0.3s ease;
+  }
+
+  .profile-toggle:not(:checked) + div .checkmark {
+    opacity: 0;
+  }
+
+  .profile-toggle:checked + div .checkmark {
+    opacity: 1;
+  }
+
+  .comparison-radar:hover .profile-area {
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.1));
+  }
+</style>
