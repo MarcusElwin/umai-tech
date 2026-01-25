@@ -11,6 +11,7 @@ import ThreePathsComparison from '@components/ThreePathsComparison.astro';
 import CareerFilter from '@components/CareerFilter.astro';
 import CareerPathEvolution from '@components/CareerPathEvolution.astro';
 import LeverageFormula from '@components/LeverageFormula.astro';
+import SkillsRadar from '@components/SkillsRadar.astro';
 
 Two years ago at Pocketlaw, I was Lead AI Engineer with a team of one junior developer. A traditional company would have staffed that function with 3-5 people and made me a pure manager—roadmap ownership, sprint planning, 1:1s, stakeholder alignment, maybe a Jira board to groom. Instead, I shipped.
 
@@ -147,6 +148,14 @@ Here's what I've learned across two companies and five years of integrating AI i
 
 I call this the **Player-Coach at Scale**.
 
+<Callout type="note" title="What Is a Player-Coach?">
+The term comes from sports—a player-coach is someone who actively plays on the team while also serving as its coach. Think Bill Russell winning two NBA championships as player-coach of the Celtics, or Frans Beckenbauer leading West Germany as a playing captain.
+
+In sports, player-coaches are rare because the dual role is exhausting. You're making real-time tactical decisions while also executing plays. The cognitive load is immense. Most people burn out or do both jobs poorly.
+
+In software, the same pattern held—until AI changed the execution cost. Now the "playing" part (writing code, building systems) is compressible in a way it never was before.
+</Callout>
+
 You keep the strategic context, the stakeholder relationships, and the architectural judgment that comes from experience. But you also ship—not by working 80-hour weeks, but because AI compresses what used to be a two-week sprint into a day when you have the right context.
 
 The Player-Coach combines:
@@ -275,30 +284,74 @@ The Tobi Lütke mandate at Shopify—"demonstrate why you cannot get what you wa
 
 Knowing the destination isn't enough—you need the skills to get there. Here's what I've found actually matters:
 
-### 1. Context Engineering
-The ability to know *what* context to give AI and *when*. This isn't prompt engineering (that's table stakes). It's understanding which pieces of your organizational knowledge, technical history, and strategic context will make AI output actually useful versus generically correct.
+<SkillsRadar
+  title="The Player-Coach Competency Model"
+  subtitle="Click any skill to learn how to develop it"
+  skills={[
+    {
+      id: "context-engineering",
+      name: "Context Engineering",
+      shortName: "Context",
+      level: 90,
+      description: "The ability to know what context to give AI and when. This isn't prompt engineering (that's table stakes). It's understanding which pieces of your organizational knowledge, technical history, and strategic context will make AI output actually useful versus generically correct.",
+      developBy: "Deliberately experiment with context levels. Try giving AI minimal context, then maximal context, then curated context. Notice which produces the best results fastest. Build a personal library of context templates for different task types.",
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
+      color: "blue"
+    },
+    {
+      id: "rapid-validation",
+      name: "Rapid Validation",
+      shortName: "Validation",
+      level: 85,
+      description: "When AI generates code at 10x speed, your bottleneck becomes evaluation speed. Can you quickly assess whether generated code is correct, secure, maintainable, and aligned with system patterns? This is the new rate-limiting skill.",
+      developBy: "Practice reading code faster than you write it. Review AI output the way you'd review a junior developer's PR—but compress the feedback loop to minutes, not days. Develop mental checklists for common failure modes.",
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+      color: "green"
+    },
+    {
+      id: "strategic-altitude",
+      name: "Strategic Altitude",
+      shortName: "Altitude",
+      level: 80,
+      description: "The hardest skill: staying zoomed out enough to make good decisions while zoomed in enough to ship. Most people drift toward one extreme—either lost in the weeds or disconnected from implementation reality.",
+      developBy: "Timebox ruthlessly. I use 2-hour 'player' blocks and 1-hour 'coach' blocks. The calendar structure prevents drift. Review your time allocation weekly and adjust the ratio based on what the team and product need.",
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>',
+      color: "purple"
+    },
+    {
+      id: "ai-skepticism",
+      name: "AI Skepticism",
+      shortName: "Skepticism",
+      level: 75,
+      description: "As Addy Osmani puts it: 'What distinguishes great developers is knowing when AI is wrong.' AI is confidently incorrect often enough that blind trust is career-limiting. You need calibrated skepticism—not paranoia, but pattern-matched vigilance.",
+      developBy: "Keep a log of AI mistakes for a month. You'll start pattern-matching the conditions where AI fails—usually edge cases, security implications, and anything requiring deep system context. Build your internal 'AI bullshit detector.'",
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>',
+      color: "orange"
+    },
+    {
+      id: "delegation-judgment",
+      name: "Delegation Judgment",
+      shortName: "Delegation",
+      level: 70,
+      description: "Not everything deserves your direct attention. The Player-Coach still delegates—to humans for people-intensive work, to AI for implementation-heavy work, and keeps the judgment-intensive work for themselves. Knowing the difference is the skill.",
+      developBy: "For every task, ask: 'Does this require my specific context, or just someone's execution?' If the latter, delegate it. Track your delegation decisions for a month and review which ones you got right and wrong.",
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>',
+      color: "red"
+    }
+  ]}
+/>
 
-**Develop it by:** Deliberately experimenting with context levels. Try giving AI minimal context, then maximal context, then curated context. Notice which produces the best results fastest.
+### The Five Core Competencies
 
-### 2. Rapid Validation
-When AI generates code at 10x speed, your bottleneck becomes *evaluation* speed. Can you quickly assess whether generated code is correct, secure, maintainable, and aligned with system patterns?
+**1. Context Engineering** — This isn't prompt engineering (that's table stakes). It's knowing which pieces of your organizational knowledge, technical history, and strategic context will make AI output actually useful versus generically correct. The lead who can articulate "here's what we tried last year and why it failed" gets dramatically better AI output than someone starting from scratch.
 
-**Develop it by:** Practice reading code faster than you write it. Review AI output the way you'd review a junior developer's PR—but compress the feedback loop to minutes, not days.
+**2. Rapid Validation** — When AI generates code at 10x speed, your bottleneck becomes *evaluation* speed. Can you quickly assess whether generated code is correct, secure, maintainable, and aligned with system patterns? This is the new rate-limiting skill.
 
-### 3. Strategic Altitude Maintenance
-The hardest skill: staying zoomed out enough to make good decisions while zoomed in enough to ship. Most people drift toward one extreme.
+**3. Strategic Altitude Maintenance** — The hardest skill: staying zoomed out enough to make good decisions while zoomed in enough to ship. Most people drift toward one extreme. I use timeboxed "player" and "coach" blocks to prevent drift.
 
-**Develop it by:** Timebox ruthlessly. I use 2-hour "player" blocks and 1-hour "coach" blocks. The calendar structure prevents drift.
+**4. AI Skepticism** — As Addy Osmani puts it: *"What distinguishes great developers is knowing when AI is wrong."* AI is confidently incorrect often enough that blind trust is career-limiting. You need calibrated skepticism—not paranoia, but pattern-matched vigilance.
 
-### 4. Knowing When to Distrust AI
-As Addy Osmani puts it: *"What distinguishes great developers is knowing when AI is wrong."* AI is confidently incorrect often enough that blind trust is career-limiting.
-
-**Develop it by:** Keep a log of AI mistakes for a month. You'll start pattern-matching the conditions where AI fails—usually edge cases, security implications, and anything requiring deep system context.
-
-### 5. Delegation Judgment
-Not everything deserves your direct attention. The Player-Coach still delegates—to humans for people-intensive work, to AI for implementation-heavy work, and keeps the judgment-intensive work for themselves.
-
-**Develop it by:** For every task, ask: "Does this require my specific context, or just *someone's* execution?" If the latter, delegate it.
+**5. Delegation Judgment** — Not everything deserves your direct attention. The Player-Coach still delegates—to humans for people-intensive work, to AI for implementation-heavy work, and keeps the judgment-intensive work for themselves.
 
 ## The Uncomfortable Truth
 
