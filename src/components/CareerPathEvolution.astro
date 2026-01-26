@@ -1,0 +1,186 @@
+---
+export interface Props {
+  showDetails?: boolean;
+}
+
+const { showDetails = true } = Astro.props;
+---
+
+<div class="career-path-evolution my-10">
+  <div class="bg-gradient-to-r from-umai-gray-50 to-white dark:from-umai-gray-800 dark:to-umai-gray-700 rounded-xl border border-umai-gray-200 dark:border-umai-gray-600 overflow-hidden">
+    {/* Header */}
+    <div class="p-6 border-b border-umai-gray-200 dark:border-umai-gray-600">
+      <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-2">The Leverage Equation Changed</h4>
+      <p class="text-gray-600 dark:text-gray-400 text-sm">How AI transformed the traditional career fork into a viable dual path</p>
+    </div>
+
+    {/* Two Models Side by Side */}
+    <div class="grid md:grid-cols-2">
+      {/* Traditional Model */}
+      <div class="p-6 bg-red-50/30 dark:bg-red-950/20 border-r border-umai-gray-200 dark:border-umai-gray-600">
+        <div class="flex items-center gap-2 mb-6">
+          <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div>
+            <h5 class="font-bold text-gray-900 dark:text-gray-100">Traditional Model</h5>
+            <span class="text-xs text-red-600 dark:text-red-400 font-medium">Zero-Sum Tradeoff</span>
+          </div>
+        </div>
+
+        {/* Flow Diagram */}
+        <div class="space-y-4">
+          {/* Starting Point */}
+          <div class="flex justify-center">
+            <div class="bg-white dark:bg-umai-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              Senior Engineer
+            </div>
+          </div>
+
+          {/* Arrow Down */}
+          <div class="flex justify-center">
+            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+          </div>
+
+          {/* Fork */}
+          <div class="flex justify-center">
+            <div class="bg-amber-100 dark:bg-amber-900/40 border-2 border-amber-400 dark:border-amber-600 rounded-lg px-4 py-2 text-sm font-bold text-amber-700 dark:text-amber-300">
+              CHOOSE
+            </div>
+          </div>
+
+          {/* Two Branches */}
+          <div class="grid grid-cols-2 gap-3">
+            {/* Management Track */}
+            <div class="space-y-2">
+              <div class="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-center">
+                <div class="text-xs text-blue-600 dark:text-blue-400 font-medium mb-1">Management</div>
+                <div class="text-xs text-gray-600 dark:text-gray-400">Scale via others</div>
+              </div>
+              <div class="flex justify-center">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                </svg>
+              </div>
+              <div class="bg-red-100 dark:bg-red-950/40 border border-red-300 dark:border-red-800 rounded-lg p-2 text-center">
+                <div class="text-xs text-red-700 dark:text-red-400 font-medium">Stop Shipping</div>
+              </div>
+            </div>
+
+            {/* IC Track */}
+            <div class="space-y-2">
+              <div class="bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 rounded-lg p-3 text-center">
+                <div class="text-xs text-purple-600 dark:text-purple-400 font-medium mb-1">IC Track</div>
+                <div class="text-xs text-gray-600 dark:text-gray-400">Direct output</div>
+              </div>
+              <div class="flex justify-center">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                </svg>
+              </div>
+              <div class="bg-red-100 dark:bg-red-950/40 border border-red-300 dark:border-red-800 rounded-lg p-2 text-center">
+                <div class="text-xs text-red-700 dark:text-red-400 font-medium">Limited Leverage</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* AI-Enabled Model */}
+      <div class="p-6 bg-green-50/30 dark:bg-green-950/20">
+        <div class="flex items-center gap-2 mb-6">
+          <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div>
+            <h5 class="font-bold text-gray-900 dark:text-gray-100">AI-Enabled Model</h5>
+            <span class="text-xs text-green-600 dark:text-green-400 font-medium">Both Paths Viable</span>
+          </div>
+        </div>
+
+        {/* Flow Diagram */}
+        <div class="space-y-4">
+          {/* Starting Point */}
+          <div class="flex justify-center">
+            <div class="bg-white dark:bg-umai-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              Senior Engineer
+            </div>
+          </div>
+
+          {/* Arrow Down */}
+          <div class="flex justify-center">
+            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+          </div>
+
+          {/* Both Paths */}
+          <div class="flex justify-center">
+            <div class="bg-green-100 dark:bg-green-900/40 border-2 border-green-500 dark:border-green-600 rounded-lg px-4 py-2 text-sm font-bold text-green-700 dark:text-green-300 shadow-lg shadow-green-500/20">
+              BOTH PATHS
+            </div>
+          </div>
+
+          {/* Two Branches - Both Green */}
+          <div class="grid grid-cols-2 gap-3">
+            {/* AI + Others */}
+            <div class="space-y-2">
+              <div class="bg-green-50 dark:bg-green-950/40 border border-green-200 dark:border-green-800 rounded-lg p-3 text-center">
+                <div class="text-xs text-green-600 dark:text-green-400 font-medium mb-1">Scale via AI + Others</div>
+                <div class="text-xs text-gray-600 dark:text-gray-400">Strategic leverage</div>
+              </div>
+              <div class="flex justify-center">
+                <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                </svg>
+              </div>
+              <div class="bg-green-100 dark:bg-green-900/50 border border-green-400 dark:border-green-700 rounded-lg p-2 text-center">
+                <div class="text-xs text-green-700 dark:text-green-300 font-medium">Keep Shipping</div>
+              </div>
+            </div>
+
+            {/* Direct Output */}
+            <div class="space-y-2">
+              <div class="bg-green-50 dark:bg-green-950/40 border border-green-200 dark:border-green-800 rounded-lg p-3 text-center">
+                <div class="text-xs text-green-600 dark:text-green-400 font-medium mb-1">Direct Output via AI</div>
+                <div class="text-xs text-gray-600 dark:text-gray-400">10x velocity</div>
+              </div>
+              <div class="flex justify-center">
+                <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                </svg>
+              </div>
+              <div class="bg-green-100 dark:bg-green-900/50 border border-green-400 dark:border-green-700 rounded-lg p-2 text-center">
+                <div class="text-xs text-green-700 dark:text-green-300 font-medium">Strategic Leverage</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Bottom Insight */}
+    <div class="p-4 bg-umai-accent/10 dark:bg-umai-accent/20 border-t border-umai-gray-200 dark:border-umai-gray-600">
+      <div class="flex items-center gap-3">
+        <svg class="w-5 h-5 text-umai-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <p class="text-sm text-gray-700 dark:text-gray-300">
+          <strong class="text-umai-accent">The shift:</strong> AI compresses implementation time, freeing bandwidth for strategic work without sacrificing direct output.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .career-path-evolution {
+    transition: all 0.3s ease;
+  }
+</style>
