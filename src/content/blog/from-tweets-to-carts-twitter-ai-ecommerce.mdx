@@ -8,10 +8,10 @@ heroImage: "/images/blog/from-tweets-to-carts-twitter-ai-ecommerce/hero.png"
 ---
 
 import Callout from '@components/Callout.astro';
+import PipelineOverview from '@components/PipelineOverview.astro';
 import PipelineStage from '@components/PipelineStage.astro';
 import DomainComparison from '@components/DomainComparison.astro';
 import StrategyTable from '@components/StrategyTable.astro';
-import CodeTasteComparison from '@components/CodeTasteComparison.astro';
 
 For years, the Twitter algorithm was a black box—a mysterious force governing who saw your witty remarks and who didn't. We prayed to the engagement gods, performed strange hashtag rituals, and sacrificed our best memes, all in the hope of going viral. Then, in a move of unprecedented transparency, xAI and Elon Musk **open-sourced the whole thing** [^1].
 
@@ -34,19 +34,42 @@ The X recommendation pipeline is a multi-stage funnel designed to answer one que
 
 It's a process of organized chaos, split into three main phases:
 
-```mermaid
-graph LR
-    A[All Tweets ~500M/day] --> B[Candidate Generation]
-    B --> C[Ranking]
-    C --> D[Filtering]
-    D --> E[Your Timeline ~50 tweets]
-
-    style A fill:#1e3a5f,stroke:#3b82f6,color:#fff
-    style B fill:#065f46,stroke:#10b981,color:#fff
-    style C fill:#7c2d12,stroke:#f59e0b,color:#fff
-    style D fill:#581c87,stroke:#a855f7,color:#fff
-    style E fill:#be123c,stroke:#f43f5e,color:#fff
-```
+<PipelineOverview
+  title="The X Recommendation Funnel"
+  subtitle="From 500 million tweets to your personalized timeline"
+  steps={[
+    {
+      label: "All Tweets",
+      sublabel: "~500M/day",
+      iconType: "input",
+      color: "#3b82f6"
+    },
+    {
+      label: "Candidate Generation",
+      sublabel: "Thunder + Phoenix",
+      iconType: "generate",
+      color: "#10b981"
+    },
+    {
+      label: "Ranking",
+      sublabel: "ML Scoring",
+      iconType: "rank",
+      color: "#f59e0b"
+    },
+    {
+      label: "Filtering",
+      sublabel: "Visibility Rules",
+      iconType: "filter",
+      color: "#8B5CF6"
+    },
+    {
+      label: "Your Timeline",
+      sublabel: "~50 tweets",
+      iconType: "output",
+      color: "#ec4899"
+    }
+  ]}
+/>
 
 ### The Candidate Pipeline: Lego Blocks of Recommendation
 
