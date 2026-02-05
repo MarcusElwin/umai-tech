@@ -1,0 +1,234 @@
+---
+export interface Stage {
+  name: string;
+  icon: string;
+  execution: 'parallel' | 'sequential' | 'async';
+  description: string;
+  details: string[];
+  color: string;
+}
+
+export interface Props {
+  title: string;
+  subtitle?: string;
+  stages: Stage[];
+  domain?: 'twitter' | 'ecommerce';
+}
+
+const { title, subtitle, stages, domain = 'twitter' } = Astro.props;
+
+const executionStyles = {
+  parallel: {
+    bg: 'bg-emerald-100 dark:bg-emerald-900/40',
+    border: 'border-emerald-300 dark:border-emerald-700',
+    text: 'text-emerald-700 dark:text-emerald-300',
+    icon: '⚡',
+    label: 'Parallel'
+  },
+  sequential: {
+    bg: 'bg-amber-100 dark:bg-amber-900/40',
+    border: 'border-amber-300 dark:border-amber-700',
+    text: 'text-amber-700 dark:text-amber-300',
+    icon: '📋',
+    label: 'Sequential'
+  },
+  async: {
+    bg: 'bg-blue-100 dark:bg-blue-900/40',
+    border: 'border-blue-300 dark:border-blue-700',
+    text: 'text-blue-700 dark:text-blue-300',
+    icon: '⏰',
+    label: 'Async'
+  }
+};
+
+const domainColors = {
+  twitter: 'from-sky-500 to-blue-600',
+  ecommerce: 'from-purple-500 to-pink-600'
+};
+
+const componentId = `pipeline-${Math.random().toString(36).slice(2, 11)}`;
+---
+
+<div class="pipeline-stage-container my-12">
+  <!-- Header -->
+  <div class={`bg-gradient-to-r ${domainColors[domain]} rounded-t-2xl p-6 text-white`}>
+    <h3 class="text-xl font-bold mb-1">{title}</h3>
+    {subtitle && <p class="text-white/80 text-sm">{subtitle}</p>}
+  </div>
+
+  <!-- Legend -->
+  <div class="bg-gray-50 dark:bg-gray-800/50 border-x border-gray-200 dark:border-gray-700 px-6 py-3 flex flex-wrap gap-4 text-sm">
+    {Object.entries(executionStyles).map(([key, style]) => (
+      <div class="flex items-center gap-2">
+        <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${style.bg} ${style.text} ${style.border} border`}>
+          <span class="mr-1">{style.icon}</span>
+          {style.label}
+        </span>
+        <span class="text-gray-500 dark:text-gray-400 text-xs">
+          {key === 'parallel' && 'Independent operations'}
+          {key === 'sequential' && 'Depends on previous'}
+          {key === 'async' && 'Background tasks'}
+        </span>
+      </div>
+    ))}
+  </div>
+
+  <!-- Pipeline Flow -->
+  <div class="bg-white dark:bg-gray-900 border border-t-0 border-gray-200 dark:border-gray-700 rounded-b-2xl p-6 overflow-x-auto">
+    <div class="flex items-stretch gap-2 min-w-max">
+      {stages.map((stage, index) => {
+        const execStyle = executionStyles[stage.execution];
+        return (
+          <div class="flex items-center">
+            <!-- Stage Card -->
+            <div
+              class={`stage-card relative flex flex-col w-48 rounded-xl border-2 ${execStyle.border} overflow-hidden transition-all duration-300 hover:shadow-lg cursor-pointer group`}
+              data-stage-id={`${componentId}-${index}`}
+            >
+              <!-- Stage Header -->
+              <div class={`${execStyle.bg} px-4 py-3 border-b ${execStyle.border}`}>
+                <div class="flex items-center justify-between">
+                  <span class="text-2xl">{stage.icon}</span>
+                  <span class={`text-xs font-medium ${execStyle.text} px-2 py-0.5 rounded-full bg-white/50 dark:bg-black/20`}>
+                    {execStyle.icon} {execStyle.label}
+                  </span>
+                </div>
+                <h4 class="font-bold text-gray-900 dark:text-white mt-2 text-sm uppercase tracking-wide">
+                  {stage.name}
+                </h4>
+              </div>
+
+              <!-- Stage Description -->
+              <div class="px-4 py-3 bg-white dark:bg-gray-800 flex-1">
+                <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                  {stage.description}
+                </p>
+              </div>
+
+              <!-- Expand Indicator -->
+              <div class="px-4 py-2 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700">
+                <span class="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 group-hover:text-purple-500 transition-colors">
+                  <svg class="w-3 h-3 transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                  Click for details
+                </span>
+              </div>
+
+              <!-- Expanded Details (Hidden by default) -->
+              <div
+                class="stage-details hidden absolute top-full left-0 right-0 mt-2 z-20 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 p-4"
+                id={`${componentId}-${index}-details`}
+              >
+                <h5 class="font-semibold text-gray-900 dark:text-white text-sm mb-2">
+                  {stage.name} Details:
+                </h5>
+                <ul class="space-y-1.5">
+                  {stage.details.map((detail) => (
+                    <li class="text-xs text-gray-600 dark:text-gray-300 flex items-start gap-2">
+                      <span class={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0`} style={`background-color: ${stage.color}`}></span>
+                      {detail}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <!-- Arrow Connector -->
+            {index < stages.length - 1 && (
+              <div class="flex items-center px-1">
+                <svg class="w-6 h-6 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ componentId }}>
+  (function() {
+    function initPipeline() {
+      const cards = document.querySelectorAll(`[data-stage-id^="${componentId}"]`);
+
+      cards.forEach(card => {
+        const stageId = card.getAttribute('data-stage-id');
+        const details = document.getElementById(`${stageId}-details`);
+
+        if (!details) return;
+
+        card.addEventListener('click', (e) => {
+          e.stopPropagation();
+
+          // Close all other details
+          document.querySelectorAll(`[id^="${componentId}"][id$="-details"]`).forEach(d => {
+            if (d !== details) d.classList.add('hidden');
+          });
+
+          // Toggle current details
+          details.classList.toggle('hidden');
+        });
+      });
+
+      // Close details when clicking outside
+      document.addEventListener('click', () => {
+        document.querySelectorAll(`[id^="${componentId}"][id$="-details"]`).forEach(d => {
+          d.classList.add('hidden');
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPipeline);
+    } else {
+      initPipeline();
+    }
+  })();
+</script>
+
+<style>
+  .stage-card {
+    min-height: 180px;
+  }
+
+  .stage-details {
+    animation: slideDown 0.2s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Scrollbar styling for overflow */
+  .pipeline-stage-container .overflow-x-auto::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .pipeline-stage-container .overflow-x-auto::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  .pipeline-stage-container .overflow-x-auto::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+  }
+
+  .dark .pipeline-stage-container .overflow-x-auto::-webkit-scrollbar-track {
+    background: #374151;
+  }
+
+  .dark .pipeline-stage-container .overflow-x-auto::-webkit-scrollbar-thumb {
+    background: #6b7280;
+  }
+</style>

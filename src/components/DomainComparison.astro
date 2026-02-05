@@ -1,0 +1,157 @@
+---
+export interface ComparisonItem {
+  twitter: string;
+  ecommerce: string;
+  description?: string;
+}
+
+export interface Props {
+  title: string;
+  subtitle?: string;
+  comparisons: ComparisonItem[];
+}
+
+const { title, subtitle, comparisons } = Astro.props;
+---
+
+<div class="domain-comparison my-10">
+  <!-- Header -->
+  <div class="text-center mb-8">
+    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{title}</h3>
+    {subtitle && <p class="text-gray-600 dark:text-gray-400 text-sm">{subtitle}</p>}
+  </div>
+
+  <!-- Comparison Cards -->
+  <div class="grid md:grid-cols-2 gap-6 relative">
+    <!-- Twitter Column -->
+    <div class="space-y-3">
+      <div class="flex items-center gap-3 mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-lg">
+          <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </div>
+        <div>
+          <h4 class="font-bold text-gray-900 dark:text-white">Twitter/X</h4>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Social Recommendation</p>
+        </div>
+      </div>
+
+      {comparisons.map((item, index) => (
+        <div
+          class="comparison-item twitter-item p-4 rounded-xl bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-950/30 dark:to-blue-950/30 border border-sky-200/60 dark:border-sky-800/40 hover:shadow-md transition-all duration-300"
+          data-index={index}
+        >
+          <div class="flex items-center gap-3">
+            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-sky-500 text-white text-xs font-bold flex items-center justify-center">
+              {index + 1}
+            </span>
+            <span class="font-medium text-gray-900 dark:text-white text-sm">{item.twitter}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Center Arrow (Desktop) -->
+    <div class="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+      <div class="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Mobile Arrow -->
+    <div class="md:hidden flex justify-center -my-2">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+        <svg class="w-5 h-5 text-white rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- E-Commerce Column -->
+    <div class="space-y-3">
+      <div class="flex items-center gap-3 mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+        <div>
+          <h4 class="font-bold text-gray-900 dark:text-white">E-Commerce</h4>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Product Recommendation</p>
+        </div>
+      </div>
+
+      {comparisons.map((item, index) => (
+        <div
+          class="comparison-item ecommerce-item p-4 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border border-purple-200/60 dark:border-purple-800/40 hover:shadow-md transition-all duration-300"
+          data-index={index}
+        >
+          <div class="flex items-center gap-3">
+            <span class="flex-shrink-0 w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold flex items-center justify-center">
+              {index + 1}
+            </span>
+            <div>
+              <span class="font-medium text-gray-900 dark:text-white text-sm">{item.ecommerce}</span>
+              {item.description && (
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{item.description}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Footer Insight -->
+  <div class="mt-8 p-4 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800/50 dark:to-gray-900/50 border border-gray-200 dark:border-gray-700">
+    <div class="flex items-start gap-3">
+      <div class="w-8 h-8 rounded-lg bg-purple-500 flex items-center justify-center flex-shrink-0">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+      </div>
+      <p class="text-sm text-gray-600 dark:text-gray-300">
+        <strong class="text-gray-900 dark:text-white">The core insight:</strong> Both systems solve the same fundamental problem—finding the most relevant items from a large catalog for a specific user at a specific moment.
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .comparison-item {
+    transition: all 0.3s ease;
+  }
+
+  .comparison-item:hover {
+    transform: translateX(4px);
+  }
+
+  .twitter-item:hover {
+    border-color: rgba(14, 165, 233, 0.6);
+  }
+
+  .ecommerce-item:hover {
+    border-color: rgba(168, 85, 247, 0.6);
+  }
+
+  /* Highlight matching items on hover */
+  .comparison-item:hover ~ .comparison-item[data-index],
+  .domain-comparison:has(.twitter-item[data-index="0"]:hover) .ecommerce-item[data-index="0"],
+  .domain-comparison:has(.twitter-item[data-index="1"]:hover) .ecommerce-item[data-index="1"],
+  .domain-comparison:has(.twitter-item[data-index="2"]:hover) .ecommerce-item[data-index="2"],
+  .domain-comparison:has(.twitter-item[data-index="3"]:hover) .ecommerce-item[data-index="3"],
+  .domain-comparison:has(.twitter-item[data-index="4"]:hover) .ecommerce-item[data-index="4"],
+  .domain-comparison:has(.twitter-item[data-index="5"]:hover) .ecommerce-item[data-index="5"],
+  .domain-comparison:has(.ecommerce-item[data-index="0"]:hover) .twitter-item[data-index="0"],
+  .domain-comparison:has(.ecommerce-item[data-index="1"]:hover) .twitter-item[data-index="1"],
+  .domain-comparison:has(.ecommerce-item[data-index="2"]:hover) .twitter-item[data-index="2"],
+  .domain-comparison:has(.ecommerce-item[data-index="3"]:hover) .twitter-item[data-index="3"],
+  .domain-comparison:has(.ecommerce-item[data-index="4"]:hover) .twitter-item[data-index="4"],
+  .domain-comparison:has(.ecommerce-item[data-index="5"]:hover) .twitter-item[data-index="5"] {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+</style>
