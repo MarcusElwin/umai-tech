@@ -12,7 +12,8 @@
     "astro": "astro",
     "new-post": "node scripts/new-blog-post.js",
     "new-post:quick": "./scripts/new-post.sh",
-    "convert-to-medium": "node scripts/convert-to-medium.js"
+    "convert-to-medium": "node scripts/convert-to-medium.js",
+    "medium": "node scripts/convert-to-medium.js"
   },
   "keywords": [],
   "author": "",
