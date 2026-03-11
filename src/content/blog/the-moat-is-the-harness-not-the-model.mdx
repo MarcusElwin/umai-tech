@@ -1,0 +1,334 @@
+---
+title: "The Moat Isn't Your Model — It's Your Harness and Data Flywheel"
+description: "Everyone is building agents. Almost nobody is building what makes agents defensible. We explore why the agentic harness and data flywheel — not the LLM — are where durable competitive advantage lives in 2026 and beyond."
+pubDate: 2026-03-11T10:00:00.000Z
+author: "Marcus Elwin"
+tags: ["AI", "AI Engineering", "Agentic AI", "Data Flywheel", "Vertical SaaS", "Large Language Models", "Strategy", "Generative AI"]
+---
+
+import Callout from '../../components/Callout.astro';
+import Mermaid from '../../components/Mermaid.astro';
+
+There's a seductive narrative in AI right now: build the smartest agent, wire it to the best model, and you win. But here's the uncomfortable truth — **the model layer is already commoditized**. GPT-4o, Claude Opus, Gemini 2.5, and DeepSeek cluster within single-digit percentage points of each other on standard benchmarks. Raw intelligence is converging. Inference costs are collapsing. Open-source alternatives catch up within months, sometimes hours.
+
+So if the model isn't the moat, what is?
+
+Two things that compound together: **the agentic harness** — the orchestration layer, guardrails, memory, tool-use, and workflow integration surrounding your agents — and the **data flywheel** — the proprietary feedback loop that makes your system smarter every time it's used.
+
+Let me unpack why this matters, especially if you're building vertical software in 2026.
+
+---
+
+## The Model Layer Is Commoditizing — Fast
+
+The evidence is overwhelming and accelerating across every dimension simultaneously.
+
+<Callout type="insight" title="The Numbers Tell the Story">
+
+- **Epoch AI** measured that the price to achieve GPT-4-level performance fell by **40x per year**, with some benchmarks showing **900x per year** decline rates
+- GPT-4 output token pricing has dropped **over 90%** since March 2023
+- DeepSeek R1 matched OpenAI o1's reasoning performance while training for just **~$5.6M** — versus $100M+ for comparable proprietary models
+- Open-source models now deliver **~90% of proprietary capability at ~17x lower cost**
+- The quality gap shrank from **15–20 points to just 9 points** between October 2024 and mid-2025, with parity projected by Q2 2026
+- **37% of enterprises** use 5+ models in production. **69%** using Google's models also use OpenAI simultaneously
+
+</Callout>
+
+Multi-model deployment is now standard. Enterprise model API spending doubled from **$3.5B to $8.4B** between late 2024 and mid-2025 — even as per-token prices collapsed — indicating that volume is exploding while unit economics race toward zero.
+
+The industry leaders themselves are saying the quiet part out loud:
+
+> *"We will maintain less of a lead than we did in previous years."* — Sam Altman, OpenAI
+
+> *"AI is turning into a commodity we just can't get enough of."* — Satya Nadella, Microsoft
+
+> *"The models will become more commoditized and the value will switch to the application layer."* — Nandan Nilekani, Infosys co-founder
+
+Microsoft's Jared Spataro drew the definitive analogy: **"At first the raw power of the CPU was the most critical factor. But as powerful CPUs became commodities, the value shifted to the overall system."**
+
+The LLM is becoming the CPU. The question is: what becomes the operating system?
+
+---
+
+## The Platform Giants Are Coming for Every Vertical
+
+Before we answer that, let's acknowledge the scale of what's happening. The last 12 months have seen an unprecedented land grab by horizontal AI providers into vertical markets.
+
+**Anthropic** launched Claude for Financial Services in July 2025 — its first industry-specific product — with integrations into Snowflake, S&P Global, Morningstar, and FactSet. Clients include Bridgewater and Norway's sovereign wealth fund (NBIM), whose CEO Nicolai Tangen reported *"~20% productivity gains, equivalent to 213,000 hours."* AIG compressed underwriting review timelines by **5x** while improving data accuracy from 75% to over 90%. By October 2025, Anthropic expanded with Excel add-ins, real-time market data connectors, and pre-built agent skills for DCF models.
+
+**OpenAI** countered in early 2026 with ChatGPT for Excel and financial data integrations — partnering with FactSet, Dow Jones Factiva, LSEG, S&P Global, Moody's, and MSCI. In healthcare, OpenAI launched both a consumer product (ChatGPT Health) and an enterprise suite with HIPAA compliance.
+
+**Google** entered with Gemini Enterprise, **AWS** launched Bedrock AgentCore, and **Microsoft** shipped Agent 365 and Foundry.
+
+Anthropic's Claude Cowork announcement in January 2026 wiped **20–33%** off the stock prices of ServiceNow, Salesforce, Snowflake, Intuit, and Thomson Reuters in a single day.
+
+<Callout type="warning" title="The Message Is Clear">
+Horizontal players want your vertical. But wanting it and owning it are very different things.
+</Callout>
+
+---
+
+## Why the Harness Creates the Moat, Not the Model
+
+The intellectual foundation for this thesis comes from Berkeley's BAIR lab. In February 2024, Matei Zaharia and collaborators published a landmark argument: **"State-of-the-art AI results are increasingly obtained by compound systems with multiple components, not just monolithic models."** They identified four reasons systems beat models:
+
+1. Some tasks improve more through system design than scaling
+2. Systems can be dynamic while models have static training data
+3. Systems offer better control and trust
+4. Performance goals vary widely across applications
+
+Andrej Karpathy framed the LLM as a **kernel in a larger operating system** — with tool access, memory, I/O across modalities, and code execution as the peripheral layers that create the real product.
+
+### What Exactly Is the Agentic Harness?
+
+An agentic harness is the comprehensive system infrastructure surrounding an AI model in production. It encompasses:
+
+- **Tool integration** — connecting agents to browsers, terminals, APIs, and file systems
+- **Context and state management** — maintaining memory and session persistence across interactions
+- **Evaluation frameworks** — continuous verification of outputs against business rules
+- **Observability pipelines** — monitoring for hallucinations, drift, and failure modes
+- **Security guardrails** — deterministic layers that validate and constrain probabilistic outputs
+
+<Mermaid code={`
+graph TB
+    subgraph Harness["Agentic Harness"]
+        direction TB
+        IC["Intent Capture"] --> TD["Task Decomposition"]
+        TD --> CE["Cognitive Engine<br/>(LLM)"]
+        CE --> RO["Reasoning Orchestrator<br/>(Deterministic Validation)"]
+        RO --> TE["Tool Execution"]
+        TE --> VL["Verification Loop"]
+        VL -->|Iterate| CE
+        VL -->|Success| OUT["Output"]
+
+        MEM["Memory & Context<br/>Management"] -.-> CE
+        GR["Guardrails &<br/>Compliance"] -.-> RO
+        OBS["Observability &<br/>Monitoring"] -.-> TE
+    end
+
+    style Harness fill:#1a1a2e,stroke:#8B5CF6,stroke-width:2px,color:#f5f5f5
+    style CE fill:#8B5CF6,stroke:#8B5CF6,color:#fff
+    style RO fill:#6D28D9,stroke:#6D28D9,color:#fff
+    style IC fill:#2d2d44,stroke:#8B5CF6,color:#f5f5f5
+    style TD fill:#2d2d44,stroke:#8B5CF6,color:#f5f5f5
+    style TE fill:#2d2d44,stroke:#8B5CF6,color:#f5f5f5
+    style VL fill:#2d2d44,stroke:#8B5CF6,color:#f5f5f5
+    style OUT fill:#2d2d44,stroke:#8B5CF6,color:#f5f5f5
+    style MEM fill:#1e1e36,stroke:#8B5CF6,stroke-dasharray:5,color:#a5a5c5
+    style GR fill:#1e1e36,stroke:#8B5CF6,stroke-dasharray:5,color:#a5a5c5
+    style OBS fill:#1e1e36,stroke:#8B5CF6,stroke-dasharray:5,color:#a5a5c5
+`} />
+
+The critical architectural insight is the **decoupling of probabilistic reasoning from deterministic execution**. The LLM — the "Cognitive Engine" — drafts a probabilistic plan. But before any action is taken, it's routed through a "Reasoning Orchestrator" — a deterministic layer of hard-coded logic that validates the plan against rigid business rules, access controls, and compliance frameworks. The model is merely the cognitive engine driving a highly engineered vehicle.
+
+### The Investor Consensus Is Remarkably Aligned
+
+Multiple investors and thought leaders have converged on this view:
+
+- **NGP Capital**: *"The deeper your evals, the deeper your moat"* and *"EvalOps is no longer a cost center, it's the differentiator."*
+- **Y Combinator CEO Garry Tan**: *"Evals are emerging as the real moat for AI startups."*
+- **Tidemark Capital**: *"The model is replaceable. Your orchestration layer isn't."*
+- **Google VP Darren Mowry**: *"The industry doesn't have a lot of patience anymore if you're really just counting on the back-end model."*
+
+The most actionable framework distinguishes **scaffolding** (constructing the agent before the first prompt — system prompt compilation, tool schemas, subagent registration) from the **harness** (the runtime orchestration layer that wraps the core reasoning loop). Both are domain-specific. Both compound with usage. Neither transfers when you swap the underlying model.
+
+---
+
+## The Data Flywheel: Your Only Durable Advantage
+
+General internet-scale data is abundant and increasingly shared. What actually moves the needle in vertical applications is **specialized, high-signal data generated in real time inside closed-loop systems**.
+
+<Mermaid code={`
+graph LR
+    A["More Usage"] --> B["More Proprietary<br/>Interaction Data"]
+    B --> C["Better Fine-tuning,<br/>Retrieval & Guardrails"]
+    C --> D["Better Product<br/>Performance"]
+    D --> E["Stickier Product,<br/>Higher Switching Costs"]
+    E --> A
+
+    style A fill:#8B5CF6,stroke:#8B5CF6,color:#fff
+    style B fill:#7C3AED,stroke:#7C3AED,color:#fff
+    style C fill:#6D28D9,stroke:#6D28D9,color:#fff
+    style D fill:#5B21B6,stroke:#5B21B6,color:#fff
+    style E fill:#4C1D95,stroke:#4C1D95,color:#fff
+`} />
+
+After 12–24 months of compounding, this gap often becomes uncrossable. The key insight: this isn't a static dataset you scraped once. **It's a living feedback loop.** Every user interaction, correction, and edge case becomes a proprietary training signal invisible to the outside world.
+
+### The Flywheel Mechanics
+
+The building blocks that make this work:
+
+- **Human-in-the-loop (HITL) workflows** — creating gold-standard data no scraper can replicate
+- **Workflow integration** — if your AI lives inside the EHR, CRM, or checkout flow, you own the context
+- **Low-latency feedback** — the faster the model learns from the user, the faster your product pulls away
+- **Proprietary generation** — data created through your product that can't exist elsewhere
+
+### Lowering TCO Through the Flywheel
+
+Beyond improving accuracy, the data flywheel is the primary mechanism for lowering Total Cost of Ownership. Organizations initially rely on massive, expensive foundational models (70B+ parameters) to execute complex tasks. But relying on these for millions of daily API calls is economically prohibitive.
+
+The flywheel provides escape velocity: by collecting successful interactions from the large model, an enterprise curates a high-quality ground-truth dataset. This is then used to fine-tune significantly smaller models (1B to 8B parameters). In benchmark testing, **a customized 1B parameter model trained on just a few thousand records of proprietary workflow data can achieve up to 96% of the accuracy of a generalized 70B parameter model** on the exact same task.
+
+<Callout type="info" title="The Modern Data Moat Has Evolved">
+The modern, durable data moat is not static — it's dynamic, behavioral, and deeply integrated into proprietary operational workflows. Static data moats are vulnerable because advanced foundational models can generate synthetic approximations. True defensibility comes from owning the software interfaces where data is **naturally and continuously generated**.
+</Callout>
+
+---
+
+## Finance Proves the Thesis: Bloomberg, Stripe, and the Compliance Flywheel
+
+Finance is the sharpest illustration of why the harness + flywheel thesis holds, even as frontier labs push aggressively into the sector.
+
+### Bloomberg: The Harness Is the Terminal
+
+Bloomberg invested ~$10M building BloombergGPT, a 50B-parameter model trained on 369B tokens of proprietary financial data. **GPT-4 outperformed it on most financial tasks.** But Bloomberg's Terminal — at **$25,000–$30,000/user/year with 350,000+ subscribers** — remains unassailable.
+
+Why? The moat isn't BloombergGPT. It's decades of curated financial data, 90+ proprietary pricing and classification models, and deep integration into analyst workflows. The LLM is a retention feature embedded within the harness, not the product itself.
+
+### Stripe: Data Flywheel at Scale
+
+Stripe's flywheel is even more explicit. Processing **$1.4 trillion in payment volume in 2024** (1.3% of global GDP), Stripe has a **92% probability of having previously seen any given card** on its network. In May 2025, Stripe launched the world's first payments foundation model, trained on tens of billions of transactions.
+
+The results were immediate:
+
+- Card-testing attack detection jumped **from 59% to 97% overnight** — a 64% improvement
+- Stripe Radar blocked **20.9 million fraudulent transactions worth $917 million** during Black Friday/Cyber Monday 2024 alone
+- Adaptive Acceptance recovered **$6 billion in false declines** in 2024
+
+As one analyst noted: *"It is genuinely hard for me to imagine how anyone, aside from a few of the world's largest tech companies, could ever compete with Stripe"* — not because of model quality, but because of the data flywheel.
+
+### The Smaller Model Advantage
+
+Researchers built **Fin-R1**, a specialized 7-billion parameter model trained on curated financial reasoning scenarios with step-by-step chains. This tiny model scored 85.0 on ConvFinQA and 76.0 on FinQA — **surpassing much larger general-purpose models**. The training data was domain-specific, the reasoning chains were hand-crafted for financial logic, and the feedback loop was tight.
+
+NVIDIA is building an entire Data Flywheel Blueprint for financial workflows — an orchestrator that coordinates fine-tuning, distillation, and evaluation in a continuous loop.
+
+<Callout type="note" title="The Quant Finance Perspective">
+Two Sigma's 2026 outlook: *"The next year won't be so much about LLMs making trades. It will be about AI becoming the operating system for how quant research and investing actually work."* The moat is the proprietary data pipeline plus feedback loop. The LLM is one component. The system is the product.
+</Callout>
+
+---
+
+## Retail: Agentic Commerce and the Checkout Flywheel
+
+Retail is where the harness concept gets tangible. McKinsey estimates agentic commerce will generate **$3–5 trillion in global value by 2030**.
+
+### Shopify: Aggregate Data as a Weapon
+
+Shopify processes **$1.1 trillion in GMV** across millions of merchants, powering **>12% of US e-commerce**. That aggregate dataset feeds products no horizontal AI can replicate:
+
+- **SimGym** uses aggregated shopping patterns from billions of transactions to create realistic AI shopper personas for merchants to stress-test changes
+- **Shopify Catalog** gives developers access to billions of products with AI-inferred categories and attributes
+
+As Shopify stated: *"We are uniquely set up to do this because we've seen billions of product configurations over the years."*
+
+### Amazon: The Recommendation Flywheel
+
+Amazon's recommendation engine drives **35% of total sales** — roughly **$70 billion annually**. Amazon Rufus, their AI shopping assistant, reached **300 million+ users** in 2025 with interactions up **210% YoY**. Customers who engage with Rufus are **60% more likely to complete a purchase**, projected to generate **$12 billion in incremental annualized sales**.
+
+### Stripe's Agentic Commerce Primitives
+
+Stripe launched its Agentic Commerce Suite in late 2025, including **Shared Payment Tokens (SPTs)** — a payment primitive designed specifically for AI-driven commerce. SPTs let agents initiate payments using a buyer's preferred method without exposing credentials.
+
+Klarna integrated with SPTs, and their Agentic Product Protocol already standardizes data on over **100 million items across 400 million prices in 12 markets**. Every AI agent that queries this data generates signals about what consumers want, when, and at what price point. That data feeds back into better recommendations, better pricing, and better fraud detection.
+
+<Callout type="insight" title="The Retail Harness">
+The retailers who win won't have the best LLM. They'll have the best-connected harness across their pricing, inventory, personalization, and payment systems — with a flywheel spinning faster every day.
+</Callout>
+
+---
+
+## Why Vertical SaaS Is Still a Play (Despite the Giants' Push)
+
+So is vertical SaaS dead? Not even close. Here's why:
+
+### 1. The Data Is the Moat, Not the Feature
+
+A general AI legal assistant might see 15% churn because it's too broad. A vertical SaaS that only handles the discovery phase of medical malpractice litigation can command **300% higher pricing with less than 3% churn** — because it understands the difference between a "standard of care" violation and a "proximate cause" issue in ways a general model never will.
+
+### 2. Workflow Integration Creates Structural Lock-in
+
+When your AI lives inside the EHR, the underwriting engine, or the supply chain orchestrator, the output becomes a byproduct of deep integration. Ripping it out means ripping out the workflow itself. Leaving a platform like Procore in construction isn't merely a software switch — it requires ripping out field coordination protocols, compliance documentation systems, and bid management workflows.
+
+### 3. Embedded Financial Infrastructure Is Insurmountable
+
+Platforms like Toast and ServiceTitan don't merely organize data — they **process credit card payments, run employee payroll, and manage merchant accounts**. AI models can parse receipts and draft invoices, but they cannot settle a payment, underwrite a loan, or interact with regulated banking infrastructure. This embedded fintech generates revenue via **transaction volume**, immunizing the vertical from AI-driven seat compression.
+
+### 4. The Numbers Tell the Story
+
+In 2025, vertical startups captured **53% of VC deal volume** and **30% of capital deployed** across 4,395 financings totaling $186B. Strip out the 12 mega-rounds from horizontal players like OpenAI and Anthropic, and verticals captured **51% of total capital**. In 2026, AI-native vertical SaaS is seeing a **65% increase** in capital flow.
+
+### 5. The Historical Parallel Is Instructive
+
+Despite AWS, Salesforce, and Microsoft Azure dominating horizontal cloud, vertical SaaS produced Veeva (~$37B peak market cap), Toast, Procore, and ServiceTitan. The **top 20 public vertical SaaS companies carry a combined ~$300 billion market cap**. CrowdStrike CEO George Kurtz drew the direct line: *"As cloud was maturing, I heard a lot about the hyperscalers actually providing all the security services. Well, that didn't happen."*
+
+---
+
+## Horizontal AI vs. Vertical SaaS: A Strategic Comparison
+
+| Dimension | Horizontal AI Providers | Vertical SaaS Players |
+|---|---|---|
+| **Data Ownership** | Limited; rely on public or purchased data | Proprietary, industry-specific data |
+| **Workflow Integration** | General-purpose, surface-level | Deeply embedded in domain workflows |
+| **Agentic Capabilities** | Developing, but limited domain expertise | Advanced, domain-specific agentic systems |
+| **Competitive Moat** | Model performance and brand | Data flywheels + workflow integration + domain expertise |
+| **Revenue Model** | Model licensing and API usage | SaaS subscriptions + embedded finance |
+| **Regulatory Depth** | Broad compliance (HIPAA, SOC2) | Deep, jurisdiction-specific compliance |
+| **Switching Costs** | Low — API swaps are trivial | High — ripping out embedded workflows |
+
+---
+
+## The Playbook: Building for the Long Game
+
+If you're building in this space, the strategy is clear:
+
+<Callout type="success" title="Five Principles for Durable AI Advantage">
+
+1. **Own the workflow, not the output.** Embed deeply into business processes where switching costs are prohibitive.
+2. **Build the harness first.** Invest in orchestration, guardrails, memory, observability, and tool integration. Make your system model-agnostic.
+3. **Spin the flywheel from day one.** Every interaction should generate proprietary data. Design for HITL, capture edge cases, and build evaluation loops that compound.
+4. **Don't compete on intelligence — compete on integration.** Let OpenAI and Anthropic race on benchmarks. Your advantage is knowing that when a retailer's payment agent encounters a split-shipment edge case at 2 AM, your system handles it — because it's seen 10,000 of them before.
+5. **Price for outcomes, not seats.** The value of agentic systems isn't in the software license. It's in the labor line of the P&L they're replacing.
+
+</Callout>
+
+---
+
+## Cognitive Debt: The New Technical Debt
+
+One emerging concept worth understanding is **cognitive debt** — the AI-era successor to technical debt. When enterprises deploy AI agents without a robust harness, they accumulate compounding costs from:
+
+- Chronic context loss across interactions
+- Uncontrolled and hallucinated tool usage
+- Highly unreliable agent behavior
+
+As Randall Hunt articulated: *"If you don't engineer the harness, you don't get compounding leverage; you get compounding cognitive debt."*
+
+Cognitive debt also manifests in **human capital**. Repeated reliance on unharnessed, unpredictable AI tools can degrade the intuition and foundational expertise of junior employees who become overly reliant on probabilistic generation without understanding the deterministic mechanisms required to verify it. A strictly engineered harness — which forces the AI to show its work, cite its sources, and pause for human-in-the-loop verification — protects against both algorithmic failure and human deskilling.
+
+---
+
+## The Next Frontiers
+
+Several emerging verticals and technical challenges will define the next wave:
+
+**Emerging verticals** — Logistics and manufacturing (autonomous routing, defect detection, predictive maintenance), real estate (automated property management, lease negotiations), and healthcare (AI-driven diagnostics, compliance automation) all represent massive opportunities for harness + flywheel plays.
+
+**Technical bottlenecks** — Long-context memory management, multi-agent coordination at scale, and robust human oversight tooling in regulated industries remain unsolved. The companies that crack these constraints within specific verticals will build the deepest moats.
+
+**Regulatory tailwinds** — AML fines increased **417% in H1 2025**. Regulatory complexity is a forcing function that makes data-rich incumbents increasingly essential. GDPR-like regulations may restrict proprietary data usage, but they also raise the bar for new entrants.
+
+---
+
+## Conclusion
+
+The convergence of evidence across pricing data, benchmark scores, VC theses, and enterprise case studies points to a structural shift already well underway. The model layer is following the classic commoditization arc — initial scarcity, rapid proliferation, price collapse, value migration to adjacent layers.
+
+Platform companies racing into verticals face the constraint that has always limited horizontal expansion: **they cannot go deep enough** into the domain-specific data loops, regulatory workflows, integration layers, and evaluation systems that define vertical excellence.
+
+The model wars are exciting, but they're a sideshow. The real competition is in the harness — the unsexy, deeply integrated orchestration layer — and the data flywheel spinning inside it. That's where durable value gets built.
+
+<Callout type="insight">
+The best AI companies won't be the ones with the best models. They'll be the ones whose systems get smarter every single day — because the harness captures what the model can't.
+</Callout>
