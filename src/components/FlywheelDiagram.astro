@@ -1,0 +1,231 @@
+---
+export interface Props {
+  stages: Array<{
+    label: string;
+    description: string;
+    icon?: string;
+  }>;
+  title?: string;
+  subtitle?: string;
+}
+
+const { stages, title = 'The Data Flywheel', subtitle } = Astro.props;
+const componentId = `flywheel-${Math.random().toString(36).slice(2, 11)}`;
+
+const defaultIcons: Record<string, string> = {
+  usage: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>`,
+  data: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>`,
+  model: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>`,
+  product: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>`,
+  retention: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>`,
+};
+
+const stageColors = [
+  { bg: 'from-purple-500 to-purple-600', text: 'text-white', ring: 'ring-purple-400/30', glow: 'shadow-purple-500/20' },
+  { bg: 'from-violet-500 to-violet-600', text: 'text-white', ring: 'ring-violet-400/30', glow: 'shadow-violet-500/20' },
+  { bg: 'from-indigo-500 to-indigo-600', text: 'text-white', ring: 'ring-indigo-400/30', glow: 'shadow-indigo-500/20' },
+  { bg: 'from-blue-500 to-blue-600', text: 'text-white', ring: 'ring-blue-400/30', glow: 'shadow-blue-500/20' },
+  { bg: 'from-cyan-500 to-cyan-600', text: 'text-white', ring: 'ring-cyan-400/30', glow: 'shadow-cyan-500/20' },
+];
+---
+
+<div class="flywheel-wrapper my-10" id={componentId}>
+  {/* Header */}
+  <div class="text-center mb-8">
+    <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">{title}</h4>
+    {subtitle && <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xl mx-auto">{subtitle}</p>}
+  </div>
+
+  {/* Flywheel Visual */}
+  <div class="relative mx-auto max-w-lg">
+    {/* Center hub */}
+    <div class="flywheel-hub absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+      <div class="w-20 h-20 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 dark:from-purple-500 dark:to-indigo-500 shadow-lg shadow-purple-500/30 flex items-center justify-center">
+        <svg class="w-8 h-8 text-white flywheel-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+      </div>
+    </div>
+
+    {/* SVG ring with arrows */}
+    <svg class="w-full" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id={`${componentId}-arrow`} markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <path d="M0 0 L8 3 L0 6 Z" fill="#8B5CF6" opacity="0.6"/>
+        </marker>
+      </defs>
+      {/* Circular path with dashes */}
+      <circle cx="200" cy="200" r="150" stroke="#8B5CF6" stroke-width="2" stroke-dasharray="12 6" opacity="0.25" fill="none" />
+      {/* Animated ring */}
+      <circle cx="200" cy="200" r="150" stroke="url(#flywheel-gradient)" stroke-width="3" stroke-dasharray="60 880" fill="none" class="flywheel-ring" />
+      <defs>
+        <linearGradient id="flywheel-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#8B5CF6" />
+          <stop offset="100%" stop-color="#6366F1" stop-opacity="0.3" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    {/* Stage nodes positioned around the circle */}
+    <div class="absolute inset-0">
+      {stages.map((stage, i) => {
+        const total = stages.length;
+        const angle = (i / total) * 2 * Math.PI - Math.PI / 2;
+        const radius = 42;
+        const x = 50 + radius * Math.cos(angle);
+        const y = 50 + radius * Math.sin(angle);
+        const color = stageColors[i % stageColors.length];
+
+        return (
+          <div
+            class="flywheel-node absolute -translate-x-1/2 -translate-y-1/2"
+            style={`left: ${x}%; top: ${y}%;`}
+            data-index={i}
+          >
+            <button
+              class={`group relative flex flex-col items-center gap-1 cursor-pointer`}
+              data-flywheel-btn={componentId}
+              data-stage={i}
+              aria-label={`Stage ${i + 1}: ${stage.label}`}
+            >
+              <div class={`w-12 h-12 rounded-full bg-gradient-to-br ${color.bg} ${color.text} flex items-center justify-center shadow-lg ${color.glow} ring-2 ${color.ring} transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl`}>
+                <span class="text-sm font-bold">{i + 1}</span>
+              </div>
+              <span class="text-xs font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap max-w-[90px] text-center leading-tight">{stage.label}</span>
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+
+  {/* Description panel */}
+  <div class="mt-6 min-h-[80px]" id={`${componentId}-desc`}>
+    <div class="rounded-lg border border-gray-200/60 dark:border-gray-700/40 bg-white/80 dark:bg-gray-800/40 p-4 text-center transition-all duration-300">
+      <p class="text-sm text-gray-500 dark:text-gray-400 italic">Click a stage to see details</p>
+    </div>
+  </div>
+
+  {/* Linear fallback for small screens */}
+  <div class="flywheel-linear hidden mt-6">
+    {stages.map((stage, i) => {
+      const color = stageColors[i % stageColors.length];
+      return (
+        <div class="flex items-start gap-3 mb-4 last:mb-0">
+          <div class={`flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br ${color.bg} ${color.text} flex items-center justify-center text-xs font-bold shadow-md`}>
+            {i + 1}
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-medium text-gray-900 dark:text-gray-100 text-sm">{stage.label}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{stage.description}</p>
+          </div>
+          {i < stages.length - 1 && (
+            <div class="flex-shrink-0 self-center text-purple-400">
+              <svg class="w-4 h-4 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+              </svg>
+            </div>
+          )}
+        </div>
+      );
+    })}
+  </div>
+</div>
+
+<script define:vars={{ componentId, stages }} is:inline>
+  function initFlywheel() {
+    const wrapper = document.getElementById(componentId);
+    if (!wrapper) { setTimeout(initFlywheel, 100); return; }
+
+    const descPanel = document.getElementById(`${componentId}-desc`);
+    const buttons = wrapper.querySelectorAll(`[data-flywheel-btn="${componentId}"]`);
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const idx = parseInt(this.getAttribute('data-stage'));
+        const stage = stages[idx];
+
+        // Highlight active
+        buttons.forEach(b => {
+          const circle = b.querySelector('div');
+          circle.classList.remove('scale-110', 'shadow-xl');
+        });
+        const activeCircle = this.querySelector('div');
+        activeCircle.classList.add('scale-110', 'shadow-xl');
+
+        // Update description
+        if (descPanel) {
+          descPanel.innerHTML = `
+            <div class="rounded-lg border border-purple-200/60 dark:border-purple-700/40 bg-purple-50/50 dark:bg-purple-900/20 p-4 text-center transition-all duration-300">
+              <p class="font-semibold text-gray-900 dark:text-gray-100 text-base mb-1">${stage.label}</p>
+              <p class="text-sm text-gray-600 dark:text-gray-300">${stage.description}</p>
+            </div>
+          `;
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFlywheel);
+  } else {
+    initFlywheel();
+  }
+</script>
+
+<style>
+  .flywheel-wrapper {
+    position: relative;
+  }
+
+  .flywheel-spin {
+    animation: spin 8s linear infinite;
+  }
+
+  .flywheel-ring {
+    animation: ring-rotate 6s linear infinite;
+    transform-origin: center;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes ring-rotate {
+    from { stroke-dashoffset: 0; }
+    to { stroke-dashoffset: -940; }
+  }
+
+  .flywheel-node {
+    animation: fadeInUp 0.5s ease-out both;
+  }
+
+  .flywheel-node[data-index="0"] { animation-delay: 0.1s; }
+  .flywheel-node[data-index="1"] { animation-delay: 0.2s; }
+  .flywheel-node[data-index="2"] { animation-delay: 0.3s; }
+  .flywheel-node[data-index="3"] { animation-delay: 0.4s; }
+  .flywheel-node[data-index="4"] { animation-delay: 0.5s; }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -50%) translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) translateY(0);
+    }
+  }
+
+  /* Hide circular on very small screens, show linear */
+  @media (max-width: 480px) {
+    .flywheel-wrapper .relative.mx-auto,
+    .flywheel-wrapper #flywheel-desc {
+      display: none;
+    }
+    .flywheel-linear {
+      display: block !important;
+    }
+  }
+</style>
