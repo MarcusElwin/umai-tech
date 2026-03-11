@@ -1,0 +1,159 @@
+---
+export interface Props {
+  title?: string;
+  leftColumn: {
+    heading: string;
+    subtitle?: string;
+    icon?: string;
+    attributes: Array<{
+      dimension: string;
+      value: string;
+      strength: 'weak' | 'medium' | 'strong';
+    }>;
+  };
+  rightColumn: {
+    heading: string;
+    subtitle?: string;
+    icon?: string;
+    attributes: Array<{
+      dimension: string;
+      value: string;
+      strength: 'weak' | 'medium' | 'strong';
+    }>;
+  };
+}
+
+const { title = 'Moat Comparison', leftColumn, rightColumn } = Astro.props;
+
+const strengthStyles = {
+  weak: {
+    bar: 'w-1/4 bg-gradient-to-r from-red-400 to-red-500',
+    text: 'text-red-600 dark:text-red-400',
+    badge: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
+    label: 'Weak',
+  },
+  medium: {
+    bar: 'w-2/4 bg-gradient-to-r from-amber-400 to-amber-500',
+    text: 'text-amber-600 dark:text-amber-400',
+    badge: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
+    label: 'Medium',
+  },
+  strong: {
+    bar: 'w-full bg-gradient-to-r from-emerald-400 to-emerald-500',
+    text: 'text-emerald-600 dark:text-emerald-400',
+    badge: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
+    label: 'Strong',
+  },
+};
+
+const leftIcon = leftColumn.icon === 'model'
+  ? `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>`
+  : `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>`;
+
+const rightIcon = rightColumn.icon === 'harness'
+  ? `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>`
+  : `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>`;
+---
+
+<div class="my-10">
+  {/* Title */}
+  <div class="text-center mb-6">
+    <h4 class="text-xl font-semibold text-gray-900 dark:text-white">{title}</h4>
+  </div>
+
+  {/* Comparison Grid */}
+  <div class="grid md:grid-cols-2 gap-4">
+    {/* Left Column */}
+    <div class="moat-card rounded-xl border border-gray-200/60 dark:border-gray-700/40 bg-gradient-to-br from-gray-50/80 to-white/90 dark:from-gray-900/50 dark:to-gray-800/30 overflow-hidden transition-all duration-300 hover:shadow-lg">
+      {/* Header */}
+      <div class="px-5 py-4 border-b border-gray-200/60 dark:border-gray-700/40 bg-gray-100/50 dark:bg-gray-800/50">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300">
+            <Fragment set:html={leftIcon} />
+          </div>
+          <div>
+            <h5 class="font-semibold text-gray-900 dark:text-gray-100">{leftColumn.heading}</h5>
+            {leftColumn.subtitle && <p class="text-xs text-gray-500 dark:text-gray-400">{leftColumn.subtitle}</p>}
+          </div>
+        </div>
+      </div>
+      {/* Attributes */}
+      <div class="p-5 space-y-4">
+        {leftColumn.attributes.map((attr) => {
+          const style = strengthStyles[attr.strength];
+          return (
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{attr.dimension}</span>
+                <span class={`text-xs font-medium px-2 py-0.5 rounded-full ${style.badge}`}>{style.label}</span>
+              </div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">{attr.value}</p>
+              <div class="h-1.5 rounded-full bg-gray-200/60 dark:bg-gray-700/40 overflow-hidden">
+                <div class={`h-full rounded-full ${style.bar} transition-all duration-700`}></div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+
+    {/* Right Column */}
+    <div class="moat-card rounded-xl border border-purple-200/60 dark:border-purple-700/40 bg-gradient-to-br from-purple-50/50 to-white/90 dark:from-purple-900/20 dark:to-gray-800/30 overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 ring-1 ring-purple-200/30 dark:ring-purple-700/20">
+      {/* Header */}
+      <div class="px-5 py-4 border-b border-purple-200/60 dark:border-purple-700/40 bg-purple-100/50 dark:bg-purple-900/30">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white shadow-sm">
+            <Fragment set:html={rightIcon} />
+          </div>
+          <div>
+            <h5 class="font-semibold text-gray-900 dark:text-gray-100">{rightColumn.heading}</h5>
+            {rightColumn.subtitle && <p class="text-xs text-gray-500 dark:text-gray-400">{rightColumn.subtitle}</p>}
+          </div>
+        </div>
+      </div>
+      {/* Attributes */}
+      <div class="p-5 space-y-4">
+        {rightColumn.attributes.map((attr) => {
+          const style = strengthStyles[attr.strength];
+          return (
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{attr.dimension}</span>
+                <span class={`text-xs font-medium px-2 py-0.5 rounded-full ${style.badge}`}>{style.label}</span>
+              </div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">{attr.value}</p>
+              <div class="h-1.5 rounded-full bg-gray-200/60 dark:bg-gray-700/40 overflow-hidden">
+                <div class={`h-full rounded-full ${style.bar} transition-all duration-700`}></div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+
+  {/* VS Badge */}
+  <div class="flex justify-center -mt-2">
+    <div class="relative -top-[calc(50%+1rem)] hidden md:block">
+    </div>
+  </div>
+</div>
+
+<style>
+  .moat-card {
+    @apply backdrop-blur-sm;
+  }
+
+  /* Animate bars on scroll into view */
+  .moat-card [class*="w-1/4"],
+  .moat-card [class*="w-2/4"],
+  .moat-card [class*="w-full"] {
+    animation: barGrow 0.8s ease-out both;
+  }
+
+  @keyframes barGrow {
+    from {
+      width: 0;
+    }
+  }
+</style>
