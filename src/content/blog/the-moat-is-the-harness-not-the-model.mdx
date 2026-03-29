@@ -8,19 +8,19 @@ tags: ["AI", "AI Engineering", "Agentic AI", "Data Flywheel", "Vertical SaaS", "
 
 import Callout from '../../components/Callout.astro';
 import Citation from '../../components/Citation.astro';
-import Mermaid from '../../components/Mermaid.astro';
+import HarnessDiagram from '../../components/HarnessDiagram.astro';
 import FlywheelDiagram from '../../components/FlywheelDiagram.astro';
 import MoatComparison from '../../components/MoatComparison.astro';
 
-Everyone is building agents. Hackathons spin up agent demos over a weekend. Startups pitch "AI agents for X" and close rounds before shipping a single production interaction. The dominant narrative says: pick the smartest model, wire it to tools, win.
 
-That narrative is wrong — and the companies betting on it are building on sand.
+A lot of things have happend in AI and Agentic AI since the release of ChatGPT 3.5 in end of 2022. First we had a wave of "ChatGPT" wrappers for various domains using "prompt engineering" and "RAG" to tailor for various domains.
+This was mainly systems using stacked LLM calls for doing things, then people started to evaluate agentic loops and agentic workflows for e.g. legal tasks. In the midst of this people started to talk about "context engineering" instead of "prompt engineering" and "agentic harness" instead of "agentic loop". 
+The idea is that the LLM is just one component in a larger system that includes tool use, memory, guardrails, and workflow integration. The real value is not in the model itself, but in how you orchestrate it and the data you collect from it.
+The LLMs or models are already commoditized i.e. no real MOAT in having the best model alone anymore. Models are surprisingly stupid still (maybe until we solve for real "world" models), agentic harness systems are less so. 
+The real competitive advantage is in the harness and the data flywheel. The harness is the system that wraps around the model, and the flywheel is the feedback loop that collects data from users and improves the system over time.
 
-The model layer is already commoditized. GPT-4o, Claude Opus, Gemini 2.5, and DeepSeek cluster within single-digit percentage points on every major benchmark. Raw intelligence is converging. Inference costs are collapsing. Open-source catches up in months, not years. If you've been through a technology cycle before, this pattern is familiar: it's the CPU all over again. Intel and AMD raced on clock speed while the real value migrated to the operating system, the application layer, and the data that flowed through them.
-
-The question isn't "which model is best?" — it's "what becomes the operating system?"
-
-Two things compound together to create durable advantage: the **agentic harness** — orchestration, guardrails, memory, tool-use, and workflow integration — and the **data flywheel** — the proprietary feedback loop that makes your system smarter with every interaction. This post explores why these two layers, not the LLM, are where defensible value gets built in 2026 and beyond.
+In this post we look at some of the latest and greatest connected to agentic harness engineering and data flywheels, and why this is where the real MOAT is in AI right now. 
+We also look at some examples from finance and retail, where the data is dense and the stakes are high, to see how this plays out in practice. Finally, we discuss why vertical SaaS is still a viable play, despite the platform giants' land grab, and what the future holds for AI-powered products.
 
 ---
 
@@ -97,35 +97,10 @@ The harness is the comprehensive system infrastructure surrounding an AI model i
 
 A critical architectural distinction: **scaffolding** is what happens pre-execution (system prompt compilation, tool schema registration, subagent setup), while the **harness** is the runtime orchestration layer that wraps the reasoning loop — dispatching tools, managing context, and enforcing safety. The OpenDev paper (2026) formalized this distinction with a five-layer defense-in-depth safety model.
 
-<Mermaid code={`
-graph TB
-    subgraph Harness["Agentic Harness"]
-        direction TB
-        IC["Intent Capture"] --> TD["Task Decomposition"]
-        TD --> CE["Cognitive Engine<br/>(LLM)"]
-        CE --> RO["Reasoning Orchestrator<br/>(Deterministic Validation)"]
-        RO --> TE["Tool Execution"]
-        TE --> VL["Verification Loop"]
-        VL -->|Iterate| CE
-        VL -->|Success| OUT["Output"]
-
-        MEM["Memory & Context<br/>Management"] -.-> CE
-        GR["Guardrails &<br/>Compliance"] -.-> RO
-        OBS["Observability &<br/>Monitoring"] -.-> TE
-    end
-
-    style Harness fill:#1a1a2e,stroke:#8B5CF6,stroke-width:2px,color:#f5f5f5
-    style CE fill:#8B5CF6,stroke:#8B5CF6,color:#fff
-    style RO fill:#6D28D9,stroke:#6D28D9,color:#fff
-    style IC fill:#2d2d44,stroke:#8B5CF6,color:#f5f5f5
-    style TD fill:#2d2d44,stroke:#8B5CF6,color:#f5f5f5
-    style TE fill:#2d2d44,stroke:#8B5CF6,color:#f5f5f5
-    style VL fill:#2d2d44,stroke:#8B5CF6,color:#f5f5f5
-    style OUT fill:#2d2d44,stroke:#8B5CF6,color:#f5f5f5
-    style MEM fill:#1e1e36,stroke:#8B5CF6,stroke-dasharray:5,color:#a5a5c5
-    style GR fill:#1e1e36,stroke:#8B5CF6,stroke-dasharray:5,color:#a5a5c5
-    style OBS fill:#1e1e36,stroke:#8B5CF6,stroke-dasharray:5,color:#a5a5c5
-`} />
+<HarnessDiagram
+  title="The Agentic Harness"
+  subtitle="Click any component to see how it fits into the system"
+/>
 
 The key insight is the decoupling of probabilistic reasoning from deterministic execution. The LLM ("Cognitive Engine") drafts a probabilistic plan; the "Reasoning Orchestrator" validates it against business rules, access controls, and compliance requirements before anything executes.
 
