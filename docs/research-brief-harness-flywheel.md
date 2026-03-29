@@ -26,8 +26,27 @@
 - **Jared Spataro (Microsoft)**: *"As powerful CPUs became commodities, the value shifted to the overall system."*
 
 ### Source: DeepSeek R1
-- Matched OpenAI o1 reasoning performance
-- Training cost: **~$5.6M** vs $100M+ for comparable proprietary models
+- Matched OpenAI o1 reasoning performance (97.3% vs 96.4% on MATH-500)
+- Training cost: **~$5.6M** on 2,000 H800 chips vs $100M+ for comparable proprietary models
+- API pricing **95% cheaper**: $0.55–$2.19 vs $15–$60 per million tokens
+
+### Source: Reasoning Model Commoditization
+- o3-mini (Feb 2025): democratized "PhD-level reasoning" at **~15x cheaper than o1**
+- Reasoning capability itself is now commodity, not just inference cost
+- Pattern: general inference commoditized → reasoning commoditized → value migrates further up the stack
+
+### Source: Gartner — Forward Projection (March 2025)
+- Predicts **90% cost reduction by 2030** for inference on 1T-parameter models
+- Warns against confusing commodity inference cost with frontier reasoning capability scarcity
+
+### Source: Menlo Ventures — API Market Share Shift (Mid-2025)
+- Anthropic now leads with **32% of enterprise API spend** (up from minority)
+- OpenAI fell from **50% to 25%** — market fragmentation accelerating
+- Reinforces multi-model thesis: no single provider dominates
+
+### Source: Enterprise Deployment Inflection (2026)
+- Gartner: **72% of enterprises** moved from AI trials to production deployment
+- Projected: **40%** will have task-specific AI agents by end of 2026 (vs <5% in 2025)
 
 ---
 
@@ -85,7 +104,69 @@ Decoupling of probabilistic reasoning from deterministic execution:
 
 ---
 
-## 4. Data Flywheel Mechanics
+## 4. Harness Engineering Evidence
+
+### Source: Terminal Bench 2.0
+- Claude Opus 4.6 ranked **#33** in its native Claude Code harness
+- Same model ranked **#5** in a different harness not seen during training
+- Demonstrates: harness configuration matters more than model selection
+
+### Source: Princeton HAL Leaderboard
+- Tested **21,730 agent rollouts** across 9 models
+- Finding: optimal scaffold **flips depending on model family**
+- Claude performs better with one scaffold; OpenAI performs better with a completely different one
+- Conclusion: models need custom agent harnesses
+
+### Source: ETH Zurich — Context Engineering Study
+- LLM-generated CLAUDE.md files **hurt performance** while costing **20%+ more tokens**
+- Human-written context files provided only **~4% improvement**
+- Agents spent **14–22% more reasoning tokens** on context instructions without improving resolution rates
+- Implication: context engineering > prompt engineering; quality > quantity
+
+### Source: "Improving 15 LLMs at Coding in One Afternoon"
+- Harness optimization alone produced **dramatic improvements across all 15 models**
+- No model retraining required — gains came entirely from harness configuration
+- Evidence supports: harness optimization lifts all models regardless of provider
+
+### Source: Big Model vs. Big Harness Debate
+- **Boris Cherny (Anthropic)**: *"All the secret sauce, it's all in the model. And this is the thinnest possible wrapper."*
+- **Jerry Liu (LlamaIndex)**: *"The Model Harness is Everything — the biggest barrier to getting value from AI is your own ability to context and workflow engineer the models."*
+- **METR testing**: Claude Code and Codex don't significantly outperform basic scaffolds
+- **Scale AI's SWE-Atlas**: harness choice produces marginal performance differences within error margins
+- Takeaway: the debate itself validates that harness engineering is a first-class discipline
+
+### Source: HumanLayer — Configuration Philosophy
+- *"It's not a model problem. It's a configuration problem."*
+- Six configuration levers: CLAUDE.md files, MCP servers, skills, sub-agents, hooks, back-pressure mechanisms
+- Sub-agents function as "context firewalls" — isolate intermediate results, prevent context pollution
+- Back-pressure: *"Your likelihood of successfully solving a problem is strongly correlated with the agent's ability to verify its own work."*
+
+### Source: Chroma Research — Context Length
+- Models perform worse at longer context lengths
+- Semantic relevance matters more than raw context length
+- Progressive disclosure (955 tokens at 100% efficiency) vs. static loading (25,000 tokens at 0.8% efficiency) — **~26x improvement**
+
+### Source: OpenDev Paper (arxiv 2603.05344)
+- First comprehensive technical report for an open-source, terminal-native, interactive coding agent
+- Formalizes **scaffolding** (pre-execution: system prompt, tool schemas, subagent registry) vs. **harness** (runtime: tool dispatch, context management, safety enforcement)
+- **Five-layer defense-in-depth safety model**: prompt guardrails → schema restrictions → runtime approval → tool validation → user hooks
+- **Dual-memory architecture**: episodic memory (full history) + working memory (current task)
+- **Event-driven reminders**: combat "instruction fade-out" by injecting guidance at decision points
+
+### Source: ICML 2025 — Modular Gaming Harness
+- Single GPT-4-class model with perception, memory, and reasoning modules
+- Achieved **significantly higher win rates** across diverse games vs. unharnessed baseline
+- Validates harness approach beyond coding domain
+
+### Market Validation
+- **Cursor**: $50B valuation — same underlying models as competitors, differentiation entirely in harness
+- **AIE Europe**: hosted "world's first Harness Engineering track"
+- **Latent Space**: major coverage — *"Harness Engineering has real value"*
+- **Parallel.ai**: published formal agent harness definition and taxonomy
+
+---
+
+## 5. Data Flywheel Mechanics
 
 ### Core Loop
 More Usage → More Proprietary Data → Better Fine-tuning/Retrieval/Guardrails → Better Product → Higher Retention → More Usage
@@ -109,12 +190,12 @@ More Usage → More Proprietary Data → Better Fine-tuning/Retrieval/Guardrails
 
 ---
 
-## 5. Case Studies
+## 6. Case Studies
 
 ### Bloomberg
 - Invested **~$10M** in BloombergGPT (50B params, 369B tokens of proprietary financial data)
 - **GPT-4 outperformed it** on most financial tasks
-- Yet Bloomberg Terminal remains unassailable: **$25K–$30K/user/year, 350K+ subscribers**
+- Yet Bloomberg Terminal remains unassailable: **$28K–$32K/user/year, ~325K subscribers**
 - Moat = decades of curated data, 90+ proprietary models, deep workflow integration
 - LLM is a retention feature inside the harness, not the product itself
 
@@ -141,7 +222,7 @@ More Usage → More Proprietary Data → Better Fine-tuning/Retrieval/Guardrails
 
 ---
 
-## 6. Retail & Agentic Commerce
+## 7. Retail & Agentic Commerce
 
 ### Market Size
 - McKinsey: agentic commerce = **$3–5 trillion global value by 2030**
@@ -163,7 +244,7 @@ More Usage → More Proprietary Data → Better Fine-tuning/Retrieval/Guardrails
 
 ---
 
-## 7. Platform Giants Entering Verticals
+## 8. Platform Giants Entering Verticals
 
 ### Anthropic
 - Claude for Financial Services (July 2025) — first industry-specific product
@@ -178,6 +259,12 @@ More Usage → More Proprietary Data → Better Fine-tuning/Retrieval/Guardrails
 - Partners: FactSet, Dow Jones Factiva, LSEG, S&P Global, Moody's, MSCI
 - Healthcare: ChatGPT Health (consumer) + HIPAA enterprise suite
 
+### Anthropic — Claude Computer Use (March 2026)
+- Full desktop/browser automation capability — not just code execution
+- Represents shift from "AI copilot" to "autonomous agent"
+- Extends harness moat beyond code to full desktop automation
+- Claude Agent Skills SDK: package-once-use-everywhere agent framework; lowers barrier to harness construction
+
 ### Others
 - Google: Gemini Enterprise
 - AWS: Bedrock AgentCore
@@ -185,12 +272,18 @@ More Usage → More Proprietary Data → Better Fine-tuning/Retrieval/Guardrails
 
 ---
 
-## 8. Vertical SaaS Resilience
+## 9. Vertical SaaS Resilience
 
 ### VC Investment Data (2025)
 - Vertical startups: **53% of deal volume**, **30% of capital** (4,395 financings, $186B total)
 - Excluding 12 mega-rounds (OpenAI, Anthropic etc.): verticals = **51% of total capital**
 - 2026: AI-native vertical SaaS seeing **65% increase** in capital flow
+- AI-native vertical SaaS Series A medians: **$22M vs $15M traditional** (47% larger rounds)
+
+### "Invisible AI" Trend
+- 65% funding surge toward **embedded AI** (in-workflow intelligence) vs. chatbot-style replacement interfaces
+- Capital markets pricing in flywheel advantage for harness-based products
+- Key distinction: invisible AI lives inside existing workflows; visible AI replaces interfaces
 
 ### Why Verticals Survive
 1. **Domain-specific data** — general AI can't replicate specialized workflow data
@@ -205,7 +298,7 @@ More Usage → More Proprietary Data → Better Fine-tuning/Retrieval/Guardrails
 
 ---
 
-## 9. Emerging Frontiers
+## 10. Emerging Frontiers
 
 ### Verticals to Watch
 - **Logistics/Manufacturing**: autonomous routing, defect detection, predictive maintenance
@@ -222,9 +315,20 @@ More Usage → More Proprietary Data → Better Fine-tuning/Retrieval/Guardrails
 - Regulatory complexity favors data-rich incumbents
 - GDPR-like regulations raise bar for new entrants
 
+### Academic Validation
+- **ACM CAIS 2026**: new conference launched for compound AI systems research
+- Multiple survey papers (Oct 2025 – Mar 2026): "Compound AI Systems Optimization", "From Standalone LLMs to Integrated Intelligence"
+- Formal academic recognition that agentic systems are a major research direction
+
+### Infrastructure Race
+- SoftBank/AEP: **10GW Ohio data center** (largest US AI infrastructure project)
+- Meta: **$10B AI investment** (6x prior), approaching 1GW+ facilities
+- Power is now the bottleneck, not chips — US grid under stress with 2,600 GW interconnection queue
+- Verticals with integrated AI need deep infrastructure partners
+
 ---
 
-## 10. Strategic Framework
+## 11. Strategic Framework
 
 ### Five Principles for Durable AI Advantage
 1. **Own the workflow, not the output** — embed where switching costs are prohibitive
