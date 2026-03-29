@@ -1,0 +1,344 @@
+---
+export interface Props {
+  title?: string;
+  formula?: string;
+  example: {
+    pLike?: { probability: number; weight: number; result: number };
+    pReply?: { probability: number; weight: number; result: number };
+    pRetweet?: { probability: number; weight: number; result: number };
+    pProfileClick?: { probability: number; weight: number; result: number };
+    pBlock?: { probability: number; weight: number; result: number };
+    pMute?: { probability: number; weight: number; result: number };
+    pReport?: { probability: number; weight: number; result: number };
+    total: number;
+  };
+}
+
+const {
+  title = "The X Scoring Formula",
+  example
+} = Astro.props;
+
+// Build terms from example
+const terms = Object.entries(example)
+  .filter(([key]) => key !== 'total')
+  .map(([key, value]) => ({
+    name: key.replace('p', 'P(').replace(/([A-Z])/g, ' $1').trim().toLowerCase() + ')',
+    ...value as { probability: number; weight: number; result: number },
+    isNegative: (value as { weight: number }).weight < 0
+  }));
+
+const componentId = `formula-${Math.random().toString(36).slice(2, 11)}`;
+---
+
+<div class="engagement-formula my-8" id={componentId}>
+  <h3 class="text-lg font-semibold mb-6 text-gray-900 dark:text-white flex items-center gap-2">
+    <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+    </svg>
+    {title}
+  </h3>
+
+  {/* Main Formula Display */}
+  <div class="formula-display bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/40 dark:to-blue-900/40 rounded-xl p-6 mb-6">
+    <div class="formula-container text-center">
+      <div class="formula text-2xl md:text-3xl font-mono font-bold text-gray-900 dark:text-white tracking-wide">
+        <span class="score-label text-purple-600 dark:text-purple-400">Score</span>
+        <span class="equals mx-2">=</span>
+        <span class="sigma text-blue-600 dark:text-blue-400">Σ</span>
+        <span class="formula-body ml-2">
+          (<span class="weight text-blue-600 dark:text-blue-400">weight</span>
+          <span class="multiply mx-1">×</span>
+          <span class="probability text-amber-600 dark:text-amber-400">P(action)</span>)
+        </span>
+      </div>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">
+        Sum of each action's weight multiplied by its predicted probability
+      </p>
+    </div>
+  </div>
+
+  {/* Expanded Formula - improved for mobile */}
+  <div class="expanded-formula bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 md:p-6 mb-6">
+    <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+      <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+      </svg>
+      Expanded Form
+      <span class="text-xs text-gray-400 dark:text-gray-500 font-normal ml-auto">Hover/tap terms to highlight</span>
+    </h4>
+    <div class="formula-expanded grid grid-cols-1 md:grid-cols-2 gap-2">
+      {terms.map((term) => (
+        <div
+          class={`term cursor-pointer p-2 rounded-lg transition-all hover:scale-[1.02] flex items-center justify-between ${
+            term.isNegative
+              ? 'bg-orange-50 dark:bg-orange-900/20 border border-orange-200/50 dark:border-orange-800/30'
+              : 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200/50 dark:border-blue-800/30'
+          }`}
+          data-term={term.name}
+        >
+          <div class="flex items-center gap-2">
+            <span class={`font-mono font-bold text-sm ${term.isNegative ? 'text-orange-600 dark:text-orange-400' : 'text-blue-600 dark:text-blue-400'}`}>
+              {term.weight > 0 ? '+' : ''}{term.weight}×
+            </span>
+            <span class="text-gray-700 dark:text-gray-300 text-sm">{term.name}</span>
+          </div>
+          <span class={`text-xs font-mono ${term.isNegative ? 'text-orange-500' : 'text-blue-500'}`}>
+            = {term.result >= 0 ? '+' : ''}{term.result.toFixed(2)}
+          </span>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* Example Calculation */}
+  <div class="example-calculation">
+    <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+      Live Example Calculation
+    </h4>
+
+    <div class="calculation-grid grid gap-3">
+      {terms.map((term, i) => (
+        <div
+          class={`calculation-row flex items-center justify-between p-3 rounded-lg transition-all duration-300 ${
+            term.isNegative
+              ? 'bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/40'
+              : 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/40'
+          }`}
+          style={`--animation-delay: ${i * 100}ms;`}
+          data-term-row={term.name}
+        >
+          <div class="term-info flex items-center gap-3">
+            <div class={`term-icon w-8 h-8 rounded-full flex items-center justify-center ${
+              term.isNegative
+                ? 'bg-orange-200 dark:bg-orange-800'
+                : 'bg-blue-200 dark:bg-blue-800'
+            }`}>
+              {term.isNegative ? (
+                <svg class="w-4 h-4 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              ) : (
+                <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                </svg>
+              )}
+            </div>
+            <div>
+              <span class="font-medium text-gray-900 dark:text-white text-sm">{term.name}</span>
+              <div class="text-xs text-gray-500 dark:text-gray-400">
+                Weight: <span class={`font-mono ${term.isNegative ? 'text-orange-600 dark:text-orange-400' : 'text-blue-600 dark:text-blue-400'}`}>{term.weight > 0 ? '+' : ''}{term.weight}×</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="calculation flex items-center gap-2 font-mono text-sm">
+            <span class="probability text-gray-600 dark:text-gray-400">{term.probability.toFixed(2)}</span>
+            <span class="text-gray-400">×</span>
+            <span class={term.isNegative ? 'text-orange-600 dark:text-orange-400' : 'text-blue-600 dark:text-blue-400'}>{term.weight}</span>
+            <span class="text-gray-400">=</span>
+            <span class={`result font-bold ${term.isNegative ? 'text-orange-600 dark:text-orange-400' : 'text-blue-600 dark:text-blue-400'}`}>
+              {term.result >= 0 ? '+' : ''}{term.result.toFixed(3)}
+            </span>
+          </div>
+        </div>
+      ))}
+
+      {/* Total */}
+      <div class="total-row flex items-center justify-between p-4 rounded-lg bg-purple-100 dark:bg-purple-900/40 border-2 border-purple-300 dark:border-purple-700 mt-2">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <span class="font-bold text-purple-900 dark:text-purple-100 text-lg">Total Score</span>
+        </div>
+        <span class={`total-value text-3xl font-mono font-bold ${example.total >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-orange-600 dark:text-orange-400'}`}>
+          {example.total >= 0 ? '+' : ''}{example.total.toFixed(2)}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  {/* Interpretation */}
+  <div class="interpretation mt-6 p-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800/40 rounded-lg">
+    <div class="flex items-start gap-3">
+      <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <div class="text-sm">
+        <p class="text-blue-800 dark:text-blue-200">
+          <strong>Interpretation:</strong>
+          {example.total >= 5 ? (
+            <span> This content scores well ({example.total.toFixed(2)}) and will likely appear higher in the feed. Reply probability is the dominant factor.</span>
+          ) : example.total >= 0 ? (
+            <span> This content has a modest score ({example.total.toFixed(2)}). Needs higher engagement signals to rank well.</span>
+          ) : (
+            <span> This content has a negative score ({example.total.toFixed(2)}) due to high block/mute probability. It will be suppressed.</span>
+          )}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ componentId }}>
+  function initEngagementFormula() {
+    var container = document.getElementById(componentId);
+    if (!container) return;
+
+    // Animate calculation rows on scroll
+    var rows = container.querySelectorAll('.calculation-row');
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var row = entry.target;
+          var delay = parseInt(row.style.getPropertyValue('--animation-delay') || '0');
+
+          row.style.opacity = '0';
+          row.style.transform = 'translateX(-20px)';
+
+          setTimeout(function() {
+            row.style.transition = 'all 0.4s ease-out';
+            row.style.opacity = '1';
+            row.style.transform = 'translateX(0)';
+          }, delay);
+
+          observer.unobserve(row);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    rows.forEach(function(row) { observer.observe(row); });
+
+    // Animate total with counting effect
+    var totalEl = container.querySelector('.total-value');
+    if (totalEl) {
+      var finalValue = parseFloat(totalEl.textContent.replace('+', '') || '0');
+      var currentValue = 0;
+      var duration = 1000;
+      var startTime = performance.now();
+
+      function animateTotal(currentTime) {
+        var elapsed = currentTime - startTime;
+        var progress = Math.min(elapsed / duration, 1);
+
+        // Easing function
+        var easeOutCubic = 1 - Math.pow(1 - progress, 3);
+        currentValue = finalValue * easeOutCubic;
+
+        totalEl.textContent = (currentValue >= 0 ? '+' : '') + currentValue.toFixed(2);
+
+        if (progress < 1) {
+          requestAnimationFrame(animateTotal);
+        }
+      }
+
+      // Start animation when visible
+      var totalObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            requestAnimationFrame(animateTotal);
+            totalObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      totalObserver.observe(totalEl);
+    }
+
+    // Term hover highlight
+    var terms = container.querySelectorAll('.term');
+    terms.forEach(function(term) {
+      term.addEventListener('mouseenter', function() {
+        var termName = term.getAttribute('data-term');
+        var correspondingRow = container.querySelector('[data-term-row="' + termName + '"]');
+        if (correspondingRow) {
+          correspondingRow.classList.add('ring-2', 'ring-purple-400', 'scale-105');
+        }
+      });
+
+      term.addEventListener('mouseleave', function() {
+        var termName = term.getAttribute('data-term');
+        var correspondingRow = container.querySelector('[data-term-row="' + termName + '"]');
+        if (correspondingRow) {
+          correspondingRow.classList.remove('ring-2', 'ring-purple-400', 'scale-105');
+        }
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initEngagementFormula);
+  } else {
+    initEngagementFormula();
+  }
+
+  globalThis['initEngagementFormula_' + componentId] = initEngagementFormula;
+</script>
+
+<style>
+  .engagement-formula {
+    @apply bg-gradient-to-br from-gray-50 to-white dark:from-gray-900/50 dark:to-gray-800/30;
+    @apply border border-gray-200 dark:border-gray-700 rounded-xl p-6;
+  }
+
+  .formula-display {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .formula-display::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent 0%,
+      rgba(139, 92, 246, 0.05) 50%,
+      transparent 100%
+    );
+    animation: shimmer 3s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%) rotate(45deg);
+    }
+    100% {
+      transform: translateX(100%) rotate(45deg);
+    }
+  }
+
+  .calculation-row {
+    transition: all 0.3s ease;
+  }
+
+  .calculation-row:hover {
+    transform: scale(1.02);
+  }
+
+  .total-row {
+    animation: pulse-subtle 2s infinite;
+  }
+
+  @keyframes pulse-subtle {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(139, 92, 246, 0);
+    }
+  }
+
+  .term {
+    transition: all 0.2s ease;
+  }
+</style>

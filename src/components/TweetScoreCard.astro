@@ -1,0 +1,328 @@
+---
+export interface Props {
+  author: string;
+  content: string;
+  engagement: {
+    likes: number;
+    replies: number;
+    retweets: number;
+    profileClicks?: number;
+  };
+  predictions: {
+    pLike: number;
+    pReply: number;
+    pRetweet: number;
+    pBlock: number;
+  };
+  timestamp?: string;
+  verified?: boolean;
+}
+
+const {
+  author,
+  content,
+  engagement,
+  predictions,
+  timestamp = "2h",
+  verified = true
+} = Astro.props;
+
+// X's actual weights
+const weights = {
+  like: 0.5,
+  reply: 13.5,
+  retweet: 1.0,
+  profileClick: 12.0,
+  block: -74.0
+};
+
+// Calculate score components
+const scoreComponents = {
+  like: predictions.pLike * weights.like,
+  reply: predictions.pReply * weights.reply,
+  retweet: predictions.pRetweet * weights.retweet,
+  block: predictions.pBlock * weights.block,
+};
+
+const totalScore = Object.values(scoreComponents).reduce((a, b) => a + b, 0);
+
+// Find the dominant positive contributor
+const positiveContributions = Object.entries(scoreComponents)
+  .filter(([_, v]) => v > 0)
+  .sort(([, a], [, b]) => b - a);
+const totalPositive = positiveContributions.reduce((sum, [, v]) => sum + v, 0);
+const dominantFactor = positiveContributions[0]?.[0];
+const dominantPercent = totalPositive > 0 ? ((positiveContributions[0]?.[1] / totalPositive) * 100).toFixed(0) : 0;
+
+// Format large numbers
+function formatCount(num: number): string {
+  if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+  if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+  return num.toString();
+}
+---
+
+<div class="tweet-score-card my-8">
+  <div class="card-container grid md:grid-cols-2 gap-6">
+    {/* Tweet Card */}
+    <div class="tweet-card bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-4 shadow-lg">
+      {/* Header */}
+      <div class="flex items-start gap-3 mb-3">
+        <div class="avatar w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg">
+          {author.replace('@', '').charAt(0).toUpperCase()}
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center gap-1">
+            <span class="font-bold text-gray-900 dark:text-white">{author}</span>
+            {verified && (
+              <svg class="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .494.083.964.237 1.4-1.272.65-2.147 2.018-2.147 3.6 0 1.495.782 2.798 1.942 3.486-.02.17-.032.34-.032.514 0 2.21 1.708 4 3.818 4 .47 0 .92-.086 1.335-.25.62 1.334 1.926 2.25 3.437 2.25 1.512 0 2.818-.916 3.437-2.25.415.163.865.248 1.336.248 2.11 0 3.818-1.79 3.818-4 0-.174-.012-.344-.033-.513 1.158-.687 1.943-1.99 1.943-3.484zm-6.616-3.334l-4.334 6.5c-.145.217-.382.334-.625.334-.143 0-.288-.04-.416-.126l-.115-.094-2.415-2.415c-.293-.293-.293-.768 0-1.06s.768-.294 1.06 0l1.77 1.767 3.825-5.74c.23-.345.696-.436 1.04-.207.346.23.44.696.21 1.04z" />
+              </svg>
+            )}
+          </div>
+          <span class="text-sm text-gray-500 dark:text-gray-400">{timestamp}</span>
+        </div>
+        <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+      </div>
+
+      {/* Content */}
+      <p class="text-gray-900 dark:text-white text-base leading-relaxed mb-4">
+        {content}
+      </p>
+
+      {/* Engagement stats */}
+      <div class="engagement-stats flex items-center gap-6 pt-3 border-t border-gray-100 dark:border-gray-800">
+        <button class="stat-item group flex items-center gap-2 text-gray-500 hover:text-blue-500 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+          <span class="text-sm font-medium">{formatCount(engagement.replies)}</span>
+        </button>
+
+        <button class="stat-item group flex items-center gap-2 text-gray-500 hover:text-blue-500 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span class="text-sm font-medium">{formatCount(engagement.retweets)}</span>
+        </button>
+
+        <button class="stat-item group flex items-center gap-2 text-gray-500 hover:text-pink-500 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+          <span class="text-sm font-medium">{formatCount(engagement.likes)}</span>
+        </button>
+
+        <button class="stat-item group flex items-center gap-2 text-gray-500 hover:text-blue-500 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    {/* Score Breakdown */}
+    <div class="score-breakdown bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/40 dark:to-blue-950/40 border border-purple-200 dark:border-purple-800/40 rounded-2xl p-4">
+      <h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+        <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+        Algorithm Score Breakdown
+      </h4>
+
+      <div class="score-terms space-y-3">
+        {/* Like term */}
+        <div class="term-row flex items-center justify-between text-sm">
+          <div class="term-left flex items-center gap-2">
+            <span class="text-pink-500">P(like)</span>
+            <span class="text-gray-400">×</span>
+            <span class="font-mono text-gray-600 dark:text-gray-400">{weights.like}</span>
+          </div>
+          <div class="term-right flex items-center gap-2">
+            <span class="text-gray-500">{predictions.pLike.toFixed(2)} × {weights.like}</span>
+            <span class="font-mono font-bold text-blue-600 dark:text-blue-400">= +{scoreComponents.like.toFixed(3)}</span>
+          </div>
+        </div>
+
+        {/* Reply term */}
+        <div class="term-row flex items-center justify-between text-sm bg-blue-100/50 dark:bg-blue-900/20 -mx-2 px-2 py-1 rounded">
+          <div class="term-left flex items-center gap-2">
+            <span class="text-blue-500">P(reply)</span>
+            <span class="text-gray-400">×</span>
+            <span class="font-mono text-gray-600 dark:text-gray-400 font-bold">{weights.reply}</span>
+          </div>
+          <div class="term-right flex items-center gap-2">
+            <span class="text-gray-500">{predictions.pReply.toFixed(2)} × {weights.reply}</span>
+            <span class="font-mono font-bold text-blue-600 dark:text-blue-400">= +{scoreComponents.reply.toFixed(3)}</span>
+          </div>
+        </div>
+
+        {/* Retweet term */}
+        <div class="term-row flex items-center justify-between text-sm">
+          <div class="term-left flex items-center gap-2">
+            <span class="text-blue-500">P(retweet)</span>
+            <span class="text-gray-400">×</span>
+            <span class="font-mono text-gray-600 dark:text-gray-400">{weights.retweet}</span>
+          </div>
+          <div class="term-right flex items-center gap-2">
+            <span class="text-gray-500">{predictions.pRetweet.toFixed(2)} × {weights.retweet}</span>
+            <span class="font-mono font-bold text-blue-600 dark:text-blue-400">= +{scoreComponents.retweet.toFixed(3)}</span>
+          </div>
+        </div>
+
+        {/* Block term */}
+        <div class="term-row flex items-center justify-between text-sm bg-orange-100/50 dark:bg-orange-900/20 -mx-2 px-2 py-1 rounded">
+          <div class="term-left flex items-center gap-2">
+            <span class="text-orange-500">P(block)</span>
+            <span class="text-gray-400">×</span>
+            <span class="font-mono text-gray-600 dark:text-gray-400 font-bold">{weights.block}</span>
+          </div>
+          <div class="term-right flex items-center gap-2">
+            <span class="text-gray-500">{predictions.pBlock.toFixed(2)} × {weights.block}</span>
+            <span class="font-mono font-bold text-orange-600 dark:text-orange-400">= {scoreComponents.block.toFixed(3)}</span>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-3 mt-3">
+          <div class="total-score flex items-center justify-between">
+            <span class="font-semibold text-gray-900 dark:text-white">Total Score</span>
+            <span class={`text-2xl font-mono font-bold ${totalScore >= 0 ? 'text-blue-600 dark:text-blue-400' : 'text-orange-600 dark:text-orange-400'}`}>
+              {totalScore >= 0 ? '+' : ''}{totalScore.toFixed(2)}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Contribution Bar */}
+      <div class="mt-4">
+        <div class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Score Contribution</div>
+        <div class="flex h-3 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800">
+          {scoreComponents.reply > 0 && (
+            <div
+              class="bg-blue-500 h-full"
+              style={`width: ${(scoreComponents.reply / totalPositive) * 100}%;`}
+              title={`Replies: ${((scoreComponents.reply / totalPositive) * 100).toFixed(0)}%`}
+            />
+          )}
+          {scoreComponents.like > 0 && (
+            <div
+              class="bg-pink-400 h-full"
+              style={`width: ${(scoreComponents.like / totalPositive) * 100}%;`}
+              title={`Likes: ${((scoreComponents.like / totalPositive) * 100).toFixed(0)}%`}
+            />
+          )}
+          {scoreComponents.retweet > 0 && (
+            <div
+              class="bg-emerald-400 h-full"
+              style={`width: ${(scoreComponents.retweet / totalPositive) * 100}%;`}
+              title={`Retweets: ${((scoreComponents.retweet / totalPositive) * 100).toFixed(0)}%`}
+            />
+          )}
+        </div>
+        <div class="flex justify-between text-xs mt-1">
+          <div class="flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+            <span class="text-gray-500 dark:text-gray-400">Reply {((scoreComponents.reply / totalPositive) * 100).toFixed(0)}%</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-pink-400"></span>
+            <span class="text-gray-500 dark:text-gray-400">Like</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span class="text-gray-500 dark:text-gray-400">Retweet</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Insight */}
+      <div class="mt-4 p-3 bg-purple-100/50 dark:bg-purple-900/30 rounded-lg">
+        <p class="text-xs text-purple-700 dark:text-purple-300">
+          <strong>Takeaway:</strong> Replies dominate with <strong>{dominantPercent}%</strong> of the positive score, despite only being {((engagement.replies / engagement.likes) * 100).toFixed(0)}% of likes volume. The 13.5× weight makes each reply worth 27 likes.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initTweetScoreCard() {
+    const scoreCards = document.querySelectorAll('.tweet-score-card');
+
+    scoreCards.forEach(card => {
+      const termRows = card.querySelectorAll('.term-row');
+
+      termRows.forEach((row, i) => {
+        (row as HTMLElement).style.opacity = '0';
+        (row as HTMLElement).style.transform = 'translateX(-10px)';
+
+        setTimeout(() => {
+          (row as HTMLElement).style.transition = 'all 0.3s ease';
+          (row as HTMLElement).style.opacity = '1';
+          (row as HTMLElement).style.transform = 'translateX(0)';
+        }, 100 + (i * 100));
+      });
+
+      // Animate total score
+      const totalEl = card.querySelector('.total-score span:last-child') as HTMLElement;
+      if (totalEl) {
+        totalEl.style.opacity = '0';
+        totalEl.style.transform = 'scale(0.8)';
+
+        setTimeout(() => {
+          totalEl.style.transition = 'all 0.4s ease';
+          totalEl.style.opacity = '1';
+          totalEl.style.transform = 'scale(1)';
+        }, 500);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTweetScoreCard);
+  } else {
+    initTweetScoreCard();
+  }
+
+  (globalThis as any).initTweetScoreCard = initTweetScoreCard;
+</script>
+
+<style>
+  .tweet-score-card {
+    @apply bg-gradient-to-br from-gray-50 to-white dark:from-gray-900/50 dark:to-gray-800/30;
+    @apply border border-gray-200 dark:border-gray-700 rounded-xl p-6;
+  }
+
+  .tweet-card {
+    transition: all 0.3s ease;
+  }
+
+  .tweet-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  .stat-item:hover svg {
+    transform: scale(1.1);
+  }
+
+  .stat-item svg {
+    transition: transform 0.2s ease;
+  }
+
+  .term-row {
+    transition: all 0.2s ease;
+  }
+
+  .term-row:hover {
+    background-color: rgba(139, 92, 246, 0.1);
+    border-radius: 0.375rem;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+</style>

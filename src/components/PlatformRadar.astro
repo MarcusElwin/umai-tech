@@ -1,0 +1,363 @@
+---
+export interface Props {
+  platforms: Array<{
+    name: string;
+    color: string;
+    scores: {
+      discovery: number;
+      realtime: number;
+      socialGraph: number;
+      personalization: number;
+      contentUnderstanding: number;
+      creatorEconomics: number;
+    };
+  }>;
+  title?: string;
+}
+
+const { platforms, title = "Platform Comparison" } = Astro.props;
+
+const dimensions = [
+  { key: 'discovery', label: 'Discovery', description: 'Out-of-network content %' },
+  { key: 'realtime', label: 'Real-time', description: 'Time horizon (how "NOW")' },
+  { key: 'socialGraph', label: 'Social Graph', description: 'Relationship weighting' },
+  { key: 'personalization', label: 'Personalization', description: 'Algorithm sophistication' },
+  { key: 'contentUnderstanding', label: 'Content ML', description: 'Content understanding depth' },
+  { key: 'creatorEconomics', label: 'Creator $', description: 'Monetization opportunities' },
+];
+
+// Generate unique ID for this component instance
+const chartId = `radar-${Math.random().toString(36).slice(2, 11)}`;
+---
+
+<div class="platform-radar my-8">
+  <h3 class="text-lg font-semibold mb-6 text-gray-900 dark:text-white flex items-center gap-2">
+    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+    </svg>
+    {title}
+  </h3>
+
+  <div class="radar-container flex flex-col lg:flex-row gap-6 items-center">
+    {/* Radar Chart SVG */}
+    <div class="chart-wrapper flex-1 min-w-[300px] max-w-[400px]">
+      <svg id={chartId} viewBox="0 0 400 400" class="w-full h-auto">
+        <!-- Will be populated by JavaScript -->
+      </svg>
+    </div>
+
+    {/* Legend and dimension explanations */}
+    <div class="legend-wrapper flex-1">
+      {/* Platform Legend - now with toggle buttons */}
+      <div class="platform-legend mb-6">
+        <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Toggle Platforms</h4>
+        <div class="flex flex-wrap gap-2">
+          {platforms.map((platform) => (
+            <button
+              class="platform-toggle flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-all cursor-pointer hover:scale-105"
+              data-platform={platform.name}
+              data-active="true"
+              style={`border-color: ${platform.color}; background-color: ${platform.color}15;`}
+            >
+              <div class="w-3 h-3 rounded-full" style={`background-color: ${platform.color};`}></div>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{platform.name}</span>
+              <svg class="w-4 h-4 text-blue-500 check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </button>
+          ))}
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Click to show/hide platforms</p>
+      </div>
+
+      {/* Dimension Explanations */}
+      <div class="dimension-legend">
+        <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Dimensions (1-10 scale)</h4>
+        <div class="grid grid-cols-2 gap-2">
+          {dimensions.map((dim) => (
+            <div class="dim-item p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-help" data-dimension={dim.key} title={dim.description}>
+              <span class="text-xs font-medium text-gray-900 dark:text-white">{dim.label}</span>
+              <p class="text-xs text-gray-500 dark:text-gray-400">{dim.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Score Summary */}
+      <div class="score-summary mt-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+        <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Average Scores</h4>
+        <div class="space-y-2">
+          {platforms.map((platform) => {
+            const avg = Object.values(platform.scores).reduce((a, b) => a + b, 0) / 6;
+            return (
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-3 h-3 rounded-full" style={`background-color: ${platform.color};`}></div>
+                  <span class="text-sm text-gray-700 dark:text-gray-300">{platform.name}</span>
+                </div>
+                <span class="text-sm font-mono font-bold" style={`color: ${platform.color};`}>{avg.toFixed(1)}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ chartId, platforms, dimensions }}>
+  function initRadarChart() {
+    var svg = document.getElementById(chartId);
+    if (!svg) return;
+
+    var width = 400;
+    var height = 400;
+    var centerX = width / 2;
+    var centerY = height / 2;
+    var radius = 150;
+    var levels = 5;
+
+    // Clear existing content
+    svg.innerHTML = '';
+
+    // Create SVG group for the chart
+    var chartGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    chartGroup.setAttribute('transform', 'translate(' + centerX + ', ' + centerY + ')');
+
+    // Draw concentric circles (levels)
+    for (var level = 1; level <= levels; level++) {
+      var levelRadius = (radius / levels) * level;
+      var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('r', levelRadius.toString());
+      circle.setAttribute('fill', 'none');
+      circle.setAttribute('stroke', 'currentColor');
+      circle.setAttribute('stroke-opacity', '0.1');
+      circle.setAttribute('class', 'text-gray-400 dark:text-gray-600');
+      chartGroup.appendChild(circle);
+
+      // Add level label
+      if (level % 2 === 0) {
+        var label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', '5');
+        label.setAttribute('y', (-levelRadius + 4).toString());
+        label.setAttribute('class', 'text-xs fill-gray-400 dark:fill-gray-500');
+        label.textContent = ((level / levels) * 10).toString();
+        chartGroup.appendChild(label);
+      }
+    }
+
+    // Calculate angle for each dimension
+    var angleSlice = (Math.PI * 2) / dimensions.length;
+
+    // Draw axis lines and labels
+    dimensions.forEach(function(dim, i) {
+      var angle = angleSlice * i - Math.PI / 2;
+      var x = Math.cos(angle) * radius;
+      var y = Math.sin(angle) * radius;
+
+      // Axis line
+      var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', '0');
+      line.setAttribute('y1', '0');
+      line.setAttribute('x2', x.toString());
+      line.setAttribute('y2', y.toString());
+      line.setAttribute('stroke', 'currentColor');
+      line.setAttribute('stroke-opacity', '0.2');
+      line.setAttribute('class', 'text-gray-400 dark:text-gray-600');
+      chartGroup.appendChild(line);
+
+      // Label
+      var labelX = Math.cos(angle) * (radius + 25);
+      var labelY = Math.sin(angle) * (radius + 25);
+      var labelEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      labelEl.setAttribute('x', labelX.toString());
+      labelEl.setAttribute('y', labelY.toString());
+      labelEl.setAttribute('text-anchor', 'middle');
+      labelEl.setAttribute('dominant-baseline', 'middle');
+      labelEl.setAttribute('class', 'text-xs fill-gray-600 dark:fill-gray-400 font-medium');
+      labelEl.textContent = dim.label;
+      chartGroup.appendChild(labelEl);
+    });
+
+    // Draw data polygons for each platform
+    platforms.forEach(function(platform, platformIndex) {
+      var points = dimensions.map(function(dim, i) {
+        var value = platform.scores[dim.key] || 0;
+        var angle = angleSlice * i - Math.PI / 2;
+        var r = (value / 10) * radius;
+        return {
+          x: Math.cos(angle) * r,
+          y: Math.sin(angle) * r,
+        };
+      });
+
+      // Create polygon path
+      var pathD = points.map(function(p, i) { return (i === 0 ? 'M' : 'L') + ' ' + p.x + ' ' + p.y; }).join(' ') + ' Z';
+
+      // Filled polygon
+      var polygon = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      polygon.setAttribute('d', pathD);
+      polygon.setAttribute('fill', platform.color);
+      polygon.setAttribute('fill-opacity', '0.15');
+      polygon.setAttribute('stroke', platform.color);
+      polygon.setAttribute('stroke-width', '2');
+      polygon.setAttribute('class', 'radar-polygon transition-all duration-300');
+      polygon.setAttribute('data-platform', platform.name);
+
+      // Animation: start from center
+      polygon.style.opacity = '0';
+      polygon.style.transform = 'scale(0)';
+      polygon.style.transformOrigin = 'center';
+
+      setTimeout(function() {
+        polygon.style.transition = 'all 0.5s ease-out';
+        polygon.style.opacity = '1';
+        polygon.style.transform = 'scale(1)';
+      }, 100 + platformIndex * 150);
+
+      chartGroup.appendChild(polygon);
+
+      // Draw data points
+      points.forEach(function(p, i) {
+        var circleEl = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circleEl.setAttribute('cx', p.x.toString());
+        circleEl.setAttribute('cy', p.y.toString());
+        circleEl.setAttribute('r', '4');
+        circleEl.setAttribute('fill', platform.color);
+        circleEl.setAttribute('stroke', 'white');
+        circleEl.setAttribute('stroke-width', '2');
+        circleEl.setAttribute('class', 'radar-point transition-all duration-200 cursor-pointer');
+        circleEl.setAttribute('data-platform', platform.name);
+        circleEl.setAttribute('data-dimension', dimensions[i].key);
+        circleEl.setAttribute('data-value', platform.scores[dimensions[i].key].toString());
+
+        // Tooltip on hover
+        circleEl.addEventListener('mouseenter', function(e) {
+          e.target.setAttribute('r', '6');
+        });
+
+        circleEl.addEventListener('mouseleave', function(e) {
+          e.target.setAttribute('r', '4');
+        });
+
+        chartGroup.appendChild(circleEl);
+      });
+    });
+
+    svg.appendChild(chartGroup);
+
+    // Add toggle functionality for platform buttons
+    var toggleButtons = document.querySelectorAll('.platform-toggle');
+    toggleButtons.forEach(function(button) {
+      button.addEventListener('click', function() {
+        var platformName = button.getAttribute('data-platform');
+        var isActive = button.getAttribute('data-active') === 'true';
+        var newState = !isActive;
+
+        button.setAttribute('data-active', newState.toString());
+
+        // Update button appearance
+        var checkIcon = button.querySelector('.check-icon');
+        if (checkIcon) {
+          checkIcon.style.opacity = newState ? '1' : '0';
+        }
+        button.style.opacity = newState ? '1' : '0.5';
+
+        // Toggle polygon visibility
+        var polyEl = document.querySelector('.radar-polygon[data-platform="' + platformName + '"]');
+        var pointEls = document.querySelectorAll('.radar-point[data-platform="' + platformName + '"]');
+
+        if (polyEl) {
+          polyEl.style.opacity = newState ? '1' : '0';
+          polyEl.style.pointerEvents = newState ? 'auto' : 'none';
+        }
+        pointEls.forEach(function(point) {
+          point.style.opacity = newState ? '1' : '0';
+        });
+      });
+
+      // Hover to highlight
+      button.addEventListener('mouseenter', function() {
+        var platformName = button.getAttribute('data-platform');
+        var isActive = button.getAttribute('data-active') === 'true';
+        if (!isActive) return;
+
+        var polygons = document.querySelectorAll('.radar-polygon');
+        polygons.forEach(function(poly) {
+          var polyPlatform = poly.getAttribute('data-platform');
+          var polyButton = document.querySelector('.platform-toggle[data-platform="' + polyPlatform + '"]');
+          var polyActive = polyButton && polyButton.getAttribute('data-active') === 'true';
+
+          if (poly.getAttribute('data-platform') === platformName) {
+            poly.style.fillOpacity = '0.4';
+            poly.style.strokeWidth = '3';
+          } else if (polyActive) {
+            poly.style.fillOpacity = '0.05';
+            poly.style.strokeWidth = '1';
+          }
+        });
+      });
+
+      button.addEventListener('mouseleave', function() {
+        var polygons = document.querySelectorAll('.radar-polygon');
+        polygons.forEach(function(poly) {
+          var polyPlatform = poly.getAttribute('data-platform');
+          var polyButton = document.querySelector('.platform-toggle[data-platform="' + polyPlatform + '"]');
+          var polyActive = polyButton && polyButton.getAttribute('data-active') === 'true';
+
+          if (polyActive) {
+            poly.style.fillOpacity = '0.15';
+            poly.style.strokeWidth = '2';
+          }
+        });
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRadarChart);
+  } else {
+    initRadarChart();
+  }
+
+  globalThis['initRadarChart_' + chartId] = initRadarChart;
+</script>
+
+<style>
+  .platform-radar {
+    @apply bg-gradient-to-br from-gray-50 to-white dark:from-gray-900/50 dark:to-gray-800/30;
+    @apply border border-gray-200 dark:border-gray-700 rounded-xl p-6;
+  }
+
+  .radar-polygon {
+    transition: fill-opacity 0.2s ease, stroke-width 0.2s ease, opacity 0.3s ease;
+  }
+
+  .radar-point {
+    transition: opacity 0.3s ease;
+  }
+
+  .platform-toggle {
+    transition: all 0.2s ease;
+  }
+
+  .platform-toggle .check-icon {
+    transition: opacity 0.2s ease;
+  }
+
+  .platform-toggle[data-active="false"] {
+    opacity: 0.5;
+  }
+
+  .platform-toggle[data-active="false"] .check-icon {
+    opacity: 0;
+  }
+
+  .dim-item {
+    transition: all 0.2s ease;
+  }
+
+  .dim-item:hover {
+    transform: scale(1.02);
+  }
+</style>
