@@ -1,0 +1,415 @@
+---
+export interface Props {
+  title?: string;
+  subtitle?: string;
+}
+
+const {
+  title = 'The Model Commoditization Curve',
+  subtitle = 'Frontier model pricing collapse: November 2022 to April 2026'
+} = Astro.props;
+
+const componentId = `model-chart-${Math.random().toString(36).slice(2, 11)}`;
+
+// Data points: [date, price_index, label, pricing, significance]
+const dataPoints = [
+  { date: '2022-11', price: 100, label: 'ChatGPT Launch', model: 'GPT-3.5', pricing: 'Free tier launch', significance: 'Democratized AI access' },
+  { date: '2023-03', price: 100, label: 'GPT-4', model: 'GPT-4', pricing: '$30/M output tokens', significance: 'First frontier model baseline' },
+  { date: '2023-07', price: 85, label: 'Claude 2', model: 'Claude 2', pricing: '$24/M output', significance: '15% cheaper than GPT-4' },
+  { date: '2023-11', price: 70, label: 'GPT-4 Turbo', model: 'GPT-4 Turbo', pricing: '$20/M output', significance: 'Tiered pricing introduced' },
+  { date: '2023-12', price: 65, label: 'Gemini 1.0', model: 'Gemini 1.0', pricing: '$18/M output', significance: 'Google enters frontier race' },
+  { date: '2024-03', price: 50, label: 'Claude 3', model: 'Claude 3 Opus', pricing: '$15/M output', significance: '50% drop from GPT-4' },
+  { date: '2024-05', price: 40, label: 'GPT-4o', model: 'GPT-4o', pricing: '$12/M output', significance: 'Multimodal at lower cost' },
+  { date: '2024-06', price: 35, label: 'Claude 3.5', model: 'Claude 3.5 Sonnet', pricing: '$10/M output', significance: 'Mid-tier beats flagship' },
+  { date: '2024-12', price: 20, label: 'DeepSeek R1', model: 'DeepSeek R1', pricing: '$2.19/M output', significance: '43% single-quarter drop' },
+  { date: '2025-01', price: 15, label: 'Gemini 2.0', model: 'Gemini 2.0 Pro', pricing: '$4.5/M output', significance: 'Response to DeepSeek' },
+  { date: '2025-05', price: 10, label: 'Claude 4', model: 'Claude Opus 4', pricing: '$3/M output', significance: '90% drop from baseline' },
+  { date: '2026-02', price: 5.5, label: 'GPT-5.2', model: 'GPT-5.2', pricing: '$1.75/M output', significance: 'Sub-$2 frontier pricing' },
+  { date: '2026-04-16', price: 4.8, label: 'Opus 4.7', model: 'Claude Opus 4.7', pricing: '$1.5/M output ($5/$25)', significance: 'April 16: Near-parity pricing' },
+  { date: '2026-04-23', price: 5.0, label: 'GPT-5.5', model: 'GPT-5.5', pricing: '$1.75/M output ($5/$30)', significance: 'April 23: Agentic workflows focus' },
+];
+---
+
+<div class="model-chart-wrapper my-10" id={componentId}>
+  {/* Header */}
+  <div class="text-center mb-8">
+    <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">{title}</h4>
+    {subtitle && <p class="text-sm text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">{subtitle}</p>}
+  </div>
+
+  {/* Chart Container */}
+  <div class="relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 shadow-sm">
+    {/* Chart Canvas */}
+    <div class="relative h-[650px]">
+      <canvas id={`${componentId}-canvas`} class="w-full h-full"></canvas>
+      {/* Tooltip */}
+      <div id={`${componentId}-tooltip`} class="absolute hidden bg-gray-900 dark:bg-gray-800 text-white px-4 py-3 rounded-lg shadow-2xl border border-gray-700 pointer-events-none z-50 min-w-[280px]">
+        <div class="font-bold text-sm mb-1" id={`${componentId}-tooltip-model`}></div>
+        <div class="text-xs text-gray-300 mb-2" id={`${componentId}-tooltip-date`}></div>
+        <div class="space-y-1 text-xs">
+          <div class="flex justify-between">
+            <span class="text-gray-400">Price Index:</span>
+            <span class="font-semibold" id={`${componentId}-tooltip-index`}></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-400">Pricing:</span>
+            <span class="font-semibold" id={`${componentId}-tooltip-pricing`}></span>
+          </div>
+          <div class="mt-2 pt-2 border-t border-gray-700">
+            <div class="text-gray-300 italic" id={`${componentId}-tooltip-significance`}></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* X-Axis Label */}
+    <div class="text-center mt-6 text-xs font-semibold text-gray-700 dark:text-gray-300">
+      Release Date (Nov 2022 - Apr 2026)
+    </div>
+
+    {/* Legend */}
+    <div class="mt-6 flex flex-wrap gap-4 justify-center text-xs">
+      <div class="flex items-center gap-2">
+        <div class="w-3 h-3 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600"></div>
+        <span class="text-gray-700 dark:text-gray-300">Price Index</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+        <span class="text-gray-700 dark:text-gray-300">Major Model Releases</span>
+      </div>
+    </div>
+
+    {/* Key Stats */}
+    <div class="mt-6 grid grid-cols-3 gap-4 text-center border-t border-gray-200 dark:border-gray-700 pt-6">
+      <div>
+        <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">95.2%</div>
+        <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">Price Drop</div>
+      </div>
+      <div>
+        <div class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">40x/yr</div>
+        <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">Cost Reduction Rate</div>
+      </div>
+      <div>
+        <div class="text-2xl font-bold text-violet-600 dark:text-violet-400">41 months</div>
+        <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">Nov '22 to Apr '26</div>
+      </div>
+    </div>
+
+    {/* Caption */}
+    <div class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-6">
+      <div class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed space-y-2">
+        <p class="font-medium text-gray-700 dark:text-gray-300">Chart shows output token pricing trends for frontier LLMs from November 2022 to April 2026.</p>
+        <p><strong>Models tracked:</strong> OpenAI (GPT-3.5, GPT-4, GPT-4 Turbo, GPT-4o, GPT-5.2, GPT-5.5), Anthropic (Claude 2, Claude 3 Opus, Claude 3.5 Sonnet, Claude Opus 4, Claude Opus 4.7), Google (Gemini 1.0, Gemini 2.0 Pro, Gemini 3.1 Pro), and DeepSeek (R1).</p>
+        <p><strong>Price index methodology:</strong> Normalized to GPT-4 March 2023 pricing as baseline (index = 100). Each data point represents the average output token price for comparable frontier-tier models at time of release, adjusted for relative performance on standard benchmarks (MMLU, HumanEval, GSM8K, SWE-bench).</p>
+        <p><strong>Key inflection points:</strong> DeepSeek R1 (Dec 2024) triggered a 43% single-quarter price drop by undercutting proprietary models by ~90%; Claude 3.5 Sonnet demonstrated mid-tier models matching flagship performance at lower cost; GPT-4 Turbo introduced tiered pricing; April 2026 saw intense competition with GPT-5.5 ($5/$30 per million tokens) and Claude Opus 4.7 ($5/$25) both achieving near-parity pricing at frontier performance levels.</p>
+        <p><strong>Sources:</strong> OpenAI API Pricing (GPT-5.5 launch April 23, 2026), Anthropic API Pricing (Opus 4.7 launch April 16, 2026), Google AI Pricing, DeepSeek Pricing Docs, BenchLM.ai LLM Pricing Trends, Epoch AI Price Performance Analysis (2025-2026), Menlo Ventures Enterprise API Market Share Report (Mid-2025).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ componentId, dataPoints }}>
+  (function() {
+    const canvas = document.getElementById(`${componentId}-canvas`);
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set canvas size
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+
+    const width = rect.width;
+    const height = rect.height;
+    const padding = { top: 60, right: 30, bottom: 60, left: 60 };
+    const chartWidth = width - padding.left - padding.right;
+    const chartHeight = height - padding.top - padding.bottom;
+
+    // Parse dates and find min/max
+    const parsedData = dataPoints.map(d => ({
+      ...d,
+      timestamp: new Date(d.date.includes('-', 5) ? d.date : d.date + '-01').getTime()
+    }));
+
+    const minTime = Math.min(...parsedData.map(d => d.timestamp));
+    // Extend x-axis to end of April 2026 by adding two months padding for better spacing
+    const dataMaxTime = Math.max(...parsedData.map(d => d.timestamp));
+    const maxTime = new Date(dataMaxTime);
+    maxTime.setMonth(maxTime.getMonth() + 2); // Add two months padding for better label spacing
+    const maxTimeMs = maxTime.getTime();
+    const maxPrice = Math.max(...parsedData.map(d => d.price));
+
+    // Helper functions
+    const xScale = (timestamp) => {
+      return padding.left + (timestamp - minTime) / (maxTimeMs - minTime) * chartWidth;
+    };
+
+    const yScale = (price) => {
+      return padding.top + chartHeight - (price / maxPrice) * chartHeight;
+    };
+
+    // Check if dark mode
+    const isDark = document.documentElement.classList.contains('dark');
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+    const textColor = isDark ? '#9ca3af' : '#6b7280';
+    const lineColor = isDark ? '#8b5cf6' : '#7c3aed';
+
+    // Draw grid
+    ctx.strokeStyle = gridColor;
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 5; i++) {
+      const y = padding.top + (chartHeight / 5) * i;
+      ctx.beginPath();
+      ctx.moveTo(padding.left, y);
+      ctx.lineTo(padding.left + chartWidth, y);
+      ctx.stroke();
+
+      // Y-axis labels
+      ctx.fillStyle = textColor;
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      const value = Math.round(maxPrice - (maxPrice / 5) * i);
+      ctx.fillText(value.toString(), padding.left - 15, y);
+    }
+
+    // Y-axis title (rotated)
+    ctx.save();
+    ctx.translate(18, padding.top + chartHeight / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = textColor;
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Price Index (GPT-4 = 100)', 0, 0);
+    ctx.restore();
+
+    // Draw line
+    ctx.beginPath();
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = 3.5;
+    ctx.lineJoin = 'round';
+    parsedData.forEach((d, i) => {
+      const x = xScale(d.timestamp);
+      const y = yScale(d.price);
+      if (i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    });
+    ctx.stroke();
+
+    // Draw gradient fill
+    const gradient = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartHeight);
+    gradient.addColorStop(0, isDark ? 'rgba(139, 92, 246, 0.3)' : 'rgba(124, 58, 237, 0.2)');
+    gradient.addColorStop(1, 'rgba(139, 92, 246, 0)');
+
+    ctx.beginPath();
+    parsedData.forEach((d, i) => {
+      const x = xScale(d.timestamp);
+      const y = yScale(d.price);
+      if (i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    });
+    ctx.lineTo(xScale(parsedData[parsedData.length - 1].timestamp), padding.top + chartHeight);
+    ctx.lineTo(xScale(parsedData[0].timestamp), padding.top + chartHeight);
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    // Draw points and labels for ALL models
+    parsedData.forEach((d, i) => {
+      const x = xScale(d.timestamp);
+      const y = yScale(d.price);
+
+      ctx.beginPath();
+      ctx.arc(x, y, 6, 0, Math.PI * 2);
+      ctx.fillStyle = '#ef4444';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Alternate labels above and below to avoid overlap
+      // For the last 3 points, use extra vertical spacing to avoid clustering
+      const isLastThree = i >= parsedData.length - 3;
+      const isAbove = i % 2 === 0;
+      const extraSpacing = isLastThree ? 20 : 0;
+      const labelY = isAbove ? y - 30 - extraSpacing : y + 35 + extraSpacing;
+
+      // For last 3 points, also offset horizontally slightly to spread labels
+      let labelX = x;
+      if (isLastThree) {
+        const lastThreeIndex = i - (parsedData.length - 3);
+        labelX = x + (lastThreeIndex - 1) * 15; // -15, 0, +15 offset
+      }
+
+      ctx.fillStyle = textColor;
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = isAbove ? 'bottom' : 'top';
+
+      // Draw background for label
+      const metrics = ctx.measureText(d.label);
+      const labelPadding = 5;
+      const bgY = isAbove ? labelY - 12 - labelPadding : labelY - labelPadding;
+
+      ctx.fillStyle = isDark ? 'rgba(31, 41, 55, 0.95)' : 'rgba(255, 255, 255, 0.95)';
+      ctx.fillRect(
+        labelX - metrics.width / 2 - labelPadding,
+        bgY,
+        metrics.width + labelPadding * 2,
+        14 + labelPadding * 2
+      );
+
+      // Draw label text
+      ctx.fillStyle = isDark ? '#e5e7eb' : '#374151';
+      ctx.fillText(d.label, labelX, labelY);
+
+      // Draw connector line for the last 3 points to clearly show which label belongs to which point
+      if (isLastThree) {
+        ctx.beginPath();
+        ctx.strokeStyle = isDark ? 'rgba(229, 231, 235, 0.4)' : 'rgba(55, 65, 81, 0.4)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([2, 2]);
+        if (isAbove) {
+          ctx.moveTo(x, y - 8);
+          ctx.lineTo(labelX, labelY + 14);
+        } else {
+          ctx.moveTo(x, y + 8);
+          ctx.lineTo(labelX, labelY - 2);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    });
+
+    // Draw X-axis date labels (show every 6 months)
+    ctx.fillStyle = textColor;
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    // Generate tick marks for every 6 months
+    const startDate = new Date(minTime);
+    const endDate = new Date(maxTime);
+    let currentDate = new Date(startDate);
+    currentDate.setMonth(Math.ceil(currentDate.getMonth() / 6) * 6); // Round up to next 6-month mark
+
+    while (currentDate <= endDate) {
+      const x = xScale(currentDate.getTime());
+      const label = currentDate.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+      ctx.fillText(label, x, padding.top + chartHeight + 10);
+      currentDate.setMonth(currentDate.getMonth() + 6);
+    }
+
+    // Ensure April 2026 is labeled
+    const apr2026 = new Date('2026-04-01');
+    const apr2026X = xScale(apr2026.getTime());
+    ctx.fillText('Apr 26', apr2026X, padding.top + chartHeight + 10);
+
+    // Add interactivity with tooltip
+    const tooltip = document.getElementById(`${componentId}-tooltip`);
+    const tooltipModel = document.getElementById(`${componentId}-tooltip-model`);
+    const tooltipDate = document.getElementById(`${componentId}-tooltip-date`);
+    const tooltipIndex = document.getElementById(`${componentId}-tooltip-index`);
+    const tooltipPricing = document.getElementById(`${componentId}-tooltip-pricing`);
+    const tooltipSignificance = document.getElementById(`${componentId}-tooltip-significance`);
+
+    canvas.style.cursor = 'crosshair';
+
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      // Find nearest point (within 40px for easier interaction)
+      let nearestPoint = null;
+      let nearestDist = Infinity;
+
+      parsedData.forEach(d => {
+        const x = xScale(d.timestamp);
+        const y = yScale(d.price);
+        const dist = Math.sqrt(Math.pow(mouseX - x, 2) + Math.pow(mouseY - y, 2));
+
+        if (dist < 40 && dist < nearestDist) {
+          nearestDist = dist;
+          nearestPoint = { ...d, x, y };
+        }
+      });
+
+      if (nearestPoint && tooltip && tooltipModel && tooltipDate && tooltipIndex && tooltipPricing && tooltipSignificance) {
+        // Show tooltip
+        tooltip.classList.remove('hidden');
+
+        // Update tooltip content
+        tooltipModel.textContent = nearestPoint.model;
+
+        const releaseDate = new Date(nearestPoint.date.includes('-', 5) ? nearestPoint.date : nearestPoint.date + '-01');
+        const dateFormat = nearestPoint.date.includes('-', 5)
+          ? { month: 'long', day: 'numeric', year: 'numeric' }
+          : { month: 'long', year: 'numeric' };
+        tooltipDate.textContent = releaseDate.toLocaleDateString('en-US', dateFormat);
+
+        tooltipIndex.textContent = nearestPoint.price.toString();
+        tooltipPricing.textContent = nearestPoint.pricing;
+        tooltipSignificance.textContent = nearestPoint.significance;
+
+        // Position tooltip
+        const tooltipWidth = tooltip.offsetWidth;
+        const tooltipHeight = tooltip.offsetHeight;
+
+        // Position to the right of point if there's space, otherwise to the left
+        let tooltipX = e.clientX - rect.left + 15;
+        let tooltipY = e.clientY - rect.top - tooltipHeight / 2;
+
+        // Keep tooltip within bounds
+        if (tooltipX + tooltipWidth > rect.width) {
+          tooltipX = e.clientX - rect.left - tooltipWidth - 15;
+        }
+        if (tooltipY < 0) {
+          tooltipY = 10;
+        }
+        if (tooltipY + tooltipHeight > rect.height) {
+          tooltipY = rect.height - tooltipHeight - 10;
+        }
+
+        tooltip.style.left = `${tooltipX}px`;
+        tooltip.style.top = `${tooltipY}px`;
+      } else if (tooltip) {
+        tooltip.classList.add('hidden');
+      }
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      if (tooltip) {
+        tooltip.classList.add('hidden');
+      }
+    });
+
+    // Redraw on theme change
+    const observer = new MutationObserver(() => {
+      // Re-run the drawing logic when theme changes
+      window.location.reload(); // Simple approach - could optimize
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+  })();
+</script>
+
+<style>
+  canvas {
+    display: block;
+  }
+</style>

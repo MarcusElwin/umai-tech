@@ -96,6 +96,142 @@ Decoupling of probabilistic reasoning from deterministic execution:
 - "Reasoning Orchestrator" validates against business rules, access controls, compliance
 - Distinction between **scaffolding** (pre-prompt construction) and **harness** (runtime orchestration)
 
+### Source: TRAE — "The Definitive Guide to Harness Engineering" (April 23, 2026)
+**Context**: Mitchell Hashimoto (HashiCorp co-founder) introduced the term; gained widespread traction after pivotal OpenAI report. 42.2K followers, San Francisco-based AI engineer.
+
+**Core Definition & Metaphor**:
+- **"Horse and Reins"**: AI Agent = SOTA Model (Wild Horse) + Harness (Control System) = Elite Performer
+- *"The Harness is essentially every piece of infrastructure other than the LLM that enables an agent to actually deliver results."*
+- Not about "better prompts" or "more capable models" — it's about optimizing the environment and mechanisms the model operates within
+- Core problem solved: *"Now that AI has joined your workflow, how do we actually manage this 'super intern'?"*
+
+**Paradigm Shift: From Executor to Architect**
+- Traditional role: laborers laying bricks line-by-line
+- New role: architects drafting blueprints, defining rules, signing off on final output ("Spec Coding")
+- *"When a model hits a wall, we implement an engineered mechanism to ensure that the same class of failure never happens again."*
+- Living system: as models iterate, capabilities are internalized; as new scenarios emerge, new harness innovations birth
+
+**The PPAF Cycle** (Perception, Planning, Action, Feedback/Reflection):
+Production-ready agents operate on continuous four-stage loop:
+1. **Perception**: Observing current world state, user inputs, tool outputs, interaction history
+2. **Planning**: Using perception to update goals, decompose tasks, decide next move
+3. **Action**: Executing operations (internal memory updates or external tool calls)
+4. **Feedback/Reflection**: Results feed back into next observation
+
+**The R.E.S.T Framework** (Four Production Pillars):
+
+1. **Reliability**
+   - Fault Recovery: automatically resume from checkpoints after task interruption
+   - Operation Idempotency: critical write operations can be safely retried without corrupting state
+   - Behavioral Consistency: predictable behavior under same inputs
+
+2. **Efficiency**
+   - Resource Control: precise budget management for tokens, API calls, compute time
+   - Low-Latency Response: meaningful feedback quickly in interactive scenarios
+   - High Throughput: process more tasks per unit time in batch scenarios
+
+3. **Security**
+   - Least Privilege: grant only minimum permissions necessary for specific sub-task
+   - Sandboxed Execution: execute all untrusted code in strictly isolated sandbox environment
+   - I/O Filtering: prevent prompt injection, sensitive data leaks, harmful content generation
+
+4. **Traceability**
+   - End-to-End Tracing: clear, traceable call chain from initial request to final result
+   - Explainable Decisions: every critical decision has clear attribution record
+   - Auditable State: complete system state at any point in history can be queried and audited
+
+**Core Architectural Insight: REPL Container**
+- Harness = REPL (Read-Eval-Print Loop) container with boundary controls, tool routing, deterministic feedback
+- Deterministic shell wrapping non-deterministic LLM "brain"
+- **Read**: Context Manager translates external world + internal memory into structured prompts
+- **Eval**: Call Interceptor catches LLM intent, routes to appropriate tool executor (monitored for timeouts, quotas, errors)
+- **Print**: Feedback Assembler captures output, repackages as structured "observation," re-injects into context
+- **Loop**: Repeats until goal achieved or termination condition triggered
+
+**The Token Transformation Challenge: Infinite State → Finite Tokens**
+- Central challenge: bidirectional mapping between "infinite" external state and "finite" token context
+- **Context Management**: Reduction Rules determine what to prioritize/prune when token budget tight
+- **Injection Boundary**: dictates where external data (RAG results) inserted to maximize performance, avoid "Lost in the Middle"
+- **Token Pipeline**: Collection → Ranking → Compression → Budgeting → Assembly
+  - Ranking: score by recency + semantic relevance
+  - Compression: summarize high-volume, low-density content
+  - Assembly: structured templates ([user_request], [tool_output] blocks)
+
+**Function Calling Lifecycle** (Bridge from LLM Planning → Physical Execution):
+1. Schema Serialization: tools + parameters (JSON Schema) → text format injected into prompt
+2. Trigger Generation: LLM generates text with tool name + argument values
+3. Deterministic Deserialization: Harness intercepts text, deserializes into structured request (most brittle stage)
+4. Observation Injection: Harness executes call, wraps result (success/failure) into "observation," re-injects
+
+**Failure Surfaces & Fallback Paths**:
+- Deserialization failure → Retry with error message OR Fallback to text
+- Execution failure → Interactive clarification OR Reflection and re-planning
+
+**State Separation Principle**:
+- Treat LLM strictly as stateless compute unit ("CPU")
+- All state requiring cross-turn consistency → offloaded to external Context State Manager or persistence engine
+- Anti-Pattern: forcing LLM to maintain complex state via prompt engineering = chaotic, unpredictable behavior
+
+**Control Plane vs. Data Plane Architecture**:
+- **Control Plane** (The "What"): task scheduling, resource quotas, behavioral planning, policy enforcement
+- **Data Plane** (The "How"): agent runtime instances, state/memory storage, sandboxed execution environment
+
+**Tiered Memory System**:
+- **Short-term Memory**: Recent interaction history (conversation turns, immediate context)
+- **Long-term Memory**: Persistent knowledge base (vector DB, graph DB, traditional SQL)
+- **Working Memory**: Active task state and ephemeral calculations
+
+**Planning Models & Execution Strategies**:
+- **ReAct** (Reasoning + Acting): Simple loop for straightforward tasks
+- **Chain-of-Thought (CoT)**: Step-by-step reasoning before action
+- **Plan-and-Execute**: Upfront decomposition → sequential execution (recommended default)
+- **Multi-Agent Orchestration**: Complex tasks requiring specialized sub-agents
+
+**Sandboxed Execution Framework** (Four Levels):
+- Level 1: Process-level Isolation (chroot, Linux namespaces, seccomp-bpf) — fast, shares kernel
+- Level 2: Container Isolation (Docker, containerd) — industry-standard, mature choice ⭐ **Recommended default**
+- Level 3: MicroVMs (Firecracker) — independent virtual kernels, multi-tenant safe
+- Level 4: Full VMs (KVM/QEMU) — maximum security, highest cost
+
+**Resource Management & Resilience**:
+- Budgets and Quotas: limits for tokens, API calls, CPU time
+- Timeout Control: strict timeouts on network requests, tool executions
+- Retry Strategies: backoff for transient errors, fail fast on permanent ones
+- Circuit Breakers: trip circuit if dependency fails repeatedly
+- Graceful Degradation: downshift to "weak but safe" mode when critical capabilities offline
+
+**Policy Gateway** (Between Planner and Execution):
+- Permissions: RBAC/ABAC checks for resource access authorization
+- Data Filtering: PII and secret detection for input parameters and return values
+- Injection Defense: identify malicious prompt patterns before execution
+- Audit Logging: "who did what, when, and the result" for post-mortems and compliance
+
+**Six Core Design Principles**:
+1. **Design for Failure**: Treat exceptions as norm; every component supports fault tolerance, retries, graceful degradation
+2. **Contract-First**: All interactions via explicit, machine-readable contracts (Schemas, APIs, Events)
+3. **Secure by Default**: Security as starting point (least privilege, zero trust, defense-in-depth)
+4. **Separation of Concerns**: Decouple "deciding what to do" from "how to do it"
+5. **Everything is Measurable**: Every behavior, decision, resource use must be quantifiable
+6. **Data-Driven Evolution**: Every agent run = learning opportunity; closed loop of data collection, labeling, feedback
+
+**Evaluation Metrics**:
+- Task Effectiveness: success rate, instruction-following rate, tool-use efficacy
+- Quality of Service: end-to-end latency, time-to-first-action, error rates
+- Resource Efficiency: average token consumption, average tool calls
+- Security and Compliance: policy denial rates, security incidents
+
+**Three Core Constraints** (Mentioned but not fully detailed in source):
+- Non-determinism of LLM outputs
+- Finite token context windows
+- Security and compliance requirements
+
+**Key Insights**:
+- *"Harness Engineering is the practice of imposing deterministic constraints on [stochastic LLM] raw compute to enable complex engineering workflows."*
+- *"The role of the engineer isn't disappearing. It's evolving. We are shifting from being the creators of code to becoming the guardians of the creation process."*
+- *"True engineering wisdom lies in building systems that can learn from failure and navigate uncertainty with resilience."*
+- *"The ultimate goal of these 'reins' was never to restrict, but to enable a safer, more complete release of potential."*
+- *"It's not about 'better prompts' or 'more capable models'. It's about optimizing the environment and mechanisms the model operates within."*
+
 ### Source: Randall Hunt — Cognitive Debt
 - *"If you don't engineer the harness, you don't get compounding leverage; you get compounding cognitive debt."*
 - Cognitive debt = AI-era successor to technical debt

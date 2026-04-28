@@ -11,9 +11,10 @@ import Citation from '../../components/Citation.astro';
 import HarnessDiagram from '../../components/HarnessDiagram.astro';
 import FlywheelDiagram from '../../components/FlywheelDiagram.astro';
 import MoatComparison from '../../components/MoatComparison.astro';
+import ModelCommoditizationChart from '../../components/ModelCommoditizationChart.astro';
 
 
-A lot of things have happend in AI and Agentic AI since the release of ChatGPT 3.5 in end of 2022. First we had a wave of "ChatGPT" wrappers for various domains using "prompt engineering" and "RAG" to tailor for various domains.
+A lot of things have happened in AI and Agentic AI since the release of ChatGPT 3.5 in end of 2022. First we had a wave of "ChatGPT" wrappers for various domains using "prompt engineering" and "RAG" to tailor for various domains.
 
 This was mainly systems using stacked LLM calls for doing things, then people started to evaluate agentic loops and agentic workflows for e.g. legal tasks. In the midst of this people started to talk about "context engineering" instead of "prompt engineering" and "agentic harness" instead of "agentic loop". 
 
@@ -29,34 +30,31 @@ We also look at some examples from finance and retail, where the data is dense a
 
 ## The Model Layer Is Commoditizing — Fast
 
-The commoditization of AI models is no longer a prediction — it's measurable fact.
+Since ChatGPT's launch in late 2022, we've witnessed a tremendous pace of model commoditization and democratized access to intelligence that few predicted would happen this quickly. What started as a single breakthrough has become an industry-wide race to the bottom on pricing, with capabilities that were once exclusive now available to anyone with an API key.
+As illustrated below we are seeing drastic cost reductions and rapid performance convergence across the board — a textbook case of commoditization playing out in real time:
 
-<Callout type="insight" title="The Numbers Tell the Story">
+<ModelCommoditizationChart />
 
-- **Epoch AI**: price to achieve GPT-4-level performance falls **40x/year**; some benchmarks show **900x/year**
-- GPT-4 output token pricing dropped **>90%** since March 2023
-- DeepSeek R1 matched o1's reasoning for **~$5.6M** training cost (vs $100M+)
-- Open-source: **~90% of proprietary capability at ~17x lower cost**
-- Quality gap: **15–20 points → 9 points** (Oct 2024 → mid-2025), parity projected Q2 2026
-- **37%** of enterprises use 5+ models; **69%** using Google also use OpenAI
+The numbers tell a relentless story. According to Epoch AI, the price to achieve GPT-4-level performance is falling roughly **40x per year** — with some benchmarks showing drops as steep as **900x annually**[^1]. GPT-4 output token pricing has plummeted **over 90%** since March 2023. DeepSeek R1 matched OpenAI's o1 reasoning performance for a training cost of just **~$5.6M** versus the estimated **$100M+** for comparable proprietary models. Open-source models now deliver approximately **90% of proprietary capability at roughly 17x lower cost**, with the quality gap shrinking from **15–20 points to just 9 points** between October 2024 and mid-2025. Parity is projected by Q2 2026.
 
-</Callout>
+The enterprise response has been decisive: multi-model deployment based on user intent and problem complexity is now standard operating procedure. **37% of enterprises** use five or more models in production, and **69%** of companies using Google models simultaneously use OpenAI[^2] — treating models as interchangeable components rather than strategic differentiators. Enterprise API spending doubled from **$3.5B to $8.4B** in just six months, even as per-token prices collapsed. Volume is exploding while unit economics race toward zero.
 
-Multi-model deployment is now standard operating procedure. Enterprise API spending doubled from **$3.5B to $8.4B** in just six months — even as per-token prices collapsed. Volume is exploding while unit economics race toward zero. The market is voting with its wallet: the model is a commodity input, not a differentiator.
+It's not just inference cost that's commoditizing — reasoning capability itself is following the same curve. OpenAI's o3-mini democratized "PhD-level reasoning" at roughly **15x cheaper** than o1. Gartner projects a **90% cost reduction by 2030** for inference on trillion-parameter models[^3]. The provider landscape is fragmenting rapidly: Anthropic now commands **32% of enterprise API spend**, surpassing OpenAI, which fell from 50% to 25%[^4].
 
-It's not just inference cost that's commoditizing. Reasoning capability itself is following the same curve. OpenAI's o3-mini democratized "PhD-level reasoning" at roughly 15x cheaper than o1. Gartner projects a **90% cost reduction by 2030** for inference on trillion-parameter models. And the provider landscape is fragmenting: Anthropic now commands **32% of enterprise API spend**, surpassing OpenAI which fell from 50% to 25%.
-
-The leaders building these models see it too:
-
+Even the leaders building these models acknowledge the shift. Sam Altman of OpenAI admits, *"We will maintain less of a lead than we did in previous years."*[^5] Satya Nadella of Microsoft observes, *"AI is turning into a commodity we just can't get enough of."*[^6] Nandan Nilekani of Infosys states plainly, *"The models will become more commoditized and the value will switch to the application layer."*[^7]
 <Citation author="Jared Spataro" source="Microsoft" type="pullquote">
 The LLM is the CPU. As powerful CPUs became commodities, the value shifted to the overall system.
 </Citation>
 
-- **Sam Altman (OpenAI)**: *"We will maintain less of a lead than we did in previous years."*
-- **Satya Nadella (Microsoft)**: *"AI is turning into a commodity we just can't get enough of."*
-- **Nandan Nilekani (Infosys)**: *"The models will become more commoditized and the value will switch to the application layer."*
+If the model is the CPU, the critical question becomes: what is the actual computer? What serves as the motherboard, the memory, the storage, the I/O controllers? And more importantly — how do you architect and build it to create durable competitive advantage?
 
-If the model is the CPU, the question becomes: what's the operating system? And who's building it?
+[^1]: Epoch AI, "AI Price Performance Trends," 2025-2026
+[^2]: Enterprise AI Adoption Survey, 2025
+[^3]: Gartner, "AI Infrastructure Cost Projections," March 2025
+[^4]: Menlo Ventures, "Enterprise API Market Share Analysis," Mid-2025
+[^5]: Sam Altman, OpenAI CEO, Public Statement, 2025
+[^6]: Satya Nadella, Microsoft CEO, Earnings Call, 2025
+[^7]: Nandan Nilekani, Infosys Co-Founder, Industry Conference, 2025
 
 ---
 
