@@ -143,3 +143,4 @@ vite.config.ts.timestamp-*
 
 # Vercel deployment files
 .vercel/
+.firecrawl/
