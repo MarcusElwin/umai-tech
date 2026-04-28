@@ -12,6 +12,7 @@ import HarnessDiagram from '../../components/HarnessDiagram.astro';
 import FlywheelDiagram from '../../components/FlywheelDiagram.astro';
 import MoatComparison from '../../components/MoatComparison.astro';
 import ModelCommoditizationChart from '../../components/ModelCommoditizationChart.astro';
+import VerticalizationHeatmap from '../../components/VerticalizationHeatmap.astro';
 
 
 A lot of things have happened in AI and Agentic AI since the release of ChatGPT 3.5 in end of 2022. First we had a wave of "ChatGPT" wrappers for various domains using "prompt engineering" and "RAG" to tailor for various domains.
@@ -60,15 +61,22 @@ If the model is the CPU, the critical question becomes: what is the actual compu
 
 ## The Platform Giants Are Coming for Every Vertical
 
-The last twelve months have seen an unprecedented horizontal-to-vertical land grab. Every major platform is pushing into industry-specific territory.
+The last twelve months have seen an unprecedented horizontal-to-vertical land grab. OpenAI, Anthropic, and Google aren't just building better models — they're launching dedicated products that compete directly with vertical SaaS incumbents across legal, design, coding, healthcare, finance, and commerce.
 
-- **Anthropic**: Claude for Financial Services (July 2025), Claude Cowork (Jan 2026), Claude Computer Use (March 2026 — full desktop/browser automation)
-  - Clients: Bridgewater, NBIM (~20% productivity gains = 213K hours)
-  - AIG: underwriting review **5x faster**, accuracy **75% → 90%+**
-  - Claude Cowork wiped **20–33%** off ServiceNow, Salesforce, Snowflake stocks
-- **OpenAI**: ChatGPT for Excel + financial data integrations, healthcare (ChatGPT Health + HIPAA suite)
-  - Partners: FactSet, Dow Jones Factiva, LSEG, S&P Global, Moody's, MSCI
-- **Google**: Gemini Enterprise; **AWS**: Bedrock AgentCore; **Microsoft**: Agent 365 + Foundry
+The pattern is clear: acquire or build specialized tools, integrate them into the platform, and leverage massive distribution advantages. When Anthropic launched Claude Legal Plugin in February 2026, the market reacted immediately — Thomson Reuters fell 16%, RELX fell 14%, and Wolters Kluwer fell 13% in a single session, wiping out an estimated $285 billion in market value from software and legal technology companies. A week later, when Claude Design launched (April 17, 2026), Figma's stock fell 7% as investors realized Anthropic was gunning for their core market.
+
+OpenAI is taking a different approach through acquisitions: Windsurf IDE ($3B, 2025) for coding, Torch Health ($100M, January 2026) for healthcare, and Hiro Finance (April 2026) for personal finance. Google is embedding Gemini directly into Workspace and partnering with enterprises like Citi for "Citi Sky," an AI-powered wealth advisor.
+
+<VerticalizationHeatmap />
+
+The matrix above shows the competitive landscape as of April 2026. Risk scores (0-100) reflect the threat each platform play poses to vertical SaaS incumbents, based on market reaction, strategic investment, product maturity, and distribution advantage.
+
+**Key takeaways from the verticalization risk matrix:**
+
+- **Legal is the highest-risk vertical** (Anthropic: 95/100) — Claude Legal Plugin and Claude for Word offer contract review, NDA triage, and compliance tracking, directly competing with LexisNexis, Thomson Reuters, and Spellbook.
+- **Design sees intense competition** (Anthropic: 85/100) — Claude Design, Code to Canvas, and Figma plugins are targeting the $50B+ design tools market.
+- **Coding is a three-way race** (OpenAI: 80, Anthropic: 75, Google: 65) — Windsurf IDE, Claude Code, and Gemini Code Assist are all competing for developer mindshare.
+- **Healthcare and Finance are strategic acquisition targets** for OpenAI (70-75 risk scores), while Google leads in enterprise healthcare with air-gapped deployments.
 
 <Callout type="warning" title="The Message Is Clear">
 Horizontal players want your vertical. But wanting it and owning it are very different things. History shows they rarely go deep enough — and the next section explains why.
