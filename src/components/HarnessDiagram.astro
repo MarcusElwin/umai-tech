@@ -9,241 +9,386 @@ const componentId = `harness-${Math.random().toString(36).slice(2, 11)}`;
 
 const mainFlow = [
   {
-    id: 'ic',
-    label: 'Intent Capture',
-    desc: 'Parses raw input into structured intent — where domain-specific understanding separates your system from generic wrappers.',
-    detail: 'This is the first layer where your harness diverges from a generic wrapper. A general-purpose chatbot treats every input the same. A domain-tuned harness understands the vocabulary, patterns, and implicit context of your vertical — translating ambiguous user requests into structured, actionable intents before the LLM ever sees them.',
+    id: "ic",
+    label: "Intent Capture",
+    desc: "Parses raw input into structured intent — where domain-specific understanding separates your system from generic wrappers.",
+    detail:
+      "This is the first layer where your harness diverges from a generic wrapper. A general-purpose chatbot treats every input the same. A domain-tuned harness understands the vocabulary, patterns, and implicit context of your vertical — translating ambiguous user requests into structured, actionable intents before the LLM ever sees them.",
     icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>`,
   },
   {
-    id: 'td',
-    label: 'Task Decomposition',
-    desc: 'Decomposes complex goals into ordered sub-tasks. Domain-tuned decomposition is where a vertical harness outperforms a general-purpose one.',
-    detail: 'Breaking a complex request into the right sub-tasks requires domain knowledge that no general model has. A financial harness knows that "rebalance this portfolio" involves compliance checks, tax-loss harvesting, and trade execution in a specific order. This decomposition logic accumulates over time and becomes a proprietary asset.',
+    id: "td",
+    label: "Task Decomposition",
+    desc: "Breaks complex goals into ordered sub-tasks — or dispatches them to specialized subagents with their own tools and budgets. Domain-tuned decomposition is where a vertical harness outperforms a general-purpose one.",
+    detail:
+      "Modern harnesses decompose along two axes: into ordered sub-tasks for the same agent, and into specialized subagents with their own tool scopes, context windows, and token budgets. A financial harness might spawn one subagent for compliance review, another for tax-loss harvesting, and a third for trade execution — each with least-privilege tool access, isolated context, and its own eval suite. Sub-agents also act as context firewalls: they keep intermediate reasoning out of the parent agent's window, preventing context pollution. This decomposition logic — which to fan out, when to keep things sequential, what each subagent is allowed to touch — accumulates over time and becomes a proprietary asset.",
     icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>`,
   },
   {
-    id: 'ce',
-    label: 'Cognitive Engine',
-    tag: 'PROBABILISTIC',
-    tagColor: 'purple',
-    desc: 'The LLM — drafts probabilistic plans and reasoning. The commodity layer: swappable across providers, improving every quarter, racing to zero cost.',
-    detail: 'This is the one layer you don\'t own — and that\'s the point. The Cognitive Engine is a commodity: GPT-4o, Claude, Gemini, or DeepSeek all cluster within single-digit percentage points on benchmarks. Your harness should be model-agnostic, letting you swap providers as costs drop and capabilities shift without touching anything else in the stack.',
+    id: "ce",
+    label: "Cognitive Engine",
+    tag: "PROBABILISTIC",
+    tagColor: "purple",
+    desc: "The LLM — drafts probabilistic plans and reasoning. The commodity layer: swappable across providers, improving every quarter, racing to zero cost.",
+    detail:
+      "This is the one layer you don't own — and that's the point. The Cognitive Engine is a commodity: GPT-5.5, Claude, Gemini, or DeepSeek all cluster within single-digit percentage points on benchmarks. Your harness should be model-agnostic, letting you swap providers as costs drop and capabilities shift without touching anything else in the stack.",
     icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>`,
     primary: true,
   },
   {
-    id: 'ro',
-    label: 'Reasoning Orchestrator',
-    tag: 'DETERMINISTIC',
-    tagColor: 'violet',
-    desc: 'The gatekeeper. Validates every LLM output against business rules, compliance, and access controls. Where probabilistic guesses meet your domain\'s hard constraints.',
-    detail: 'This is where the harness earns its keep. The LLM generates probabilistic outputs — sometimes brilliant, sometimes hallucinated. The Reasoning Orchestrator applies deterministic validation: business rules, regulatory constraints, access controls, and compliance checks. This layer is impossible to replicate without years of accumulated domain logic.',
+    id: "ro",
+    label: "Reasoning Orchestrator",
+    tag: "DETERMINISTIC",
+    tagColor: "violet",
+    desc: "The gatekeeper. Validates every LLM output against business rules, compliance, and access controls. Where probabilistic guesses meet your domain's hard constraints.",
+    detail:
+      "This is where the harness earns its keep. The LLM generates probabilistic outputs — sometimes brilliant, sometimes hallucinated. The Reasoning Orchestrator applies deterministic validation: business rules, regulatory constraints, access controls, and compliance checks. This layer is impossible to replicate without years of accumulated domain logic.",
     icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>`,
     accent: true,
   },
   {
-    id: 'te',
-    label: 'Tool Execution',
-    desc: 'Executes validated actions against real-world systems — APIs, browsers, databases, file systems. Integration depth determines how much actual work your agent can do.',
-    detail: 'The depth and breadth of your tool integrations define what your agent can actually accomplish. A shallow integration calls one API. A deep harness orchestrates across dozens of systems — EHRs, payment processors, compliance databases — with proper error handling, retries, and rollback logic. This is pure engineering moat.',
+    id: "te",
+    label: "Tool Execution",
+    desc: "Executes validated actions against real-world systems — APIs, browsers, databases, file systems. Integration depth determines how much actual work your agent can do.",
+    detail:
+      "The depth and breadth of your tool integrations define what your agent can actually accomplish. A shallow integration calls one API. A deep harness orchestrates across dozens of systems — EHRs, payment processors, compliance databases — with proper error handling, retries, and rollback logic. This is pure engineering moat.",
     icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`,
   },
   {
-    id: 'vl',
-    label: 'Verification Loop',
-    desc: 'Closes the loop: checks results against expected outcomes, routes failures back to the Cognitive Engine. This is where your eval framework lives — and evals are the moat.',
-    detail: 'As Y Combinator and NGP Capital both argue: evals are the real moat. This layer checks every output against expected outcomes, catches regressions, and routes failures back for iteration. The richer your eval suite, the harder it is for competitors to match your reliability. Every edge case you capture here is a proprietary training signal they don\'t have.',
+    id: "vl",
+    label: "Verification Loop",
+    desc: "Closes the loop: checks results against expected outcomes, routes failures back to the Cognitive Engine. This is where your eval framework lives — and evals are the moat.",
+    detail:
+      "As Y Combinator and NGP Capital both argue: evals are the real moat. This layer checks every output against expected outcomes, catches regressions, and routes failures back for iteration. The richer your eval suite, the harder it is for competitors to match your reliability. Every edge case you capture here is a proprietary training signal they don't have.",
     icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
   },
 ];
 
 const sideModules = [
   {
-    id: 'mem',
-    label: 'Memory & Context',
-    desc: 'The richer your memory, the more your system compounds knowledge across interactions — the core of the data flywheel.',
-    detail: 'Session state, episodic memory, and working context. Progressive disclosure beats static loading by ~26x in token efficiency. The richer your memory layer, the more your system compounds knowledge — this is the engine of the data flywheel.',
+    id: "mem",
+    label: "Memory & Context",
+    desc: "The richer your memory, the more your system compounds knowledge across interactions — the core of the data flywheel.",
+    detail:
+      "Session state, episodic memory, and working context. Progressive disclosure beats static loading by ~26x in token efficiency. The richer your memory layer, the more your system compounds knowledge — this is the engine of the data flywheel.",
     icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>`,
   },
   {
-    id: 'gr',
-    label: 'Guardrails & Compliance',
-    desc: 'The boundary between what the LLM wants and what your domain allows. Impossible to replicate without deep regulatory knowledge.',
-    detail: 'Deterministic safety enforcement on probabilistic outputs. Five-layer defense-in-depth: prompt guardrails, schema restrictions, runtime approval, tool validation, and user hooks. The deeper your regulatory knowledge, the more irreplaceable this layer becomes.',
+    id: "gr",
+    label: "Guardrails & Compliance",
+    desc: "The boundary between what the LLM wants and what your domain allows. Impossible to replicate without deep regulatory knowledge.",
+    detail:
+      "Deterministic safety enforcement on probabilistic outputs. Five-layer defense-in-depth: prompt guardrails, schema restrictions, runtime approval, tool validation, and user hooks. The deeper your regulatory knowledge, the more irreplaceable this layer becomes.",
     icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>`,
   },
   {
-    id: 'obs',
-    label: 'Observability',
-    desc: 'Tracks hallucination, drift, and failure patterns. Every failure is a training signal competitors don\'t have.',
-    detail: 'Monitors hallucination rates, drift, latency, and failure patterns across the entire pipeline. This telemetry feeds your flywheel — every failure you detect and correct becomes a proprietary training signal that competitors never see.',
+    id: "obs",
+    label: "Observability",
+    desc: "Tracks hallucination, drift, and failure patterns. Every failure is a training signal competitors don't have.",
+    detail:
+      "Monitors hallucination rates, drift, latency, and failure patterns across the entire pipeline. This telemetry feeds your flywheel — every failure you detect and correct becomes a proprietary training signal that competitors never see.",
     icon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`,
   },
 ];
 
-const allNodes = [...mainFlow, ...sideModules];
 ---
 
 <div class="harness-wrapper my-10" id={componentId}>
   {/* Header — only renders when title/subtitle are explicitly passed */}
-  {(title || subtitle) && (
-    <div class="text-center mb-6">
-      {title && <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-1">{title}</h4>}
-      {subtitle && <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xl mx-auto">{subtitle}</p>}
-    </div>
-  )}
+  {
+    (title || subtitle) && (
+      <div class="text-center mb-6">
+        {title && (
+          <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-1">
+            {title}
+          </h4>
+        )}
+        {subtitle && (
+          <p class="text-sm text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
+            {subtitle}
+          </p>
+        )}
+      </div>
+    )
+  }
 
   {/* Diagram Container */}
-  <div class="rounded-xl border border-purple-200/40 dark:border-purple-800/30 bg-gradient-to-b from-gray-50/80 to-white dark:from-gray-900/60 dark:to-gray-900/40 p-5 md:p-6 backdrop-blur-sm">
+  <div
+    class="rounded-xl border border-purple-200/40 dark:border-purple-800/30 bg-gradient-to-b from-gray-50/80 to-white dark:from-gray-900/60 dark:to-gray-900/40 p-5 md:p-6 backdrop-blur-sm"
+  >
     <div class="flex flex-col md:flex-row gap-5">
-
       {/* Main Flow Column */}
       <div class="flex-1 min-w-0">
-        {mainFlow.map((node, i) => (
-          <div class="harness-step" data-index={i}>
-            {/* Card */}
-            <button
-              class={`harness-btn w-full text-left rounded-lg border px-3 py-2.5 transition-all duration-200 cursor-pointer group
-                ${node.primary
-                  ? 'border-purple-300/60 dark:border-purple-600/40 bg-gradient-to-r from-purple-50 to-purple-100/50 dark:from-purple-900/30 dark:to-purple-800/20 hover:shadow-md hover:shadow-purple-500/10'
-                  : node.accent
-                    ? 'border-violet-300/60 dark:border-violet-600/40 bg-gradient-to-r from-violet-50 to-violet-100/50 dark:from-violet-900/30 dark:to-violet-800/20 hover:shadow-md hover:shadow-violet-500/10'
-                    : 'border-gray-200/60 dark:border-gray-700/40 bg-white/80 dark:bg-gray-800/40 hover:shadow-md hover:border-purple-300/40 dark:hover:border-purple-600/30'
+        {
+          mainFlow.map((node, i) => (
+            <div class="harness-step" data-index={i}>
+              {/* Card */}
+              <button
+                class={`harness-btn w-full text-left rounded-lg border px-3 py-2.5 transition-all duration-200 cursor-pointer group
+                ${
+                  node.primary
+                    ? "border-purple-300/60 dark:border-purple-600/40 bg-gradient-to-r from-purple-50 to-purple-100/50 dark:from-purple-900/30 dark:to-purple-800/20 hover:shadow-md hover:shadow-purple-500/10"
+                    : node.accent
+                      ? "border-violet-300/60 dark:border-violet-600/40 bg-gradient-to-r from-violet-50 to-violet-100/50 dark:from-violet-900/30 dark:to-violet-800/20 hover:shadow-md hover:shadow-violet-500/10"
+                      : "border-gray-200/60 dark:border-gray-700/40 bg-white/80 dark:bg-gray-800/40 hover:shadow-md hover:border-purple-300/40 dark:hover:border-purple-600/30"
                 }`}
-              data-harness-btn={componentId}
-              data-node={node.id}
-            >
-              <div class="flex items-center gap-3">
-                <div class="flex-shrink-0 flex items-center gap-1.5">
-                  <span class={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold
-                    ${node.primary
-                      ? 'bg-purple-400/20 text-purple-600 dark:bg-purple-500/20 dark:text-purple-300'
-                      : node.accent
-                        ? 'bg-violet-400/20 text-violet-600 dark:bg-violet-500/20 dark:text-violet-300'
-                        : 'bg-gray-200/60 text-gray-500 dark:bg-gray-600/40 dark:text-gray-400'
-                    }`}>{i + 1}</span>
-                  <div class={`w-8 h-8 rounded-lg flex items-center justify-center
-                    ${node.primary
-                      ? 'bg-purple-500 text-white shadow-sm shadow-purple-500/30'
-                      : node.accent
-                        ? 'bg-violet-500 text-white shadow-sm shadow-violet-500/30'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 group-hover:text-purple-600 dark:group-hover:text-purple-400'
-                    }`}>
-                    <Fragment set:html={node.icon} />
+                data-harness-btn={componentId}
+                data-node={node.id}
+              >
+                <div class="flex items-center gap-3">
+                  <div class="flex-shrink-0 flex items-center gap-1.5">
+                    <span
+                      class={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold
+                    ${
+                      node.primary
+                        ? "bg-purple-400/20 text-purple-600 dark:bg-purple-500/20 dark:text-purple-300"
+                        : node.accent
+                          ? "bg-violet-400/20 text-violet-600 dark:bg-violet-500/20 dark:text-violet-300"
+                          : "bg-gray-200/60 text-gray-500 dark:bg-gray-600/40 dark:text-gray-400"
+                    }`}
+                    >
+                      {i + 1}
+                    </span>
+                    <div
+                      class={`w-8 h-8 rounded-lg flex items-center justify-center
+                    ${
+                      node.primary
+                        ? "bg-purple-500 text-white shadow-sm shadow-purple-500/30"
+                        : node.accent
+                          ? "bg-violet-500 text-white shadow-sm shadow-violet-500/30"
+                          : "bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 group-hover:text-purple-600 dark:group-hover:text-purple-400"
+                    }`}
+                    >
+                      <Fragment set:html={node.icon} />
+                    </div>
                   </div>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2">
-                    <span class={`text-sm font-semibold ${node.primary || node.accent ? 'text-gray-900 dark:text-white' : 'text-gray-800 dark:text-gray-100'}`}>{node.label}</span>
-                    {node.tag && (
-                      <span class={`text-[10px] font-bold tracking-wider uppercase px-1.5 py-0.5 rounded
-                        ${node.tagColor === 'purple'
-                          ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300'
-                          : 'bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-300'
-                        }`}>{node.tag}</span>
-                    )}
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span
+                        class={`text-sm font-semibold ${node.primary || node.accent ? "text-gray-900 dark:text-white" : "text-gray-800 dark:text-gray-100"}`}
+                      >
+                        {node.label}
+                      </span>
+                      {node.tag && (
+                        <span
+                          class={`text-[10px] font-bold tracking-wider uppercase px-1.5 py-0.5 rounded
+                        ${
+                          node.tagColor === "purple"
+                            ? "bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300"
+                            : "bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-300"
+                        }`}
+                        >
+                          {node.tag}
+                        </span>
+                      )}
+                    </div>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">
+                      {node.desc}
+                    </p>
                   </div>
-                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed">{node.desc}</p>
-                </div>
-                <svg class="harness-chevron w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0 transition-all duration-200 opacity-0 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-              </div>
-              {/* Inline detail — hidden by default, shown on click */}
-              <div class="harness-detail hidden mt-2.5 ml-[3.75rem]" data-detail={node.id}>
-                <div class="rounded-md bg-purple-50 dark:bg-purple-900/30 border border-purple-200/60 dark:border-purple-700/40 px-3 py-2.5">
-                  <p class="text-xs text-purple-800 dark:text-purple-200 leading-relaxed">{node.detail}</p>
-                </div>
-              </div>
-            </button>
-
-            {/* Connector arrow with animated dot */}
-            {i < mainFlow.length - 1 && (
-              <div class="flex items-center justify-center h-7 relative">
-                <div class="flex flex-col items-center relative">
-                  <div class={`w-px h-4 ${
-                    i === 2 ? 'bg-gradient-to-b from-purple-400/60 to-violet-400/60 dark:from-purple-500/50 dark:to-violet-500/50' : 'bg-purple-300/40 dark:bg-purple-600/25'
-                  }`}></div>
-                  {/* Traveling dot */}
-                  <div class={`harness-dot absolute w-1.5 h-1.5 rounded-full ${
-                    i === 2 ? 'bg-purple-400 dark:bg-purple-400 shadow-sm shadow-purple-400/50' : 'bg-purple-300 dark:bg-purple-500'
-                  }`} style={`animation-delay: ${i * 0.4}s`}></div>
-                  <svg class="w-2 h-2 text-purple-400/60 dark:text-purple-500/40 mt-px" fill="currentColor" viewBox="0 0 12 12">
-                    <path d="M6 9L3 5.5h6L6 9z"/>
+                  <svg
+                    class="harness-chevron w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0 transition-all duration-200 opacity-0 group-hover:opacity-100"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </div>
-              </div>
-            )}
-
-            {/* Iteration loop after Verification */}
-            {node.id === 'vl' && (
-              <div class="relative mt-2 mb-1.5">
-                <div class="inline-flex items-center gap-2 ml-3 pl-3 pr-3.5 py-1.5 rounded-full border border-purple-300/60 dark:border-purple-600/40 bg-purple-50/70 dark:bg-purple-900/20">
-                  <svg class="w-4 h-4 flex-shrink-0 text-purple-500 dark:text-purple-400 harness-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 10l3-3 3 3M6 7v6a4 4 0 004 4h7m4-4l-3 3-3-3m3 3V7a4 4 0 00-4-4H7"/>
-                  </svg>
-                  <span class="text-xs font-semibold text-purple-700 dark:text-purple-300 tracking-tight">On failure → loop back to Cognitive Engine</span>
+                {/* Inline detail — hidden by default, shown on click */}
+                <div
+                  class="harness-detail hidden mt-2.5 ml-[3.75rem]"
+                  data-detail={node.id}
+                >
+                  <div class="rounded-md bg-purple-50 dark:bg-purple-900/30 border border-purple-200/60 dark:border-purple-700/40 px-3 py-2.5">
+                    <p class="text-xs text-purple-800 dark:text-purple-200 leading-relaxed">
+                      {node.detail}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        ))}
+              </button>
+
+              {/* Connector arrow with animated dot */}
+              {i < mainFlow.length - 1 && (
+                <div class="flex items-center justify-center h-7 relative">
+                  <div class="flex flex-col items-center relative">
+                    <div
+                      class={`w-px h-4 ${
+                        i === 2
+                          ? "bg-gradient-to-b from-purple-400/60 to-violet-400/60 dark:from-purple-500/50 dark:to-violet-500/50"
+                          : "bg-purple-300/40 dark:bg-purple-600/25"
+                      }`}
+                    />
+                    {/* Traveling dot */}
+                    <div
+                      class={`harness-dot absolute w-1.5 h-1.5 rounded-full ${
+                        i === 2
+                          ? "bg-purple-400 dark:bg-purple-400 shadow-sm shadow-purple-400/50"
+                          : "bg-purple-300 dark:bg-purple-500"
+                      }`}
+                      style={`animation-delay: ${i * 0.4}s`}
+                    />
+                    <svg
+                      class="w-2 h-2 text-purple-400/60 dark:text-purple-500/40 mt-px"
+                      fill="currentColor"
+                      viewBox="0 0 12 12"
+                    >
+                      <path d="M6 9L3 5.5h6L6 9z" />
+                    </svg>
+                  </div>
+                </div>
+              )}
+
+              {/* Iteration loop after Verification */}
+              {node.id === "vl" && (
+                <div class="relative mt-2 mb-1.5">
+                  <div class="inline-flex items-center gap-2 ml-3 pl-3 pr-3.5 py-1.5 rounded-full border border-purple-300/60 dark:border-purple-600/40 bg-purple-50/70 dark:bg-purple-900/20">
+                    <svg
+                      class="w-4 h-4 flex-shrink-0 text-purple-500 dark:text-purple-400 harness-spin"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2.2"
+                        d="M3 10l3-3 3 3M6 7v6a4 4 0 004 4h7m4-4l-3 3-3-3m3 3V7a4 4 0 00-4-4H7"
+                      />
+                    </svg>
+                    <span class="text-xs font-semibold text-purple-700 dark:text-purple-300 tracking-tight">
+                      On failure → loop back to Cognitive Engine
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))
+        }
 
         {/* Output node */}
         <div class="flex items-center justify-center h-7 relative">
           <div class="flex flex-col items-center relative">
-            <div class="w-px h-4 bg-emerald-300/40 dark:bg-emerald-600/25"></div>
-            <div class="harness-dot absolute w-1.5 h-1.5 rounded-full bg-emerald-400 dark:bg-emerald-400 shadow-sm shadow-emerald-400/50" style="animation-delay: 2.4s"></div>
-            <svg class="w-2 h-2 text-emerald-400/60 dark:text-emerald-500/40 mt-px" fill="currentColor" viewBox="0 0 12 12">
-              <path d="M6 9L3 5.5h6L6 9z"/>
+            <div class="w-px h-4 bg-emerald-300/40 dark:bg-emerald-600/25">
+            </div>
+            <div
+              class="harness-dot absolute w-1.5 h-1.5 rounded-full bg-emerald-400 dark:bg-emerald-400 shadow-sm shadow-emerald-400/50"
+              style="animation-delay: 2.4s"
+            >
+            </div>
+            <svg
+              class="w-2 h-2 text-emerald-400/60 dark:text-emerald-500/40 mt-px"
+              fill="currentColor"
+              viewBox="0 0 12 12"
+            >
+              <path d="M6 9L3 5.5h6L6 9z"></path>
             </svg>
           </div>
         </div>
-        <div class="rounded-lg border border-emerald-300/60 dark:border-emerald-700/40 bg-emerald-50/50 dark:bg-emerald-900/20 px-3 py-2.5 flex items-center gap-3">
+        <div
+          class="rounded-lg border border-emerald-300/60 dark:border-emerald-700/40 bg-emerald-50/50 dark:bg-emerald-900/20 px-3 py-2.5 flex items-center gap-3"
+        >
           <div class="flex-shrink-0 flex items-center gap-1.5">
-            <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-emerald-200/60 text-emerald-600 dark:bg-emerald-800/40 dark:text-emerald-300">7</span>
-            <div class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-sm shadow-emerald-500/30">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            <span
+              class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-emerald-200/60 text-emerald-600 dark:bg-emerald-800/40 dark:text-emerald-300"
+              >7</span
+            >
+            <div
+              class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-sm shadow-emerald-500/30"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"></path>
               </svg>
             </div>
           </div>
-          <span class="text-sm font-semibold text-emerald-700 dark:text-emerald-300">Output</span>
-          <span class="text-xs text-emerald-600/70 dark:text-emerald-400/60">on success</span>
+          <span
+            class="text-sm font-semibold text-emerald-700 dark:text-emerald-300"
+            >Output</span
+          >
+          <span class="text-xs text-emerald-600/70 dark:text-emerald-400/60"
+            >on success</span
+          >
         </div>
       </div>
 
       {/* Side Modules Column */}
       <div class="md:w-48 flex md:flex-col gap-2.5 md:justify-center">
-        <div class="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-0.5 hidden md:block text-center">Supporting Layers</div>
-        {sideModules.map((mod) => (
-          <button
-            class="harness-side flex-1 md:flex-none rounded-lg border border-dashed border-purple-200/50 dark:border-purple-700/30 border-l-2 border-l-purple-300/60 dark:border-l-purple-600/40 harness-pulse-border bg-purple-50/20 dark:bg-purple-900/10 px-3 py-2.5 transition-all duration-200 cursor-pointer text-left hover:border-purple-300/60 dark:hover:border-purple-600/40 hover:bg-purple-50/40 dark:hover:bg-purple-900/20 group"
-            data-harness-btn={componentId}
-            data-node={mod.id}
+        <div
+          class="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-0.5 hidden md:block text-center"
+        >
+          Supporting Layers
+        </div>
+        {
+          sideModules.map((mod) => (
+            <button
+              class="harness-side flex-1 md:flex-none rounded-lg border border-dashed border-purple-200/50 dark:border-purple-700/30 border-l-2 border-l-purple-300/60 dark:border-l-purple-600/40 harness-pulse-border bg-purple-50/20 dark:bg-purple-900/10 px-3 py-2.5 transition-all duration-200 cursor-pointer text-left hover:border-purple-300/60 dark:hover:border-purple-600/40 hover:bg-purple-50/40 dark:hover:bg-purple-900/20 group"
+              data-harness-btn={componentId}
+              data-node={mod.id}
+            >
+              <div class="flex items-center gap-2 mb-1">
+                <div class="flex-shrink-0 w-6 h-6 rounded-md bg-purple-100/80 dark:bg-purple-800/30 text-purple-500 dark:text-purple-400 flex items-center justify-center group-hover:bg-purple-200/80 dark:group-hover:bg-purple-700/30 transition-colors">
+                  <Fragment set:html={mod.icon} />
+                </div>
+                <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                  {mod.label}
+                </span>
+                <svg
+                  class="harness-chevron w-3 h-3 text-gray-400 dark:text-gray-500 flex-shrink-0 ml-auto transition-all duration-200 opacity-0 group-hover:opacity-100"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+              <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed ml-8">
+                {mod.desc}
+              </p>
+              {/* Inline detail — hidden by default, shown on click */}
+              <div class="harness-detail hidden mt-2 ml-8" data-detail={mod.id}>
+                <div class="rounded-md bg-purple-50 dark:bg-purple-900/30 border border-purple-200/60 dark:border-purple-700/40 px-2.5 py-2">
+                  <p class="text-[11px] text-purple-800 dark:text-purple-200 leading-relaxed">
+                    {mod.detail}
+                  </p>
+                </div>
+              </div>
+            </button>
+          ))
+        }
+        <div
+          class="hidden md:flex items-center gap-1.5 text-[10px] text-purple-400/70 dark:text-purple-500/50 justify-center mt-1"
+        >
+          <svg
+            class="w-3 h-3 harness-arrow-pulse"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <div class="flex items-center gap-2 mb-1">
-              <div class="flex-shrink-0 w-6 h-6 rounded-md bg-purple-100/80 dark:bg-purple-800/30 text-purple-500 dark:text-purple-400 flex items-center justify-center group-hover:bg-purple-200/80 dark:group-hover:bg-purple-700/30 transition-colors">
-                <Fragment set:html={mod.icon} />
-              </div>
-              <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">{mod.label}</span>
-              <svg class="harness-chevron w-3 h-3 text-gray-400 dark:text-gray-500 flex-shrink-0 ml-auto transition-all duration-200 opacity-0 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-              </svg>
-            </div>
-            <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed ml-8">{mod.desc}</p>
-            {/* Inline detail — hidden by default, shown on click */}
-            <div class="harness-detail hidden mt-2 ml-8" data-detail={mod.id}>
-              <div class="rounded-md bg-purple-50 dark:bg-purple-900/30 border border-purple-200/60 dark:border-purple-700/40 px-2.5 py-2">
-                <p class="text-[11px] text-purple-800 dark:text-purple-200 leading-relaxed">{mod.detail}</p>
-              </div>
-            </div>
-          </button>
-        ))}
-        <div class="hidden md:flex items-center gap-1.5 text-[10px] text-purple-400/70 dark:text-purple-500/50 justify-center mt-1">
-          <svg class="w-3 h-3 harness-arrow-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"/>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
           </svg>
           <span>feeds into main flow</span>
         </div>
@@ -252,56 +397,63 @@ const allNodes = [...mainFlow, ...sideModules];
   </div>
 
   {/* Hint */}
-  <p class="text-center text-xs text-gray-400 dark:text-gray-500 mt-3 italic">Click any component to explore how it creates defensibility</p>
+  <p class="text-center text-xs text-gray-400 dark:text-gray-500 mt-3 italic">
+    Click any component to explore how it creates defensibility
+  </p>
 </div>
 
 <script define:vars={{ componentId }} is:inline>
   function initHarness() {
     var wrapper = document.getElementById(componentId);
-    if (!wrapper) { setTimeout(initHarness, 100); return; }
+    if (!wrapper) {
+      setTimeout(initHarness, 100);
+      return;
+    }
 
-    var buttons = wrapper.querySelectorAll('[data-harness-btn="' + componentId + '"]');
+    var buttons = wrapper.querySelectorAll(
+      '[data-harness-btn="' + componentId + '"]',
+    );
     var activeNode = null;
 
-    buttons.forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var nodeId = this.getAttribute('data-node');
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var nodeId = this.getAttribute("data-node");
 
         // Toggle: clicking the same card again collapses it
         if (activeNode === nodeId) {
-          this.classList.remove('ring-2', 'ring-purple-400/50', 'shadow-md');
+          this.classList.remove("ring-2", "ring-purple-400/50", "shadow-md");
           var detail = this.querySelector('[data-detail="' + nodeId + '"]');
-          if (detail) detail.classList.add('hidden');
+          if (detail) detail.classList.add("hidden");
           // Rotate chevron back
-          var chevron = this.querySelector('.harness-chevron');
-          if (chevron) chevron.classList.remove('rotate-180');
+          var chevron = this.querySelector(".harness-chevron");
+          if (chevron) chevron.classList.remove("rotate-180");
           activeNode = null;
           return;
         }
 
         // Collapse previous
-        buttons.forEach(function(b) {
-          b.classList.remove('ring-2', 'ring-purple-400/50', 'shadow-md');
-          var d = b.querySelector('.harness-detail');
-          if (d) d.classList.add('hidden');
-          var c = b.querySelector('.harness-chevron');
-          if (c) c.classList.remove('rotate-180');
+        buttons.forEach(function (b) {
+          b.classList.remove("ring-2", "ring-purple-400/50", "shadow-md");
+          var d = b.querySelector(".harness-detail");
+          if (d) d.classList.add("hidden");
+          var c = b.querySelector(".harness-chevron");
+          if (c) c.classList.remove("rotate-180");
         });
 
         // Expand this card
-        this.classList.add('ring-2', 'ring-purple-400/50', 'shadow-md');
+        this.classList.add("ring-2", "ring-purple-400/50", "shadow-md");
         var detail = this.querySelector('[data-detail="' + nodeId + '"]');
-        if (detail) detail.classList.remove('hidden');
-        var chevron = this.querySelector('.harness-chevron');
-        if (chevron) chevron.classList.add('rotate-180');
+        if (detail) detail.classList.remove("hidden");
+        var chevron = this.querySelector(".harness-chevron");
+        if (chevron) chevron.classList.add("rotate-180");
 
         activeNode = nodeId;
       });
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initHarness);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initHarness);
   } else {
     initHarness();
   }
@@ -312,20 +464,38 @@ const allNodes = [...mainFlow, ...sideModules];
     animation: harnessFadeIn 0.35s ease-out both;
   }
 
-  .harness-step[data-index="0"] { animation-delay: 0.05s; }
-  .harness-step[data-index="1"] { animation-delay: 0.1s; }
-  .harness-step[data-index="2"] { animation-delay: 0.15s; }
-  .harness-step[data-index="3"] { animation-delay: 0.2s; }
-  .harness-step[data-index="4"] { animation-delay: 0.25s; }
-  .harness-step[data-index="5"] { animation-delay: 0.3s; }
+  .harness-step[data-index="0"] {
+    animation-delay: 0.05s;
+  }
+  .harness-step[data-index="1"] {
+    animation-delay: 0.1s;
+  }
+  .harness-step[data-index="2"] {
+    animation-delay: 0.15s;
+  }
+  .harness-step[data-index="3"] {
+    animation-delay: 0.2s;
+  }
+  .harness-step[data-index="4"] {
+    animation-delay: 0.25s;
+  }
+  .harness-step[data-index="5"] {
+    animation-delay: 0.3s;
+  }
 
   .harness-side {
     animation: harnessFadeIn 0.35s ease-out both;
   }
 
-  .harness-side:nth-child(2) { animation-delay: 0.35s; }
-  .harness-side:nth-child(3) { animation-delay: 0.4s; }
-  .harness-side:nth-child(4) { animation-delay: 0.45s; }
+  .harness-side:nth-child(2) {
+    animation-delay: 0.35s;
+  }
+  .harness-side:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  .harness-side:nth-child(4) {
+    animation-delay: 0.45s;
+  }
 
   @keyframes harnessFadeIn {
     from {
@@ -344,7 +514,8 @@ const allNodes = [...mainFlow, ...sideModules];
   }
 
   @keyframes harnessDotFlow {
-    0%, 100% {
+    0%,
+    100% {
       top: 0;
       opacity: 0;
     }
@@ -366,7 +537,8 @@ const allNodes = [...mainFlow, ...sideModules];
   }
 
   @keyframes harnessLoopPulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.6;
       transform: rotate(0deg);
     }
@@ -383,17 +555,24 @@ const allNodes = [...mainFlow, ...sideModules];
 
   .harness-side:nth-child(2) .harness-pulse-border,
   .harness-side:nth-child(2) {
-    animation: harnessFadeIn 0.35s ease-out both, harnessBorderPulse 3s ease-in-out 1s infinite;
+    animation:
+      harnessFadeIn 0.35s ease-out both,
+      harnessBorderPulse 3s ease-in-out 1s infinite;
   }
   .harness-side:nth-child(3) {
-    animation: harnessFadeIn 0.35s ease-out both, harnessBorderPulse 3s ease-in-out 1.5s infinite;
+    animation:
+      harnessFadeIn 0.35s ease-out both,
+      harnessBorderPulse 3s ease-in-out 1.5s infinite;
   }
   .harness-side:nth-child(4) {
-    animation: harnessFadeIn 0.35s ease-out both, harnessBorderPulse 3s ease-in-out 2s infinite;
+    animation:
+      harnessFadeIn 0.35s ease-out both,
+      harnessBorderPulse 3s ease-in-out 2s infinite;
   }
 
   @keyframes harnessBorderPulse {
-    0%, 100% {
+    0%,
+    100% {
       border-left-color: rgba(168, 85, 247, 0.25);
     }
     50% {
@@ -407,7 +586,8 @@ const allNodes = [...mainFlow, ...sideModules];
   }
 
   @keyframes harnessArrowNudge {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateX(0);
       opacity: 0.5;
     }
