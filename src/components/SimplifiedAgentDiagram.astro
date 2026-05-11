@@ -1,0 +1,138 @@
+---
+export interface Props {
+  title?: string;
+  caption?: string;
+}
+
+const {
+  title = "What do we mean by an agent + harness?",
+  caption = "A simplified view",
+} = Astro.props;
+---
+
+<figure class="simplified-agent my-12">
+  <h4
+    class="text-2xl sm:text-3xl font-normal text-gray-900 dark:text-gray-100 mb-10 tracking-tight"
+  >
+    {title}
+  </h4>
+
+  <div class="flex justify-center">
+    <div class="inline-block">
+      {/* "Agent +=" — single neutral desaturated blue-gray */}
+      <div
+        class="font-bold italic text-4xl sm:text-5xl text-[#b8c4cf] dark:text-gray-500 mb-2 tracking-tight"
+      >
+        Agent +=
+      </div>
+
+      {/* Box + arrow row */}
+      <div class="relative flex items-center">
+        {/* The yellow box — only thing styled as the harness */}
+        <div
+          class="border-2 border-black dark:border-gray-200 bg-[#f1e89a] dark:bg-amber-200/15 px-10 sm:px-14 py-5 sm:py-7"
+        >
+          <ul
+            class="font-bold italic text-4xl sm:text-5xl leading-[1.25] tracking-tight space-y-0"
+          >
+            <li style="color:#c89aa0">Instructions</li>
+            <li style="color:#d4ba3a">Model</li>
+            <li style="color:#7fb5a6">Tools</li>
+            <li style="color:#a08c2a">Memory</li>
+          </ul>
+        </div>
+
+        {/* Arrow + annotation pointing LEFT into the box */}
+        <div
+          class="hidden sm:flex absolute left-full top-1/2 -translate-y-1/2 ml-8 items-start gap-4"
+        >
+          <svg
+            class="w-14 h-4 text-black dark:text-gray-200 flex-shrink-0 mt-3"
+            viewBox="0 0 56 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M54 8H4M4 8l6-5M4 8l6 5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path>
+          </svg>
+          <div class="max-w-[280px]">
+            <div
+              class="text-base sm:text-lg font-bold text-black dark:text-white whitespace-nowrap"
+            >
+              "Agentic <span class="text-[#d9a82c] dark:text-amber-400"
+                >Harness</span
+              >"
+            </div>
+            <p
+              class="text-xs sm:text-sm text-gray-700 dark:text-gray-400 mt-1.5 leading-snug font-medium"
+            >
+              Everything around the model — the instructions it follows, the
+              tools it can call, and the memory it keeps between turns.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Caption — below box, left-aligned to its left edge */}
+      {
+        caption && (
+          <p class="font-bold text-sm text-[#b8c4cf] dark:text-gray-500 mt-3">
+            {caption}
+          </p>
+        )
+      }
+
+      {/* Mobile arrow + annotation */}
+      <div
+        class="sm:hidden mt-5 flex flex-col items-center gap-2 text-center max-w-xs mx-auto"
+      >
+        <svg
+          class="w-4 h-10 text-black dark:text-gray-200"
+          viewBox="0 0 16 40"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M8 2v36M8 38l-5-6M8 38l5-6"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+        <div>
+          <div class="text-base font-bold text-black dark:text-white">
+            "Agentic <span class="text-[#d9a82c] dark:text-amber-400"
+              >Harness</span
+            >"
+          </div>
+          <p
+            class="text-xs text-gray-700 dark:text-gray-400 mt-1.5 leading-snug font-medium"
+          >
+            Everything around the model — the instructions it follows, the tools
+            it can call, and the memory it keeps between turns.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</figure>
+
+<style is:global>
+  .simplified-agent ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .simplified-agent ul li {
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.25 !important;
+  }
+  .simplified-agent ul li::marker {
+    content: "" !important;
+  }
+</style>
