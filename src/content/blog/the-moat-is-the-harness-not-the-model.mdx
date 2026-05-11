@@ -10,7 +10,8 @@ import Callout from '../../components/Callout.astro';
 import Citation from '../../components/Citation.astro';
 import HarnessDiagram from '../../components/HarnessDiagram.astro';
 import FlywheelDiagram from '../../components/FlywheelDiagram.astro';
-import MoatComparison from '../../components/MoatComparison.astro';
+import MoatVersusTable from '../../components/MoatVersusTable.astro';
+import MoatRadar from '../../components/MoatRadar.astro';
 import ModelCommoditizationChart from '../../components/ModelCommoditizationChart.astro';
 import VerticalizationHeatmap from '../../components/VerticalizationHeatmap.astro';
 import SimplifiedAgentDiagram from '../../components/SimplifiedAgentDiagram.astro';
@@ -124,6 +125,8 @@ A useful architectural distinction: **scaffolding** is what happens pre-executio
 
 The central architectural move is **decoupling probabilistic reasoning from deterministic execution**. The LLM ("Cognitive Engine") drafts a probabilistic plan; a "Reasoning Orchestrator" validates that plan against business rules, access controls, and compliance requirements before anything executes. In the diagram below the LLM sits as one numbered step inside the harness — it's the only step the harness doesn't own.
 
+See below for a more detailed diagram of the harness architecture:
+
 <HarnessDiagram />
 
 
@@ -136,34 +139,19 @@ A production-grade harness has to deliver on four pillars — TRAE's **R.E.S.T.*
 
 Without these, you don't have a harness — you have a chatbot wrapped in JSON.
 
-### The Evidence Is In
+Between 2025 and 2026 the case for harness engineering moved from theory to empirical fact:
 
-The case for harness engineering moved from theory to empirical fact in 2025–2026. HumanLayer puts it bluntly: *"It's not a model problem. It's a configuration problem."*[^12] The benchmark data agrees:
+<Callout type="success" title="Three signals that settled the debate">
 
-- **Terminal Bench 2.0**: Claude Opus 4.6 ranked **#33** in its native Claude Code harness but **#5** in a different harness — same model, wildly different results[^13]
-- **Princeton HAL Leaderboard**: 21,730 agent rollouts across 9 models found the optimal scaffold **flips depending on model family** — Claude needs one scaffold, OpenAI needs a completely different one[^14]
-- **"Improving 15 LLMs at Coding in One Afternoon"**: harness optimization alone produced dramatic improvements across all models — no retraining required[^15]
-- **ETH Zurich**: LLM-generated context instructions **hurt performance** while costing 20%+ more tokens; human-written ones gave only ~4% improvement[^16]
-- **Chroma Research**: progressive disclosure (955 tokens at ~100% efficiency) beats static loading (25,000 tokens at 0.8% efficiency) by **~26x** — context engineering, not length, is what matters[^17]
-- **ICML 2025 modular gaming harness**: a single GPT-4-class model with perception, memory, and reasoning modules achieved significantly higher win rates across diverse games than the unharnessed baseline — validating the approach beyond coding[^18]
-- **Cursor at $50B**: uses the same underlying models as competitors — differentiation is entirely in the harness
-- **Architectural convergence**: Arize's Aparna Dhinakaran notes that Cursor, Claude Code, Windsurf, and Codex *"independently converged on remarkably similar architectures"* — and that Arize's own in-product agent Alyx arrived at the same bones in a completely different domain.[^19] When independent teams in different verticals converge on the same shape, that shape is the discipline.
+- **Same model, different harness, wildly different rank.** Claude Opus 4.6 placed **#33** in Terminal Bench 2.0 inside its native Claude Code harness — and **#5** in a different one.[^13] Princeton HAL confirmed it across 21,730 rollouts: the optimal scaffold *flips by model family*.[^14]
+- **Independent teams converged on the same architecture.** Cursor, Claude Code, Windsurf, Codex, and Arize's Alyx — different companies, different domains — landed on near-identical harness designs.[^19] When the shape repeats, the shape is the discipline.
+- **Capital is pricing it in.** Cursor reached **$50B** on the same underlying models as its competitors. Y Combinator's Garry Tan calls evals *"the real moat for AI startups."* Tidemark Capital is blunter: *"The model is replaceable. Your orchestration layer isn't."*[^20]
 
-The industry is now split on a revealing debate. Anthropic's Boris Cherny argues *"all the secret sauce is in the model — this is the thinnest possible wrapper."* Jerry Liu of LlamaIndex counters: *"The Model Harness is Everything — the biggest barrier to getting value from AI is your own ability to context and workflow engineer the models."* METR testing found Claude Code and Codex don't significantly outperform basic scaffolds.[^20] The benchmark data above sides with the harness camp — and the market is already pricing it in: AIE Europe 2026 hosted the world's first dedicated Harness Engineering track.
+</Callout>
 
-### Investor Consensus
+The model is the rented car; the harness is the road network. A faster car gets you nowhere if the roads don't reach your destination.
 
-The investment community has converged on the same conclusion:
-
-<Citation author="NGP Capital" type="quote">
-The deeper your evals, the deeper your moat. EvalOps is no longer a cost center — it's the differentiator.
-</Citation>
-
-- **Y Combinator (Garry Tan)**: *"Evals are the real moat for AI startups"*
-- **Tidemark Capital**: *"The model is replaceable. Your orchestration layer isn't."*
-- **Google VP Darren Mowry**: *"The industry doesn't have patience if you're just counting on the back-end model."*
-
-<MoatComparison
+<MoatVersusTable
   title="Model Moat vs. Harness + Flywheel Moat"
   leftColumn={{
     heading: "Model-Centric Moat",
@@ -191,16 +179,13 @@ The deeper your evals, the deeper your moat. EvalOps is no longer a cost center 
   }}
 />
 
+A lot has been written about the importance of aa harness. I'm glad to see that we are finally getting some more standards and design patterns for building agentic systems. The model is just one component — the real competitive advantage is in how you orchestrate it and the data you collect from it.
+
 [^9]: Matei Zaharia et al., "The Shift from Models to Compound AI Systems," Berkeley BAIR Lab, February 2024
 [^10]: Addy Osmani, "Agent = Model + Harness," X / personal blog, May 2026
 [^11]: OpenDev Team, "OpenDev: A Terminal-Native Interactive Coding Agent," arXiv:2603.05344, 2026
-[^12]: HumanLayer, "It's Not a Model Problem, It's a Configuration Problem," 2025-2026
 [^13]: Terminal Bench 2.0 Leaderboard, 2026 — Claude Opus 4.6 cross-harness comparison
 [^14]: Princeton HAL Leaderboard, 21,730-rollout study across 9 models, 2025-2026
-[^15]: "Improving 15 LLMs at Coding in One Afternoon," industry benchmark report, 2025
-[^16]: ETH Zurich, "Context Engineering for Coding Agents: CLAUDE.md Study," 2025
-[^17]: Chroma Research, "Context Length vs. Context Engineering: Progressive Disclosure Study," 2025
-[^18]: "Modular Gaming Harness for LLM Agents," ICML 2025
 [^19]: Aparna Dhinakaran (Arize AI), "Cursor, Claude Code, Windsurf, and Codex Are All Harnesses," X, April 22, 2026
 [^20]: Boris Cherny (Anthropic) vs. Jerry Liu (LlamaIndex), public debate; METR coding agent evaluation, 2025-2026
 [^21]: Omar Khattab et al., "DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines," arXiv:2310.03714, ICLR 2024 — Stanford NLP
@@ -242,59 +227,111 @@ What does this look like in practice? The strongest evidence comes from two indu
 
 ---
 
-## Finance Proves the Thesis
+## Where the Thesis Already Plays Out: Finance and Retail
 
-Finance is the clearest proof of the harness + flywheel thesis because the data is dense, the stakes are high, and the incumbents have decades of workflow integration that no horizontal player can replicate.
+Finance and retail are the cleanest proof grounds for the harness + flywheel thesis. Both have dense proprietary data, high stakes, deep workflow integration — and live deployments at scale. Three takeaways across the two industries:
 
-### Bloomberg: The Harness Is the Terminal
+### 1. A better model doesn't beat a better harness
 
-Bloomberg invested **~$10M** in BloombergGPT — a 50B parameter model trained on 369B tokens of proprietary financial data. GPT-4 outperformed it on most financial tasks. And yet the Bloomberg Terminal remains completely unassailable: **$28K–$32K/user/year, ~325K subscribers**, with no meaningful churn. The moat isn't the model — it's decades of curated data, 90+ proprietary models, and deep workflow integration. The LLM is a retention feature inside the harness, not the product itself.
+Bloomberg spent **~$10M** building BloombergGPT (50B parameters, 369B tokens of proprietary financial data). GPT-4 outperformed it on most financial tasks. And yet the Bloomberg Terminal — **$28–32K/user/year, ~325K subscribers, near-zero churn** — remains unassailable. The moat is decades of curated data, 90+ proprietary models, and embedded workflow. The LLM is a retention feature *inside* the harness, not the product. McKinsey projects agentic commerce will hit **$3–5T globally by 2030**; the companies positioned to capture it are the ones with the same shape of moat, not the ones with the best foundation model.
 
-### Stripe: Data Flywheel at Scale
+### 2. The flywheel compounds quarterly, not annually
 
-- **$1.4T** payment volume (2024), **92%** probability of having seen any given card
-- Payments foundation model trained on tens of billions of transactions
-- Results: card-testing detection **59% → 97%**, blocked **$917M** in fraud (BFCM 2024), recovered **$6B** in false declines
-- Launched Shared Payment Tokens (SPTs) for agentic commerce
+The strongest live flywheels in production aren't running on hype cycles — they're running on transactions:
 
-### Fin-R1 & NVIDIA
+- **Stripe** — **$1.4T** payment volume in 2024 (~1.3% of global GDP), **92%** probability of having seen any given card before. Their payments foundation model lifted card-testing detection **59% → 97%**, blocked **$917M** in fraud during BFCM 2024 alone, and recovered **$6B** in false declines.
+- **Amazon Rufus** — **300M+ users**, interactions up **210% YoY**, users **60% more likely to purchase** → projected **$12B in incremental annualized sales**. Amazon's older recommendation engine already drives **35% of total sales (~$70B/year)**.
+- **Shopify** — **$1.1T GMV**, **>12% of US e-commerce**. SimGym generates AI shopper personas from billions of real transactions; Shopify Catalog runs AI-inferred categories across billions of products.
+- **Klarna + Stripe SPTs** — Klarna's Agentic Product Protocol covers **100M+ items, 400M prices, 12 markets**. Every agent query and AI-driven transaction feeds back into fraud, pricing, and recommendation models that competitors can't see.
 
-- Fin-R1: 7B model with domain-specific training → surpassed much larger general-purpose models (85.0 ConvFinQA, 76.0 FinQA)
-- NVIDIA: Data Flywheel Blueprint orchestrating continuous fine-tuning + evaluation loops
+### 3. Regulated institutions are getting production-grade results — from the harness, not the model
+
+The clearest signal that this is working past the demo stage comes from the most risk-averse buyers on earth:
+
+- **NBIM** (Norway's $1.7T sovereign wealth fund) deployed Claude across its investment teams: **~20% productivity gains, equivalent to 213,000 analyst hours per year**
+- **AIG** rebuilt its underwriting review workflow around an LLM harness: **5× faster cycle times**, with accuracy improving from **75% to 90%+**
+
+These aren't pilots or vendor case studies. The gains came from harness engineering — workflow integration, evals, human-in-the-loop verification — not from the underlying model. The broader inflection backs this up: **72% of enterprises** have moved from AI trials to production, with **40%** projected to have task-specific agents by end of 2026 (vs less than 5% in 2025).
 
 <Citation author="Two Sigma" source="2026 Outlook" type="quote">
 The next year won't be about LLMs making trades. It will be about AI becoming the operating system for how quant research and investing actually work.
 </Citation>
 
----
-
-## Retail: Agentic Commerce and the Checkout Flywheel
-
-McKinsey projects agentic commerce will reach **$3–5T in global value by 2030** — a shift comparable to the web and mobile revolutions. The companies capturing that value are the ones with the deepest data flywheels.
-
-### Shopify
-
-- **$1.1T GMV**, **>12% of US e-commerce**
-- SimGym: AI shopper personas from billions of transactions
-- Shopify Catalog: billions of products with AI-inferred categories
-
-### Amazon
-
-- Recommendation engine: **35% of total sales (~$70B/year)**
-- Rufus: **300M+ users**, interactions up **210% YoY**, users **60% more likely to purchase** → projected **$12B incremental annualized sales**
-
-### Klarna + Stripe SPTs
-
-- Klarna Agentic Product Protocol: **100M+ items, 400M prices, 12 markets**
-- Every agent query → signals feeding recommendations, pricing, fraud detection
-
-The enterprise deployment inflection reinforces this trend: **72% of enterprises** have moved from AI trials to production, with **40%** projected to have task-specific agents by end of 2026 (vs less than 5% in 2025). The flywheel is spinning faster across every vertical.
+The same pattern holds across both industries: the moat compounds at the workflow and data layer, not at the model layer. That has implications for *every* vertical SaaS market — which is what the next section is about.
 
 ---
 
 ## Why Vertical SaaS Is Still a Play
 
 Despite the platform giants' land grab, vertical SaaS isn't just surviving — it's thriving. The reasons are structural, not sentimental.
+
+<MoatRadar
+  title="Where Each Contender Actually Wins"
+  subtitle="Six dimensions, four contenders. Scores are estimated 1–10 based on current product depth, customer evidence, and the patterns covered above."
+  insight="Horizontal platforms (OpenAI, Anthropic, Mistral) dominate Distribution Reach but score thin on Workflow Lock-in, Regulatory Depth, and Switching Cost. Thin AI wrappers lose almost everywhere — there's nowhere defensible to stand. AI-native vertical SaaS occupies the one position the platforms structurally cannot reach: deep data, deep workflow, deep regulation, high switching cost. That's where the moat lives."
+  contenders={[
+    {
+      id: 'vertical-saas',
+      name: 'AI-Native Vertical SaaS',
+      shortName: 'Vertical SaaS',
+      color: 'purple',
+      note: 'Toast, Procore, Veeva, ServiceTitan — workflow-embedded, fintech-extended, regulation-deep.',
+      scores: {
+        dataDepth: 9,
+        workflowLockIn: 9,
+        regulatoryDepth: 9,
+        domainExpertise: 9,
+        switchingCost: 9,
+        distributionReach: 5,
+      },
+    },
+    {
+      id: 'openai-anthropic',
+      name: 'OpenAI / Anthropic',
+      shortName: 'OpenAI/Anthropic',
+      color: 'blue',
+      note: 'Frontier US labs — massive distribution, top-tier models, vertical plug-ins still shallow.',
+      scores: {
+        dataDepth: 4,
+        workflowLockIn: 3,
+        regulatoryDepth: 5,
+        domainExpertise: 4,
+        switchingCost: 2,
+        distributionReach: 10,
+      },
+    },
+    {
+      id: 'mistral',
+      name: 'Mistral',
+      shortName: 'Mistral',
+      color: 'amber',
+      note: 'European open-weight challenger. Strong on regulatory positioning (EU AI Act), thinner on vertical workflow integration.',
+      scores: {
+        dataDepth: 3,
+        workflowLockIn: 2,
+        regulatoryDepth: 6,
+        domainExpertise: 3,
+        switchingCost: 2,
+        distributionReach: 6,
+      },
+    },
+    {
+      id: 'thin-wrapper',
+      name: 'Thin AI Wrapper',
+      shortName: 'Thin wrapper',
+      color: 'rose',
+      note: 'Surface-level prompt-wrapper startups — what every platform can replicate in a weekend launch.',
+      scores: {
+        dataDepth: 2,
+        workflowLockIn: 2,
+        regulatoryDepth: 2,
+        domainExpertise: 3,
+        switchingCost: 1,
+        distributionReach: 5,
+      },
+    },
+  ]}
+/>
 
 ### 1. The Data Is the Moat, Not the Feature
 

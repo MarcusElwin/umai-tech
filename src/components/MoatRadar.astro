@@ -1,0 +1,553 @@
+---
+export interface Contender {
+  id: string;
+  name: string;
+  shortName?: string;
+  color: string;
+  note?: string;
+  scores: {
+    dataDepth: number;
+    workflowLockIn: number;
+    regulatoryDepth: number;
+    domainExpertise: number;
+    switchingCost: number;
+    distributionReach: number;
+  };
+}
+
+export interface Props {
+  contenders: Contender[];
+  title?: string;
+  subtitle?: string;
+  insight?: string;
+}
+
+const {
+  contenders,
+  title = 'Where Vertical SaaS Wins (and Loses)',
+  subtitle = 'Six dimensions, four contenders — toggle to compare. Scores are estimated 1–10.',
+  insight,
+} = Astro.props;
+
+const axes = [
+  {
+    key: 'dataDepth',
+    label: 'Data Depth',
+    description: 'Proprietary, industry-specific data that no general-purpose model has access to.',
+  },
+  {
+    key: 'workflowLockIn',
+    label: 'Workflow Lock-in',
+    description: 'How deeply embedded in daily operations — leaving means ripping out the workflow itself.',
+  },
+  {
+    key: 'regulatoryDepth',
+    label: 'Regulatory Depth',
+    description: 'Jurisdiction-specific compliance, audit trails, and regulatory expertise built into the product.',
+  },
+  {
+    key: 'domainExpertise',
+    label: 'Domain Expertise',
+    description: 'Specialized knowledge of vocabulary, edge cases, and decision logic for a single vertical.',
+  },
+  {
+    key: 'switchingCost',
+    label: 'Switching Cost',
+    description: 'Friction to migrate away — integrations, training, embedded financial infrastructure, historical data.',
+  },
+  {
+    key: 'distributionReach',
+    label: 'Distribution Reach',
+    description: 'Ability to reach customers at scale through platform distribution, app stores, and existing relationships.',
+  },
+] as const;
+
+const TOTAL_AXES = axes.length;
+// viewBox is wider than tall so the longest axis labels ("Workflow Lock-in",
+// "Distribution Reach", "Regulatory Depth") have room on the left/right.
+const VIEWBOX_W = 600;
+const VIEWBOX_H = 460;
+const centerX = VIEWBOX_W / 2;
+const centerY = VIEWBOX_H / 2;
+const maxRadius = 165;
+const MAX_SCORE = 10;
+
+function getPosition(index: number, radius: number) {
+  // Start at top (-π/2), go clockwise
+  const angle = (index * 2 * Math.PI / TOTAL_AXES) - Math.PI / 2;
+  return {
+    x: centerX + radius * Math.cos(angle),
+    y: centerY + radius * Math.sin(angle),
+  };
+}
+
+function getPolygonPoints(contender: Contender) {
+  return axes
+    .map((axis, i) => {
+      const value = contender.scores[axis.key as keyof typeof contender.scores];
+      const radius = (value / MAX_SCORE) * maxRadius;
+      const pos = getPosition(i, radius);
+      return `${pos.x},${pos.y}`;
+    })
+    .join(' ');
+}
+
+// Label positions — pushed outward, with anchor logic so labels read cleanly
+function getLabelAnchor(i: number): { x: number; y: number; anchor: 'start' | 'middle' | 'end' } {
+  const pos = getPosition(i, maxRadius + 32);
+  // Top label → middle anchor, right side → start, left side → end
+  const dx = pos.x - centerX;
+  let anchor: 'start' | 'middle' | 'end' = 'middle';
+  if (dx > 4) anchor = 'start';
+  else if (dx < -4) anchor = 'end';
+  return { x: pos.x, y: pos.y, anchor };
+}
+
+// Hit-zone position for axis labels — generous box around the label so hover is forgiving.
+// Width must accommodate the longest label ("Distribution Reach" ≈ 145px at 13px font).
+function getLabelHitBox(i: number) {
+  const pos = getPosition(i, maxRadius + 32);
+  return {
+    x: pos.x - 80,
+    y: pos.y - 14,
+    width: 160,
+    height: 28,
+  };
+}
+
+const gridLevels = [2, 4, 6, 8, 10];
+
+const colorMap: Record<string, { fill: string; stroke: string; bg: string; text: string; ring: string }> = {
+  purple: {
+    fill: 'rgba(139, 92, 246, 0.22)',
+    stroke: '#8b5cf6',
+    bg: 'bg-purple-500',
+    text: 'text-purple-600 dark:text-purple-400',
+    ring: 'ring-purple-500',
+  },
+  blue: {
+    fill: 'rgba(59, 130, 246, 0.18)',
+    stroke: '#3b82f6',
+    bg: 'bg-blue-500',
+    text: 'text-blue-600 dark:text-blue-400',
+    ring: 'ring-blue-500',
+  },
+  amber: {
+    fill: 'rgba(245, 158, 11, 0.18)',
+    stroke: '#f59e0b',
+    bg: 'bg-amber-500',
+    text: 'text-amber-600 dark:text-amber-400',
+    ring: 'ring-amber-500',
+  },
+  rose: {
+    fill: 'rgba(244, 63, 94, 0.18)',
+    stroke: '#f43f5e',
+    bg: 'bg-rose-500',
+    text: 'text-rose-600 dark:text-rose-400',
+    ring: 'ring-rose-500',
+  },
+  emerald: {
+    fill: 'rgba(16, 185, 129, 0.18)',
+    stroke: '#10b981',
+    bg: 'bg-emerald-500',
+    text: 'text-emerald-600 dark:text-emerald-400',
+    ring: 'ring-emerald-500',
+  },
+  slate: {
+    fill: 'rgba(100, 116, 139, 0.16)',
+    stroke: '#64748b',
+    bg: 'bg-slate-500',
+    text: 'text-slate-600 dark:text-slate-400',
+    ring: 'ring-slate-500',
+  },
+};
+
+const componentId = `moat-radar-${Math.random().toString(36).slice(2, 11)}`;
+---
+
+<div class="moat-radar my-12" id={componentId}>
+  <div class="bg-white dark:bg-gray-900/40 rounded-2xl border border-gray-200/60 dark:border-gray-700/50 overflow-hidden shadow-sm">
+    {/* Header */}
+    <div class="px-6 py-5 border-b border-gray-200/60 dark:border-gray-700/50">
+      <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-1">{title}</h4>
+      {subtitle && <p class="text-sm text-gray-500 dark:text-gray-400">{subtitle}</p>}
+    </div>
+
+    <div class="p-6">
+      <div class="flex flex-col lg:flex-row items-center lg:items-start gap-8">
+        {/* Radar Chart — wider than tall to fit horizontal labels */}
+        <div class="relative flex-1 min-w-0 w-full max-w-[720px] mx-auto lg:mx-0 moat-radar-stage">
+          <svg viewBox={`0 0 ${VIEWBOX_W} ${VIEWBOX_H}`} class="moat-radar-svg w-full h-auto" role="img" aria-label="Radar comparison of competitive moats">
+            {/* Grid hexagons */}
+            {gridLevels.map((level) => {
+              const radius = (level / MAX_SCORE) * maxRadius;
+              const points = Array.from({ length: TOTAL_AXES }, (_, i) => {
+                const pos = getPosition(i, radius);
+                return `${pos.x},${pos.y}`;
+              }).join(' ');
+              return (
+                <polygon
+                  points={points}
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1"
+                  class="text-gray-200 dark:text-gray-700/60"
+                />
+              );
+            })}
+
+            {/* Axis lines */}
+            {axes.map((_, i) => {
+              const pos = getPosition(i, maxRadius);
+              return (
+                <line
+                  x1={centerX}
+                  y1={centerY}
+                  x2={pos.x}
+                  y2={pos.y}
+                  stroke="currentColor"
+                  stroke-width="1"
+                  class="text-gray-200 dark:text-gray-700/60"
+                />
+              );
+            })}
+
+            {/* Axis labels */}
+            {axes.map((axis, i) => {
+              const label = getLabelAnchor(i);
+              return (
+                <text
+                  x={label.x}
+                  y={label.y}
+                  text-anchor={label.anchor}
+                  dominant-baseline="middle"
+                  class="text-[13px] font-semibold fill-gray-700 dark:fill-gray-300 select-none pointer-events-none"
+                >
+                  {axis.label}
+                </text>
+              );
+            })}
+
+            {/* Contender polygons */}
+            {contenders.map((contender) => {
+              const colors = colorMap[contender.color] || colorMap.purple;
+              return (
+                <polygon
+                  points={getPolygonPoints(contender)}
+                  fill={colors.fill}
+                  stroke={colors.stroke}
+                  stroke-width="2"
+                  class={`moat-radar-area moat-radar-${contender.id}`}
+                  data-contender={contender.id}
+                />
+              );
+            })}
+
+            {/* Contender dots (visible) */}
+            {contenders.map((contender) => {
+              const colors = colorMap[contender.color] || colorMap.purple;
+              return axes.map((axis, i) => {
+                const value = contender.scores[axis.key as keyof typeof contender.scores];
+                const radius = (value / MAX_SCORE) * maxRadius;
+                const pos = getPosition(i, radius);
+                return (
+                  <circle
+                    cx={pos.x}
+                    cy={pos.y}
+                    r="4.5"
+                    fill={colors.stroke}
+                    class={`moat-radar-point moat-radar-${contender.id}`}
+                    data-contender={contender.id}
+                  />
+                );
+              });
+            })}
+
+            {/* Hover hit-zones for each (contender, axis) pair — invisible, generous radius */}
+            {contenders.map((contender) =>
+              axes.map((axis, i) => {
+                const value = contender.scores[axis.key as keyof typeof contender.scores];
+                const radius = (value / MAX_SCORE) * maxRadius;
+                const pos = getPosition(i, radius);
+                return (
+                  <circle
+                    cx={pos.x}
+                    cy={pos.y}
+                    r="14"
+                    fill="transparent"
+                    class="moat-radar-hit cursor-pointer"
+                    data-tip-type="point"
+                    data-contender-id={contender.id}
+                    data-contender-name={contender.name}
+                    data-contender-color={contender.color}
+                    data-axis-label={axis.label}
+                    data-axis-description={axis.description}
+                    data-value={value}
+                  ></circle>
+                );
+              })
+            )}
+
+            {/* Hover hit-zones for axis labels — invisible boxes around each label */}
+            {axes.map((axis, i) => {
+              const box = getLabelHitBox(i);
+              return (
+                <rect
+                  x={box.x}
+                  y={box.y}
+                  width={box.width}
+                  height={box.height}
+                  fill="transparent"
+                  class="moat-radar-hit cursor-help"
+                  data-tip-type="axis"
+                  data-axis-label={axis.label}
+                  data-axis-description={axis.description}
+                ></rect>
+              );
+            })}
+          </svg>
+
+          {/* Tooltip — positioned by JS */}
+          <div
+            class="moat-radar-tooltip pointer-events-none absolute z-20 opacity-0 transition-opacity duration-150 max-w-[260px]"
+            role="status"
+            aria-live="polite"
+          >
+            <div class="rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2.5">
+              <div class="moat-radar-tooltip-header flex items-center gap-2 mb-1">
+                <span class="moat-radar-tooltip-dot inline-block w-2.5 h-2.5 rounded-full flex-shrink-0"></span>
+                <span class="moat-radar-tooltip-title text-xs font-bold text-gray-900 dark:text-white"></span>
+              </div>
+              <div class="moat-radar-tooltip-axis text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1"></div>
+              <div class="moat-radar-tooltip-score text-2xl font-bold text-gray-900 dark:text-white leading-none mb-1.5"></div>
+              <div class="moat-radar-tooltip-desc text-[11px] text-gray-600 dark:text-gray-400 leading-snug"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Legend + breakdown */}
+        <div class="flex-1 w-full min-w-0 space-y-6">
+          {/* Toggle legend */}
+          <div>
+            <h5 class="text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">Contenders</h5>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {contenders.map((contender) => {
+                const colors = colorMap[contender.color] || colorMap.purple;
+                return (
+                  <label class="flex items-start gap-2.5 cursor-pointer group rounded-lg border border-gray-200/60 dark:border-gray-700/40 px-3 py-2 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked
+                      class="moat-radar-toggle sr-only"
+                      data-contender={contender.id}
+                      data-component={componentId}
+                    />
+                    <div class={`mt-0.5 w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${colors.text} border-current flex-shrink-0`}>
+                      <svg class="w-2.5 h-2.5 checkmark" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                      </svg>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="flex items-center gap-2">
+                        <span class={`block w-2.5 h-2.5 rounded-full ${colors.bg} flex-shrink-0`} aria-hidden="true"></span>
+                        <span class="font-semibold text-sm text-gray-900 dark:text-gray-100 truncate">{contender.name}</span>
+                      </div>
+                      {contender.note && (
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug">{contender.note}</p>
+                      )}
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          <p class="text-[11px] text-gray-500 dark:text-gray-400 italic leading-relaxed">
+            Hover any point on the chart for the score and reasoning. Hover an axis label for the dimension definition.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {/* Optional insight footer */}
+    {insight && (
+      <div class="px-6 py-4 bg-gradient-to-r from-purple-50/60 to-fuchsia-50/40 dark:from-purple-900/15 dark:to-fuchsia-900/10 border-t border-purple-200/50 dark:border-purple-800/40">
+        <div class="flex items-start gap-3">
+          <svg class="w-4 h-4 text-purple-600 dark:text-purple-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <p class="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+            {insight}
+          </p>
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
+<script define:vars={{ componentId }} is:inline>
+  (function() {
+    var COLOR_DOTS = {
+      purple: '#8b5cf6',
+      blue: '#3b82f6',
+      amber: '#f59e0b',
+      rose: '#f43f5e',
+      emerald: '#10b981',
+      slate: '#64748b'
+    };
+    var hidden = new Set();
+
+    function init() {
+      var wrapper = document.getElementById(componentId);
+      if (!wrapper) { setTimeout(init, 80); return; }
+
+      var stage = wrapper.querySelector('.moat-radar-stage');
+      var tooltip = wrapper.querySelector('.moat-radar-tooltip');
+      var tipTitle = tooltip && tooltip.querySelector('.moat-radar-tooltip-title');
+      var tipDot = tooltip && tooltip.querySelector('.moat-radar-tooltip-dot');
+      var tipAxis = tooltip && tooltip.querySelector('.moat-radar-tooltip-axis');
+      var tipScore = tooltip && tooltip.querySelector('.moat-radar-tooltip-score');
+      var tipDesc = tooltip && tooltip.querySelector('.moat-radar-tooltip-desc');
+
+      // --- Toggles ---
+      var toggles = wrapper.querySelectorAll('.moat-radar-toggle');
+      toggles.forEach(function(toggle) {
+        toggle.addEventListener('change', function(e) {
+          var input = e.target;
+          if (!input) return;
+          var contenderId = input.getAttribute('data-contender');
+          var isChecked = input.checked;
+          if (isChecked) hidden.delete(contenderId); else hidden.add(contenderId);
+
+          var elements = wrapper.querySelectorAll('[data-contender="' + contenderId + '"]');
+          elements.forEach(function(el) {
+            if (el.tagName === 'INPUT') return;
+            el.style.opacity = isChecked ? '1' : '0.08';
+            el.style.pointerEvents = isChecked ? 'auto' : 'none';
+          });
+
+          // Also hide/show that contender's hit-zones
+          var hits = wrapper.querySelectorAll('.moat-radar-hit[data-contender-id="' + contenderId + '"]');
+          hits.forEach(function(h) {
+            h.style.pointerEvents = isChecked ? 'auto' : 'none';
+          });
+
+          var parent = toggle.parentElement;
+          if (parent) {
+            var checkmark = parent.querySelector('.checkmark');
+            if (checkmark) checkmark.style.opacity = isChecked ? '1' : '0';
+          }
+        });
+      });
+
+      // --- Tooltip on hover ---
+      if (!tooltip || !stage) return;
+
+      function showTooltip(evt) {
+        var t = evt.currentTarget;
+        var tipType = t.getAttribute('data-tip-type');
+
+        if (tipType === 'point') {
+          var contenderId = t.getAttribute('data-contender-id');
+          if (hidden.has(contenderId)) return; // Don't show tooltips for hidden contenders
+          var name = t.getAttribute('data-contender-name');
+          var colorKey = t.getAttribute('data-contender-color');
+          var axisLabel = t.getAttribute('data-axis-label');
+          var axisDesc = t.getAttribute('data-axis-description');
+          var value = t.getAttribute('data-value');
+
+          tipTitle.textContent = name;
+          tipDot.style.backgroundColor = COLOR_DOTS[colorKey] || COLOR_DOTS.purple;
+          tipDot.style.display = 'inline-block';
+          tipAxis.textContent = axisLabel;
+          tipAxis.style.display = '';
+          tipScore.textContent = value + ' / 10';
+          tipScore.style.display = '';
+          tipDesc.textContent = axisDesc;
+        } else if (tipType === 'axis') {
+          var axisLabel2 = t.getAttribute('data-axis-label');
+          var axisDesc2 = t.getAttribute('data-axis-description');
+
+          tipTitle.textContent = axisLabel2;
+          tipDot.style.display = 'none';
+          tipAxis.style.display = 'none';
+          tipScore.style.display = 'none';
+          tipDesc.textContent = axisDesc2;
+        } else {
+          return;
+        }
+
+        // Position relative to the stage container, using mouse pos
+        var stageRect = stage.getBoundingClientRect();
+        var mx = evt.clientX - stageRect.left;
+        var my = evt.clientY - stageRect.top;
+        // Default: top-right of cursor; clamp to stage bounds
+        var tipWidth = 260;
+        var tipHeight = 110;
+        var left = mx + 14;
+        var top = my + 14;
+        if (left + tipWidth > stageRect.width) left = mx - tipWidth - 14;
+        if (top + tipHeight > stageRect.height) top = my - tipHeight - 14;
+        if (left < 0) left = 4;
+        if (top < 0) top = 4;
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = top + 'px';
+        tooltip.style.opacity = '1';
+      }
+
+      function moveTooltip(evt) {
+        if (tooltip.style.opacity !== '1') return;
+        var stageRect = stage.getBoundingClientRect();
+        var mx = evt.clientX - stageRect.left;
+        var my = evt.clientY - stageRect.top;
+        var tipWidth = tooltip.offsetWidth || 260;
+        var tipHeight = tooltip.offsetHeight || 110;
+        var left = mx + 14;
+        var top = my + 14;
+        if (left + tipWidth > stageRect.width) left = mx - tipWidth - 14;
+        if (top + tipHeight > stageRect.height) top = my - tipHeight - 14;
+        if (left < 0) left = 4;
+        if (top < 0) top = 4;
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = top + 'px';
+      }
+
+      function hideTooltip() {
+        tooltip.style.opacity = '0';
+      }
+
+      var hits = wrapper.querySelectorAll('.moat-radar-hit');
+      hits.forEach(function(h) {
+        h.addEventListener('mouseenter', showTooltip);
+        h.addEventListener('mousemove', moveTooltip);
+        h.addEventListener('mouseleave', hideTooltip);
+        h.addEventListener('focus', showTooltip);
+        h.addEventListener('blur', hideTooltip);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>
+
+<style>
+  .moat-radar-area,
+  .moat-radar-point {
+    transition: opacity 0.25s ease, filter 0.25s ease;
+  }
+
+  .moat-radar-toggle:not(:checked) + div .checkmark {
+    opacity: 0;
+  }
+  .moat-radar-toggle:checked + div .checkmark {
+    opacity: 1;
+  }
+
+  .moat-radar-svg:hover .moat-radar-area {
+    filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.15));
+  }
+</style>

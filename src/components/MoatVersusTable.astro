@@ -1,0 +1,185 @@
+---
+export interface Props {
+  title?: string;
+  leftColumn: {
+    heading: string;
+    subtitle?: string;
+    icon?: string;
+    attributes: Array<{
+      dimension: string;
+      value: string;
+      strength: 'weak' | 'medium' | 'strong';
+    }>;
+  };
+  rightColumn: {
+    heading: string;
+    subtitle?: string;
+    icon?: string;
+    attributes: Array<{
+      dimension: string;
+      value: string;
+      strength: 'weak' | 'medium' | 'strong';
+    }>;
+  };
+}
+
+const { title, leftColumn, rightColumn } = Astro.props;
+
+const strengthMeta = {
+  weak: { dots: 1, label: 'Weak' },
+  medium: { dots: 2, label: 'Medium' },
+  strong: { dots: 3, label: 'Strong' },
+} as const;
+
+// Pair attributes by index so each row compares the same dimension head-to-head
+const rows = leftColumn.attributes.map((left, i) => ({
+  dimension: left.dimension,
+  left,
+  right: rightColumn.attributes[i],
+}));
+
+const leftIcon = leftColumn.icon === 'model'
+  ? `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>`
+  : `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>`;
+
+const rightIcon = rightColumn.icon === 'harness'
+  ? `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>`
+  : `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>`;
+---
+
+<div class="moat-versus my-12">
+  {title && (
+    <h4 class="text-xl font-semibold text-gray-900 dark:text-white text-center mb-6">
+      {title}
+    </h4>
+  )}
+
+  <div class="rounded-2xl border border-gray-200/60 dark:border-gray-700/50 bg-white dark:bg-gray-900/40 overflow-hidden shadow-sm">
+    {/* Header row */}
+    <div class="grid grid-cols-[1fr_auto_1fr] items-stretch border-b border-gray-200 dark:border-gray-700/60 mv-row">
+      {/* Left header — muted, the "loser" */}
+      <div class="p-5 bg-gray-50/60 dark:bg-gray-900/50">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 flex items-center justify-center flex-shrink-0">
+            <Fragment set:html={leftIcon} />
+          </div>
+          <div class="min-w-0">
+            <div class="text-[11px] uppercase tracking-wider font-semibold text-gray-400 dark:text-gray-500">If you bet on</div>
+            <h5 class="text-sm font-bold text-gray-700 dark:text-gray-300 truncate">{leftColumn.heading}</h5>
+          </div>
+        </div>
+      </div>
+
+      {/* Center divider with "vs" */}
+      <div class="flex items-center justify-center px-3 bg-gradient-to-b from-gray-50/60 to-white dark:from-gray-900/50 dark:to-gray-900/30">
+        <span class="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500">vs</span>
+      </div>
+
+      {/* Right header — emphasized, the "winner" */}
+      <div class="p-5 bg-gradient-to-br from-purple-50 to-fuchsia-50/40 dark:from-purple-900/30 dark:to-fuchsia-900/10 relative">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-md bg-gradient-to-br from-purple-500 to-fuchsia-500 text-white flex items-center justify-center shadow-sm shadow-purple-500/30 flex-shrink-0">
+            <Fragment set:html={rightIcon} />
+          </div>
+          <div class="min-w-0">
+            <div class="text-[11px] uppercase tracking-wider font-semibold text-purple-600 dark:text-purple-300">If you bet on</div>
+            <h5 class="text-sm font-bold text-gray-900 dark:text-white truncate">{rightColumn.heading}</h5>
+          </div>
+        </div>
+        <div class="absolute top-2 right-3 text-[10px] font-bold uppercase tracking-wider text-purple-600/70 dark:text-purple-300/70 hidden sm:block">
+          Recommended
+        </div>
+      </div>
+    </div>
+
+    {/* Comparison rows — each row pairs left + dimension + right */}
+    {rows.map((row, i) => {
+      const leftMeta = strengthMeta[row.left.strength];
+      const rightMeta = strengthMeta[row.right.strength];
+      const rightWins = rightMeta.dots > leftMeta.dots;
+
+      return (
+        <div class={`grid grid-cols-[1fr_auto_1fr] items-stretch mv-row ${i < rows.length - 1 ? 'border-b border-gray-100 dark:border-gray-800/60' : ''}`}>
+          {/* Left cell */}
+          <div class="p-5 bg-gray-50/20 dark:bg-gray-900/20">
+            <p class="text-sm text-gray-600 dark:text-gray-400 leading-snug mb-2.5">{row.left.value}</p>
+            <div class="flex items-center gap-1.5" aria-label={`Strength: ${leftMeta.label}`}>
+              {[0, 1, 2].map((d) => (
+                <span class={`block w-1.5 h-1.5 rounded-full ${d < leftMeta.dots ? 'bg-gray-400 dark:bg-gray-500' : 'bg-gray-200 dark:bg-gray-700'}`}></span>
+              ))}
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 ml-1">{leftMeta.label}</span>
+            </div>
+          </div>
+
+          {/* Center dimension label */}
+          <div class="flex items-center justify-center px-4 py-5 bg-white dark:bg-gray-900/40 min-w-[120px]">
+            <div class="text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white whitespace-nowrap text-center">{row.dimension}</div>
+          </div>
+
+          {/* Right cell — purple emphasis when it wins */}
+          <div class={`p-5 ${rightWins ? 'bg-gradient-to-br from-purple-50/70 to-fuchsia-50/30 dark:from-purple-900/15 dark:to-fuchsia-900/5' : 'bg-gray-50/20 dark:bg-gray-900/20'}`}>
+            <p class={`text-sm leading-snug mb-2.5 ${rightWins ? 'text-gray-800 dark:text-gray-200 font-medium' : 'text-gray-600 dark:text-gray-400'}`}>
+              {row.right.value}
+            </p>
+            <div class="flex items-center gap-1.5" aria-label={`Strength: ${rightMeta.label}`}>
+              {[0, 1, 2].map((d) => (
+                <span class={`block w-1.5 h-1.5 rounded-full ${
+                  d < rightMeta.dots
+                    ? rightWins
+                      ? 'bg-gradient-to-br from-purple-500 to-fuchsia-500'
+                      : 'bg-gray-400 dark:bg-gray-500'
+                    : 'bg-gray-200 dark:bg-gray-700'
+                }`}></span>
+              ))}
+              <span class={`text-[10px] font-semibold uppercase tracking-wider ml-1 ${rightWins ? 'text-purple-600 dark:text-purple-300' : 'text-gray-400 dark:text-gray-500'}`}>{rightMeta.label}</span>
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+
+  {(leftColumn.subtitle || rightColumn.subtitle) && (
+    <div class="grid grid-cols-2 gap-x-8 mt-3 text-[11px] text-gray-500 dark:text-gray-500 px-1">
+      <div>{leftColumn.subtitle}</div>
+      <div class="text-right">{rightColumn.subtitle}</div>
+    </div>
+  )}
+</div>
+
+<style>
+  /* Subtle stagger as rows scroll into view */
+  .moat-versus .mv-row {
+    animation: mvRowIn 0.4s ease-out both;
+  }
+  .moat-versus .mv-row:nth-child(1) { animation-delay: 0s; }
+  .moat-versus .mv-row:nth-child(2) { animation-delay: 0.08s; }
+  .moat-versus .mv-row:nth-child(3) { animation-delay: 0.16s; }
+  .moat-versus .mv-row:nth-child(4) { animation-delay: 0.24s; }
+  .moat-versus .mv-row:nth-child(5) { animation-delay: 0.32s; }
+  .moat-versus .mv-row:nth-child(6) { animation-delay: 0.4s; }
+  .moat-versus .mv-row:nth-child(7) { animation-delay: 0.48s; }
+
+  @keyframes mvRowIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .moat-versus .mv-row {
+      animation: none;
+    }
+  }
+
+  /* Stack on mobile: left → dimension → right */
+  @media (max-width: 640px) {
+    .moat-versus .mv-row {
+      grid-template-columns: 1fr !important;
+    }
+    .moat-versus .mv-row > div:nth-child(2) {
+      padding: 0.5rem 1rem !important;
+      border-top: 1px solid rgb(229 231 235 / 0.6);
+      border-bottom: 1px solid rgb(229 231 235 / 0.6);
+    }
+  }
+</style>
