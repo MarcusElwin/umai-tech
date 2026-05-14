@@ -30,36 +30,65 @@ jobs:
         
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
-      
-    - name: Build project
-      run: pnpm build
-      
+
+    - name: Install Vercel CLI
+      run: pnpm add -g vercel@latest
+
+    - name: Pull Vercel environment (Production)
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      env:
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    - name: Build for Vercel (Production)
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      env:
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
     - name: Deploy to Vercel (Production)
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: amondnet/vercel-action@v25
       id: prod-deploy
-      with:
-        vercel-token: ${{ secrets.VERCEL_TOKEN }}
-        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-        vercel-args: '--prod'
-        
+      run: |
+        url=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+        echo "preview-url=$url" >> "$GITHUB_OUTPUT"
+      env:
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
     - name: Production Deployment Complete
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: |
         echo "🚀 Production deployment complete!"
         echo "🌐 Live at: https://umai-tech.com"
         echo "📋 Vercel URL: ${{ steps.prod-deploy.outputs.preview-url }}"
-        
+
+    - name: Pull Vercel environment (Preview)
+      if: github.event_name == 'pull_request'
+      run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+      env:
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    - name: Build for Vercel (Preview)
+      if: github.event_name == 'pull_request'
+      run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      env:
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
     - name: Deploy to Vercel (PR Preview)
       if: github.event_name == 'pull_request'
-      uses: amondnet/vercel-action@v25
       id: pr-deploy
-      with:
-        vercel-token: ${{ secrets.VERCEL_TOKEN }}
-        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-        
+      run: |
+        url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+        echo "preview-url=$url" >> "$GITHUB_OUTPUT"
+      env:
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
     - name: Comment Preview URL on PR
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v7
@@ -72,9 +101,9 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: `🚀 **Preview deployment ready!**
-              
+
               ✅ Preview: ${previewUrl}
-              
+
               This preview will be automatically updated with new commits to this PR.`
             });
           }
