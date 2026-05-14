@@ -1,0 +1,639 @@
+---
+export interface Principle {
+  number: number;
+  title: string;
+  oneLine: string;
+  doThis: string;
+  dontDoThat: string;
+  example: string;
+}
+
+export interface Props {
+  title?: string;
+  subtitle?: string;
+  principles: Principle[];
+  copyAllLabel?: string;
+}
+
+const {
+  title,
+  subtitle,
+  principles,
+  copyAllLabel = 'Copy the whole playbook',
+} = Astro.props;
+
+const componentId = `playbook-${Math.random().toString(36).slice(2, 11)}`;
+
+// Markdown version of one principle — reused by per-card and whole-playbook copy
+function principleToMarkdown(p: Principle): string {
+  return [
+    `### ${p.number}. ${p.title}`,
+    '',
+    `_${p.oneLine}_`,
+    '',
+    `- ✅ **Do:** ${p.doThis}`,
+    `- ❌ **Don't:** ${p.dontDoThat}`,
+    `- 📍 **In the wild:** ${p.example}`,
+  ].join('\n');
+}
+
+const wholePlaybookMarkdown = [
+  title ? `# ${title}` : '# The Builder\'s Playbook',
+  '',
+  ...principles.map(principleToMarkdown).flatMap(md => [md, '']),
+].join('\n').trim();
+
+const total = principles.length;
+
+// Ordinal suffix helper — "First", "Second", etc. for the rule chapter header
+function ordinalSuffix(n: number): string {
+  const ordinals = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'];
+  return ordinals[n - 1] || `${n}th`;
+}
+---
+
+<div class="playbook-cards my-12" id={componentId}>
+  {(title || subtitle) && (
+    <div class="text-center mb-6">
+      {title && <h4 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{title}</h4>}
+      {subtitle && <p class="text-sm text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">{subtitle}</p>}
+    </div>
+  )}
+
+  {/* Hidden source for whole-playbook clipboard payload */}
+  <textarea class="sr-only" aria-hidden="true" tabindex="-1" data-playbook-all-md={componentId}>{wholePlaybookMarkdown}</textarea>
+
+  {/* Flip-card deck */}
+  <div class="pb-deck mx-auto max-w-xl">
+    {/* Counter + nav row */}
+    <div class="flex items-center justify-between mb-3 px-1">
+      <div class="flex items-center gap-2">
+        <span class="text-[11px] uppercase tracking-wider font-bold text-purple-600 dark:text-purple-300">Rule</span>
+        <span class="text-sm font-bold text-gray-900 dark:text-white tabular-nums">
+          <span class="pb-counter-current">1</span>
+          <span class="text-gray-400 dark:text-gray-500"> / {total}</span>
+        </span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          class="pb-nav-btn group inline-flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900/60 hover:border-purple-400 dark:hover:border-purple-500 hover:text-purple-700 dark:hover:text-purple-300 text-gray-600 dark:text-gray-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 dark:disabled:hover:border-gray-700"
+          data-pb-prev={componentId}
+          aria-label="Previous principle"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="pb-nav-btn group inline-flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900/60 hover:border-purple-400 dark:hover:border-purple-500 hover:text-purple-700 dark:hover:text-purple-300 text-gray-600 dark:text-gray-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 dark:disabled:hover:border-gray-700"
+          data-pb-next={componentId}
+          aria-label="Next principle"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    {/* Flip-card — styled as an A4 notebook page */}
+    <div
+      class="pb-flip-shell relative cursor-pointer select-none"
+      data-pb-flip-shell={componentId}
+      tabindex="0"
+      role="button"
+      aria-label="Click to turn the page"
+    >
+      <div class="pb-flip-inner relative w-full pb-a4">
+        {principles.map((p, i) => (
+          <div
+            class={`pb-card-slot absolute inset-0 ${i === 0 ? 'pb-slot-active' : ''}`}
+            data-slot={i}
+            aria-hidden={i === 0 ? 'false' : 'true'}
+          >
+            <div class="pb-flip-card relative w-full h-full" data-pb-flip={i}>
+              {/* FRONT — recto page */}
+              <div class="pb-face pb-face-front pb-page flex flex-col">
+                {/* Page header — running header style */}
+                <header class="flex items-baseline justify-between border-b border-[var(--pb-rule)] pb-3 mb-5">
+                  <span class="pb-running-head text-[10px] uppercase tracking-[0.18em] text-[var(--pb-muted)]">
+                    The Builder's Playbook
+                  </span>
+                  <span class="pb-running-head text-[10px] uppercase tracking-[0.18em] text-[var(--pb-muted)]">
+                    Rule {p.number} · {p.number} of {total}
+                  </span>
+                </header>
+
+                {/* Chapter number — drop-cap-ish */}
+                <div class="pb-chapter-mark text-[11px] uppercase tracking-[0.22em] text-[var(--pb-muted)] mb-1">
+                  Rule the {ordinalSuffix(p.number)}
+                </div>
+
+                {/* Title in serif */}
+                <h5 class="pb-serif pb-title text-2xl md:text-[1.7rem] leading-snug text-[var(--pb-ink)] mb-3">
+                  {p.title}
+                </h5>
+
+                {/* Italic tagline */}
+                <p class="pb-serif italic text-base leading-relaxed text-[var(--pb-ink-soft)] mb-5">
+                  {p.oneLine}
+                </p>
+
+                {/* Hairline rule */}
+                <div class="pb-hairline mb-4" aria-hidden="true"></div>
+
+                {/* Do / Don't — kept simple */}
+                <div class="space-y-3 mb-4">
+                  <div class="flex items-start gap-2.5">
+                    <span class="pb-do-mark flex-shrink-0 mt-0.5 w-5 h-5 rounded-full flex items-center justify-center" aria-hidden="true">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    </span>
+                    <p class="pb-serif text-[15px] leading-snug text-[var(--pb-ink)]"><strong class="pb-do-label font-semibold">Do.</strong> {p.doThis}</p>
+                  </div>
+                  <div class="flex items-start gap-2.5">
+                    <span class="pb-dont-mark flex-shrink-0 mt-0.5 w-5 h-5 rounded-full flex items-center justify-center" aria-hidden="true">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </span>
+                    <p class="pb-serif text-[15px] leading-snug text-[var(--pb-ink)]"><strong class="pb-dont-label font-semibold">Don't.</strong> {p.dontDoThat}</p>
+                  </div>
+                </div>
+
+                {/* Footer with page number + flip prompt + copy */}
+                <footer class="mt-auto pt-4 border-t border-[var(--pb-rule)] flex items-center justify-between gap-3">
+                  <span class="pb-running-head text-[10px] uppercase tracking-[0.18em] text-[var(--pb-muted)] italic">
+                    Turn the page for the example →
+                  </span>
+                  <div class="flex items-center gap-3">
+                    <button
+                      type="button"
+                      class="pb-copy-one inline-flex items-center gap-1 rounded-md border border-[var(--pb-rule)] bg-transparent hover:bg-[var(--pb-hover-bg)] px-2 py-0.5 text-[10px] uppercase tracking-wider font-semibold text-[var(--pb-muted)] hover:text-[var(--pb-ink)] transition-colors"
+                      data-pb-copy-one={componentId}
+                      data-card={p.number}
+                      aria-label={`Copy rule ${p.number}: ${p.title}`}
+                      onclick="event.stopPropagation();"
+                    >
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                      </svg>
+                      <span class="pb-copy-one-label">Copy</span>
+                    </button>
+                    <span class="pb-folio pb-serif text-[11px] text-[var(--pb-muted)] tabular-nums">— {p.number * 2 - 1} —</span>
+                  </div>
+                </footer>
+
+                {/* Hidden source for per-card copy */}
+                <textarea class="sr-only" aria-hidden="true" tabindex="-1" data-pb-card-md={p.number}>{principleToMarkdown(p)}</textarea>
+              </div>
+
+              {/* BACK — verso page, "In the wild" */}
+              <div class="pb-face pb-face-back pb-page flex flex-col">
+                <header class="flex items-baseline justify-between border-b border-[var(--pb-rule)] pb-3 mb-5">
+                  <span class="pb-running-head text-[10px] uppercase tracking-[0.18em] text-[var(--pb-muted)]">
+                    In the wild
+                  </span>
+                  <span class="pb-running-head text-[10px] uppercase tracking-[0.18em] text-[var(--pb-muted)]">
+                    Rule {p.number} · evidence
+                  </span>
+                </header>
+
+                <div class="pb-chapter-mark text-[11px] uppercase tracking-[0.22em] text-[var(--pb-muted)] mb-1">
+                  Where this lives today
+                </div>
+
+                <h5 class="pb-serif text-lg leading-snug text-[var(--pb-ink-soft)] mb-4 italic">
+                  {p.title}
+                </h5>
+
+                {/* Decorative ornament */}
+                <div class="pb-ornament select-none" aria-hidden="true">§</div>
+
+                <div class="flex-1 flex items-center">
+                  <p class="pb-serif text-[19px] md:text-xl leading-relaxed text-[var(--pb-ink)]">
+                    {p.example}
+                  </p>
+                </div>
+
+                <div class="pb-ornament-bottom select-none" aria-hidden="true">※</div>
+
+                <footer class="mt-auto pt-4 border-t border-[var(--pb-rule)] flex items-center justify-between gap-3">
+                  <span class="pb-running-head text-[10px] uppercase tracking-[0.18em] text-[var(--pb-muted)] italic">
+                    ← Turn back to the rule
+                  </span>
+                  <span class="pb-folio pb-serif text-[11px] text-[var(--pb-muted)] tabular-nums">— {p.number * 2} —</span>
+                </footer>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Dots / quick-jump pagination */}
+    <div class="flex items-center justify-center gap-2 mt-4">
+      {principles.map((_, i) => (
+        <button
+          type="button"
+          class={`pb-dot rounded-full transition-all ${i === 0 ? 'pb-dot-active' : ''}`}
+          data-pb-jump={componentId}
+          data-target={i}
+          aria-label={`Jump to rule ${i + 1}`}
+        ></button>
+      ))}
+    </div>
+
+    {/* Copy-all action bar — sits below the deck */}
+    <div class="mt-6 flex flex-col items-center gap-2">
+      <button
+        type="button"
+        class="playbook-copy-all inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 px-5 py-2 text-sm font-semibold text-white shadow-sm shadow-purple-500/30 transition-all"
+        data-playbook-copy-all={componentId}
+        aria-label="Copy the whole playbook as markdown to clipboard"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+        </svg>
+        <span class="playbook-copy-all-label">{copyAllLabel}</span>
+      </button>
+      <span class="text-xs text-gray-500 dark:text-gray-400 italic">Markdown — pastes cleanly into Notion, Slack, Linear, or your editor.</span>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ componentId }} is:inline>
+  (function() {
+    function copyText(text, btn, labelEl, doneText) {
+      var restore = labelEl ? labelEl.textContent : '';
+      var done = function() {
+        if (labelEl) labelEl.textContent = doneText;
+        btn.classList.add('playbook-copied');
+        setTimeout(function() {
+          if (labelEl) labelEl.textContent = restore;
+          btn.classList.remove('playbook-copied');
+        }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function() {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); done(); } catch(e) {}
+          document.body.removeChild(ta);
+        });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); } catch(e) {}
+        document.body.removeChild(ta);
+      }
+    }
+
+    function init() {
+      var wrapper = document.getElementById(componentId);
+      if (!wrapper) { setTimeout(init, 80); return; }
+
+      var slots = wrapper.querySelectorAll('.pb-card-slot');
+      var dots = wrapper.querySelectorAll('[data-pb-jump="' + componentId + '"]');
+      var prevBtn = wrapper.querySelector('[data-pb-prev="' + componentId + '"]');
+      var nextBtn = wrapper.querySelector('[data-pb-next="' + componentId + '"]');
+      var counterEl = wrapper.querySelector('.pb-counter-current');
+      var total = slots.length;
+      var current = 0;
+
+      function setActive(idx) {
+        if (idx < 0) idx = 0;
+        if (idx >= total) idx = total - 1;
+        current = idx;
+        slots.forEach(function(s, i) {
+          if (i === idx) {
+            s.classList.add('pb-slot-active');
+            s.setAttribute('aria-hidden', 'false');
+          } else {
+            s.classList.remove('pb-slot-active');
+            s.setAttribute('aria-hidden', 'true');
+            // Also flip back if it was flipped
+            var card = s.querySelector('.pb-flip-card');
+            if (card) card.classList.remove('pb-flipped');
+          }
+        });
+        dots.forEach(function(d, i) {
+          if (i === idx) d.classList.add('pb-dot-active'); else d.classList.remove('pb-dot-active');
+        });
+        if (counterEl) counterEl.textContent = String(idx + 1);
+        if (prevBtn) prevBtn.disabled = (idx === 0);
+        if (nextBtn) nextBtn.disabled = (idx === total - 1);
+      }
+
+      if (prevBtn) prevBtn.addEventListener('click', function() { setActive(current - 1); });
+      if (nextBtn) nextBtn.addEventListener('click', function() { setActive(current + 1); });
+      dots.forEach(function(d) {
+        d.addEventListener('click', function() {
+          var t = parseInt(d.getAttribute('data-target'));
+          if (!isNaN(t)) setActive(t);
+        });
+      });
+
+      // Card flip — click anywhere on the active card (except buttons)
+      var shell = wrapper.querySelector('[data-pb-flip-shell="' + componentId + '"]');
+      if (shell) {
+        shell.addEventListener('click', function(e) {
+          // Don't flip when interacting with buttons inside the card
+          if (e.target.closest('button')) return;
+          var activeSlot = wrapper.querySelector('.pb-card-slot.pb-slot-active');
+          if (!activeSlot) return;
+          var card = activeSlot.querySelector('.pb-flip-card');
+          if (card) card.classList.toggle('pb-flipped');
+        });
+        // Keyboard: Enter / Space to flip
+        shell.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            var activeSlot = wrapper.querySelector('.pb-card-slot.pb-slot-active');
+            if (!activeSlot) return;
+            var card = activeSlot.querySelector('.pb-flip-card');
+            if (card) card.classList.toggle('pb-flipped');
+          } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            setActive(current + 1);
+          } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            setActive(current - 1);
+          }
+        });
+      }
+
+      // Whole-playbook copy
+      var allBtn = wrapper.querySelector('[data-playbook-copy-all="' + componentId + '"]');
+      var allSource = wrapper.querySelector('[data-playbook-all-md="' + componentId + '"]');
+      if (allBtn && allSource) {
+        allBtn.addEventListener('click', function() {
+          var label = allBtn.querySelector('.playbook-copy-all-label');
+          copyText(allSource.value, allBtn, label, 'Copied — paste anywhere ✓');
+        });
+      }
+
+      // Per-card copy
+      var cardBtns = wrapper.querySelectorAll('[data-pb-copy-one="' + componentId + '"]');
+      cardBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var cardNum = btn.getAttribute('data-card');
+          var src = btn.closest('.pb-card-slot').querySelector('[data-pb-card-md="' + cardNum + '"]');
+          if (!src) return;
+          var label = btn.querySelector('.pb-copy-one-label');
+          copyText(src.value, btn, label, 'Copied ✓');
+        });
+      });
+
+      // Touch swipe
+      var startX = null;
+      if (shell) {
+        shell.addEventListener('touchstart', function(e) {
+          if (e.touches && e.touches.length === 1) startX = e.touches[0].clientX;
+        }, { passive: true });
+        shell.addEventListener('touchend', function(e) {
+          if (startX == null) return;
+          var endX = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : null;
+          if (endX == null) { startX = null; return; }
+          var dx = endX - startX;
+          if (Math.abs(dx) > 40) {
+            if (dx < 0) setActive(current + 1); else setActive(current - 1);
+          }
+          startX = null;
+        }, { passive: true });
+      }
+
+      // Init state
+      setActive(0);
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>
+
+<style>
+  /* ---------- Parchment palette ---------- */
+  .playbook-cards .pb-page {
+    /* Light-mode parchment */
+    --pb-paper-1: #f6efd9;       /* warm cream */
+    --pb-paper-2: #efe5c6;       /* deeper cream for vignette edges */
+    --pb-ink: #2b241a;           /* dark warm ink */
+    --pb-ink-soft: #4a3f2e;      /* slightly lighter ink for taglines */
+    --pb-muted: #8a7a5c;         /* faded sepia for chrome */
+    --pb-rule: rgba(74, 63, 46, 0.22);
+    --pb-hover-bg: rgba(74, 63, 46, 0.06);
+    --pb-do-bg: rgba(16, 122, 92, 0.12);
+    --pb-do-fg: #2f7a5c;
+    --pb-dont-bg: rgba(166, 56, 56, 0.12);
+    --pb-dont-fg: #a64340;
+    --pb-ornament: rgba(74, 63, 46, 0.35);
+  }
+  :is(.dark) .playbook-cards .pb-page {
+    /* Dark-mode aged parchment (candlelight) */
+    --pb-paper-1: #25201a;
+    --pb-paper-2: #1b1812;
+    --pb-ink: #ece1c4;
+    --pb-ink-soft: #c8b890;
+    --pb-muted: #9a8a68;
+    --pb-rule: rgba(232, 217, 175, 0.18);
+    --pb-hover-bg: rgba(232, 217, 175, 0.06);
+    --pb-do-bg: rgba(120, 200, 160, 0.16);
+    --pb-do-fg: #8fd6b3;
+    --pb-dont-bg: rgba(220, 110, 110, 0.16);
+    --pb-dont-fg: #e89999;
+    --pb-ornament: rgba(232, 217, 175, 0.3);
+  }
+
+  /* ---------- Slot stacking ---------- */
+  /* All slots are absolutely positioned over each other to fill the flip-inner.
+     `position: relative` on the inactive ones would collapse them; we just
+     fade/hide via opacity/visibility instead. */
+  .playbook-cards .pb-card-slot {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .playbook-cards .pb-card-slot.pb-slot-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  /* Make the flip-inner the size anchor so absolute slots have something to fill */
+  .playbook-cards .pb-flip-inner {
+    position: relative;
+  }
+  .playbook-cards .pb-flip-shell:focus {
+    outline: 2px solid rgba(168, 85, 247, 0.5);
+    outline-offset: 6px;
+    border-radius: 2px;
+  }
+
+  /* ---------- Page sizing — content-driven, with a page-like minimum ---------- */
+  .playbook-cards .pb-a4 {
+    width: 100%;
+    min-height: 30rem; /* feels like a page without forcing rigid A4 proportions */
+  }
+  @media (max-width: 640px) {
+    .playbook-cards .pb-a4 {
+      min-height: 26rem;
+    }
+  }
+
+  /* ---------- 3D flip mechanism ---------- */
+  .playbook-cards .pb-flip-inner {
+    perspective: 1800px;
+  }
+  .playbook-cards .pb-flip-card {
+    transform-style: preserve-3d;
+    transition: transform 0.75s cubic-bezier(0.4, 0.0, 0.2, 1);
+    width: 100%;
+    height: 100%;
+  }
+  .playbook-cards .pb-flip-card.pb-flipped {
+    transform: rotateY(180deg);
+  }
+  .playbook-cards .pb-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .playbook-cards .pb-face-back {
+    transform: rotateY(180deg);
+  }
+
+  /* ---------- The page itself ---------- */
+  .playbook-cards .pb-page {
+    background-color: var(--pb-paper-1);
+    background-image:
+      /* Subtle vignette in two corners — keeps the page from looking flat */
+      radial-gradient(ellipse 60% 80% at 12% 8%, transparent 0%, transparent 60%, rgba(120, 90, 40, 0.05) 100%),
+      radial-gradient(ellipse 80% 60% at 90% 95%, transparent 0%, transparent 60%, rgba(120, 90, 40, 0.06) 100%),
+      /* Gentle diagonal warmth from paper-1 → paper-2 */
+      linear-gradient(135deg, var(--pb-paper-1) 0%, var(--pb-paper-2) 100%);
+    box-shadow:
+      0 1px 1px rgba(0, 0, 0, 0.04),
+      0 8px 24px -12px rgba(80, 60, 30, 0.18),
+      inset 0 0 60px rgba(120, 90, 40, 0.07);
+    border-radius: 4px;
+    padding: 2.2rem 2rem 1.6rem;
+    overflow: hidden;
+  }
+  :is(.dark) .playbook-cards .pb-page {
+    box-shadow:
+      0 1px 1px rgba(0,0,0,0.3),
+      0 12px 32px -12px rgba(0,0,0,0.5),
+      inset 0 0 80px rgba(0,0,0,0.25);
+  }
+  @media (min-width: 768px) {
+    .playbook-cards .pb-page {
+      padding: 3rem 3.2rem 2rem;
+    }
+  }
+
+  /* ---------- Page typography ---------- */
+  .playbook-cards .pb-serif {
+    font-family: 'Charter', 'Georgia', 'Iowan Old Style', 'Times New Roman', serif;
+  }
+  .playbook-cards .pb-page :global(strong) {
+    font-weight: 600;
+  }
+  .playbook-cards .pb-title {
+    font-weight: 700;
+    letter-spacing: -0.005em;
+  }
+  .playbook-cards .pb-running-head,
+  .playbook-cards .pb-chapter-mark {
+    font-family: 'Charter', 'Georgia', 'Times New Roman', serif;
+    font-style: normal;
+  }
+  .playbook-cards .pb-folio {
+    font-style: italic;
+  }
+
+  /* ---------- Hairline rule ---------- */
+  .playbook-cards .pb-hairline {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--pb-rule), var(--pb-rule), transparent);
+  }
+
+  /* ---------- Do / Don't marks ---------- */
+  .playbook-cards .pb-do-mark {
+    background: var(--pb-do-bg);
+    color: var(--pb-do-fg);
+  }
+  .playbook-cards .pb-do-label {
+    color: var(--pb-do-fg);
+  }
+  .playbook-cards .pb-dont-mark {
+    background: var(--pb-dont-bg);
+    color: var(--pb-dont-fg);
+  }
+  .playbook-cards .pb-dont-label {
+    color: var(--pb-dont-fg);
+  }
+
+  /* ---------- Ornaments on back page ---------- */
+  .playbook-cards .pb-ornament,
+  .playbook-cards .pb-ornament-bottom {
+    text-align: center;
+    color: var(--pb-ornament);
+    font-family: 'Charter', 'Georgia', serif;
+    font-size: 1.5rem;
+    line-height: 1;
+    padding: 0.4rem 0;
+  }
+  .playbook-cards .pb-ornament-bottom {
+    margin-top: 0.5rem;
+  }
+
+  /* ---------- Dot pagination (kept understated to match the page) ---------- */
+  .playbook-cards .pb-dot {
+    width: 7px;
+    height: 7px;
+    background: rgb(180 160 120 / 0.5);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  :is(.dark) .playbook-cards .pb-dot {
+    background: rgb(154 138 104 / 0.4);
+  }
+  .playbook-cards .pb-dot.pb-dot-active {
+    background: var(--pb-ink, #2b241a);
+    width: 22px;
+    border-radius: 999px;
+  }
+  :is(.dark) .playbook-cards .pb-dot.pb-dot-active {
+    background: rgb(232 217 175);
+  }
+  .playbook-cards .pb-dot:hover {
+    background: rgb(120 100 60 / 0.7);
+  }
+
+  /* ---------- Nav buttons ---------- */
+  .playbook-cards .pb-nav-btn {
+    transition: all 0.2s ease;
+  }
+
+  /* ---------- Copy confirmation ---------- */
+  .playbook-cards .playbook-copied {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .playbook-cards .pb-flip-card {
+      transition: none;
+    }
+    .playbook-cards .pb-card-slot {
+      transition: none;
+    }
+  }
+</style>
