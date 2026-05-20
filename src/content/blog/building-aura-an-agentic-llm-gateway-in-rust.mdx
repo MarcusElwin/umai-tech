@@ -54,7 +54,7 @@ Before I justify *why* a new gateway, let's be honest about *what's already ther
     { name: "Vercel AI Gateway", language: "Node / Edge", openSource: "No", strength: "Model fallbacks, Fluid-compute, deep Next.js integration", gap: "Hosted; coupled to Vercel platform" },
     { name: "Bifrost (Maxim AI)", language: "Go", openSource: "Apache 2.0", strength: "11 µs overhead at 5k RPS, 1000+ models, governance + SSO", gap: "OpenAI-shaped wire format; agents on top, not native" },
     { name: "Opper AI", language: "Managed", openSource: "No", strength: "EU sovereignty, 300+ models, LLM-as-a-judge scoring", gap: "Managed control plane, not self-hostable" },
-    { name: "Aura", language: "Rust", openSource: "MIT", strength: "Agentic-native, Open Responses API spec, multi-tenant by design", gap: "Earlier-stage; 7 providers as of v0.3", highlight: true },
+    { name: "Aura", language: "Rust", openSource: "MIT", strength: "Agentic-native, Open Responses API spec, multi-tenant by design", gap: "Earlier-stage; 7 providers as of v0.9", highlight: true },
   ]}
 />
 
@@ -186,10 +186,10 @@ Two things in this picture matter more than they look:
 
 ## Supported Models
 
-Aura ships with seven providers as of v0.3. Anthropic and Gemini have full streaming and tool-call support; the others land via the same `Provider` trait and can be added in a single file.
+Aura ships with seven providers as of v0.9. Anthropic and Gemini have full streaming and tool-call support; the others land via the same `Provider` trait and can be added in a single file.
 
 <SupportedModelsGrid
-  title="Model families supported in v0.3"
+  title="Model families supported in v0.9"
   subtitle="Resolve by family or by pinned version — Aura's registry handles both"
   providers={[
     { provider: "OpenAI", badge: "Streaming + tools", families: ["GPT-5 family", "GPT-4o family", "o-series (o1, o3-mini)", "GPT-4 / 4-turbo / 3.5"], notes: "Use latest aliases or pinned versions" },
@@ -258,7 +258,7 @@ Aura is just an HTTP server speaking the Open Responses API. Locally it lives on
 
 ### Python — the official SDK
 
-The first-party SDK ships as `aura-llm` on PyPI. Install with `uv` or `pip`:
+The first-party SDK ships as **[`aura-llm` on PyPI](https://pypi.org/project/aura-llm/)**. Install with `uv` or `pip`:
 
 <CodeTerminal
   title="install"
@@ -403,7 +403,7 @@ make db-migrate
       label: "docker build",
       lang: "bash",
       code: `# Multi-stage build with cargo-chef · release image < 80 MB
-docker build -t aura-llm-gateway:0.3 .
+docker build -t aura-llm-gateway:0.9 .
 
 docker run --rm -p 8080:8080 \\
   -e AURA_MASTER_KEY=$(openssl rand -hex 32) \\
@@ -411,7 +411,7 @@ docker run --rm -p 8080:8080 \\
   -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \\
   -e DATABASE_URL=$DATABASE_URL \\
   -e REDIS_URL=$REDIS_URL \\
-  aura-llm-gateway:0.3
+  aura-llm-gateway:0.9
 
 # For K8s: kubectl create secret generic aura-secrets,
 # reference in the Deployment, put non-secrets in a ConfigMap.`
@@ -456,11 +456,11 @@ When the hosted version makes sense:
 When self-hosting wins:
 
 - **You already operate Postgres and Redis** and want zero new SaaS in the request path.
-- **You need on-prem or air-gapped deployment** — pull `aura-llm-gateway:0.3` into your private registry and run.
+- **You need on-prem or air-gapped deployment** — pull `aura-llm-gateway:0.9` into your private registry and run.
 - **You're sensitive to per-request markup** — the hosted version takes a small fee on top of pass-through provider cost; self-hosted is free.
 
 <Callout type="note" title="Pricing — to be finalized">
-Hosted Aura pricing is being finalized alongside the v0.3 OSS release. The plan, roughly: a free tier for development with rate-limited usage, and a pay-as-you-go tier with **passthrough provider pricing plus a small per-request fee** that funds the open-source work. No subscription minimum. Full breakdown will live at **[aura-llm.dev/pricing](https://aura-llm.dev)** when the landing page goes live.
+Hosted Aura pricing is being finalized. The plan, roughly: a free tier for development with rate-limited usage, and a pay-as-you-go tier with **passthrough provider pricing plus a small per-request fee** that funds the open-source work. No subscription minimum. Full breakdown will live at **[aura-llm.dev/pricing](https://aura-llm.dev)**.
 </Callout>
 
 **The zero-install path:** if you just want to *see* Aura's agentic shape against a real prompt, open **[playground.aura-llm.dev](https://playground.aura-llm.dev)** in a browser. It's the same `apps/chat` React app that ships in the repo, pointed at the hosted gateway. Free-tier with a daily message cap, frontier models gated to beta, multi-provider model picker — no signup, no API key, no `curl`.
@@ -471,7 +471,7 @@ When you're ready to wire it into your own code, onboarding is three steps:
 2. **Grab an API key** from the dashboard — scoped to an org, team, and project from the start.
 3. **Point your existing client** at `https://api.aura-llm.dev/v1` and use the same model names. Cost, latency, and agentic metadata land in the dashboard with no extra wiring.
 
-The self-hosted code is what powers `api.aura-llm.dev`. There's no "hosted-only" feature flag, no proprietary fork — when v0.4 ships, the hosted gateway upgrades from the same MIT-licensed binary you'd run yourself. That's the deal: **the OSS is the product, the hosted version is the convenience.**
+The self-hosted code is what powers `api.aura-llm.dev`. There's no "hosted-only" feature flag, no proprietary fork — when v0.10 ships, the hosted gateway upgrades from the same MIT-licensed binary you'd run yourself. That's the deal: **the OSS is the product, the hosted version is the convenience.**
 
 ## Load Test — Aura vs the Competition
 
@@ -485,12 +485,12 @@ The component is interactive — **switch scenarios with the tabs**, and each pa
 
 A few honest notes on this:
 
-- **Numbers are placeholders pending the live run.** The shape is what I expect from each gateway's architecture — Python interpreter overhead for LiteLLM, hosted-edge overhead for Portkey/OpenRouter, raw Rust speed for Aura/Bifrost/Helicone — not a measurement. The component is built so I can drop real numbers into one props object once the harness has run.
+- **Numbers are directional estimates, not measurements yet.** The shape is what I expect from each gateway's architecture — Python interpreter overhead for LiteLLM, hosted-edge overhead for Portkey/OpenRouter, raw Rust speed for Aura/Bifrost/Helicone. The harness that produces the real numbers now lives at [`scripts/bench/`](https://github.com/UmaiTech/aura-llm-gateway/tree/main/scripts/bench) in the gateway repo — `uv run python harness.py --smoke` to sanity-check, `--full` for the headline run. I'll swap the placeholder props for measured numbers once the first end-to-end run completes against v0.9.
 - **Same provider, same prompt, same model.** The interesting variable is the gateway, not the LLM. All six gateways front Anthropic Sonnet 4.5; all five scenarios use the same input shape with the tool-call count as the only knob.
 - **Throughput drops as tool calls grow** for everyone — that's the loop unrolling, not the gateway choking. Aura's curve stays flatter because the per-request overhead is small enough to disappear into the LLM round-trip.
 - **Bifrost is the gateway closest to Aura on raw speed.** Helicone is in the same tier. The differentiator inside the Rust tier isn't µs — it's the agentic API shape and the multi-tenant model, as the differentiators section made the case for.
 
-I'll update this section with real numbers once the harness finishes its first end-to-end run. If you want the harness itself, it'll land at `github.com/UmaiTech/aura-llm-gateway` under `bench/` alongside the v0.3 OSS release.
+I'll update this section with real numbers once the harness finishes its first end-to-end run against v0.9. The harness is reproducible — clone the repo, fill in `.env` with your gateway keys, and `uv run python harness.py --full --runs 3` writes the same `results.json` shape this chart consumes.
 
 ## What's New on the Table
 
@@ -532,7 +532,7 @@ I haven't seen another gateway expose compression strategies as a configurable m
 
 ### What Aura *doesn't* do (yet)
 
-I'd rather be honest than oversell. Aura is at **v0.3**. The Python SDK ships; the TypeScript SDK doesn't. The admin React dashboard is mid-build. Guardrails and PII redaction — Portkey's bread and butter — aren't there yet. EU sovereignty as a first-class concept (Opper's pitch[^3]) isn't there. If you need 1000+ provider breadth tomorrow, Bifrost still wins on coverage. If you need 300+ models with built-in LLM-as-a-judge, Opper is the managed answer.
+I'd rather be honest than oversell. Aura is at **v0.9** — pre-1.0, public APIs and schema can still shift between minor versions. The [Python SDK](https://pypi.org/project/aura-llm/) ships; the TypeScript SDK doesn't. The admin React dashboard landed in `apps/admin/`, but the browser playground at [playground.aura-llm.dev](https://playground.aura-llm.dev) is the more polished front door today. Guardrails and PII redaction — Portkey's bread and butter — aren't there yet. EU sovereignty as a first-class concept (Opper's pitch[^3]) isn't there. If you need 1000+ provider breadth tomorrow, Bifrost still wins on coverage. If you need 300+ models with built-in LLM-as-a-judge, Opper is the managed answer.
 
 What you do get today: a small, fast, agentic-native gateway with clean types and a roadmap I can actually keep up with as a one-person open-source project.
 
@@ -607,6 +607,7 @@ Aura lives at four places, depending on what you need:
 - **[docs.aura-llm.dev](https://docs.aura-llm.dev)** — full documentation, SDK reference, integration guides
 - **[playground.aura-llm.dev](https://playground.aura-llm.dev)** — browser chat playground, free-tier with a daily message cap, no install
 - **[api.aura-llm.dev](https://api.aura-llm.dev)** — the hosted gateway endpoint
+- **[pypi.org/project/aura-llm](https://pypi.org/project/aura-llm/)** — the official Python SDK
 - **[github.com/UmaiTech/aura-llm-gateway](https://github.com/UmaiTech/aura-llm-gateway)** — the repo, MIT-licensed
 
 Issues, PRs, and "you should have looked at X" emails are all welcome. If you're building agentic workflows and the gateway shape doesn't fit, tell me — that's the kind of feedback the v0.x series is for.
