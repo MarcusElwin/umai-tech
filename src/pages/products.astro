@@ -4,6 +4,21 @@ import ProductCard from '../components/ProductCard.astro';
 
 const products = [
   {
+    title: 'Aura LLM Gateway',
+    description: 'Hosted, agentic-native LLM gateway built in Rust. One endpoint, seven providers (OpenAI, Anthropic, Gemini, Mistral, Ollama, Bedrock, HuggingFace), cost and agentic metadata on every response, multi-tenant org/team/project hierarchy, AES-256-GCM credential encryption. Open Responses API native — not just OpenAI-compatible. Self-host the same MIT-licensed binary or use the hosted version at api.aura-llm.dev.',
+    status: 'beta' as const,
+    tags: ['Rust', 'LLM Gateway', 'Agentic AI', 'Open Responses API', 'Multi-Provider', 'Open Source'],
+    features: [
+      'Open Responses API native — agentic spec, not chat-completions translation',
+      '7 providers behind one endpoint, resolved from the model name',
+      'Cost and agentic metadata on every response',
+      'Multi-tenant: org → team → project → end-user hierarchy',
+      'Encrypted provider credentials, Redis-backed rate limits + cache',
+      'Self-host (MIT) or use the hosted version'
+    ],
+    url: 'https://aura-llm.dev'
+  },
+  {
     title: 'BedTimeGPT.ai',
     description: 'AI and LLM powered Bedtime Story Generator App that creates personalized, engaging stories for children. Using advanced language models to craft unique tales that adapt to your child\'s interests and age.',
     status: 'in-progress' as const,

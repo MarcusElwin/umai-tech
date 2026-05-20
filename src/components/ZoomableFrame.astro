@@ -1,0 +1,449 @@
+---
+// Reusable wrapper that adds an "expand" button to any complex visual.
+// Clicking opens a fullscreen modal dialog containing the same content scaled up,
+// with keyboard escape, click-outside dismiss, and prefers-reduced-motion support.
+
+export interface Props {
+  ariaLabel?: string;
+}
+
+const { ariaLabel = 'Expandable content' } = Astro.props;
+const id = `zf-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div class="zoomable-frame relative group" data-zf-id={id}>
+
+  {/* Expand button — top-right, appears on hover or always on touch */}
+  <button
+    type="button"
+    class="zf-expand-btn absolute top-3 right-3 z-20 w-9 h-9 rounded-lg bg-white/95 dark:bg-gray-900/95 ring-1 ring-gray-200 dark:ring-gray-700 shadow-md flex items-center justify-center hover:bg-purple-50 dark:hover:bg-purple-900/40 hover:ring-purple-300 dark:hover:ring-purple-600 transition opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+    aria-label="Expand to fullscreen"
+    title="Expand"
+  >
+    <svg class="w-4 h-4 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+    </svg>
+  </button>
+
+  {/* The actual content — rendered inline */}
+  <div class="zf-inline-content">
+    <slot />
+  </div>
+
+  {/* Hidden modal dialog — initially empty; JS clones the inline content into it on open */}
+  <div
+    class="zf-dialog fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-8"
+    role="dialog"
+    aria-modal="true"
+    aria-label={ariaLabel}
+  >
+    {/* Backdrop */}
+    <div class="zf-backdrop absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+
+    {/* Modal panel */}
+    <div class="zf-panel relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700 w-full max-w-7xl max-h-[92vh] overflow-hidden flex flex-col">
+      <div class="flex items-center justify-between px-5 py-3 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+        <span class="text-[10px] font-mono uppercase tracking-widest text-purple-600 dark:text-purple-400">
+          Expanded view · {ariaLabel}
+        </span>
+        <button
+          type="button"
+          class="zf-close-btn w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+          aria-label="Close fullscreen view"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="zf-dialog-content overflow-auto p-4 sm:p-6 flex-1">
+        {/* Filled at runtime */}
+      </div>
+      <div class="px-5 py-2 border-t border-gray-200 dark:border-gray-700 text-[10px] text-gray-500 dark:text-gray-500 italic flex-shrink-0">
+        Press <kbd class="font-mono px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">Esc</kbd> or click outside to close
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ id }}>
+  (function () {
+    const root = document.querySelector(`[data-zf-id="${id}"]`);
+    if (!root) return;
+
+    const btn = root.querySelector('.zf-expand-btn');
+    const dialog = root.querySelector('.zf-dialog');
+    const panel = root.querySelector('.zf-panel');
+    const closeBtn = root.querySelector('.zf-close-btn');
+    const backdrop = root.querySelector('.zf-backdrop');
+    const inline = root.querySelector('.zf-inline-content');
+    const dialogContent = root.querySelector('.zf-dialog-content');
+
+    if (!btn || !dialog || !inline || !dialogContent) return;
+
+    let lastFocus = null;
+
+    function rebindArchitectureDiagram(scope) {
+      // If the clone contains an AuraArchitectureDiagram, re-wire its
+      // click-to-reveal detail panel + close button inside the clone.
+      const aad = scope.querySelector('[data-aad-id]');
+      if (!aad) return;
+
+      const panel = aad.querySelector('.aad-detail-panel');
+      const titleEl = aad.querySelector('.aad-detail-title');
+      const subEl = aad.querySelector('.aad-detail-sub');
+      const descEl = aad.querySelector('.aad-detail-desc');
+      const sourceWrap = aad.querySelector('.aad-detail-source-wrap');
+      const sourceEl = aad.querySelector('.aad-detail-source');
+      const aadCloseBtn = aad.querySelector('.aad-close-btn');
+
+      // Pull the descriptions from the buttons themselves: we stash them
+      // on the original via a data attribute below at open()-time.
+      function clearActive() {
+        aad.querySelectorAll('[data-aad-node]').forEach((b) => b.classList.remove('aad-active'));
+      }
+
+      function showNode(btn) {
+        const title = btn.getAttribute('data-aad-title') || '';
+        const sub = btn.getAttribute('data-aad-sub') || '';
+        const desc = btn.getAttribute('data-aad-desc') || '';
+        const source = btn.getAttribute('data-aad-source') || '';
+        clearActive();
+        btn.classList.add('aad-active');
+        if (titleEl) titleEl.textContent = title;
+        if (subEl) subEl.textContent = sub;
+        if (descEl) descEl.textContent = desc;
+        if (sourceWrap && sourceEl) {
+          if (source) {
+            sourceEl.textContent = source;
+            sourceWrap.classList.remove('hidden');
+          } else {
+            sourceWrap.classList.add('hidden');
+          }
+        }
+        if (panel) panel.classList.remove('hidden');
+        if (aadCloseBtn) aadCloseBtn.classList.remove('hidden');
+      }
+
+      function closeDetail() {
+        clearActive();
+        if (panel) panel.classList.add('hidden');
+        if (aadCloseBtn) aadCloseBtn.classList.add('hidden');
+      }
+
+      aad.querySelectorAll('[data-aad-node]').forEach((btn) => {
+        // Replace the node to drop any prior listeners (e.g. if Astro hydrated twice)
+        const fresh = btn.cloneNode(true);
+        btn.parentNode.replaceChild(fresh, btn);
+        fresh.addEventListener('click', () => showNode(fresh));
+      });
+      if (aadCloseBtn) {
+        const freshClose = aadCloseBtn.cloneNode(true);
+        aadCloseBtn.parentNode.replaceChild(freshClose, aadCloseBtn);
+        freshClose.addEventListener('click', closeDetail);
+      }
+    }
+
+    function stampInteractiveDataOnOriginal() {
+      // Before cloning, copy each [data-aad-node] button's metadata into data-attrs
+      // so the clone can rebind without needing the original module-scoped data.
+      const originalAad = inline.querySelector('[data-aad-id]');
+      if (!originalAad) return;
+      // The module that renders AuraArchitectureDiagram exposes node data only via
+      // the inline define:vars script. Mirror it onto the buttons themselves once.
+      if (originalAad.dataset.zfStamped === 'true') return;
+      // We can't read define:vars from here, so derive titles/subs from the DOM
+      // and pull desc/source from a hidden data island we add server-side. As a
+      // fallback we set whatever we can read directly off the visible text.
+      originalAad.querySelectorAll('[data-aad-node]').forEach((btn) => {
+        const id = btn.getAttribute('data-aad-node');
+        const titleEl = btn.querySelector('div:nth-child(1)');
+        const subEl = btn.querySelector('div:nth-child(2)');
+        if (titleEl && !btn.hasAttribute('data-aad-title')) {
+          btn.setAttribute('data-aad-title', titleEl.textContent.trim());
+        }
+        if (subEl && !btn.hasAttribute('data-aad-sub')) {
+          btn.setAttribute('data-aad-sub', subEl.textContent.trim());
+        }
+      });
+      originalAad.dataset.zfStamped = 'true';
+    }
+
+    function rebindCarousels(scope) {
+      // CardCarousel uses [data-cc-id]; re-init each carousel inside the clone.
+      scope.querySelectorAll('[data-cc-id]').forEach((cc) => {
+        const viewport = cc.querySelector('.cc-viewport');
+        const track = cc.querySelector('.cc-track');
+        const prevBtn = cc.querySelector('.cc-prev');
+        const nextBtn = cc.querySelector('.cc-next');
+        const dotsContainer = cc.querySelector('.cc-dots');
+        const currentEl = cc.querySelector('.cc-counter-current');
+        const totalEl = cc.querySelector('.cc-counter-total');
+        if (!viewport || !track) return;
+
+        const slides = Array.from(track.children);
+        const total = slides.length;
+        if (total === 0) return;
+        let index = 0;
+
+        slides.forEach((s) => {
+          s.style.flex = '0 0 100%';
+          s.style.minWidth = '0';
+        });
+
+        if (dotsContainer) {
+          dotsContainer.innerHTML = '';
+          for (let i = 0; i < total; i++) {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.setAttribute('role', 'tab');
+            dot.className = 'cc-dot w-2 h-2 rounded-full transition-all';
+            dot.addEventListener('click', () => { index = i; update(); });
+            dotsContainer.appendChild(dot);
+          }
+        }
+        if (totalEl) totalEl.textContent = String(total);
+
+        function update() {
+          track.style.transform = `translateX(-${index * 100}%)`;
+          if (currentEl) currentEl.textContent = String(index + 1);
+          if (prevBtn) prevBtn.disabled = index === 0;
+          if (nextBtn) nextBtn.disabled = index === total - 1;
+          if (dotsContainer) {
+            Array.from(dotsContainer.children).forEach((dot, i) => {
+              dot.className = i === index
+                ? 'cc-dot w-6 h-2 rounded-full bg-purple-500 dark:bg-purple-400 transition-all'
+                : 'cc-dot w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-all';
+            });
+          }
+        }
+
+        if (prevBtn) prevBtn.addEventListener('click', () => { index = Math.max(0, index - 1); update(); });
+        if (nextBtn) nextBtn.addEventListener('click', () => { index = Math.min(total - 1, index + 1); update(); });
+        update();
+      });
+    }
+
+    function rebindCrateWorkspaces(scope) {
+      // CrateWorkspace uses [data-cw-id]; rebind click handlers inside the clone.
+      scope.querySelectorAll('[data-cw-id]').forEach((cw) => {
+        const panel = cw.querySelector('.cw-detail-panel');
+        const nameEl = cw.querySelector('.cw-detail-name');
+        const sourceEl = cw.querySelector('.cw-detail-source');
+        const roleEl = cw.querySelector('.cw-detail-role');
+        const blurbEl = cw.querySelector('.cw-detail-blurb');
+        const modulesWrap = cw.querySelector('.cw-detail-modules-wrap');
+        const modulesEl = cw.querySelector('.cw-detail-modules');
+        const depsWrap = cw.querySelector('.cw-detail-deps-wrap');
+        const depsEl = cw.querySelector('.cw-detail-deps');
+        const exposesWrap = cw.querySelector('.cw-detail-exposes-wrap');
+        const exposesEl = cw.querySelector('.cw-detail-exposes');
+        const testsWrap = cw.querySelector('.cw-detail-tests-wrap');
+        const testsEl = cw.querySelector('.cw-detail-tests');
+        const closeBtn = cw.querySelector('.cw-detail-close');
+
+        function clearActive() {
+          cw.querySelectorAll('[data-cw-crate]').forEach((b) => {
+            b.classList.remove('cw-crate-active');
+            b.setAttribute('aria-expanded', 'false');
+          });
+        }
+        function fillList(ul, items, mono) {
+          if (!ul) return;
+          ul.innerHTML = '';
+          (items || []).forEach((it) => {
+            const li = document.createElement('li');
+            li.className = mono
+              ? 'text-xs font-mono text-gray-700 dark:text-gray-300 leading-snug flex gap-1.5'
+              : 'text-xs text-gray-700 dark:text-gray-300 leading-snug flex gap-1.5';
+            li.innerHTML = '<span class="text-purple-500 flex-shrink-0">·</span><span>' + it + '</span>';
+            ul.appendChild(li);
+          });
+        }
+        function show(btn) {
+          let c;
+          try { c = JSON.parse(btn.getAttribute('data-cw-data') || '{}'); }
+          catch (e) { return; }
+          clearActive();
+          btn.classList.add('cw-crate-active');
+          btn.setAttribute('aria-expanded', 'true');
+          if (nameEl) nameEl.textContent = c.name || '';
+          if (roleEl) roleEl.textContent = c.role || '';
+          if (blurbEl) blurbEl.textContent = c.detail || '';
+          if (sourceEl) sourceEl.textContent = c.source || '';
+          if (c.modules && c.modules.length && modulesWrap) {
+            fillList(modulesEl, c.modules, true);
+            modulesWrap.classList.remove('hidden');
+          } else if (modulesWrap) {
+            modulesWrap.classList.add('hidden');
+          }
+          if (c.deps && c.deps.length && depsWrap) {
+            fillList(depsEl, c.deps, true);
+            depsWrap.classList.remove('hidden');
+          } else if (depsWrap) {
+            depsWrap.classList.add('hidden');
+          }
+          if (c.exposes && c.exposes.length && exposesWrap) {
+            fillList(exposesEl, c.exposes, false);
+            exposesWrap.classList.remove('hidden');
+          } else if (exposesWrap) {
+            exposesWrap.classList.add('hidden');
+          }
+          if (c.testCount && testsWrap) {
+            testsEl.textContent = c.testCount;
+            testsWrap.classList.remove('hidden');
+          } else if (testsWrap) {
+            testsWrap.classList.add('hidden');
+          }
+          if (panel) panel.classList.remove('hidden');
+        }
+        function closeDetail() {
+          clearActive();
+          if (panel) panel.classList.add('hidden');
+        }
+
+        cw.querySelectorAll('[data-cw-crate]').forEach((btn) => {
+          const fresh = btn.cloneNode(true);
+          btn.parentNode.replaceChild(fresh, btn);
+          fresh.addEventListener('click', () => show(fresh));
+        });
+        if (closeBtn) {
+          const freshClose = closeBtn.cloneNode(true);
+          closeBtn.parentNode.replaceChild(freshClose, closeBtn);
+          freshClose.addEventListener('click', closeDetail);
+        }
+      });
+    }
+
+    function rebindCodeTerminals(scope) {
+      scope.querySelectorAll('[data-ct-id]').forEach((ct) => {
+        const tabs = ct.querySelectorAll('[data-ct-tab]');
+        const panels = ct.querySelectorAll('[data-ct-panel]');
+        const copyBtn = ct.querySelector('.ct-copy');
+        const copyLabel = ct.querySelector('.ct-copy-label');
+        let activeIndex = 0;
+        function setActive(i) {
+          activeIndex = i;
+          tabs.forEach((t, ti) => {
+            if (ti === i) {
+              t.classList.add('text-purple-400', 'ct-tab-active');
+              t.classList.remove('text-gray-500');
+            } else {
+              t.classList.remove('text-purple-400', 'ct-tab-active');
+              t.classList.add('text-gray-500');
+            }
+          });
+          panels.forEach((p, pi) => {
+            if (pi === i) p.classList.remove('hidden');
+            else p.classList.add('hidden');
+          });
+        }
+        tabs.forEach((t) => {
+          const fresh = t.cloneNode(true);
+          t.parentNode.replaceChild(fresh, t);
+          fresh.addEventListener('click', () => {
+            const idx = parseInt(fresh.getAttribute('data-ct-tab') || '0', 10);
+            setActive(idx);
+          });
+        });
+        if (copyBtn) {
+          const fresh = copyBtn.cloneNode(true);
+          copyBtn.parentNode.replaceChild(fresh, copyBtn);
+          fresh.addEventListener('click', async () => {
+            const panel = ct.querySelector(`[data-ct-panel="${activeIndex}"]`);
+            const code = panel?.getAttribute('data-code') || '';
+            try {
+              await navigator.clipboard.writeText(code);
+              const lbl = fresh.querySelector('.ct-copy-label');
+              if (lbl) lbl.textContent = 'Copied!';
+              setTimeout(() => { if (lbl) lbl.textContent = 'Copy'; }, 1800);
+            } catch (e) {}
+          });
+        }
+      });
+    }
+
+    function open() {
+      stampInteractiveDataOnOriginal();
+
+      // Clone the inline content into the dialog
+      dialogContent.innerHTML = '';
+      const clone = inline.cloneNode(true);
+      clone.classList.add('zf-expanded');
+
+      // Re-key any duplicated component IDs in the clone so the *original*
+      // module-scoped scripts ignore them and we own the cloned widgets.
+      clone.querySelectorAll('[data-aad-id], [data-cc-id], [data-ct-id], [data-cw-id]').forEach((el) => {
+        ['data-aad-id', 'data-cc-id', 'data-ct-id', 'data-cw-id'].forEach((a) => {
+          if (el.hasAttribute(a)) el.setAttribute(a, el.getAttribute(a) + '-clone');
+        });
+      });
+
+      dialogContent.appendChild(clone);
+
+      // Re-bind interactive widgets inside the clone so click-through still works.
+      rebindArchitectureDiagram(clone);
+      rebindCarousels(clone);
+      rebindCodeTerminals(clone);
+      rebindCrateWorkspaces(clone);
+
+      lastFocus = document.activeElement;
+      dialog.classList.remove('hidden');
+      dialog.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+
+      if (closeBtn) closeBtn.focus();
+    }
+
+    function close() {
+      dialog.classList.add('hidden');
+      dialog.classList.remove('flex');
+      document.body.style.overflow = '';
+      dialogContent.innerHTML = '';
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    btn.addEventListener('click', open);
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (backdrop) backdrop.addEventListener('click', close);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !dialog.classList.contains('hidden')) {
+        close();
+      }
+    });
+  })();
+</script>
+
+<style>
+  /* Always show expand button on touch devices */
+  @media (hover: none) {
+    .zoomable-frame .zf-expand-btn {
+      opacity: 1 !important;
+    }
+  }
+
+  /* Smooth fade-in for the dialog */
+  .zoomable-frame .zf-dialog:not(.hidden) {
+    animation: zf-fade-in 0.18s ease-out;
+  }
+  .zoomable-frame .zf-dialog:not(.hidden) .zf-panel {
+    animation: zf-scale-in 0.22s ease-out;
+  }
+
+  @keyframes zf-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes zf-scale-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .zoomable-frame .zf-dialog:not(.hidden),
+    .zoomable-frame .zf-dialog:not(.hidden) .zf-panel {
+      animation: none;
+    }
+  }
+</style>

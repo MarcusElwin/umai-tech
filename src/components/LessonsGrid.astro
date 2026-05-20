@@ -1,0 +1,38 @@
+---
+import CardCarousel from './CardCarousel.astro';
+
+export interface Lesson {
+  title: string;
+  body: string;
+}
+
+export interface Props {
+  title?: string;
+  subtitle?: string;
+  lessons: Lesson[];
+}
+
+const { title, subtitle, lessons } = Astro.props;
+---
+
+<CardCarousel title={title} subtitle={subtitle} ariaLabel="Lessons learned">
+  {lessons.map((lesson, i) => (
+    <article class="px-3 sm:px-5 py-3 sm:py-4">
+      <div class="rounded-xl ring-1 ring-gray-200/60 dark:ring-gray-700/50 bg-gray-50/40 dark:bg-gray-900/40 p-4 sm:p-5">
+        <div class="flex items-start gap-4">
+          <span class="flex-shrink-0 font-mono text-3xl sm:text-4xl font-bold text-purple-600 dark:text-purple-400 leading-none">
+            #{i + 1}
+          </span>
+          <div class="min-w-0 flex-1">
+            <h5 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-1.5 leading-tight">
+              {lesson.title}
+            </h5>
+            <p class="text-sm text-gray-700 dark:text-gray-300 leading-snug">
+              {lesson.body}
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+  ))}
+</CardCarousel>

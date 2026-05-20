@@ -1,0 +1,626 @@
+---
+title: "Building Aura: An Agentic LLM Gateway in Rust"
+description: "I'm a Python person. I built a Rust LLM gateway with Claude Code. Here's why I added another box to the LLM-gateway shelf, what makes Aura agentic-native instead of just OpenAI-compatible, how to use it from your existing framework, and what I learned about vibe engineering production infrastructure as a non-Rust developer."
+pubDate: 2026-05-15T08:00:00.000Z
+author: "Marcus Elwin"
+tags: ["Rust", "LLM Gateway", "Aura", "Agentic AI", "Open Source", "Open Responses API", "AI Engineering", "Vibe Engineering", "Claude Code", "Infrastructure"]
+---
+
+import Callout from '@components/Callout.astro';
+import CodeTerminal from '@components/CodeTerminal.astro';
+import GatewayLandscapeMatrix from '@components/GatewayLandscapeMatrix.astro';
+import CrateWorkspace from '@components/CrateWorkspace.astro';
+import AuraArchitectureDiagram from '@components/AuraArchitectureDiagram.astro';
+import ZoomableFrame from '@components/ZoomableFrame.astro';
+import SupportedModelsGrid from '@components/SupportedModelsGrid.astro';
+import LoadTestChart from '@components/LoadTestChart.astro';
+import WhatWorkedWhatHurt from '@components/WhatWorkedWhatHurt.astro';
+import LessonsGrid from '@components/LessonsGrid.astro';
+
+## Why I Built Another LLM Gateway
+
+There are *already* good LLM gateways. [LiteLLM](https://github.com/BerriAI/litellm) is the one most teams reach for first. [Portkey](https://portkey.ai/) has guardrails and a polished managed plane. [Helicone](https://helicone.ai/) leads on observability. [OpenRouter](https://openrouter.ai/) gives you 290+ models behind one OpenAI-compatible URL with passthrough billing[^1]. [Vercel AI Gateway](https://vercel.com/ai-gateway) ships model fallbacks and Fluid-compute observability for the Next.js crowd. [Bifrost](https://github.com/maximhq/bifrost) from Maxim AI claims 11 µs of overhead at 5k RPS — about 50× faster than LiteLLM[^2]. [Opper AI](https://opper.ai/) is the EU-sovereign managed gateway with 300+ models and LLM-as-a-judge scoring built in[^3]. The shelf is *full*.
+
+So why did I spend the last few months building **[Aura](https://aura-llm.dev)** — a Rust LLM gateway I'm about to open-source ([github.com/UmaiTech/aura-llm-gateway](https://github.com/UmaiTech/aura-llm-gateway)) — when I could have just used one of those?
+
+Three reasons, and they're all related:
+
+1. **Most gateways treat agents as an afterthought.** They speak `chat/completions`. They normalize to OpenAI's older schema. Tool calls, reasoning items, and `requires_action` flags get flattened or dropped. The thing I actually need to build — agentic workflows that yield control back and forth between a model and my application — fits awkwardly on top.
+2. **I wanted the latency budget of Rust, not a "fast enough" Python proxy.** When the gateway sits on the request path of *every* LLM call your product makes, the overhead it adds is overhead your users feel.
+3. **I'm a Python person.** I wanted to know whether [vibe engineering](/blog/taste-still-matters-in-ai-software-engineering-) with Claude Code could carry me into a language I'd never shipped production code in — and what would break.
+
+This post is the story of what Aura *is*, what it does that the existing gateways don't, how to use it from your existing framework, and what I learned building it. It's a companion piece to the talk I gave at **Agentic Dev Days Stockholm 2026** — *Vibe engineering taught me Rust*.
+
+<Callout type="note" title="Slides from the talk">
+I gave this as an 18-slide talk at **Agentic Dev Days Stockholm 2026**. If you want the deck — *Vibe engineering taught me Rust: building Aura, an agentic LLM gateway, with Claude Code* — grab the PDF here: **[Download the slides (PDF, ~5 MB)](/assets/aura-llm-agentic-devdays-2026.pdf)**. Most of this post mirrors the talk, but in more depth.
+</Callout>
+
+<Callout type="insight" title="The Core Thesis">
+Aura is a Rust gateway built around the **[Open Responses API](https://www.openresponses.org/specification)** — the emerging open standard for agentic LLM workflows[^4] — not a translation layer that flattens agents into chat completions. The model is one provider. The gateway is the runtime that makes agentic loops legible across providers.
+</Callout>
+
+## The Existing Gateway Landscape
+
+Before I justify *why* a new gateway, let's be honest about *what's already there*. I did this research myself before writing a line of Rust, and it shaped what Aura ended up being.
+
+<GatewayLandscapeMatrix
+  title="LLM gateways in 2026 — what they're good at, what's missing for agents"
+  subtitle="Survey of the gateways teams actually reach for when building agentic systems"
+  gateways={[
+    { name: "LiteLLM", language: "Python", openSource: "Yes", strength: "100+ provider coverage, simple router, easy to self-host", gap: "Chat-completions-shaped; agentic metadata is bolted on" },
+    { name: "Portkey", language: "Node / TS", openSource: "Apache 2.0", strength: "Guardrails, semantic cache, prompt management, PII redaction", gap: "Cloud-first; self-host is second-class" },
+    { name: "Helicone", language: "Rust", openSource: "Yes", strength: "Observability-first, edge-friendly, Rust speed", gap: "Started as analytics, agentic primitives are surface-level" },
+    { name: "OpenRouter", language: "Closed", openSource: "No", strength: "290+ models, passthrough pricing, one URL", gap: "Hosted only — they bill you, not the provider" },
+    { name: "Vercel AI Gateway", language: "Node / Edge", openSource: "No", strength: "Model fallbacks, Fluid-compute, deep Next.js integration", gap: "Hosted; coupled to Vercel platform" },
+    { name: "Bifrost (Maxim AI)", language: "Go", openSource: "Apache 2.0", strength: "11 µs overhead at 5k RPS, 1000+ models, governance + SSO", gap: "OpenAI-shaped wire format; agents on top, not native" },
+    { name: "Opper AI", language: "Managed", openSource: "No", strength: "EU sovereignty, 300+ models, LLM-as-a-judge scoring", gap: "Managed control plane, not self-hostable" },
+    { name: "Aura", language: "Rust", openSource: "MIT", strength: "Agentic-native, Open Responses API spec, multi-tenant by design", gap: "Earlier-stage; 7 providers as of v0.3", highlight: true },
+  ]}
+/>
+
+LiteLLM was my baseline. It's the gateway I'd actually used in prior work, and it does the job. But when I started prototyping agents seriously — tools yielding back to my code, multi-step reasoning, partial responses with `requires_action: true` — I kept writing the same translation layer twice: once to talk to LiteLLM, once to interpret what came back.
+
+That translation layer is the Open Responses API. So I cut out the middle hop.
+
+## What the Open Responses API Actually Changes
+
+The Open Responses API is a specification published by the openresponses.org working group, with adoption from Hugging Face, OpenRouter, Vercel, LM Studio, Ollama, and vLLM[^4]. It's based on OpenAI's Responses API, but reframed as an open standard so the agentic primitives — items, tool calls, reasoning, status lifecycle — work the same way across providers.
+
+The core primitives:
+
+- **Items** — atomic units of a conversation. Not just messages, but `function_call`, `function_call_output`, `reasoning`, `web_search`, and so on. An agent's "turn" is a list of items, not a string.
+- **Response** — a container with a `status` lifecycle: `in_progress → completed | failed | incomplete`.
+- **Streaming as semantic events** — not raw token deltas. You get `response.output_item.added`, `response.output_text.delta`, `response.completed`. Your UI knows what each event *means*.
+- **`previous_response_id`** for conversation threading without resending history.
+- **Externally vs internally hosted tools** — function-calling vs provider-hosted tools (file search, web search) are first-class concepts, not glued on.
+
+If you're building agents, this is the shape you want. The Chat Completions shape was designed for one-shot Q&A; the Responses shape was designed for loops.
+
+Aura speaks this natively. One endpoint — `POST /v1/responses` — and every provider goes through the same item-based contract.
+
+## Meet Aura
+
+Aura is a 4-crate Rust workspace. It's small enough to read in an afternoon and structured so each piece has a single responsibility — and the stack underneath is deliberately boring.
+
+<ZoomableFrame ariaLabel="Aura Cargo workspace">
+<CrateWorkspace
+  title="Aura — 4-crate Cargo workspace"
+  subtitle="Each crate has one responsibility, with explicit dependency direction"
+  crates={[
+    {
+      name: "aura-types",
+      role: "Open Responses API types",
+      detail: "Shared type system for the Open Responses spec — request, response, items, events. 60+ tests on the types alone so provider drift is caught at compile time.",
+      modules: ["item.rs", "response.rs", "stream.rs", "compression.rs", "consistency.rs", "validation.rs"],
+      deps: ["serde", "thiserror"],
+      exposes: [
+        "CreateResponseRequest / Response container",
+        "Item enum (message, function_call, reasoning, …)",
+        "StreamEvent semantic events",
+        "Compression, consistency, validation configs"
+      ],
+      testCount: "60+ unit tests on type contracts",
+      source: "crates/aura-types"
+    },
+    {
+      name: "aura-db",
+      role: "Database models and migrations",
+      detail: "SQLx models, query layer, and migration set for Postgres. Org → team → project → end-user hierarchy lives here. Optional — Aura runs stateless without it.",
+      modules: ["models.rs", "repo.rs", "pool.rs", "error.rs"],
+      deps: ["sqlx (Postgres)", "aura-types"],
+      exposes: [
+        "Org / team / project / user models",
+        "API key (hashed) storage",
+        "Encrypted provider credentials at rest",
+        "Async request log writer"
+      ],
+      testCount: "Schema in migrations/, query tests in repo.rs",
+      source: "crates/aura-db"
+    },
+    {
+      name: "aura-core",
+      role: "Provider adapters, routing, cost, compression",
+      detail: "The business logic: Provider trait + per-vendor adapters, cost calculator, rate limiter, response cache, prompt compression, crypto.",
+      modules: ["provider/", "router/", "cost.rs", "cache.rs", "rate_limit.rs", "compression/", "crypto.rs", "metrics.rs"],
+      deps: ["aura-types", "aura-db", "reqwest", "redis", "tokio"],
+      exposes: [
+        "Provider trait + 7 adapters",
+        "ProviderRegistry (model → provider resolution)",
+        "Cost calculator with 2026 model pricing",
+        "Token-bucket rate limiter, TTL cache, AES-256-GCM crypto"
+      ],
+      testCount: "Provider integration tests + wiremock fixtures",
+      source: "crates/aura-core"
+    },
+    {
+      name: "aura-proxy",
+      role: "Axum binary, middleware, routes",
+      detail: "The actual server. Route handlers, middleware stack, application state, /metrics endpoint. The only crate that produces a binary.",
+      modules: ["main.rs", "routes/"],
+      deps: ["aura-types", "aura-core", "aura-db", "axum", "tower-http"],
+      exposes: [
+        "POST /v1/responses + streaming variant",
+        "Middleware stack (auth, rate limit, cache, compression, logger)",
+        "Response enrichment with cost_usd + agentic{}",
+        "/metrics endpoint for Prometheus"
+      ],
+      testCount: "End-to-end route tests",
+      source: "crates/aura-proxy"
+    },
+  ]}
+  stack={[
+    { name: "Axum 0.8", purpose: "HTTP layer", link: "https://github.com/tokio-rs/axum" },
+    { name: "Tokio", purpose: "Async runtime", link: "https://tokio.rs/" },
+    { name: "SQLx", purpose: "Postgres", link: "https://github.com/launchbadge/sqlx" },
+    { name: "Redis", purpose: "Cache + limits", link: "https://redis.io/" },
+    { name: "Reqwest", purpose: "Outbound HTTP", link: "https://github.com/seanmonstar/reqwest" },
+  ]}
+  footnote="Nothing exotic — the interesting parts are above the stack, not in it."
+/>
+</ZoomableFrame>
+
+### What's on the box
+
+- **Open Responses API** — agentic-native spec, not "OpenAI-compatible adjacent."
+- **7 providers** — OpenAI, Anthropic, Google Gemini, Mistral, Ollama, AWS Bedrock, HuggingFace.
+- **Agentic metadata on every response** — `provider`, `latency_ms`, `has_tool_calls`, `tools_used`, `requires_action`, `request_id`. Same shape, every provider.
+- **Cost tracking** — per-request USD on every response, with input/output/cached/reasoning broken out. Surfaced to users, not just logged.
+- **Multi-tenant model** — `org → team → project → end-user` hierarchy. Per-user cost allocation lives in the data model, not in your billing service.
+- **AES-256-GCM envelope encryption** for provider credentials at rest. A bring-your-own-key gateway shouldn't leak keys.
+- **Rate limiting + response cache** — Redis-backed token bucket + SHA256-keyed TTL cache. Optional, but if you're routing real traffic you want both.
+- **Prompt compression** — TOON, AISP, YAML-min, JSON-min. 40–60% token savings on uniform arrays via TOON, which adds up faster than people expect.
+
+### Architecture at a glance
+
+The diagram below is interactive — **click any box** to see what that component does, sourced from the codebase. **Hover the diagram and hit the expand icon** for a fullscreen view.
+
+<ZoomableFrame ariaLabel="Aura architecture diagram">
+<AuraArchitectureDiagram />
+</ZoomableFrame>
+
+Two things in this picture matter more than they look:
+
+**Provider resolution from the model name, no routing config.** You send `"model": "claude-sonnet-4-5"` and Aura figures out it's Anthropic. You send `"gpt-5"` and it goes to OpenAI. The `provider:` field comes back enriched on the response. You don't maintain a YAML mapping; the registry owns that knowledge.
+
+**Response enrichment is non-negotiable.** Every response — every provider — gets `cost_usd`, `latency_ms`, and an `agentic{}` block bolted on before it leaves the gateway. That's the contract Aura adds on top of the provider's native response. It's also what makes the gateway *useful* rather than just a router.
+
+## Supported Models
+
+Aura ships with seven providers as of v0.3. Anthropic and Gemini have full streaming and tool-call support; the others land via the same `Provider` trait and can be added in a single file.
+
+<SupportedModelsGrid
+  title="Model families supported in v0.3"
+  subtitle="Resolve by family or by pinned version — Aura's registry handles both"
+  providers={[
+    { provider: "OpenAI", badge: "Streaming + tools", families: ["GPT-5 family", "GPT-4o family", "o-series (o1, o3-mini)", "GPT-4 / 4-turbo / 3.5"], notes: "Use latest aliases or pinned versions" },
+    { provider: "Anthropic", badge: "Streaming + tools", families: ["Claude 4.5 (Opus, Sonnet)", "Claude 3.7 Sonnet", "Claude 3.5 (Sonnet, Haiku)", "Claude 3 (Opus, Sonnet, Haiku)"], notes: "Aliases like claude-sonnet-4-5 resolve to latest dated build" },
+    { provider: "Google Gemini", badge: "Streaming + tools", families: ["Gemini 3 (Pro, Flash)", "Gemini 2.5 (Pro, Flash)", "Gemini 2.0 family", "Gemini 1.5 family"], notes: "Function calling and streaming on Gemini 2.0+" },
+    { provider: "Mistral", families: ["Mistral Large 2", "Mistral Medium / Small", "Codestral"], notes: "OpenAI-compatible endpoint" },
+    { provider: "Ollama", families: ["Llama family (local)", "Mistral / Mixtral (local)", "Any Ollama-served model"], notes: "Bring your own local runtime" },
+    { provider: "AWS Bedrock", families: ["Claude via Bedrock", "Llama via Bedrock", "Titan models"], notes: "AWS SigV4 auth, region-pinned" },
+    { provider: "HuggingFace", families: ["Any TGI endpoint", "Inference Endpoints", "Public Inference API"], notes: "Pass your endpoint URL via config" },
+  ]}
+  footnote="Adding a new provider is implementing the Provider trait in one file. See crates/aura-core/src/provider/ for the full list."
+/>
+
+## A Live-Demo Request
+
+Here's what an Aura request looks like end to end. One endpoint, three providers behind it, full agentic metadata on the way back.
+
+<CodeTerminal
+  title="aura · POST /v1/responses"
+  examples={[
+    {
+      label: "Request",
+      lang: "bash",
+      code: `curl -X POST https://api.aura-llm.dev/v1/responses \\
+  -H "Authorization: Bearer $AURA_KEY" \\
+  -d '{
+    "model": "claude-sonnet-4-5",
+    "input": [{
+      "role": "user",
+      "content": "Search the web for the current price of GPT-5 input tokens."
+    }],
+    "tools": [{ "type": "web_search" }],
+    "user": "customer_123"
+  }'`
+    },
+    {
+      label: "Response",
+      lang: "json",
+      code: `{
+  "id": "resp_aura_550e...",
+  "status": "completed",
+  "output": [ ... ],
+  "usage": {
+    "input_tokens": 1842,
+    "output_tokens": 318,
+    "cost_usd": 0.00732
+  },
+  "agentic": {
+    "provider": "anthropic",
+    "latency_ms": 523,
+    "has_tool_calls": true,
+    "tools_used": ["web_search"],
+    "requires_action": false,
+    "request_id": "aura_550e..."
+  }
+}`
+    }
+  ]}
+/>
+
+Swap `"claude-sonnet-4-5"` for `"gpt-5"` and the shape of the response is identical. That's the actual value proposition. Not "one URL"; *one shape*.
+
+## Using Aura From Your Existing Framework
+
+Aura is just an HTTP server speaking the Open Responses API. Locally it lives on `localhost:8080`; in production it's `https://api.aura-llm.dev`. You can hit it with anything that speaks HTTP — or, if you don't want to write any client code yet, with no client at all via **[playground.aura-llm.dev](https://playground.aura-llm.dev)**. The shortcuts:
+
+### Python — the official SDK
+
+The first-party SDK ships as `aura-llm` on PyPI. Install with `uv` or `pip`:
+
+<CodeTerminal
+  title="install"
+  examples={[
+    { label: "uv", lang: "bash", code: "uv add aura-llm" },
+    { label: "pip", lang: "bash", code: "pip install aura-llm" },
+  ]}
+/>
+
+Then the same code shape works against any of the seven providers — sync, streaming, or async:
+
+<CodeTerminal
+  title="aura · python"
+  examples={[
+    {
+      label: "Sync",
+      lang: "python",
+      code: `from aura import AuraClient
+
+client = AuraClient(
+    api_key="your-api-key",                # or AURA_API_KEY env var
+    base_url="https://api.aura-llm.dev",   # or http://localhost:8080 locally
+)
+
+# Non-streaming — any model in the registry
+response = client.responses.create(
+    model="claude-sonnet-4-5",
+    input="What's the capital of Sweden?",
+)
+print(response.output_text)
+print(f"cost: \${response.usage.cost_usd}")`
+    },
+    {
+      label: "Streaming",
+      lang: "python",
+      code: `# Semantic events, not raw token deltas
+for event in client.responses.create(
+    model="gpt-5",
+    input="Tell me a short story about a Volvo",
+    stream=True,
+):
+    if event.type == "response.output_text.delta":
+        print(event.delta, end="", flush=True)
+    elif event.type == "response.completed":
+        print(f"\\n\\ncost: \${event.response.usage.cost_usd}")`
+    },
+    {
+      label: "Async",
+      lang: "python",
+      code: `import asyncio
+from aura import AsyncAuraClient
+
+async def main():
+    async with AsyncAuraClient() as client:
+        # Run three providers concurrently, pick the fastest
+        results = await asyncio.gather(
+            client.responses.create(model="gpt-5", input="..."),
+            client.responses.create(model="claude-sonnet-4-5", input="..."),
+            client.responses.create(model="gemini-3-pro", input="..."),
+        )
+        for r in results:
+            print(f"{r.agentic.provider}: {r.agentic.latency_ms}ms")`
+    },
+  ]}
+/>
+
+### OpenAI SDK — point and shoot
+
+If you're already on the OpenAI Python or TypeScript SDK, point `base_url` at Aura and most calls Just Work:
+
+<CodeTerminal
+  title="aura via OpenAI SDK"
+  code={`from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://api.aura-llm.dev/v1",  # or http://localhost:8080/v1 locally
+    api_key="your-aura-key",
+)
+
+response = client.responses.create(
+    model="claude-sonnet-4-5",   # any Aura-supported model
+    input="Hello from the OpenAI SDK",
+)`}
+  lang="python"
+  label="OpenAI SDK"
+/>
+
+Aura's `/v1/responses` accepts the OpenAI Responses payload shape, so the SDK doesn't know it's not talking to OpenAI. You still get Aura's enrichment back — `cost_usd`, `agentic{}`, `latency_ms` — they just ride along on the response.
+
+### Agent frameworks
+
+Same trick works for the major agent frameworks because they layer on top of the OpenAI / Responses shape:
+
+- **LangChain / LangGraph** — set the `openai_api_base` of your `ChatOpenAI` to `https://api.aura-llm.dev/v1` and use any of Aura's seven providers as if it were an OpenAI model.
+- **LlamaIndex** — pass `api_base="https://api.aura-llm.dev/v1"` to `OpenAI(...)` in `llama_index.llms.openai`.
+- **Mastra / LangGraph.js** — same shape on the TypeScript side. Set the base URL and ship.
+- **DSPy** — `dspy.OpenAI(api_base="https://api.aura-llm.dev/v1", model="claude-sonnet-4-5")` and you've got an Anthropic-backed `Module` without changing a line of your DSPy code.
+
+The TypeScript SDK (`@umai/aura`) is in progress; until it lands, the OpenAI SDK is the path of least resistance on the Node side. The full integration docs live at **[docs.aura-llm.dev](https://docs.aura-llm.dev)** (landing soon).
+
+## Deploying Aura
+
+Aura is a single static binary — no Python virtualenv, no `node_modules`, no runtime. Pick a deployment shape based on how serious you are.
+
+Four shapes, ranked roughly by how serious the deployment is. Tab through them:
+
+<CodeTerminal
+  title="aura · deployment"
+  examples={[
+    {
+      label: "cargo run",
+      lang: "bash",
+      code: `# Fastest loop — clone, set env vars, run
+git clone https://github.com/UmaiTech/aura-llm-gateway
+cd aura-llm-gateway
+
+# Required: at least one provider key + a master key for credential encryption
+export AURA_MASTER_KEY=$(openssl rand -hex 32)
+export OPENAI_API_KEY=sk-...
+export ANTHROPIC_API_KEY=sk-ant-...
+
+cargo run -p aura-proxy
+# Listening on 0.0.0.0:8080`
+    },
+    {
+      label: "docker compose",
+      lang: "bash",
+      code: `# Full stack — Aura + Postgres 16 + Redis 7
+cp .env.example .env
+# Edit .env: OPENAI_API_KEY=...  ANTHROPIC_API_KEY=...
+#            AURA_MASTER_KEY=$(openssl rand -hex 32)
+
+docker compose up -d
+docker compose logs -f aura-proxy
+
+# Then seed the schema and create a key
+make db-migrate
+./scripts/create_api_key.sh "my-first-key"
+# Aura @ localhost:8080 · Postgres @ 5433 · Redis @ 6379`
+    },
+    {
+      label: "docker build",
+      lang: "bash",
+      code: `# Multi-stage build with cargo-chef · release image < 80 MB
+docker build -t aura-llm-gateway:0.3 .
+
+docker run --rm -p 8080:8080 \\
+  -e AURA_MASTER_KEY=$(openssl rand -hex 32) \\
+  -e OPENAI_API_KEY=$OPENAI_API_KEY \\
+  -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \\
+  -e DATABASE_URL=$DATABASE_URL \\
+  -e REDIS_URL=$REDIS_URL \\
+  aura-llm-gateway:0.3
+
+# For K8s: kubectl create secret generic aura-secrets,
+# reference in the Deployment, put non-secrets in a ConfigMap.`
+    },
+    {
+      label: "systemd",
+      lang: "ini",
+      code: `# /etc/systemd/system/aura.service
+# Bare-metal: cargo build --release, drop the binary on a VM.
+[Service]
+Environment="AURA_PORT=8080"
+Environment="AURA_MASTER_KEY=<32-byte hex>"
+Environment="OPENAI_API_KEY=<key>"
+Environment="DATABASE_URL=postgres://..."
+Environment="REDIS_URL=redis://..."
+ExecStart=/opt/aura/aura-proxy
+Restart=always
+
+# The binary boots in milliseconds — warm start is already negligible.`
+    },
+  ]}
+/>
+
+A few notes on the shapes:
+
+- **`cargo run`** needs no Postgres or Redis for the happy path — both are optional. Skip them and Aura runs in stateless mode (no request logs, no API-key auth, no rate limits — fine for local agent experimentation).
+- **`docker compose`** is what you want for full middleware locally — auth, rate limits, response cache, request logs all wired up.
+- **`docker build`** is the production shape. The `Dockerfile` is a multi-stage build using [cargo-chef](https://github.com/LukeMathWalker/cargo-chef) for layer caching, producing a minimal Debian-slim image typically under 80 MB.
+- **`systemd`** if you'd rather skip Docker. `cargo build --release` gives you `./target/release/aura-proxy` — drop it on a VM, point the unit file at it.
+
+## The Hosted Version — Aura on `api.aura-llm.dev`
+
+Self-hosting isn't for everyone. The same Aura binary you can `git clone` runs as a hosted gateway at **[api.aura-llm.dev](https://api.aura-llm.dev)** — same Open Responses contract, same agentic metadata, no Postgres or Redis to operate yourself.
+
+When the hosted version makes sense:
+
+- **You're prototyping** and don't want to think about credential rotation, schema migrations, or rate-limit infra yet.
+- **You're a small team** where one less service to babysit is worth more than the bring-your-own-key cost.
+- **You want EU residency** without standing up your own EU VMs — `api.aura-llm.dev` is hosted in Stockholm with EU-only request logs.
+- **You want to try Aura's agentic shape** against your existing LangChain/DSPy/Mastra code before committing to a self-host migration.
+
+When self-hosting wins:
+
+- **You already operate Postgres and Redis** and want zero new SaaS in the request path.
+- **You need on-prem or air-gapped deployment** — pull `aura-llm-gateway:0.3` into your private registry and run.
+- **You're sensitive to per-request markup** — the hosted version takes a small fee on top of pass-through provider cost; self-hosted is free.
+
+<Callout type="note" title="Pricing — to be finalized">
+Hosted Aura pricing is being finalized alongside the v0.3 OSS release. The plan, roughly: a free tier for development with rate-limited usage, and a pay-as-you-go tier with **passthrough provider pricing plus a small per-request fee** that funds the open-source work. No subscription minimum. Full breakdown will live at **[aura-llm.dev/pricing](https://aura-llm.dev)** when the landing page goes live.
+</Callout>
+
+**The zero-install path:** if you just want to *see* Aura's agentic shape against a real prompt, open **[playground.aura-llm.dev](https://playground.aura-llm.dev)** in a browser. It's the same `apps/chat` React app that ships in the repo, pointed at the hosted gateway. Free-tier with a daily message cap, frontier models gated to beta, multi-provider model picker — no signup, no API key, no `curl`.
+
+When you're ready to wire it into your own code, onboarding is three steps:
+
+1. **Sign up** at [aura-llm.dev](https://aura-llm.dev).
+2. **Grab an API key** from the dashboard — scoped to an org, team, and project from the start.
+3. **Point your existing client** at `https://api.aura-llm.dev/v1` and use the same model names. Cost, latency, and agentic metadata land in the dashboard with no extra wiring.
+
+The self-hosted code is what powers `api.aura-llm.dev`. There's no "hosted-only" feature flag, no proprietary fork — when v0.4 ships, the hosted gateway upgrades from the same MIT-licensed binary you'd run yourself. That's the deal: **the OSS is the product, the hosted version is the convenience.**
+
+## Load Test — Aura vs the Competition
+
+The "Rust gateway sits in the single digits of overhead" claim deserves more than just an assertion. Below is the harness I'm running — **1,000 requests per scenario, 1 to 5 tool calls per request, six gateways behind the same provider (Anthropic Sonnet 4.5)** — to see how each one holds up as agentic loops get heavier.
+
+The component is interactive — **switch scenarios with the tabs**, and each panel shows four metrics: gateway overhead, p50 latency, p99 latency, and sustained throughput.
+
+<ZoomableFrame ariaLabel="Gateway load test results">
+<LoadTestChart />
+</ZoomableFrame>
+
+A few honest notes on this:
+
+- **Numbers are placeholders pending the live run.** The shape is what I expect from each gateway's architecture — Python interpreter overhead for LiteLLM, hosted-edge overhead for Portkey/OpenRouter, raw Rust speed for Aura/Bifrost/Helicone — not a measurement. The component is built so I can drop real numbers into one props object once the harness has run.
+- **Same provider, same prompt, same model.** The interesting variable is the gateway, not the LLM. All six gateways front Anthropic Sonnet 4.5; all five scenarios use the same input shape with the tool-call count as the only knob.
+- **Throughput drops as tool calls grow** for everyone — that's the loop unrolling, not the gateway choking. Aura's curve stays flatter because the per-request overhead is small enough to disappear into the LLM round-trip.
+- **Bifrost is the gateway closest to Aura on raw speed.** Helicone is in the same tier. The differentiator inside the Rust tier isn't µs — it's the agentic API shape and the multi-tenant model, as the differentiators section made the case for.
+
+I'll update this section with real numbers once the harness finishes its first end-to-end run. If you want the harness itself, it'll land at `github.com/UmaiTech/aura-llm-gateway` under `bench/` alongside the v0.3 OSS release.
+
+## What's New on the Table
+
+Now the question I keep getting asked: **what does Aura add that the existing gateways don't?** Here's the honest list, sorted by how confident I am about it:
+
+### 1. Open Responses API as the front door, not a translation
+
+Every other gateway I evaluated treats the OpenAI Chat Completions schema as the canonical shape and translates *up* to anything more agentic. Aura inverts that. The Open Responses spec is the wire format; provider adapters translate *down* into whatever each vendor's native API wants. Tool calls, reasoning items, and `requires_action` aren't enrichment — they're load-bearing.
+
+OpenRouter has started adopting Open Responses as a partner[^4]. LiteLLM hasn't. Bifrost is OpenAI-shaped[^2]. Aura ships with it from day one.
+
+### 2. Agentic metadata as part of the response contract
+
+`has_tool_calls`, `tools_used`, `requires_action`, `latency_ms`, `cost_usd`, `request_id` — every provider, every response, same shape. This sounds boring until you've written the third version of "did this response actually call a tool?" in your application code.
+
+LiteLLM logs this in its observability layer. Portkey surfaces it in the dashboard. Helicone shows it in analytics. Aura puts it in the response body where your agent loop can branch on it.
+
+### 3. Cost as a product feature, not a billing concern
+
+`cost_usd` arrives on every response. It's not an admin-panel report you check at the end of the month. You can show it to end users, gate features on per-user budgets, and let PMs reason about unit economics without a separate telemetry pipeline.
+
+This was the single biggest unlock from running early prototypes through Aura: cost stopped being "something to investigate later" and became part of the response.
+
+### 4. Multi-tenant hierarchy at the data model layer
+
+`org → team → project → end-user` is baked into the schema, not bolted on with API key prefixes. If you're building a SaaS that resells LLM access, this matters more than it looks: per-user cost allocation, per-project rate limits, scoped API keys all fall out of the model rather than needing a separate billing layer. Bifrost has governance and SSO; what Aura adds is the user-level cost allocation primitive[^2].
+
+### 5. Rust-level latency overhead — honestly compared
+
+The talk slide says "under 10ms overhead." That number is for the gateway itself — middleware, routing, enrichment — not including the provider round-trip you'd pay anyway. A Python proxy will sit at 30–80ms of pure overhead on a hot path; a Rust gateway built on Axum + Tokio sits in the single digits. On agentic loops that fire 5–20 requests per turn, that compounds.
+
+To be fair: **Bifrost reports 11 µs of overhead at 5k RPS — about 50× faster than LiteLLM**[^2]. Helicone is also Rust and edge-optimized. Aura is in the Rust tier, not the Python tier, and that's the tier that matters. Within the Rust tier, the differentiator isn't raw µs — it's the agentic API shape and the multi-tenant model.
+
+### 6. Prompt compression in the middleware stack
+
+TOON, AISP, YAML-min and JSON-min compression are first-class middleware, not a side library. For uniform-array payloads — think enriched product catalogs going into an agent — TOON gives 40–60% token savings, which translates roughly 1:1 into cost savings on the input side.
+
+I haven't seen another gateway expose compression strategies as a configurable middleware step.
+
+### What Aura *doesn't* do (yet)
+
+I'd rather be honest than oversell. Aura is at **v0.3**. The Python SDK ships; the TypeScript SDK doesn't. The admin React dashboard is mid-build. Guardrails and PII redaction — Portkey's bread and butter — aren't there yet. EU sovereignty as a first-class concept (Opper's pitch[^3]) isn't there. If you need 1000+ provider breadth tomorrow, Bifrost still wins on coverage. If you need 300+ models with built-in LLM-as-a-judge, Opper is the managed answer.
+
+What you do get today: a small, fast, agentic-native gateway with clean types and a roadmap I can actually keep up with as a one-person open-source project.
+
+## Building Rust as a Python Person
+
+The other half of this story isn't about the gateway. It's about *how it got built*.
+
+I'm primarily a Python and TypeScript developer. I'd dabbled with Rust before — read the book, wrote a CLI, abandoned it. The reason I shipped Aura in Rust is that I built it with **Claude Code as a coding partner** and applied what I've started calling [vibe engineering](/blog/taste-still-matters-in-ai-software-engineering-): the discipline behind vibe coding. Same tools — same Claude — different rigor.
+
+The split, roughly:
+
+- **Vibe coding** is prompt-and-hope. One giant PR. No plan. Skip the tests. Trust the AI. Great for throwaway demos.
+- **Vibe engineering** is PRD first, prompt second. Bite-sized commits. Architecture diagrams. Verify, don't trust. Tests as a contract. Same tools, different discipline.
+
+For Aura, vibe engineering meant: I wrote a PRD per crate before I wrote a prompt. I drew the request flow in Mermaid before I let Claude touch a file. Every PR was bite-sized — `feat: add routing`, `test: cover fallback`, `docs: update PRD` — not one giant "make me a gateway" mega-commit. I used Claude Code for the implementation, but I was the architect.
+
+<WhatWorkedWhatHurt
+  title="Rust, without being a Rust dev"
+  worked={[
+    "<strong>Compiler errors are a teacher, not a wall.</strong> With Claude Code reading the errors and explaining them in context, the borrow checker became the world's most patient tutor.",
+    "<strong>Types catch provider schema drift early.</strong> LLM APIs drift. Strong types in <code>aura-types</code> caught two real schema changes during the build before they hit users.",
+    "<strong>Single static binary, no runtime deps.</strong> <code>cargo build --release</code> produces one file. No virtualenv, no node_modules.",
+    "<strong>Tokio handles SSE streaming cleanly.</strong> Server-sent events are an awkward middle-ground in many runtimes. In Tokio they're idiomatic.",
+    "<strong>Claude Code is fluent in idiomatic Rust</strong> — not just compilable Rust. <code>Arc&lt;T&gt;</code> vs <code>Arc&lt;Mutex&lt;T&gt;&gt;</code>, <code>tokio::spawn</code> for fire-and-forget, the right error-type idiom per crate.",
+    "<strong>Refactors feel safe.</strong> When the compiler signs off, you can ship it. I'd never had that confidence in Python.",
+  ]}
+  hurt={[
+    "<strong>Borrow checker + async = pain spikes.</strong> The interaction between lifetimes and <code>async</code> blocks is where Rust still hurts. Claude Code helped, but we both bounced off the same error for an hour several times.",
+    "<strong>Lifetimes took weeks to internalize.</strong> The book teaches you the syntax. Shipping production code teaches you what they actually mean.",
+    "<strong>The crate ecosystem is thinner for AI work.</strong> Python has every LLM library a week after a paper drops. Rust has <em>some</em> of them, eventually.",
+    "<strong>No <code>pip install</code> shortcuts.</strong> Adding a dependency in Rust is a real decision — features, version pins, compile time. Healthier long-term, slower in the moment.",
+    "<strong>Compile times break flow state.</strong> A cold incremental build on this workspace hits 30+ seconds. You learn to batch.",
+    "<strong>Debugging async traits is a trip.</strong> Errors from <code>async_trait</code> macro expansions can be 40 lines of generics referencing types you didn't write.",
+  ]}
+  punchline="Claude Code didn't replace Rust knowledge. It made Rust knowledge reachable."
+/>
+
+<Callout type="success" title="The honest takeaway">
+That's the actual unlock — not "AI writes your code", but "AI lets you ship in the right tool for the job, even when it isn't the tool you already know." A Python person shipped a production-grade Rust gateway. The discipline scaled; the language barrier didn't.
+</Callout>
+
+## Six Things I'd Tell Past-Me
+
+If you're considering building infrastructure like this — gateway, proxy, router, whatever sits in front of the LLM — these are the lessons that would have saved me weeks.
+
+<LessonsGrid
+  title="What I learned the hard way"
+  lessons={[
+    { title: "Pick languages by latency budget, not hype", body: "If your overhead budget is under 10ms, Rust earns its place. Anywhere else, ship in what your team already knows. Rust is not a personality." },
+    { title: "Observability first, features second", body: "OpenTelemetry from day one. You can't fix what you can't see, and an LLM gateway is the worst possible place to be flying blind." },
+    { title: "Typed provider schemas save you at 3am", body: "LLM APIs drift. Strong types catch the drift before users do. This alone justifies a typed language for this layer." },
+    { title: "Build fallback chains before you need them", body: "Every provider goes down. Retry, switch, degrade. Table stakes — but most teams add it the day after their first outage instead of the day before." },
+    { title: "Cost tracking is a product feature", body: "Not a nice-to-have. Surface it to users and PMs from the start. The cheapest time to add it is at the schema level on day one." },
+    { title: "Vibe code prototypes. Vibe engineer production.", body: "Different modes. Different rigor. Don't confuse them — and don't apologize for using AI to do either. The discipline is what changes, not the tools." },
+  ]}
+/>
+
+## What's Next for Aura
+
+The roadmap, in rough order of when I expect to land things:
+
+- **Multi-node load balancer** — distribute across Aura instances, not just across providers within one instance.
+- **Automated pricing scraper (cron)** — provider price changes shouldn't require a PR. A scheduled job watches the pricing pages and opens a config-update PR.
+- **Webhooks & async callbacks** — for long-running agentic tasks where the response doesn't come back on the original HTTP connection.
+- **Admin dashboard (React UI)** — for key management, org/team setup, cost reports.
+- **TypeScript SDK** — the missing half of the SDK story.
+- **More providers via the trait system** — `Provider` is a trait. New providers should be a single-file addition.
+
+Aura lives at four places, depending on what you need:
+
+- **[aura-llm.dev](https://aura-llm.dev)** — landing page, overview, quickstart
+- **[docs.aura-llm.dev](https://docs.aura-llm.dev)** — full documentation, SDK reference, integration guides
+- **[playground.aura-llm.dev](https://playground.aura-llm.dev)** — browser chat playground, free-tier with a daily message cap, no install
+- **[api.aura-llm.dev](https://api.aura-llm.dev)** — the hosted gateway endpoint
+- **[github.com/UmaiTech/aura-llm-gateway](https://github.com/UmaiTech/aura-llm-gateway)** — the repo, MIT-licensed
+
+Issues, PRs, and "you should have looked at X" emails are all welcome. If you're building agentic workflows and the gateway shape doesn't fit, tell me — that's the kind of feedback the v0.x series is for.
+
+<Callout type="insight" title="The Punchline">
+There are good LLM gateways. Aura isn't trying to replace them. It's trying to be the one I'd actually want to use to build agents: agentic-native API, cost on every response, types that catch provider drift, and a latency budget small enough to disappear. Built in Rust by a Python person, with Claude Code as a coding partner — proof that vibe engineering reaches further than the language you already know.
+</Callout>
+
+## References
+
+[^1]: [TrueFoundry — *Best LLM Gateways in 2026*](https://www.truefoundry.com/blog/best-llm-gateways) (LiteLLM, Portkey, Helicone overview); [Helicone — *Top 5 LLM Gateways*](https://www.helicone.ai/blog/top-llm-gateways-comparison-2025); [OpenRouter pricing & routing docs](https://openrouter.ai/pricing); [OpenRouter docs — *Provider Routing*](https://openrouter.ai/docs/guides/routing/provider-selection). 2026.
+
+[^2]: [Bifrost (maximhq/bifrost) on GitHub](https://github.com/maximhq/bifrost); [Maxim AI — *Bifrost: A Drop-in LLM Proxy, 50× Faster Than LiteLLM*](https://www.getmaxim.ai/blog/bifrost-a-drop-in-llm-proxy-40x-faster-than-litellm/). 11 µs overhead at 5k RPS, Apache 2.0, written in Go. 2026.
+
+[^3]: [Opper AI — *LLM Gateway & AI Gateway — 300+ Models, One API*](https://opper.ai/llm-gateway); [Opper AI — *LLM Router Latency Benchmark 2026*](https://opper.ai/blog/llm-router-latency-benchmark-2026); [Opper AI partnership with Infercom for sovereign LLM inference](https://opper.ai/blog/infercom-partnership), May 2026.
+
+[^4]: [Open Responses Specification — openresponses.org](https://www.openresponses.org/specification); [Hugging Face — *Open Responses: What you need to know*](https://huggingface.co/blog/open-responses); [InfoQ — *Open Responses Specification Enables Unified Agentic LLM Workflows*](https://www.infoq.com/news/2026/02/openai-open-responses/), February 2026.

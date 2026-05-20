@@ -1,0 +1,266 @@
+---
+// Interactive load-test / eval chart.
+// 5 scenarios (1–5 tool calls per request, 1k requests each) × 4 metrics per scenario,
+// 6 gateways compared. Pure SVG bar chart, no chart-library dep.
+//
+// All numbers below are placeholders pending live benchmark — see banner.
+
+interface GatewayResult {
+  /** p50 latency in ms (lower is better) */
+  p50: number;
+  /** p99 latency in ms (lower is better) */
+  p99: number;
+  /** gateway overhead in ms — provider time subtracted (lower is better) */
+  overhead: number;
+  /** sustained throughput in RPS (higher is better) */
+  rps: number;
+}
+
+interface Scenario {
+  /** Number of tool calls per request */
+  toolCalls: number;
+  /** Per-gateway results keyed by gateway name */
+  results: Record<string, GatewayResult>;
+}
+
+// Placeholder dataset — replace with real benchmark output once measured.
+const gateways = ['Aura', 'Bifrost', 'Helicone', 'Portkey', 'OpenRouter', 'LiteLLM'];
+
+const scenarios: Scenario[] = [
+  {
+    toolCalls: 1,
+    results: {
+      Aura:       { p50: 312, p99: 612, overhead: 4,  rps: 1450 },
+      Bifrost:    { p50: 308, p99: 605, overhead: 3,  rps: 1520 },
+      Helicone:   { p50: 318, p99: 622, overhead: 6,  rps: 1380 },
+      Portkey:    { p50: 345, p99: 690, overhead: 22, rps: 920  },
+      OpenRouter: { p50: 360, p99: 720, overhead: 30, rps: 840  },
+      LiteLLM:    { p50: 395, p99: 810, overhead: 58, rps: 540  },
+    },
+  },
+  {
+    toolCalls: 2,
+    results: {
+      Aura:       { p50: 645, p99: 1180, overhead: 6,  rps: 1280 },
+      Bifrost:    { p50: 638, p99: 1165, overhead: 5,  rps: 1340 },
+      Helicone:   { p50: 655, p99: 1210, overhead: 9,  rps: 1220 },
+      Portkey:    { p50: 720, p99: 1380, overhead: 38, rps: 820  },
+      OpenRouter: { p50: 745, p99: 1430, overhead: 50, rps: 740  },
+      LiteLLM:    { p50: 830, p99: 1620, overhead: 105, rps: 470 },
+    },
+  },
+  {
+    toolCalls: 3,
+    results: {
+      Aura:       { p50: 980,  p99: 1810, overhead: 8,   rps: 1140 },
+      Bifrost:    { p50: 970,  p99: 1785, overhead: 7,   rps: 1190 },
+      Helicone:   { p50: 1000, p99: 1845, overhead: 12,  rps: 1080 },
+      Portkey:    { p50: 1100, p99: 2060, overhead: 55,  rps: 720  },
+      OpenRouter: { p50: 1140, p99: 2150, overhead: 72,  rps: 650  },
+      LiteLLM:    { p50: 1280, p99: 2430, overhead: 152, rps: 410  },
+    },
+  },
+  {
+    toolCalls: 4,
+    results: {
+      Aura:       { p50: 1320, p99: 2440, overhead: 10,  rps: 1010 },
+      Bifrost:    { p50: 1305, p99: 2410, overhead: 9,   rps: 1055 },
+      Helicone:   { p50: 1345, p99: 2495, overhead: 15,  rps: 960  },
+      Portkey:    { p50: 1485, p99: 2780, overhead: 72,  rps: 640  },
+      OpenRouter: { p50: 1540, p99: 2895, overhead: 95,  rps: 580  },
+      LiteLLM:    { p50: 1735, p99: 3270, overhead: 200, rps: 360  },
+    },
+  },
+  {
+    toolCalls: 5,
+    results: {
+      Aura:       { p50: 1665, p99: 3080, overhead: 12,  rps: 905  },
+      Bifrost:    { p50: 1645, p99: 3045, overhead: 11,  rps: 945  },
+      Helicone:   { p50: 1695, p99: 3145, overhead: 18,  rps: 860  },
+      Portkey:    { p50: 1870, p99: 3500, overhead: 90,  rps: 570  },
+      OpenRouter: { p50: 1940, p99: 3645, overhead: 118, rps: 520  },
+      LiteLLM:    { p50: 2190, p99: 4115, overhead: 250, rps: 320  },
+    },
+  },
+];
+
+const id = `lt-${Math.random().toString(36).slice(2, 9)}`;
+
+// We render five tab panels server-side; client JS switches visibility.
+const metrics = [
+  { key: 'overhead', label: 'Gateway overhead', unit: 'ms', lowerIsBetter: true, blurb: 'Pure gateway-added latency, provider round-trip subtracted.' },
+  { key: 'p50',      label: 'p50 latency',      unit: 'ms', lowerIsBetter: true, blurb: 'Median end-to-end request latency.' },
+  { key: 'p99',      label: 'p99 latency',      unit: 'ms', lowerIsBetter: true, blurb: 'Tail latency — the slowest 1% of requests.' },
+  { key: 'rps',      label: 'Sustained throughput', unit: 'RPS', lowerIsBetter: false, blurb: 'Requests per second under steady load.' },
+] as const;
+
+// Pre-compute max values per scenario+metric for bar scaling
+function maxFor(scenario: Scenario, metricKey: string): number {
+  return Math.max(...gateways.map(g => (scenario.results[g] as any)[metricKey]));
+}
+
+// Pre-compute "best gateway" per scenario+metric so we can mark it
+function bestFor(scenario: Scenario, metricKey: string, lowerIsBetter: boolean): string {
+  return gateways.reduce((best, g) => {
+    const v = (scenario.results[g] as any)[metricKey];
+    const bv = (scenario.results[best] as any)[metricKey];
+    if (lowerIsBetter ? v < bv : v > bv) return g;
+    return best;
+  }, gateways[0]);
+}
+---
+
+<section class="load-test my-10" data-lt-id={id}>
+
+  <header class="mb-5">
+    <div class="flex items-baseline justify-between flex-wrap gap-3 mb-2">
+      <div>
+        <h4 class="text-xl font-semibold text-gray-900 dark:text-white">Gateway load test — 1,000 requests, 1–5 tool calls</h4>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+          Aura vs LiteLLM, Portkey, Helicone, OpenRouter, Bifrost
+        </p>
+      </div>
+      <div class="font-mono text-[10px] uppercase tracking-widest text-purple-600 dark:text-purple-400">
+        Scenario <span class="lt-current-tc">1</span> / 5
+      </div>
+    </div>
+
+    {/* Placeholder banner */}
+    <div class="mt-3 rounded-lg ring-1 ring-amber-300 dark:ring-amber-700/50 bg-amber-50/70 dark:bg-amber-950/30 px-4 py-2.5 text-xs text-amber-800 dark:text-amber-300">
+      <strong class="font-semibold">Heads up:</strong> these numbers are <em>directional placeholders</em> pending a live benchmark run. They reflect the rough shape I'd expect from each gateway's architecture (Rust vs Python, agentic vs translation, etc.), not measured values. I'll update with real numbers once I've run the harness against all six.
+    </div>
+  </header>
+
+  {/* Scenario tab strip */}
+  <div role="tablist" aria-label="Tool-call scenario" class="flex flex-wrap gap-1.5 mb-4">
+    {scenarios.map((s, i) => (
+      <button
+        type="button"
+        role="tab"
+        data-lt-tab={i}
+        aria-selected={i === 0 ? 'true' : 'false'}
+        class={`lt-tab text-xs font-mono px-3 py-1.5 rounded-md ring-1 transition ${
+          i === 0
+            ? 'ring-purple-400 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 font-bold lt-tab-active'
+            : 'ring-gray-200 dark:ring-gray-700/60 bg-white dark:bg-gray-900/40 text-gray-600 dark:text-gray-400 hover:ring-purple-300 hover:text-gray-900 dark:hover:text-white'
+        }`}
+      >
+        {s.toolCalls} tool {s.toolCalls === 1 ? 'call' : 'calls'}
+      </button>
+    ))}
+  </div>
+
+  {/* Scenario panels — all rendered server-side, only one visible at a time */}
+  {scenarios.map((s, si) => (
+    <div data-lt-panel={si} class={`lt-panel ${si === 0 ? '' : 'hidden'}`}>
+      <div class="grid sm:grid-cols-2 gap-4">
+        {metrics.map((m) => {
+          const max = maxFor(s, m.key);
+          const best = bestFor(s, m.key, m.lowerIsBetter);
+          return (
+            <div class="lt-chart rounded-xl ring-1 ring-gray-200/60 dark:ring-gray-700/50 bg-white dark:bg-gray-900/40 p-4">
+              <div class="flex items-baseline justify-between mb-1">
+                <h5 class="text-sm font-bold text-gray-900 dark:text-white">{m.label}</h5>
+                <span class="text-[10px] font-mono uppercase tracking-wider text-gray-500 dark:text-gray-500">
+                  {m.lowerIsBetter ? 'lower = better' : 'higher = better'}
+                </span>
+              </div>
+              <p class="text-[11px] text-gray-500 dark:text-gray-500 mb-3 leading-snug">{m.blurb}</p>
+
+              <ul class="space-y-1.5 list-none p-0 m-0">
+                {gateways.map((g) => {
+                  const v = (s.results[g] as any)[m.key];
+                  const pct = Math.max(2, (v / max) * 100);
+                  const isAura = g === 'Aura';
+                  const isBest = g === best;
+                  return (
+                    <li class="flex items-center gap-2 list-none">
+                      <span class={`w-16 sm:w-20 flex-shrink-0 text-[11px] font-mono ${isAura ? 'font-bold text-purple-700 dark:text-purple-300' : 'text-gray-600 dark:text-gray-400'}`}>
+                        {g}
+                      </span>
+                      <div class="flex-1 h-5 bg-gray-100 dark:bg-gray-800/60 rounded-sm overflow-hidden relative">
+                        <div
+                          class={`h-full rounded-sm transition-all duration-500 ${
+                            isAura
+                              ? 'bg-gradient-to-r from-purple-500 to-fuchsia-500'
+                              : isBest
+                                ? 'bg-emerald-400 dark:bg-emerald-500'
+                                : 'bg-gray-300 dark:bg-gray-600'
+                          }`}
+                          style={`width: ${pct}%`}
+                        ></div>
+                      </div>
+                      <span class={`w-16 flex-shrink-0 text-right text-[11px] font-mono tabular-nums ${isAura ? 'font-bold text-purple-700 dark:text-purple-300' : 'text-gray-700 dark:text-gray-300'}`}>
+                        {v.toLocaleString()} {m.unit}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Per-scenario caption */}
+      <div class="mt-3 text-[11px] text-gray-500 dark:text-gray-500 italic">
+        Scenario: 1,000 requests · {s.toolCalls} tool {s.toolCalls === 1 ? 'call' : 'calls'} per request · same provider (Anthropic Sonnet 4.5) behind every gateway · warm-cache, post-jit.
+      </div>
+    </div>
+  ))}
+
+  {/* Legend */}
+  <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] text-gray-600 dark:text-gray-400">
+    <span class="flex items-center gap-2">
+      <span class="inline-block w-3 h-3 rounded-sm bg-gradient-to-r from-purple-500 to-fuchsia-500"></span>
+      Aura
+    </span>
+    <span class="flex items-center gap-2">
+      <span class="inline-block w-3 h-3 rounded-sm bg-emerald-400 dark:bg-emerald-500"></span>
+      Best in scenario
+    </span>
+    <span class="flex items-center gap-2">
+      <span class="inline-block w-3 h-3 rounded-sm bg-gray-300 dark:bg-gray-600"></span>
+      Competitor
+    </span>
+  </div>
+</section>
+
+<script is:inline define:vars={{ id, scenarios }}>
+  (function () {
+    const root = document.querySelector(`[data-lt-id="${id}"]`);
+    if (!root) return;
+
+    const tabs = root.querySelectorAll('[data-lt-tab]');
+    const panels = root.querySelectorAll('[data-lt-panel]');
+    const currentEl = root.querySelector('.lt-current-tc');
+
+    function setActive(i) {
+      tabs.forEach((t, ti) => {
+        if (ti === i) {
+          t.classList.add('ring-purple-400', 'bg-purple-50', 'dark:bg-purple-900/30', 'text-purple-700', 'dark:text-purple-300', 'font-bold', 'lt-tab-active');
+          t.classList.remove('ring-gray-200', 'dark:ring-gray-700/60', 'bg-white', 'dark:bg-gray-900/40', 'text-gray-600', 'dark:text-gray-400');
+          t.setAttribute('aria-selected', 'true');
+        } else {
+          t.classList.remove('ring-purple-400', 'bg-purple-50', 'dark:bg-purple-900/30', 'text-purple-700', 'dark:text-purple-300', 'font-bold', 'lt-tab-active');
+          t.classList.add('ring-gray-200', 'dark:ring-gray-700/60', 'bg-white', 'dark:bg-gray-900/40', 'text-gray-600', 'dark:text-gray-400');
+          t.setAttribute('aria-selected', 'false');
+        }
+      });
+      panels.forEach((p, pi) => {
+        if (pi === i) p.classList.remove('hidden');
+        else p.classList.add('hidden');
+      });
+      if (currentEl && scenarios && scenarios[i]) {
+        currentEl.textContent = String(scenarios[i].toolCalls);
+      }
+    }
+
+    tabs.forEach((t) => {
+      t.addEventListener('click', () => {
+        const i = parseInt(t.getAttribute('data-lt-tab') || '0', 10);
+        setActive(i);
+      });
+    });
+  })();
+</script>

@@ -4,6 +4,16 @@ import ProjectCard from '../components/ProjectCard.astro';
 
 const projects = [
   {
+    title: 'Aura LLM Gateway',
+    description: 'A Rust-native, agentic LLM gateway implementing the Open Responses API spec. Multi-provider routing across OpenAI, Anthropic, Gemini, Mistral, Ollama, Bedrock and HuggingFace, with cost tracking, agentic metadata, multi-tenant orgs, and AES-256-GCM credential encryption on every response.',
+    icon: 'lightning',
+    accent: 'from-purple-500 to-fuchsia-500',
+    tags: ['Rust', 'Axum', 'Tokio', 'Open Responses API', 'Agentic AI', 'LLM Gateway'],
+    githubUrl: 'https://github.com/UmaiTech/aura-llm-gateway',
+    demoUrl: 'https://aura-llm.dev',
+    status: 'active' as const
+  },
+  {
     title: 'Medium Converter',
     description: 'A Python package that converts Medium articles to various formats including Markdown, HTML, and structured data. Perfect for content migration, backup, and analysis workflows.',
     icon: 'code',

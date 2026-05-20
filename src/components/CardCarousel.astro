@@ -1,0 +1,190 @@
+---
+// Generic single-card carousel wrapper.
+// Children are passed as a single slot, where each direct child is treated as one slide.
+// JS finds children of the inner track at runtime and wires navigation, dots, counter,
+// keyboard nav, touch-swipe, and prefers-reduced-motion handling.
+
+export interface Props {
+  title?: string;
+  subtitle?: string;
+  ariaLabel?: string;
+}
+
+const { title, subtitle, ariaLabel = 'Card carousel' } = Astro.props;
+
+const id = `cc-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<section class="card-carousel my-10" data-cc-id={id} aria-label={ariaLabel}>
+  {(title || subtitle) && (
+    <header class="mb-5 flex items-end justify-between gap-4 flex-wrap">
+      <div>
+        {title && <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-1">{title}</h4>}
+        {subtitle && <p class="text-sm text-gray-600 dark:text-gray-400">{subtitle}</p>}
+      </div>
+      <div class="cc-counter font-mono text-[11px] uppercase tracking-widest text-purple-600 dark:text-purple-400">
+        <span class="cc-counter-current">1</span> / <span class="cc-counter-total">—</span>
+      </div>
+    </header>
+  )}
+
+  <div class="cc-frame relative rounded-2xl ring-1 ring-gray-200/60 dark:ring-gray-700/50 bg-white dark:bg-gray-900/40 overflow-hidden">
+    <div class="cc-viewport overflow-hidden" tabindex="0" role="region" aria-roledescription="carousel">
+      <div class="cc-track flex transition-transform duration-300 ease-out will-change-transform">
+        <slot />
+      </div>
+    </div>
+
+    {/* Prev / Next buttons — absolute on the frame */}
+    <button
+      type="button"
+      class="cc-prev absolute top-1/2 -translate-y-1/2 left-2 sm:left-3 z-10 w-10 h-10 rounded-full bg-white/95 dark:bg-gray-900/95 ring-1 ring-gray-200 dark:ring-gray-700 shadow-md flex items-center justify-center hover:bg-purple-50 dark:hover:bg-purple-900/40 hover:ring-purple-300 dark:hover:ring-purple-600 transition disabled:opacity-30 disabled:cursor-not-allowed"
+      aria-label="Previous card"
+    >
+      <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <button
+      type="button"
+      class="cc-next absolute top-1/2 -translate-y-1/2 right-2 sm:right-3 z-10 w-10 h-10 rounded-full bg-white/95 dark:bg-gray-900/95 ring-1 ring-gray-200 dark:ring-gray-700 shadow-md flex items-center justify-center hover:bg-purple-50 dark:hover:bg-purple-900/40 hover:ring-purple-300 dark:hover:ring-purple-600 transition disabled:opacity-30 disabled:cursor-not-allowed"
+      aria-label="Next card"
+    >
+      <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  </div>
+
+  {/* Dot pagination */}
+  <div class="cc-dots mt-4 flex items-center justify-center gap-2" role="tablist" aria-label="Card pagination">
+    {/* Filled by JS */}
+  </div>
+</section>
+
+<script is:inline define:vars={{ id }}>
+  (function () {
+    const root = document.querySelector(`[data-cc-id="${id}"]`);
+    if (!root) return;
+
+    const viewport = root.querySelector('.cc-viewport');
+    const track = root.querySelector('.cc-track');
+    const prevBtn = root.querySelector('.cc-prev');
+    const nextBtn = root.querySelector('.cc-next');
+    const dotsContainer = root.querySelector('.cc-dots');
+    const currentEl = root.querySelector('.cc-counter-current');
+    const totalEl = root.querySelector('.cc-counter-total');
+
+    if (!viewport || !track) return;
+
+    // Each direct child of .cc-track is one slide
+    const slides = Array.from(track.children);
+    const total = slides.length;
+    if (total === 0) return;
+
+    let index = 0;
+
+    // Force each slide to be 100% of the viewport width
+    slides.forEach((s) => {
+      s.style.flex = '0 0 100%';
+      s.style.minWidth = '0';
+      s.setAttribute('role', 'tabpanel');
+      s.setAttribute('aria-roledescription', 'slide');
+    });
+
+    // Build dots
+    if (dotsContainer) {
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.setAttribute('role', 'tab');
+        dot.setAttribute('aria-label', `Go to card ${i + 1}`);
+        dot.className = 'cc-dot w-2 h-2 rounded-full transition-all';
+        dot.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    if (totalEl) totalEl.textContent = String(total);
+
+    function update() {
+      track.style.transform = `translateX(-${index * 100}%)`;
+      if (currentEl) currentEl.textContent = String(index + 1);
+      if (prevBtn) prevBtn.disabled = index === 0;
+      if (nextBtn) nextBtn.disabled = index === total - 1;
+      if (dotsContainer) {
+        Array.from(dotsContainer.children).forEach((dot, i) => {
+          if (i === index) {
+            dot.className = 'cc-dot w-6 h-2 rounded-full bg-purple-500 dark:bg-purple-400 transition-all';
+            dot.setAttribute('aria-selected', 'true');
+          } else {
+            dot.className = 'cc-dot w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 transition-all';
+            dot.setAttribute('aria-selected', 'false');
+          }
+        });
+      }
+      slides.forEach((s, i) => {
+        s.setAttribute('aria-hidden', i === index ? 'false' : 'true');
+      });
+    }
+
+    function goTo(i) {
+      index = Math.max(0, Math.min(total - 1, i));
+      update();
+    }
+    function next() { goTo(index + 1); }
+    function prev() { goTo(index - 1); }
+
+    if (prevBtn) prevBtn.addEventListener('click', prev);
+    if (nextBtn) nextBtn.addEventListener('click', next);
+
+    // Keyboard navigation on the viewport
+    viewport.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+      else if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+      else if (e.key === 'End') { e.preventDefault(); goTo(total - 1); }
+    });
+
+    // Touch swipe
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const SWIPE_THRESHOLD = 40;
+    viewport.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+    viewport.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const dx = touchEndX - touchStartX;
+      if (Math.abs(dx) > SWIPE_THRESHOLD) {
+        if (dx < 0) next(); else prev();
+      }
+    }, { passive: true });
+
+    // Respect reduced motion
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) {
+      track.style.transition = 'none';
+    }
+
+    update();
+  })();
+</script>
+
+<style>
+  .card-carousel .cc-viewport:focus {
+    outline: none;
+  }
+  .card-carousel .cc-viewport:focus-visible {
+    box-shadow: inset 0 0 0 2px rgb(139 92 246 / 0.6);
+  }
+  /* Hide nav buttons on very small screens — touch swipe + dots cover it */
+  @media (max-width: 360px) {
+    .card-carousel .cc-prev,
+    .card-carousel .cc-next {
+      display: none;
+    }
+  }
+</style>

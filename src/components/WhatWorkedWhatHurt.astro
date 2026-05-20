@@ -1,0 +1,68 @@
+---
+export interface Props {
+  title?: string;
+  worked: string[];
+  hurt: string[];
+  punchline?: string;
+}
+
+const { title, worked, hurt, punchline } = Astro.props;
+---
+
+<div class="wwh my-12">
+  {title && (
+    <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-6 text-center">
+      {title}
+    </h4>
+  )}
+
+  <div class="grid md:grid-cols-2 gap-5">
+    <div class="wwh-card worked rounded-2xl p-6 ring-1 ring-purple-300 dark:ring-purple-700/50 bg-gradient-to-br from-purple-50/50 to-fuchsia-50/20 dark:from-purple-950/30 dark:to-fuchsia-950/10">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-[10px] font-bold uppercase tracking-widest text-purple-600 dark:text-purple-300">What worked</span>
+        <span class="h-px flex-1 bg-purple-300/60 dark:bg-purple-700/40"></span>
+      </div>
+      <ul class="space-y-3 list-none p-0 m-0">
+        {worked.map((item) => (
+          <li class="flex items-start gap-3 list-none">
+            <span class="inline-block w-4 h-4 rounded-full bg-gradient-to-br from-purple-500 to-fuchsia-500 text-white text-xs font-bold leading-4 text-center flex-shrink-0 mt-0.5" aria-hidden="true">+</span>
+            <span class="text-sm text-gray-800 dark:text-gray-200 leading-snug" set:html={item}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="wwh-card hurt rounded-2xl p-6 ring-1 ring-gray-200/70 dark:ring-gray-700/60 bg-gray-50/30 dark:bg-gray-900/40">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">What hurt</span>
+        <span class="h-px flex-1 bg-gray-200 dark:bg-gray-700/60"></span>
+      </div>
+      <ul class="space-y-3 list-none p-0 m-0">
+        {hurt.map((item) => (
+          <li class="flex items-start gap-3 list-none">
+            <span class="inline-block w-4 h-4 rounded-full bg-gray-300 dark:bg-gray-600 text-white text-xs font-bold leading-4 text-center flex-shrink-0 mt-0.5" aria-hidden="true">−</span>
+            <span class="text-sm text-gray-700 dark:text-gray-300 leading-snug" set:html={item}></span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  {punchline && (
+    <p class="mt-5 text-center text-sm text-purple-700 dark:text-purple-300 italic font-medium">
+      {punchline}
+    </p>
+  )}
+</div>
+
+<style>
+  .wwh .wwh-card {
+    transition: box-shadow 0.2s ease;
+  }
+  .wwh .wwh-card:hover {
+    box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.08);
+  }
+  /* Avoid global :global(li) styles bleeding in */
+  .wwh ul { padding-left: 0 !important; }
+  .wwh ul li::marker { content: '' !important; }
+</style>

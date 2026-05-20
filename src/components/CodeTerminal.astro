@@ -1,0 +1,207 @@
+---
+// Terminal-style code component matching the Aura docs aesthetic.
+// Renders a dark, rounded panel with a titlebar (mac dots + label + lang chip + copy button)
+// and either one block or a tab strip across multiple languages.
+
+import { codeToHtml } from 'shiki';
+
+export interface CodeExample {
+  label: string;      // tab label, e.g. "Python", "Terminal", "cURL"
+  lang: string;       // shiki language id, e.g. "python", "bash", "json"
+  code: string;
+}
+
+export interface Props {
+  title?: string;            // optional left-of-titlebar label, e.g. "aura · /v1/responses"
+  examples?: CodeExample[];  // multi-tab mode
+  code?: string;             // single-block mode shortcut
+  lang?: string;             // language for single-block mode
+  label?: string;            // label for single-block mode (defaults to lang)
+}
+
+const { title, examples, code, lang, label } = Astro.props;
+
+// Normalize to a list of examples even when called single-block
+const tabs: CodeExample[] = examples && examples.length > 0
+  ? examples
+  : [{ label: label ?? (lang ?? 'code'), lang: lang ?? 'text', code: code ?? '' }];
+
+// Pre-render each block server-side with shiki + the same GitHub Dark theme the blog uses
+const rendered = await Promise.all(
+  tabs.map(async (t) => ({
+    label: t.label,
+    lang: t.lang,
+    code: t.code,
+    html: await codeToHtml(t.code, {
+      lang: t.lang,
+      theme: 'github-dark',
+    }),
+  }))
+);
+
+const id = `ct-${Math.random().toString(36).slice(2, 9)}`;
+const multi = rendered.length > 1;
+---
+
+<div class="code-terminal my-6" data-ct-id={id}>
+  <div class="rounded-xl overflow-hidden ring-1 ring-gray-800 dark:ring-gray-700/60 bg-[#0d1117] shadow-lg">
+
+    {/* Titlebar */}
+    <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-gray-800">
+      <div class="flex items-center gap-3 min-w-0">
+        {/* Mac traffic-light dots */}
+        <div class="flex items-center gap-1.5 flex-shrink-0" aria-hidden="true">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f57]"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-[#febc2e]"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-[#28c840]"></span>
+        </div>
+        {title && (
+          <span class="font-mono text-xs text-gray-400 truncate">{title}</span>
+        )}
+      </div>
+
+      <div class="flex items-center gap-2">
+        {/* Lang chip when single-tab */}
+        {!multi && (
+          <span class="font-mono text-[10px] uppercase tracking-wider text-gray-500">
+            {rendered[0].label}
+          </span>
+        )}
+        {/* Copy button — wired per tab via JS */}
+        <button
+          type="button"
+          class="ct-copy flex items-center gap-1.5 px-2 py-1 rounded text-[11px] text-gray-400 hover:text-white hover:bg-gray-800 transition"
+          aria-label="Copy code"
+        >
+          <svg class="ct-copy-icon w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+          </svg>
+          <span class="ct-copy-label">Copy</span>
+        </button>
+      </div>
+    </div>
+
+    {/* Tab strip */}
+    {multi && (
+      <div class="flex border-b border-gray-800 bg-[#0d1117]" role="tablist">
+        {rendered.map((r, i) => (
+          <button
+            type="button"
+            role="tab"
+            data-ct-tab={i}
+            class={`ct-tab relative px-4 py-2 text-xs font-medium transition-colors ${
+              i === 0
+                ? 'text-purple-400 ct-tab-active'
+                : 'text-gray-500 hover:text-gray-200'
+            }`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+          >
+            {r.label}
+          </button>
+        ))}
+      </div>
+    )}
+
+    {/* Tab panels */}
+    <div class="relative">
+      {rendered.map((r, i) => (
+        <div
+          data-ct-panel={i}
+          class={`ct-panel ${i === 0 ? '' : 'hidden'}`}
+          role="tabpanel"
+          data-code={r.code}
+        >
+          <div class="ct-shiki-wrap text-sm" set:html={r.html}></div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ id }}>
+  (function () {
+    const root = document.querySelector(`[data-ct-id="${id}"]`);
+    if (!root) return;
+
+    const tabs = root.querySelectorAll('[data-ct-tab]');
+    const panels = root.querySelectorAll('[data-ct-panel]');
+    const copyBtn = root.querySelector('.ct-copy');
+    const copyLabel = root.querySelector('.ct-copy-label');
+
+    let activeIndex = 0;
+
+    function setActive(i) {
+      activeIndex = i;
+      tabs.forEach((t, ti) => {
+        if (ti === i) {
+          t.classList.add('text-purple-400', 'ct-tab-active');
+          t.classList.remove('text-gray-500');
+          t.setAttribute('aria-selected', 'true');
+        } else {
+          t.classList.remove('text-purple-400', 'ct-tab-active');
+          t.classList.add('text-gray-500');
+          t.setAttribute('aria-selected', 'false');
+        }
+      });
+      panels.forEach((p, pi) => {
+        if (pi === i) p.classList.remove('hidden');
+        else p.classList.add('hidden');
+      });
+    }
+
+    tabs.forEach((t) => {
+      t.addEventListener('click', () => {
+        const idx = parseInt(t.getAttribute('data-ct-tab') || '0', 10);
+        setActive(idx);
+      });
+    });
+
+    if (copyBtn) {
+      copyBtn.addEventListener('click', async () => {
+        const panel = root.querySelector(`[data-ct-panel="${activeIndex}"]`);
+        const code = panel?.getAttribute('data-code') || '';
+        try {
+          await navigator.clipboard.writeText(code);
+          if (copyLabel) copyLabel.textContent = 'Copied!';
+          copyBtn.classList.add('text-green-400');
+          copyBtn.classList.remove('text-gray-400');
+          setTimeout(() => {
+            if (copyLabel) copyLabel.textContent = 'Copy';
+            copyBtn.classList.remove('text-green-400');
+            copyBtn.classList.add('text-gray-400');
+          }, 1800);
+        } catch (e) {
+          if (copyLabel) copyLabel.textContent = 'Failed';
+          setTimeout(() => { if (copyLabel) copyLabel.textContent = 'Copy'; }, 1800);
+        }
+      });
+    }
+  })();
+</script>
+
+<style>
+  /* Active-tab purple underline */
+  .code-terminal .ct-tab.ct-tab-active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, #8b5cf6, #d946ef);
+  }
+
+  /* Shiki output styling — match the terminal panel */
+  .code-terminal .ct-shiki-wrap :global(pre) {
+    margin: 0 !important;
+    padding: 1rem 1.25rem !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+  .code-terminal .ct-shiki-wrap :global(code) {
+    background: transparent !important;
+    padding: 0 !important;
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+</style>

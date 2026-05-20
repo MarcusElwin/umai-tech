@@ -1,0 +1,277 @@
+---
+// Interactive architecture diagram matching the Agentic Dev Days deck (slide 13).
+// Click any box to reveal a description sourced from the AURA codebase.
+// Three rows: Clients → Aura Gateway (middleware + core) → Providers.
+
+interface Node {
+  id: string;
+  title: string;
+  sub: string;
+  desc: string;
+  source?: string;
+}
+
+const clients: Node[] = [
+  { id: 'chat', title: 'Chat UI', sub: 'user-facing apps', desc: "React chat playground that ships with the repo (apps/chat). Demonstrates streaming responses, multi-model switching, conversation history with localStorage, and agent mode with built-in tools like Tavily web search.", source: 'apps/chat' },
+  { id: 'agents', title: 'Agents', sub: 'tool-using workflows', desc: "Any agent loop that needs the Open Responses contract — tool calls, reasoning items, requires_action flags. Aura's response shape is designed so agentic frameworks (LangChain, Mastra, DSPy) can branch on the metadata block without provider-specific glue code.", source: 'crates/aura-types' },
+  { id: 'apps', title: 'Applications', sub: 'APIs, workers, CLIs', desc: "Anything that speaks HTTP and the Open Responses API. The Python SDK (aura-llm on PyPI) gives you a sync and async client; the OpenAI SDK works via base_url override if that's what you already have.", source: 'sdks/python' },
+];
+
+const middleware: Node[] = [
+  { id: 'auth', title: 'Auth', sub: 'bearer + scopes', desc: "Bearer-token authentication with per-key scopes and rate limits. API keys are SHA-256 hashed at rest (not stored raw) and carry an org/team/project hierarchy so cost allocation and rate limits cascade through the tenant tree.", source: 'crates/aura-core/src/crypto.rs · aura-proxy/src/routes' },
+  { id: 'rate', title: 'Rate limiter', sub: 'Redis bucket', desc: "Per-API-key rate limiting using a token bucket algorithm backed by Redis. Distributed state means it works across multiple gateway instances. Configurable requests-per-minute with burst support, and a clean RateLimitError::Exceeded with reset_after_secs for the client.", source: 'crates/aura-core/src/rate_limit.rs' },
+  { id: 'cache', title: 'Response cache', sub: 'SHA256 · TTL', desc: "TTL-based caching for LLM responses to reduce latency and cost on repeated identical requests. Cache keys are SHA-256 of the normalized request, default TTL is 5 minutes, and entries are stored in Redis so cache hits are sub-millisecond.", source: 'crates/aura-core/src/cache.rs' },
+  { id: 'compress', title: 'Compression', sub: 'TOON · AISP', desc: "Optional prompt compression middleware. JSON minification (15–30% savings), TOON for uniform arrays (40–60% on enriched product catalogs and similar structures), YAML for nested objects (10–25%), AISP for symbolic/mathematical clarity. Configurable per request.", source: 'crates/aura-core/src/compression' },
+  { id: 'log', title: 'Logger', sub: 'async → Postgres', desc: "Structured async request logging via tracing. Every request goes to Postgres with token usage, cost, latency, provider, agentic metadata, and the full org/team/project chain. The write is non-blocking — your hot path never waits on the database.", source: 'crates/aura-db · aura-proxy' },
+];
+
+const core: Node[] = [
+  { id: 'registry', title: 'Provider Registry', sub: 'model → provider · trait adapters', desc: "Trait-based provider system. The Provider trait defines complete() and complete_stream() and reports the models it serves. The registry maps incoming model names (including aliases like claude-sonnet-4-5) to the right provider with zero routing config — the registry owns the knowledge, not your YAML.", source: 'crates/aura-core/src/provider/mod.rs' },
+  { id: 'cost', title: 'Cost Calculator', sub: 'per-model · input/output/cached/reasoning', desc: "Per-model pricing with input, output, cached-input, and reasoning-token rates (USD per 1M tokens). Calculates cost_usd on every response before enrichment. 2026 model pricing for GPT-5, Claude 4.5, and Gemini 3 ships in the box.", source: 'crates/aura-core/src/cost.rs' },
+  { id: 'enrich', title: 'Response Enrichment', sub: 'cost_usd · latency_ms · agentic{}', desc: "The Aura contract layer. Every response — every provider — gets cost_usd, latency_ms, and an agentic{} block (provider, has_tool_calls, tools_used, requires_action, request_id) bolted on before it leaves the gateway. Same shape, every provider.", source: 'crates/aura-proxy/src/routes · crates/aura-types' },
+];
+
+const providers: Node[] = [
+  { id: 'openai', title: 'OpenAI', sub: 'GPT-5 · o-series', desc: "Full streaming and tool-call support. Models: GPT-5 family, GPT-4o family, o1, o3-mini, GPT-4-turbo, GPT-3.5-turbo. Translates the Open Responses request down to the Chat Completions or Responses API depending on the model.", source: 'crates/aura-core/src/provider/openai.rs' },
+  { id: 'anthropic', title: 'Anthropic', sub: 'Claude 4.5 · 3.5', desc: "Full streaming and tool-call support. Models: Claude 4.5 (Opus, Sonnet), Claude 3.7 Sonnet, Claude 3.5 (Sonnet, Haiku), Claude 3 (Opus, Sonnet, Haiku). Aliases like claude-sonnet-4-5 resolve to the latest dated build.", source: 'crates/aura-core/src/provider/anthropic.rs' },
+  { id: 'google', title: 'Google', sub: 'Gemini 3 · 2.5', desc: "Full streaming and function calling on Gemini 2.0 and later. Models: Gemini 3 (Pro, Flash), 2.5 (Pro, Flash), 2.0 family, 1.5 family. Uses the Google AI Studio streamGenerateContent endpoint with SSE.", source: 'crates/aura-core/src/provider/gemini.rs' },
+  { id: 'mistral', title: 'Mistral', sub: 'OAI-compatible', desc: "Mistral Large 2, Medium, Small, and Codestral via the OpenAI-compatible endpoint. Same Provider trait, single-file implementation.", source: 'crates/aura-core/src/provider' },
+  { id: 'ollama', title: 'Ollama', sub: 'local models', desc: "Any model served by a local Ollama runtime — Llama, Mistral, Mixtral, etc. Useful for development, on-premise deployment, and air-gapped environments. Configure the Ollama base URL in your provider config.", source: 'crates/aura-core/src/provider' },
+  { id: 'bedrock', title: 'Bedrock', sub: 'AWS SigV4', desc: "Claude, Llama, and Titan models via AWS Bedrock. Uses AWS SigV4 request signing and region-pinned endpoints. Pair with IAM roles for keyless auth in production.", source: 'crates/aura-core/src/provider' },
+  { id: 'hf', title: 'HuggingFace', sub: 'TGI endpoints', desc: "Any text-generation-inference endpoint or HuggingFace Inference API model. Pass your endpoint URL via config and Aura treats it as just another provider.", source: 'crates/aura-core/src/provider' },
+];
+
+const storage: Node[] = [
+  { id: 'postgres', title: 'PostgreSQL', sub: 'request logs · orgs · keys · users', desc: "Optional persistence layer (SQLx + Postgres). Stores request logs with full agentic metadata, org → team → project → end-user hierarchy, API keys (hashed), and encrypted provider credentials. Schema lives in migrations/. Skip it and Aura runs in stateless mode.", source: 'crates/aura-db · migrations/' },
+  { id: 'redis', title: 'Redis', sub: 'rate limits · response cache', desc: "Optional cache and rate-limit backend. Connection pooling via the redis crate with tokio-comp. Used for the token-bucket rate limiter and the TTL response cache. Skip it and Aura falls back to in-process or disabled state.", source: 'crates/aura-core/src/redis.rs' },
+  { id: 'prom', title: 'Prometheus', sub: '/metrics endpoint', desc: "Built-in /metrics endpoint exposing request counts, token counts, cost, latency histograms, and provider-level breakdowns. Scrape it with any Prometheus-compatible collector — no sidecar needed.", source: 'crates/aura-core/src/metrics.rs' },
+];
+
+const componentId = `aad-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div class="aura-arch my-10 rounded-2xl ring-1 ring-gray-200/60 dark:ring-gray-700/50 bg-white dark:bg-gray-900/40 p-6 sm:p-8" data-aad-id={componentId}>
+
+  <div class="mb-4 flex items-baseline justify-between">
+    <div>
+      <div class="font-mono text-[10px] uppercase tracking-widest font-bold text-purple-600 dark:text-purple-400">
+        Aura Architecture
+      </div>
+      <div class="text-xs text-gray-500 dark:text-gray-500 mt-0.5">
+        Click any box to see what it does
+      </div>
+    </div>
+    <button type="button" class="aad-close-btn hidden text-xs font-mono text-purple-600 dark:text-purple-400 hover:underline">
+      Close detail ✕
+    </button>
+  </div>
+
+  <div class="grid lg:grid-cols-[1fr_220px] gap-6">
+    <!-- Main column -->
+    <div>
+      <!-- Clients row -->
+      <div class="grid grid-cols-3 gap-3 mb-3">
+        {clients.map((n) => (
+          <button type="button" data-aad-node={n.id} data-aad-title={n.title} data-aad-sub={n.sub} data-aad-desc={n.desc} data-aad-source={n.source ?? ''} class="aa-tile bg-gray-50 dark:bg-gray-800/60 ring-1 ring-gray-200/70 dark:ring-gray-700/60 rounded-xl px-3 py-2.5 text-center cursor-pointer">
+            <div class="text-xs font-bold text-gray-900 dark:text-white leading-tight">{n.title}</div>
+            <div class="text-[10px] text-gray-500 dark:text-gray-500 mt-0.5">{n.sub}</div>
+          </button>
+        ))}
+      </div>
+
+      <!-- Connector -->
+      <div class="grid grid-cols-3 mb-1" aria-hidden="true">
+        <div class="flex justify-center"><div class="w-px h-4 bg-purple-400/50 dark:bg-purple-500/40"></div></div>
+        <div class="flex justify-center"><div class="w-px h-4 bg-purple-400/50 dark:bg-purple-500/40"></div></div>
+        <div class="flex justify-center"><div class="w-px h-4 bg-purple-400/50 dark:bg-purple-500/40"></div></div>
+      </div>
+
+      <!-- Aura Gateway box -->
+      <div class="rounded-2xl ring-2 ring-purple-400/60 dark:ring-purple-600/50 bg-purple-50/40 dark:bg-purple-950/20 p-4 sm:p-5">
+        <div class="flex items-baseline justify-between mb-3">
+          <div class="font-mono text-[11px] uppercase tracking-widest font-bold text-purple-700 dark:text-purple-300">
+            AURA GATEWAY
+          </div>
+          <div class="text-[10px] text-gray-500 dark:text-gray-400 hidden sm:block">
+            Axum router · Tokio async
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="text-[10px] uppercase tracking-wider font-bold text-gray-500 dark:text-gray-400 mb-2">
+            Middleware
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            {middleware.map((n) => (
+              <button type="button" data-aad-node={n.id} data-aad-title={n.title} data-aad-sub={n.sub} data-aad-desc={n.desc} data-aad-source={n.source ?? ''} class="aa-mw rounded-lg bg-white dark:bg-gray-900/60 ring-1 ring-gray-200/60 dark:ring-gray-700/50 px-2.5 py-2 text-center cursor-pointer">
+                <div class="text-[11px] font-semibold text-gray-900 dark:text-white leading-tight">{n.title}</div>
+                <div class="text-[9px] text-gray-500 dark:text-gray-500 mt-0.5 leading-tight">{n.sub}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div class="text-[10px] uppercase tracking-wider font-bold text-gray-500 dark:text-gray-400 mb-2">
+            Core
+          </div>
+          <div class="grid sm:grid-cols-3 gap-2">
+            {core.map((n) => (
+              <button type="button" data-aad-node={n.id} data-aad-title={n.title} data-aad-sub={n.sub} data-aad-desc={n.desc} data-aad-source={n.source ?? ''} class="aa-core rounded-lg bg-purple-100/50 dark:bg-purple-900/30 ring-1 ring-purple-300/50 dark:ring-purple-700/40 px-3 py-2.5 text-center cursor-pointer">
+                <div class="text-xs font-bold text-purple-700 dark:text-purple-200 leading-tight">{n.title}</div>
+                <div class="text-[10px] text-purple-600/70 dark:text-purple-300/70 mt-0.5 leading-tight">{n.sub}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Connector -->
+      <div class="grid grid-cols-7 my-1" aria-hidden="true">
+        {Array.from({ length: 7 }).map(() => (
+          <div class="flex justify-center"><div class="w-px h-3 bg-purple-400/40 dark:bg-purple-500/30"></div></div>
+        ))}
+      </div>
+
+      <!-- Providers row -->
+      <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+        {providers.map((n) => (
+          <button type="button" data-aad-node={n.id} data-aad-title={n.title} data-aad-sub={n.sub} data-aad-desc={n.desc} data-aad-source={n.source ?? ''} class="aa-prov rounded-lg ring-1 ring-purple-300/50 dark:ring-purple-700/40 bg-white dark:bg-gray-900/40 px-2 py-2 text-center cursor-pointer">
+            <div class="text-[11px] font-semibold text-gray-900 dark:text-white leading-tight">{n.title}</div>
+            <div class="text-[9px] text-gray-500 dark:text-gray-500 mt-0.5 leading-tight">{n.sub}</div>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Storage sidebar -->
+    <aside class="rounded-2xl ring-1 ring-gray-200/60 dark:ring-gray-700/50 bg-gray-50/60 dark:bg-gray-900/60 p-4 self-start">
+      <div class="text-[10px] uppercase tracking-widest font-bold text-gray-500 dark:text-gray-400 mb-3">
+        Storage (opt) · Metrics
+      </div>
+      <div class="space-y-2">
+        {storage.map((n) => (
+          <button type="button" data-aad-node={n.id} data-aad-title={n.title} data-aad-sub={n.sub} data-aad-desc={n.desc} data-aad-source={n.source ?? ''} class="aa-stor w-full text-left rounded-lg p-2.5 ring-1 ring-transparent hover:ring-purple-300 dark:hover:ring-purple-700/40 hover:bg-white dark:hover:bg-gray-900/40 transition cursor-pointer">
+            <div class="text-sm font-bold text-gray-900 dark:text-white leading-tight">{n.title}</div>
+            <div class="text-[10px] text-gray-500 dark:text-gray-500 mt-0.5 leading-tight">{n.sub}</div>
+          </button>
+        ))}
+        <div class="pt-3 mt-3 border-t border-gray-200/60 dark:border-gray-700/40">
+          <div class="text-[10px] italic text-purple-600 dark:text-purple-400">
+            AES-256-GCM for provider creds
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Detail panel (filled by JS on click) -->
+  <div class="aad-detail-panel hidden mt-5 rounded-xl ring-1 ring-purple-300/60 dark:ring-purple-700/50 bg-purple-50/30 dark:bg-purple-950/30 p-5">
+    <div class="flex items-baseline justify-between mb-2">
+      <h5 class="aad-detail-title text-base font-bold text-purple-700 dark:text-purple-200">—</h5>
+      <span class="aad-detail-sub text-[10px] font-mono uppercase tracking-wider text-purple-600/70 dark:text-purple-300/70">—</span>
+    </div>
+    <p class="aad-detail-desc text-sm text-gray-800 dark:text-gray-200 leading-snug mb-3">—</p>
+    <div class="aad-detail-source-wrap text-[10px] font-mono text-gray-500 dark:text-gray-400 hidden">
+      Source: <span class="aad-detail-source"></span>
+    </div>
+  </div>
+
+  <!-- Endpoint footer -->
+  <div class="mt-5 pt-4 border-t border-gray-200/60 dark:border-gray-700/40 flex items-center justify-between text-[11px]">
+    <span class="font-mono text-purple-700 dark:text-purple-300">POST /v1/responses</span>
+    <span class="text-gray-500 dark:text-gray-500 italic">Open Responses API</span>
+  </div>
+</div>
+
+<script is:inline define:vars={{ componentId, clients, middleware, core, providers, storage }}>
+  (function () {
+    const root = document.querySelector(`[data-aad-id="${componentId}"]`);
+    if (!root) return;
+
+    const allNodes = [...clients, ...middleware, ...core, ...providers, ...storage];
+    const byId = Object.fromEntries(allNodes.map(n => [n.id, n]));
+
+    const panel = root.querySelector('.aad-detail-panel');
+    const titleEl = root.querySelector('.aad-detail-title');
+    const subEl = root.querySelector('.aad-detail-sub');
+    const descEl = root.querySelector('.aad-detail-desc');
+    const sourceWrap = root.querySelector('.aad-detail-source-wrap');
+    const sourceEl = root.querySelector('.aad-detail-source');
+    const closeBtn = root.querySelector('.aad-close-btn');
+
+    function clearActive() {
+      root.querySelectorAll('[data-aad-node]').forEach(b => {
+        b.classList.remove('aad-active');
+      });
+    }
+
+    function showNode(id) {
+      const n = byId[id];
+      if (!n || !panel || !titleEl || !subEl || !descEl) return;
+      clearActive();
+      const btn = root.querySelector(`[data-aad-node="${id}"]`);
+      if (btn) btn.classList.add('aad-active');
+
+      titleEl.textContent = n.title;
+      subEl.textContent = n.sub;
+      descEl.textContent = n.desc;
+      if (n.source && sourceWrap && sourceEl) {
+        sourceEl.textContent = n.source;
+        sourceWrap.classList.remove('hidden');
+      } else if (sourceWrap) {
+        sourceWrap.classList.add('hidden');
+      }
+      panel.classList.remove('hidden');
+      if (closeBtn) closeBtn.classList.remove('hidden');
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function closeDetail() {
+      clearActive();
+      if (panel) panel.classList.add('hidden');
+      if (closeBtn) closeBtn.classList.add('hidden');
+    }
+
+    root.querySelectorAll('[data-aad-node]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-aad-node');
+        if (id) showNode(id);
+      });
+    });
+
+    if (closeBtn) closeBtn.addEventListener('click', closeDetail);
+  })();
+</script>
+
+<style>
+  .aura-arch .aa-tile,
+  .aura-arch .aa-mw,
+  .aura-arch .aa-core,
+  .aura-arch .aa-prov,
+  .aura-arch .aa-stor {
+    transition: transform 0.15s ease, box-shadow 0.15s ease, ring 0.15s ease;
+    border: 0;
+  }
+  .aura-arch button[data-aad-node]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.08);
+  }
+  .aura-arch button[data-aad-node].aad-active {
+    box-shadow: 0 0 0 2px rgb(139 92 246 / 0.6), 0 4px 12px -4px rgba(139, 92, 246, 0.3);
+    transform: translateY(-1px);
+  }
+  .aura-arch button[data-aad-node]:focus-visible {
+    outline: 2px solid rgb(139 92 246);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .aura-arch button[data-aad-node] {
+      transition: none;
+    }
+    .aura-arch button[data-aad-node]:hover,
+    .aura-arch button[data-aad-node].aad-active {
+      transform: none;
+    }
+  }
+</style>
