@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" font-family="Inter, system-ui, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1E1B4B"/>
+      <stop offset="1" stop-color="#0a0a0a"/>
+    </linearGradient>
+    <linearGradient id="aura" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#A78BFA"/>
+      <stop offset="0.5" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#8B5CF6" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#8B5CF6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Decorative orbs -->
+  <circle cx="180" cy="120" r="220" fill="url(#glow)"/>
+  <circle cx="1050" cy="540" r="240" fill="url(#glow)" opacity="0.7"/>
+
+  <!-- Eyebrow -->
+  <g transform="translate(80,108)">
+    <rect width="220" height="32" rx="16" fill="#7C3AED"/>
+    <text x="110" y="21" text-anchor="middle" font-size="12" font-weight="700" fill="white" letter-spacing="3">AGENTIC DEV DAYS 2026</text>
+  </g>
+
+  <!-- Title -->
+  <text x="80" y="220" font-size="72" font-weight="800" fill="white" letter-spacing="-2">Building </text>
+  <text x="378" y="220" font-size="72" font-weight="800" fill="url(#aura)" letter-spacing="-2">Aura</text>
+  <text x="80" y="290" font-size="42" font-weight="700" fill="white" opacity="0.92" letter-spacing="-1">An Agentic LLM Gateway in Rust</text>
+
+  <!-- Subhead -->
+  <text x="80" y="342" font-size="20" fill="#A78BFA" font-style="italic">Vibe engineering taught me Rust. Claude Code carried the rest.</text>
+
+  <!-- Feature chips -->
+  <g transform="translate(80,400)" font-size="13" font-weight="700">
+    <g>
+      <rect width="208" height="40" rx="20" fill="white" fill-opacity="0.08" stroke="#A78BFA" stroke-opacity="0.4"/>
+      <text x="104" y="25" text-anchor="middle" fill="white">Open Responses API</text>
+    </g>
+    <g transform="translate(220,0)">
+      <rect width="148" height="40" rx="20" fill="white" fill-opacity="0.08" stroke="#A78BFA" stroke-opacity="0.4"/>
+      <text x="74" y="25" text-anchor="middle" fill="white">7 providers</text>
+    </g>
+    <g transform="translate(380,0)">
+      <rect width="200" height="40" rx="20" fill="white" fill-opacity="0.08" stroke="#A78BFA" stroke-opacity="0.4"/>
+      <text x="100" y="25" text-anchor="middle" fill="white">cost on every response</text>
+    </g>
+    <g transform="translate(592,0)">
+      <rect width="184" height="40" rx="20" fill="white" fill-opacity="0.08" stroke="#A78BFA" stroke-opacity="0.4"/>
+      <text x="92" y="25" text-anchor="middle" fill="white">Rust · Axum · Tokio</text>
+    </g>
+  </g>
+
+  <!-- Author + URL -->
+  <g transform="translate(80,500)">
+    <circle cx="22" cy="22" r="22" fill="#7C3AED"/>
+    <text x="22" y="29" text-anchor="middle" font-size="18" font-weight="700" fill="white">M</text>
+    <text x="58" y="20" font-size="16" font-weight="700" fill="white">Marcus Elwin</text>
+    <text x="58" y="40" font-size="13" fill="#A78BFA">umai-tech.com · @MarcusElwin</text>
+  </g>
+
+  <!-- URL pill bottom-right -->
+  <g transform="translate(880,540)">
+    <rect width="240" height="44" rx="22" fill="#7C3AED"/>
+    <text x="120" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="white">aura-llm.dev</text>
+  </g>
+
+  <!-- Japanese mark (umai) -->
+  <text x="1120" y="120" font-size="64" font-weight="700" fill="#7C3AED" opacity="0.4" text-anchor="end">うまい</text>
+</svg>

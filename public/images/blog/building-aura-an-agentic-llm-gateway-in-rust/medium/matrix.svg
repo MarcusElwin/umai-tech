@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#f9fafb"/>
+
+  <text x="40" y="44" font-size="13" font-weight="700" fill="#7C3AED" letter-spacing="2">LLM GATEWAYS IN 2026</text>
+  <text x="40" y="70" font-size="20" font-weight="700" fill="#0a0a0a">What they're good at, what's missing for agents</text>
+  <text x="40" y="92" font-size="13" fill="#6B7280">Survey of the gateways teams actually reach for when building agentic systems</text>
+
+  <!-- Table: header + 8 rows. Columns: Gateway (180) | Lang (110) | OSS (110) | Strength (380) | Gap (350) -->
+  <g transform="translate(40,120)">
+    <!-- Header -->
+    <rect width="1120" height="40" rx="6" fill="#111827"/>
+    <text x="16"  y="25" font-size="12" font-weight="700" fill="white" letter-spacing="1">GATEWAY</text>
+    <text x="196" y="25" font-size="12" font-weight="700" fill="white" letter-spacing="1">LANGUAGE</text>
+    <text x="316" y="25" font-size="12" font-weight="700" fill="white" letter-spacing="1">OPEN SOURCE</text>
+    <text x="436" y="25" font-size="12" font-weight="700" fill="white" letter-spacing="1">STRENGTH</text>
+    <text x="826" y="25" font-size="12" font-weight="700" fill="white" letter-spacing="1">GAP</text>
+
+    <!-- Row 1: LiteLLM -->
+    <g transform="translate(0,46)">
+      <rect width="1120" height="58" rx="6" fill="white" stroke="#E5E7EB"/>
+      <text x="16"  y="24" font-size="14" font-weight="700" fill="#0a0a0a">LiteLLM</text>
+      <text x="196" y="24" font-size="13" fill="#374151">Python</text>
+      <text x="316" y="24" font-size="13" fill="#374151">Yes</text>
+      <text x="436" y="24" font-size="12" fill="#374151">100+ provider coverage,</text>
+      <text x="436" y="42" font-size="12" fill="#374151">simple router, easy self-host</text>
+      <text x="826" y="24" font-size="12" fill="#6B7280">Chat-completions-shaped;</text>
+      <text x="826" y="42" font-size="12" fill="#6B7280">agentic metadata is bolted on</text>
+    </g>
+
+    <!-- Row 2: Portkey -->
+    <g transform="translate(0,110)">
+      <rect width="1120" height="58" rx="6" fill="white" stroke="#E5E7EB"/>
+      <text x="16"  y="24" font-size="14" font-weight="700" fill="#0a0a0a">Portkey</text>
+      <text x="196" y="24" font-size="13" fill="#374151">Node / TS</text>
+      <text x="316" y="24" font-size="13" fill="#374151">Apache 2.0</text>
+      <text x="436" y="24" font-size="12" fill="#374151">Guardrails, semantic cache,</text>
+      <text x="436" y="42" font-size="12" fill="#374151">prompt mgmt, PII redaction</text>
+      <text x="826" y="24" font-size="12" fill="#6B7280">Cloud-first; self-host</text>
+      <text x="826" y="42" font-size="12" fill="#6B7280">is second-class</text>
+    </g>
+
+    <!-- Row 3: Helicone -->
+    <g transform="translate(0,174)">
+      <rect width="1120" height="58" rx="6" fill="white" stroke="#E5E7EB"/>
+      <text x="16"  y="24" font-size="14" font-weight="700" fill="#0a0a0a">Helicone</text>
+      <text x="196" y="24" font-size="13" fill="#374151">Rust</text>
+      <text x="316" y="24" font-size="13" fill="#374151">Yes</text>
+      <text x="436" y="24" font-size="12" fill="#374151">Observability-first,</text>
+      <text x="436" y="42" font-size="12" fill="#374151">edge-friendly, Rust speed</text>
+      <text x="826" y="24" font-size="12" fill="#6B7280">Started as analytics;</text>
+      <text x="826" y="42" font-size="12" fill="#6B7280">agentic primitives surface-level</text>
+    </g>
+
+    <!-- Row 4: OpenRouter -->
+    <g transform="translate(0,238)">
+      <rect width="1120" height="58" rx="6" fill="white" stroke="#E5E7EB"/>
+      <text x="16"  y="24" font-size="14" font-weight="700" fill="#0a0a0a">OpenRouter</text>
+      <text x="196" y="24" font-size="13" fill="#374151">Closed</text>
+      <text x="316" y="24" font-size="13" fill="#374151">No</text>
+      <text x="436" y="24" font-size="12" fill="#374151">290+ models,</text>
+      <text x="436" y="42" font-size="12" fill="#374151">passthrough pricing, one URL</text>
+      <text x="826" y="24" font-size="12" fill="#6B7280">Hosted only — they bill you,</text>
+      <text x="826" y="42" font-size="12" fill="#6B7280">not the provider</text>
+    </g>
+
+    <!-- Row 5: Vercel AI Gateway -->
+    <g transform="translate(0,302)">
+      <rect width="1120" height="58" rx="6" fill="white" stroke="#E5E7EB"/>
+      <text x="16"  y="24" font-size="14" font-weight="700" fill="#0a0a0a">Vercel AI Gateway</text>
+      <text x="196" y="24" font-size="13" fill="#374151">Node / Edge</text>
+      <text x="316" y="24" font-size="13" fill="#374151">No</text>
+      <text x="436" y="24" font-size="12" fill="#374151">Model fallbacks, Fluid-compute,</text>
+      <text x="436" y="42" font-size="12" fill="#374151">deep Next.js integration</text>
+      <text x="826" y="24" font-size="12" fill="#6B7280">Hosted; coupled to</text>
+      <text x="826" y="42" font-size="12" fill="#6B7280">Vercel platform</text>
+    </g>
+
+    <!-- Row 6: Bifrost -->
+    <g transform="translate(0,366)">
+      <rect width="1120" height="58" rx="6" fill="white" stroke="#E5E7EB"/>
+      <text x="16"  y="24" font-size="14" font-weight="700" fill="#0a0a0a">Bifrost (Maxim AI)</text>
+      <text x="196" y="24" font-size="13" fill="#374151">Go</text>
+      <text x="316" y="24" font-size="13" fill="#374151">Apache 2.0</text>
+      <text x="436" y="24" font-size="12" fill="#374151">11 µs overhead at 5k RPS,</text>
+      <text x="436" y="42" font-size="12" fill="#374151">1000+ models, governance + SSO</text>
+      <text x="826" y="24" font-size="12" fill="#6B7280">OpenAI-shaped wire format;</text>
+      <text x="826" y="42" font-size="12" fill="#6B7280">agents on top, not native</text>
+    </g>
+
+    <!-- Row 7: Opper AI -->
+    <g transform="translate(0,430)">
+      <rect width="1120" height="58" rx="6" fill="white" stroke="#E5E7EB"/>
+      <text x="16"  y="24" font-size="14" font-weight="700" fill="#0a0a0a">Opper AI</text>
+      <text x="196" y="24" font-size="13" fill="#374151">Managed</text>
+      <text x="316" y="24" font-size="13" fill="#374151">No</text>
+      <text x="436" y="24" font-size="12" fill="#374151">EU sovereignty, 300+ models,</text>
+      <text x="436" y="42" font-size="12" fill="#374151">LLM-as-a-judge scoring</text>
+      <text x="826" y="24" font-size="12" fill="#6B7280">Managed control plane,</text>
+      <text x="826" y="42" font-size="12" fill="#6B7280">not self-hostable</text>
+    </g>
+
+    <!-- Row 8: Aura (highlighted) -->
+    <g transform="translate(0,494)">
+      <rect width="1120" height="58" rx="6" fill="#7C3AED"/>
+      <text x="16"  y="26" font-size="14" font-weight="700" fill="white">Aura</text>
+      <text x="58"  y="26" font-size="11" font-weight="700" fill="#FDE68A">★</text>
+      <text x="196" y="26" font-size="13" fill="white">Rust</text>
+      <text x="316" y="26" font-size="13" fill="white">MIT</text>
+      <text x="436" y="24" font-size="12" fill="white">Agentic-native, Open Responses</text>
+      <text x="436" y="42" font-size="12" fill="white">API spec, multi-tenant by design</text>
+      <text x="826" y="24" font-size="12" fill="#EDE9FE">Earlier-stage;</text>
+      <text x="826" y="42" font-size="12" fill="#EDE9FE">7 providers as of v0.9</text>
+    </g>
+  </g>
+
+  <!-- Footnote -->
+  <text x="40" y="730" font-size="11" fill="#9CA3AF">
+    Sources: TrueFoundry, Helicone, OpenRouter docs (LiteLLM/Portkey/Helicone); Maxim AI blog (Bifrost); Opper AI blog. Compiled May 2026.
+  </text>
+</svg>

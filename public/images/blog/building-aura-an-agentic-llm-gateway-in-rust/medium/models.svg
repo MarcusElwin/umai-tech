@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#f9fafb"/>
+
+  <text x="40" y="44" font-size="13" font-weight="700" fill="#7C3AED" letter-spacing="2">MODEL FAMILIES SUPPORTED IN v0.9</text>
+  <text x="40" y="70" font-size="20" font-weight="700" fill="#0a0a0a">Resolve by family or by pinned version — Aura's registry handles both</text>
+  <text x="40" y="92" font-size="13" fill="#6B7280">7 providers. Anthropic and Gemini have full streaming + tool calls; the others add via the same Provider trait in one file.</text>
+
+  <!-- Card style: 360w x 200h. 3 cols × 3 rows -->
+  <!-- Row 1: OpenAI · Anthropic · Google -->
+  <g transform="translate(40,120)">
+    <rect width="360" height="200" rx="14" fill="white" stroke="#E5E7EB"/>
+    <text x="20" y="34" font-size="18" font-weight="700" fill="#0a0a0a">OpenAI</text>
+    <g transform="translate(20,46)">
+      <rect width="138" height="22" rx="11" fill="#7C3AED"/>
+      <text x="69" y="15" text-anchor="middle" font-size="11" font-weight="700" fill="white">STREAMING + TOOLS</text>
+    </g>
+    <text x="20" y="98"  font-size="12" fill="#374151">• GPT-5 family</text>
+    <text x="20" y="118" font-size="12" fill="#374151">• GPT-4o family</text>
+    <text x="20" y="138" font-size="12" fill="#374151">• o-series (o1, o3-mini)</text>
+    <text x="20" y="158" font-size="12" fill="#374151">• GPT-4 / 4-turbo / 3.5</text>
+    <text x="20" y="186" font-size="11" fill="#6B7280" font-style="italic">Aliases or pinned versions</text>
+  </g>
+
+  <g transform="translate(420,120)">
+    <rect width="360" height="200" rx="14" fill="white" stroke="#E5E7EB"/>
+    <text x="20" y="34" font-size="18" font-weight="700" fill="#0a0a0a">Anthropic</text>
+    <g transform="translate(20,46)">
+      <rect width="138" height="22" rx="11" fill="#7C3AED"/>
+      <text x="69" y="15" text-anchor="middle" font-size="11" font-weight="700" fill="white">STREAMING + TOOLS</text>
+    </g>
+    <text x="20" y="98"  font-size="12" fill="#374151">• Claude 4.5 (Opus, Sonnet)</text>
+    <text x="20" y="118" font-size="12" fill="#374151">• Claude 3.7 Sonnet</text>
+    <text x="20" y="138" font-size="12" fill="#374151">• Claude 3.5 (Sonnet, Haiku)</text>
+    <text x="20" y="158" font-size="12" fill="#374151">• Claude 3 (Opus, Sonnet, Haiku)</text>
+    <text x="20" y="186" font-size="11" fill="#6B7280" font-style="italic">claude-sonnet-4-5 → latest dated build</text>
+  </g>
+
+  <g transform="translate(800,120)">
+    <rect width="360" height="200" rx="14" fill="white" stroke="#E5E7EB"/>
+    <text x="20" y="34" font-size="18" font-weight="700" fill="#0a0a0a">Google Gemini</text>
+    <g transform="translate(20,46)">
+      <rect width="138" height="22" rx="11" fill="#7C3AED"/>
+      <text x="69" y="15" text-anchor="middle" font-size="11" font-weight="700" fill="white">STREAMING + TOOLS</text>
+    </g>
+    <text x="20" y="98"  font-size="12" fill="#374151">• Gemini 3 (Pro, Flash)</text>
+    <text x="20" y="118" font-size="12" fill="#374151">• Gemini 2.5 (Pro, Flash)</text>
+    <text x="20" y="138" font-size="12" fill="#374151">• Gemini 2.0 family</text>
+    <text x="20" y="158" font-size="12" fill="#374151">• Gemini 1.5 family</text>
+    <text x="20" y="186" font-size="11" fill="#6B7280" font-style="italic">Function calling on 2.0+</text>
+  </g>
+
+  <!-- Row 2: Mistral · Ollama · Bedrock -->
+  <g transform="translate(40,340)">
+    <rect width="360" height="200" rx="14" fill="white" stroke="#E5E7EB"/>
+    <text x="20" y="34" font-size="18" font-weight="700" fill="#0a0a0a">Mistral</text>
+    <text x="20" y="98"  font-size="12" fill="#374151">• Mistral Large 2</text>
+    <text x="20" y="118" font-size="12" fill="#374151">• Mistral Medium / Small</text>
+    <text x="20" y="138" font-size="12" fill="#374151">• Codestral</text>
+    <text x="20" y="186" font-size="11" fill="#6B7280" font-style="italic">OpenAI-compatible endpoint</text>
+  </g>
+
+  <g transform="translate(420,340)">
+    <rect width="360" height="200" rx="14" fill="white" stroke="#E5E7EB"/>
+    <text x="20" y="34" font-size="18" font-weight="700" fill="#0a0a0a">Ollama</text>
+    <text x="20" y="98"  font-size="12" fill="#374151">• Llama family (local)</text>
+    <text x="20" y="118" font-size="12" fill="#374151">• Mistral / Mixtral (local)</text>
+    <text x="20" y="138" font-size="12" fill="#374151">• Any Ollama-served model</text>
+    <text x="20" y="186" font-size="11" fill="#6B7280" font-style="italic">Bring your own local runtime</text>
+  </g>
+
+  <g transform="translate(800,340)">
+    <rect width="360" height="200" rx="14" fill="white" stroke="#E5E7EB"/>
+    <text x="20" y="34" font-size="18" font-weight="700" fill="#0a0a0a">AWS Bedrock</text>
+    <text x="20" y="98"  font-size="12" fill="#374151">• Claude via Bedrock</text>
+    <text x="20" y="118" font-size="12" fill="#374151">• Llama via Bedrock</text>
+    <text x="20" y="138" font-size="12" fill="#374151">• Titan models</text>
+    <text x="20" y="186" font-size="11" fill="#6B7280" font-style="italic">AWS SigV4 auth, region-pinned</text>
+  </g>
+
+  <!-- Row 3: HuggingFace + caption -->
+  <g transform="translate(40,560)">
+    <rect width="360" height="160" rx="14" fill="white" stroke="#E5E7EB"/>
+    <text x="20" y="34" font-size="18" font-weight="700" fill="#0a0a0a">HuggingFace</text>
+    <text x="20" y="74"  font-size="12" fill="#374151">• Any TGI endpoint</text>
+    <text x="20" y="94"  font-size="12" fill="#374151">• Inference Endpoints</text>
+    <text x="20" y="114" font-size="12" fill="#374151">• Public Inference API</text>
+    <text x="20" y="146" font-size="11" fill="#6B7280" font-style="italic">Pass your endpoint URL via config</text>
+  </g>
+
+  <g transform="translate(420,560)">
+    <rect width="740" height="160" rx="14" fill="#EDE9FE"/>
+    <text x="24" y="40" font-size="13" font-weight="700" fill="#7C3AED" letter-spacing="1.5">ADDING A PROVIDER</text>
+    <text x="24" y="74" font-size="15" fill="#0a0a0a">Implement the </text>
+    <text x="124" y="74" font-size="15" font-family="JetBrains Mono, monospace" font-weight="700" fill="#7C3AED">Provider</text>
+    <text x="200" y="74" font-size="15" fill="#0a0a0a"> trait in one file.</text>
+    <text x="24" y="98" font-size="13" fill="#374151">Defines </text>
+    <text x="78" y="98" font-size="13" font-family="JetBrains Mono, monospace" fill="#0a0a0a">complete()</text>
+    <text x="158" y="98" font-size="13" fill="#374151"> + </text>
+    <text x="182" y="98" font-size="13" font-family="JetBrains Mono, monospace" fill="#0a0a0a">complete_stream()</text>
+    <text x="320" y="98" font-size="13" fill="#374151">. Reports the models it serves;</text>
+    <text x="24" y="118" font-size="13" fill="#374151">registry maps model name → provider with zero routing config.</text>
+    <text x="24" y="146" font-size="11" fill="#6B7280" font-style="italic">See crates/aura-core/src/provider/ for the full list.</text>
+  </g>
+</svg>
