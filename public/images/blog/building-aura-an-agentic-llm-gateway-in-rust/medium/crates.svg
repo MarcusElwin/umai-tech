@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#f9fafb"/>
+
+  <text x="40" y="44" font-size="13" font-weight="700" fill="#7C3AED" letter-spacing="2">AURA · 4-CRATE CARGO WORKSPACE</text>
+  <text x="40" y="70" font-size="20" font-weight="700" fill="#0a0a0a">Each crate has one responsibility, with explicit dependency direction</text>
+  <text x="40" y="92" font-size="13" fill="#6B7280">Nothing exotic — Axum 0.8, Tokio, SQLx, Redis, Reqwest. The interesting parts live above the stack.</text>
+
+  <!-- Row 1: aura-types | aura-db -->
+  <g transform="translate(40,120)">
+    <rect width="555" height="280" rx="14" fill="white" stroke="#E5E7EB"/>
+    <rect width="4" height="280" rx="2" fill="#7C3AED"/>
+    <text x="24" y="36" font-size="11" font-weight="700" fill="#7C3AED" letter-spacing="1.5">FOUNDATION · TYPES</text>
+    <text x="24" y="64" font-size="22" font-weight="700" fill="#0a0a0a" font-family="JetBrains Mono, monospace">aura-types</text>
+    <text x="24" y="86" font-size="13" fill="#374151">Open Responses API types</text>
+    <text x="24" y="120" font-size="12" fill="#6B7280">Shared type system for the Open Responses spec —</text>
+    <text x="24" y="138" font-size="12" fill="#6B7280">request, response, items, events.</text>
+    <text x="24" y="156" font-size="12" fill="#6B7280">60+ tests catch provider drift at compile time.</text>
+
+    <text x="24" y="194" font-size="11" font-weight="700" fill="#9CA3AF" letter-spacing="1">MODULES</text>
+    <text x="24" y="214" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">item.rs · response.rs · stream.rs</text>
+    <text x="24" y="232" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">compression.rs · consistency.rs</text>
+    <text x="24" y="250" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">validation.rs</text>
+
+    <text x="380" y="194" font-size="11" font-weight="700" fill="#9CA3AF" letter-spacing="1">DEPS</text>
+    <text x="380" y="214" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">serde</text>
+    <text x="380" y="232" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">thiserror</text>
+  </g>
+
+  <g transform="translate(605,120)">
+    <rect width="555" height="280" rx="14" fill="white" stroke="#E5E7EB"/>
+    <rect width="4" height="280" rx="2" fill="#A78BFA"/>
+    <text x="24" y="36" font-size="11" font-weight="700" fill="#A78BFA" letter-spacing="1.5">PERSISTENCE · OPTIONAL</text>
+    <text x="24" y="64" font-size="22" font-weight="700" fill="#0a0a0a" font-family="JetBrains Mono, monospace">aura-db</text>
+    <text x="24" y="86" font-size="13" fill="#374151">Database models and migrations</text>
+    <text x="24" y="120" font-size="12" fill="#6B7280">SQLx models, query layer, migration set for Postgres.</text>
+    <text x="24" y="138" font-size="12" fill="#6B7280">Org → team → project → end-user hierarchy lives here.</text>
+    <text x="24" y="156" font-size="12" fill="#6B7280">Optional — Aura runs stateless without it.</text>
+
+    <text x="24" y="194" font-size="11" font-weight="700" fill="#9CA3AF" letter-spacing="1">MODULES</text>
+    <text x="24" y="214" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">models.rs · repo.rs</text>
+    <text x="24" y="232" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">pool.rs · error.rs</text>
+
+    <text x="380" y="194" font-size="11" font-weight="700" fill="#9CA3AF" letter-spacing="1">DEPS</text>
+    <text x="380" y="214" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">sqlx (Postgres)</text>
+    <text x="380" y="232" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">aura-types</text>
+  </g>
+
+  <!-- Row 2: aura-core | aura-proxy -->
+  <g transform="translate(40,420)">
+    <rect width="555" height="280" rx="14" fill="white" stroke="#E5E7EB"/>
+    <rect width="4" height="280" rx="2" fill="#7C3AED"/>
+    <text x="24" y="36" font-size="11" font-weight="700" fill="#7C3AED" letter-spacing="1.5">BUSINESS LOGIC</text>
+    <text x="24" y="64" font-size="22" font-weight="700" fill="#0a0a0a" font-family="JetBrains Mono, monospace">aura-core</text>
+    <text x="24" y="86" font-size="13" fill="#374151">Provider adapters, routing, cost, compression</text>
+    <text x="24" y="120" font-size="12" fill="#6B7280">Provider trait + 7 per-vendor adapters, cost</text>
+    <text x="24" y="138" font-size="12" fill="#6B7280">calculator, rate limiter, response cache, prompt</text>
+    <text x="24" y="156" font-size="12" fill="#6B7280">compression, AES-256-GCM crypto.</text>
+
+    <text x="24" y="194" font-size="11" font-weight="700" fill="#9CA3AF" letter-spacing="1">MODULES</text>
+    <text x="24" y="214" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">provider/ · router/ · cost.rs</text>
+    <text x="24" y="232" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">cache.rs · rate_limit.rs</text>
+    <text x="24" y="250" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">compression/ · crypto.rs · metrics.rs</text>
+
+    <text x="380" y="194" font-size="11" font-weight="700" fill="#9CA3AF" letter-spacing="1">DEPS</text>
+    <text x="380" y="214" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">reqwest · redis</text>
+    <text x="380" y="232" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">tokio · aura-types</text>
+    <text x="380" y="250" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">aura-db</text>
+  </g>
+
+  <g transform="translate(605,420)">
+    <rect width="555" height="280" rx="14" fill="white" stroke="#E5E7EB"/>
+    <rect width="4" height="280" rx="2" fill="#A78BFA"/>
+    <text x="24" y="36" font-size="11" font-weight="700" fill="#A78BFA" letter-spacing="1.5">HTTP LAYER · BINARY</text>
+    <text x="24" y="64" font-size="22" font-weight="700" fill="#0a0a0a" font-family="JetBrains Mono, monospace">aura-proxy</text>
+    <text x="24" y="86" font-size="13" fill="#374151">Axum binary, middleware, routes</text>
+    <text x="24" y="120" font-size="12" fill="#6B7280">The actual server. Route handlers, middleware stack,</text>
+    <text x="24" y="138" font-size="12" fill="#6B7280">application state, /metrics endpoint.</text>
+    <text x="24" y="156" font-size="12" fill="#6B7280">The only crate that produces a binary.</text>
+
+    <text x="24" y="194" font-size="11" font-weight="700" fill="#9CA3AF" letter-spacing="1">MODULES</text>
+    <text x="24" y="214" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">main.rs · routes/</text>
+
+    <text x="380" y="194" font-size="11" font-weight="700" fill="#9CA3AF" letter-spacing="1">DEPS</text>
+    <text x="380" y="214" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">axum · tower-http</text>
+    <text x="380" y="232" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">aura-types · aura-core</text>
+    <text x="380" y="250" font-size="12" fill="#374151" font-family="JetBrains Mono, monospace">aura-db</text>
+  </g>
+
+  <!-- Footer stack chips -->
+  <g transform="translate(40,724)" font-size="11">
+    <text fill="#6B7280" font-weight="700" letter-spacing="1">STACK</text>
+    <g transform="translate(56,-12)">
+      <rect width="80" height="20" rx="10" fill="#EDE9FE"/><text x="40" y="14" text-anchor="middle" fill="#7C3AED" font-weight="700">Axum 0.8</text>
+    </g>
+    <g transform="translate(146,-12)">
+      <rect width="60" height="20" rx="10" fill="#EDE9FE"/><text x="30" y="14" text-anchor="middle" fill="#7C3AED" font-weight="700">Tokio</text>
+    </g>
+    <g transform="translate(216,-12)">
+      <rect width="60" height="20" rx="10" fill="#EDE9FE"/><text x="30" y="14" text-anchor="middle" fill="#7C3AED" font-weight="700">SQLx</text>
+    </g>
+    <g transform="translate(286,-12)">
+      <rect width="60" height="20" rx="10" fill="#EDE9FE"/><text x="30" y="14" text-anchor="middle" fill="#7C3AED" font-weight="700">Redis</text>
+    </g>
+    <g transform="translate(356,-12)">
+      <rect width="76" height="20" rx="10" fill="#EDE9FE"/><text x="38" y="14" text-anchor="middle" fill="#7C3AED" font-weight="700">Reqwest</text>
+    </g>
+  </g>
+</svg>

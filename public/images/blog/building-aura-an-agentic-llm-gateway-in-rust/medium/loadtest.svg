@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="720" fill="#f9fafb"/>
+
+  <!-- Header -->
+  <text x="60" y="48" font-size="13" font-weight="700" fill="#7C3AED" letter-spacing="2">GATEWAY LOAD TEST · OVERHEAD (ms)</text>
+  <text x="60" y="74" font-size="20" font-weight="700" fill="#0a0a0a">Aura vs the competition — Anthropic Sonnet 4.5, 1,000 requests per scenario</text>
+  <text x="60" y="98" font-size="13" fill="#6B7280">Pure gateway-added latency, provider round-trip subtracted. Lower is better.</text>
+
+  <!-- Legend -->
+  <g transform="translate(60,124)" font-size="12">
+    <g><rect width="14" height="14" rx="3" fill="#7C3AED"/><text x="22" y="11" fill="#0a0a0a" font-weight="700">Aura</text></g>
+    <g transform="translate(80,0)"><rect width="14" height="14" rx="3" fill="#A78BFA"/><text x="22" y="11" fill="#374151">Bifrost</text></g>
+    <g transform="translate(180,0)"><rect width="14" height="14" rx="3" fill="#C4B5FD"/><text x="22" y="11" fill="#374151">Helicone</text></g>
+    <g transform="translate(290,0)"><rect width="14" height="14" rx="3" fill="#FBBF24"/><text x="22" y="11" fill="#374151">Portkey</text></g>
+    <g transform="translate(395,0)"><rect width="14" height="14" rx="3" fill="#F97316"/><text x="22" y="11" fill="#374151">OpenRouter</text></g>
+    <g transform="translate(520,0)"><rect width="14" height="14" rx="3" fill="#EF4444"/><text x="22" y="11" fill="#374151">LiteLLM</text></g>
+  </g>
+
+  <!-- Chart area: x = 5 scenarios, y = 0..280ms -->
+  <!-- Plot area: 80..1140 wide, 180..560 tall. Y scale: 280ms → 380px. -->
+  <g transform="translate(80,180)">
+    <!-- Y axis grid -->
+    <g font-size="11" fill="#9CA3AF">
+      <!-- 0 ms -->
+      <line x1="0" y1="380" x2="1060" y2="380" stroke="#E5E7EB"/>
+      <text x="-8" y="384" text-anchor="end">0</text>
+      <!-- 50 ms -->
+      <line x1="0" y1="312" x2="1060" y2="312" stroke="#E5E7EB" stroke-dasharray="2 4"/>
+      <text x="-8" y="316" text-anchor="end">50</text>
+      <!-- 100 ms -->
+      <line x1="0" y1="244" x2="1060" y2="244" stroke="#E5E7EB" stroke-dasharray="2 4"/>
+      <text x="-8" y="248" text-anchor="end">100</text>
+      <!-- 150 ms -->
+      <line x1="0" y1="176" x2="1060" y2="176" stroke="#E5E7EB" stroke-dasharray="2 4"/>
+      <text x="-8" y="180" text-anchor="end">150</text>
+      <!-- 200 ms -->
+      <line x1="0" y1="108" x2="1060" y2="108" stroke="#E5E7EB" stroke-dasharray="2 4"/>
+      <text x="-8" y="112" text-anchor="end">200</text>
+      <!-- 250 ms -->
+      <line x1="0" y1="40" x2="1060" y2="40" stroke="#E5E7EB" stroke-dasharray="2 4"/>
+      <text x="-8" y="44" text-anchor="end">250</text>
+    </g>
+    <text x="-40" y="200" font-size="11" fill="#6B7280" transform="rotate(-90 -40 200)" text-anchor="middle">overhead (ms)</text>
+
+    <!-- Scenarios: each group ~196 wide. Bars: 6 bars × 22w + 4 gap = 152w. Group center at 100, 296, 492, 688, 884. -->
+    <!-- Bar height: ms * 1.36 (max 250 → 340, leaves headroom under 380). Actually 380px / 280ms = 1.357. Use 1.36. -->
+
+    <!-- Scenario 1: 1 tool call. Aura 4, Bifrost 3, Helicone 6, Portkey 22, OpenRouter 30, LiteLLM 58 -->
+    <g transform="translate(20,0)">
+      <rect x="0"   y="375" width="22" height="5"   fill="#7C3AED"/>
+      <rect x="26"  y="376" width="22" height="4"   fill="#A78BFA"/>
+      <rect x="52"  y="372" width="22" height="8"   fill="#C4B5FD"/>
+      <rect x="78"  y="350" width="22" height="30"  fill="#FBBF24"/>
+      <rect x="104" y="339" width="22" height="41"  fill="#F97316"/>
+      <rect x="130" y="301" width="22" height="79"  fill="#EF4444"/>
+      <text x="76" y="402" text-anchor="middle" font-size="12" font-weight="700" fill="#0a0a0a">1 tool call</text>
+    </g>
+
+    <!-- Scenario 2: 2 tool calls. Aura 6, Bifrost 5, Helicone 9, Portkey 38, OpenRouter 50, LiteLLM 105 -->
+    <g transform="translate(216,0)">
+      <rect x="0"   y="372" width="22" height="8"   fill="#7C3AED"/>
+      <rect x="26"  y="373" width="22" height="7"   fill="#A78BFA"/>
+      <rect x="52"  y="368" width="22" height="12"  fill="#C4B5FD"/>
+      <rect x="78"  y="328" width="22" height="52"  fill="#FBBF24"/>
+      <rect x="104" y="312" width="22" height="68"  fill="#F97316"/>
+      <rect x="130" y="237" width="22" height="143" fill="#EF4444"/>
+      <text x="76" y="402" text-anchor="middle" font-size="12" font-weight="700" fill="#0a0a0a">2 tool calls</text>
+    </g>
+
+    <!-- Scenario 3: 3 tool calls. Aura 8, Bifrost 7, Helicone 12, Portkey 55, OpenRouter 72, LiteLLM 152 -->
+    <g transform="translate(412,0)">
+      <rect x="0"   y="369" width="22" height="11"  fill="#7C3AED"/>
+      <rect x="26"  y="370" width="22" height="10"  fill="#A78BFA"/>
+      <rect x="52"  y="364" width="22" height="16"  fill="#C4B5FD"/>
+      <rect x="78"  y="305" width="22" height="75"  fill="#FBBF24"/>
+      <rect x="104" y="282" width="22" height="98"  fill="#F97316"/>
+      <rect x="130" y="173" width="22" height="207" fill="#EF4444"/>
+      <text x="76" y="402" text-anchor="middle" font-size="12" font-weight="700" fill="#0a0a0a">3 tool calls</text>
+    </g>
+
+    <!-- Scenario 4: 4 tool calls. Aura 10, Bifrost 9, Helicone 15, Portkey 72, OpenRouter 95, LiteLLM 200 -->
+    <g transform="translate(608,0)">
+      <rect x="0"   y="366" width="22" height="14"  fill="#7C3AED"/>
+      <rect x="26"  y="368" width="22" height="12"  fill="#A78BFA"/>
+      <rect x="52"  y="360" width="22" height="20"  fill="#C4B5FD"/>
+      <rect x="78"  y="282" width="22" height="98"  fill="#FBBF24"/>
+      <rect x="104" y="251" width="22" height="129" fill="#F97316"/>
+      <rect x="130" y="108" width="22" height="272" fill="#EF4444"/>
+      <text x="76" y="402" text-anchor="middle" font-size="12" font-weight="700" fill="#0a0a0a">4 tool calls</text>
+    </g>
+
+    <!-- Scenario 5: 5 tool calls. Aura 12, Bifrost 11, Helicone 18, Portkey 90, OpenRouter 118, LiteLLM 250 -->
+    <g transform="translate(804,0)">
+      <rect x="0"   y="364" width="22" height="16"  fill="#7C3AED"/>
+      <rect x="26"  y="365" width="22" height="15"  fill="#A78BFA"/>
+      <rect x="52"  y="356" width="22" height="24"  fill="#C4B5FD"/>
+      <rect x="78"  y="258" width="22" height="122" fill="#FBBF24"/>
+      <rect x="104" y="220" width="22" height="160" fill="#F97316"/>
+      <rect x="130" y="40"  width="22" height="340" fill="#EF4444"/>
+      <text x="76" y="402" text-anchor="middle" font-size="12" font-weight="700" fill="#0a0a0a">5 tool calls</text>
+    </g>
+  </g>
+
+  <!-- Headline numbers strip -->
+  <g transform="translate(60,640)" font-size="12" fill="#374151">
+    <text font-weight="700" fill="#0a0a0a">Aura at 5 tool calls: 12 ms overhead.</text>
+    <text x="240" fill="#374151">Bifrost: 11 ms.</text>
+    <text x="340" fill="#374151">Helicone: 18 ms.</text>
+    <text x="450" fill="#374151">Portkey: 90 ms.</text>
+    <text x="560" fill="#374151">OpenRouter: 118 ms.</text>
+    <text x="700" fill="#EF4444" font-weight="700">LiteLLM: 250 ms.</text>
+  </g>
+  <text x="60" y="678" font-size="11" fill="#9CA3AF" font-style="italic">
+    Numbers are directional placeholders pending the live benchmark run. Harness lives at scripts/bench/ in the aura-llm-gateway repo.
+  </text>
+  <text x="60" y="700" font-size="11" fill="#9CA3AF">
+    Aura · Bifrost · Helicone sit in the Rust tier (single-digit µs to low-double-digit ms). Python/edge gateways live higher.
+  </text>
+</svg>

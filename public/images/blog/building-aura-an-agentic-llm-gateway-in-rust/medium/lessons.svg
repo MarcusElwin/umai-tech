@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#f9fafb"/>
+
+  <text x="40" y="44" font-size="13" font-weight="700" fill="#7C3AED" letter-spacing="2">WHAT I'D TELL PAST-ME</text>
+  <text x="40" y="76" font-size="24" font-weight="700" fill="#0a0a0a">Six things I learned the hard way</text>
+  <text x="40" y="100" font-size="13" fill="#6B7280">Building infrastructure that sits in front of every LLM call your product makes — lessons that would have saved weeks.</text>
+
+  <!-- 3 columns × 2 rows. Card 360w × 280h. -->
+  <!-- Row 1 -->
+  <g transform="translate(40,140)">
+    <rect width="360" height="280" rx="14" fill="white" stroke="#E5E7EB"/>
+    <text x="20" y="64" font-size="48" font-weight="700" fill="#7C3AED" font-family="JetBrains Mono, monospace">#1</text>
+    <text x="20" y="108" font-size="16" font-weight="700" fill="#0a0a0a">Pick languages by latency</text>
+    <text x="20" y="128" font-size="16" font-weight="700" fill="#0a0a0a">budget, not hype</text>
+    <text x="20" y="166" font-size="13" fill="#374151">If your overhead budget is under 10 ms,</text>
+    <text x="20" y="184" font-size="13" fill="#374151">Rust earns its place. Anywhere else, ship in</text>
+    <text x="20" y="202" font-size="13" fill="#374151">what your team already knows.</text>
+    <text x="20" y="240" font-size="13" fill="#7C3AED" font-style="italic" font-weight="700">Rust is not a personality.</text>
+  </g>
+
+  <g transform="translate(420,140)">
+    <rect width="360" height="280" rx="14" fill="white" stroke="#E5E7EB"/>
+    <text x="20" y="64" font-size="48" font-weight="700" fill="#7C3AED" font-family="JetBrains Mono, monospace">#2</text>
+    <text x="20" y="108" font-size="16" font-weight="700" fill="#0a0a0a">Observability first,</text>
+    <text x="20" y="128" font-size="16" font-weight="700" fill="#0a0a0a">features second</text>
+    <text x="20" y="166" font-size="13" fill="#374151">OpenTelemetry from day one.</text>
+    <text x="20" y="184" font-size="13" fill="#374151">You can't fix what you can't see,</text>
+    <text x="20" y="202" font-size="13" fill="#374151">and an LLM gateway is the worst</text>
+    <text x="20" y="220" font-size="13" fill="#374151">place to be flying blind.</text>
+  </g>
+
+  <g transform="translate(800,140)">
+    <rect width="360" height="280" rx="14" fill="white" stroke="#E5E7EB"/>
+    <text x="20" y="64" font-size="48" font-weight="700" fill="#7C3AED" font-family="JetBrains Mono, monospace">#3</text>
+    <text x="20" y="108" font-size="16" font-weight="700" fill="#0a0a0a">Typed provider schemas</text>
+    <text x="20" y="128" font-size="16" font-weight="700" fill="#0a0a0a">save you at 3am</text>
+    <text x="20" y="166" font-size="13" fill="#374151">LLM APIs drift. Strong types catch</text>
+    <text x="20" y="184" font-size="13" fill="#374151">the drift before users do.</text>
+    <text x="20" y="222" font-size="13" fill="#7C3AED" font-style="italic" font-weight="700">This alone justifies a typed</text>
+    <text x="20" y="240" font-size="13" fill="#7C3AED" font-style="italic" font-weight="700">language for this layer.</text>
+  </g>
+
+  <!-- Row 2 -->
+  <g transform="translate(40,440)">
+    <rect width="360" height="280" rx="14" fill="white" stroke="#E5E7EB"/>
+    <text x="20" y="64" font-size="48" font-weight="700" fill="#7C3AED" font-family="JetBrains Mono, monospace">#4</text>
+    <text x="20" y="108" font-size="16" font-weight="700" fill="#0a0a0a">Build fallback chains</text>
+    <text x="20" y="128" font-size="16" font-weight="700" fill="#0a0a0a">before you need them</text>
+    <text x="20" y="166" font-size="13" fill="#374151">Every provider goes down.</text>
+    <text x="20" y="184" font-size="13" fill="#374151">Retry, switch, degrade.</text>
+    <text x="20" y="222" font-size="13" fill="#374151">Table stakes — but most teams</text>
+    <text x="20" y="240" font-size="13" fill="#374151">add it the day after their first outage.</text>
+  </g>
+
+  <g transform="translate(420,440)">
+    <rect width="360" height="280" rx="14" fill="#EDE9FE"/>
+    <text x="20" y="64" font-size="48" font-weight="700" fill="#7C3AED" font-family="JetBrains Mono, monospace">#5</text>
+    <text x="20" y="108" font-size="16" font-weight="700" fill="#0a0a0a">Cost tracking is a</text>
+    <text x="20" y="128" font-size="16" font-weight="700" fill="#0a0a0a">product feature</text>
+    <text x="20" y="166" font-size="13" fill="#374151">Not a nice-to-have. Surface it to users</text>
+    <text x="20" y="184" font-size="13" fill="#374151">and PMs from the start.</text>
+    <text x="20" y="222" font-size="13" fill="#7C3AED" font-weight="700">Cheapest time to add it is at the</text>
+    <text x="20" y="240" font-size="13" fill="#7C3AED" font-weight="700">schema level on day one.</text>
+  </g>
+
+  <g transform="translate(800,440)">
+    <rect width="360" height="280" rx="14" fill="white" stroke="#E5E7EB"/>
+    <text x="20" y="64" font-size="48" font-weight="700" fill="#7C3AED" font-family="JetBrains Mono, monospace">#6</text>
+    <text x="20" y="108" font-size="16" font-weight="700" fill="#0a0a0a">Vibe code prototypes.</text>
+    <text x="20" y="128" font-size="16" font-weight="700" fill="#0a0a0a">Vibe engineer production.</text>
+    <text x="20" y="166" font-size="13" fill="#374151">Different modes. Different rigor.</text>
+    <text x="20" y="184" font-size="13" fill="#374151">Don't confuse them — and don't apologize</text>
+    <text x="20" y="202" font-size="13" fill="#374151">for using AI to do either.</text>
+    <text x="20" y="240" font-size="13" fill="#7C3AED" font-style="italic" font-weight="700">The discipline changes, not the tools.</text>
+  </g>
+</svg>

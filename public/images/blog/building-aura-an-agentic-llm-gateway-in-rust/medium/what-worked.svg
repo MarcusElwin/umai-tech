@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 880" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="880" fill="#f9fafb"/>
+
+  <text x="40" y="44" font-size="13" font-weight="700" fill="#7C3AED" letter-spacing="2">VIBE ENGINEERING · RUST · CLAUDE CODE</text>
+  <text x="40" y="76" font-size="24" font-weight="700" fill="#0a0a0a" text-anchor="start">Rust, without being a Rust dev</text>
+
+  <!-- Two columns: worked (left, purple) + hurt (right, gray) -->
+  <!-- Column: 560w, starting x = 40 and 600 -->
+
+  <!-- WORKED -->
+  <g transform="translate(40,116)">
+    <rect width="560" height="700" rx="16" fill="#EDE9FE" opacity="0.4"/>
+    <rect width="560" height="700" rx="16" fill="none" stroke="#A78BFA"/>
+    <text x="24" y="42" font-size="13" font-weight="700" fill="#7C3AED" letter-spacing="2">WHAT WORKED</text>
+    <line x1="160" y1="38" x2="536" y2="38" stroke="#A78BFA" stroke-opacity="0.5"/>
+
+    <!-- Item 1 -->
+    <g transform="translate(24,72)">
+      <circle cx="12" cy="12" r="12" fill="#7C3AED"/>
+      <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="white">+</text>
+      <text x="36" y="14" font-size="14" font-weight="700" fill="#0a0a0a">Compiler errors are a teacher, not a wall.</text>
+      <text x="36" y="34" font-size="12" fill="#374151">With Claude Code reading the errors in context,</text>
+      <text x="36" y="50" font-size="12" fill="#374151">the borrow checker became a patient tutor.</text>
+    </g>
+
+    <!-- Item 2 -->
+    <g transform="translate(24,180)">
+      <circle cx="12" cy="12" r="12" fill="#7C3AED"/>
+      <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="white">+</text>
+      <text x="36" y="14" font-size="14" font-weight="700" fill="#0a0a0a">Types catch provider schema drift early.</text>
+      <text x="36" y="34" font-size="12" fill="#374151">LLM APIs drift. Strong types in</text>
+      <text x="222" y="34" font-size="12" font-family="JetBrains Mono, monospace" fill="#7C3AED">aura-types</text>
+      <text x="36" y="50" font-size="12" fill="#374151">caught two real schema changes before users.</text>
+    </g>
+
+    <!-- Item 3 -->
+    <g transform="translate(24,280)">
+      <circle cx="12" cy="12" r="12" fill="#7C3AED"/>
+      <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="white">+</text>
+      <text x="36" y="14" font-size="14" font-weight="700" fill="#0a0a0a">Single static binary, no runtime deps.</text>
+      <text x="36" y="34" font-size="12" font-family="JetBrains Mono, monospace" fill="#0a0a0a">cargo build --release</text>
+      <text x="208" y="34" font-size="12" fill="#374151">produces one file.</text>
+      <text x="36" y="50" font-size="12" fill="#374151">No virtualenv, no node_modules.</text>
+    </g>
+
+    <!-- Item 4 -->
+    <g transform="translate(24,380)">
+      <circle cx="12" cy="12" r="12" fill="#7C3AED"/>
+      <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="white">+</text>
+      <text x="36" y="14" font-size="14" font-weight="700" fill="#0a0a0a">Tokio handles SSE streaming cleanly.</text>
+      <text x="36" y="34" font-size="12" fill="#374151">Server-sent events are awkward in many runtimes.</text>
+      <text x="36" y="50" font-size="12" fill="#374151">In Tokio they're idiomatic.</text>
+    </g>
+
+    <!-- Item 5 -->
+    <g transform="translate(24,480)">
+      <circle cx="12" cy="12" r="12" fill="#7C3AED"/>
+      <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="white">+</text>
+      <text x="36" y="14" font-size="14" font-weight="700" fill="#0a0a0a">Claude Code is fluent in idiomatic Rust.</text>
+      <text x="36" y="34" font-size="12" fill="#374151">Not just compilable Rust.</text>
+      <text x="36" y="50" font-size="12" font-family="JetBrains Mono, monospace" fill="#0a0a0a">Arc&lt;T&gt; vs Arc&lt;Mutex&lt;T&gt;&gt;, tokio::spawn,</text>
+      <text x="36" y="68" font-size="12" fill="#374151">the right error-type idiom per crate.</text>
+    </g>
+
+    <!-- Item 6 -->
+    <g transform="translate(24,600)">
+      <circle cx="12" cy="12" r="12" fill="#7C3AED"/>
+      <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="white">+</text>
+      <text x="36" y="14" font-size="14" font-weight="700" fill="#0a0a0a">Refactors feel safe.</text>
+      <text x="36" y="34" font-size="12" fill="#374151">When the compiler signs off, you can ship it.</text>
+      <text x="36" y="50" font-size="12" fill="#374151">I'd never had that confidence in Python.</text>
+    </g>
+  </g>
+
+  <!-- HURT -->
+  <g transform="translate(600,116)">
+    <rect width="560" height="700" rx="16" fill="white"/>
+    <rect width="560" height="700" rx="16" fill="none" stroke="#E5E7EB"/>
+    <text x="24" y="42" font-size="13" font-weight="700" fill="#6B7280" letter-spacing="2">WHAT HURT</text>
+    <line x1="140" y1="38" x2="536" y2="38" stroke="#E5E7EB"/>
+
+    <g transform="translate(24,72)">
+      <circle cx="12" cy="12" r="12" fill="#9CA3AF"/>
+      <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="white">−</text>
+      <text x="36" y="14" font-size="14" font-weight="700" fill="#0a0a0a">Borrow checker + async = pain spikes.</text>
+      <text x="36" y="34" font-size="12" fill="#374151">Lifetimes meeting</text>
+      <text x="156" y="34" font-size="12" font-family="JetBrains Mono, monospace" fill="#0a0a0a">async</text>
+      <text x="194" y="34" font-size="12" fill="#374151">blocks is where Rust still hurts.</text>
+      <text x="36" y="50" font-size="12" fill="#374151">Claude Code helped, but we both bounced for hours.</text>
+    </g>
+
+    <g transform="translate(24,180)">
+      <circle cx="12" cy="12" r="12" fill="#9CA3AF"/>
+      <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="white">−</text>
+      <text x="36" y="14" font-size="14" font-weight="700" fill="#0a0a0a">Lifetimes took weeks to internalize.</text>
+      <text x="36" y="34" font-size="12" fill="#374151">The book teaches you the syntax.</text>
+      <text x="36" y="50" font-size="12" fill="#374151">Shipping production code teaches you what they mean.</text>
+    </g>
+
+    <g transform="translate(24,280)">
+      <circle cx="12" cy="12" r="12" fill="#9CA3AF"/>
+      <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="white">−</text>
+      <text x="36" y="14" font-size="14" font-weight="700" fill="#0a0a0a">The crate ecosystem is thinner for AI work.</text>
+      <text x="36" y="34" font-size="12" fill="#374151">Python has every LLM library a week after a paper drops.</text>
+      <text x="36" y="50" font-size="12" fill="#374151">Rust has some of them, eventually.</text>
+    </g>
+
+    <g transform="translate(24,380)">
+      <circle cx="12" cy="12" r="12" fill="#9CA3AF"/>
+      <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="white">−</text>
+      <text x="36" y="14" font-size="14" font-weight="700" fill="#0a0a0a">No </text>
+      <text x="68" y="14" font-size="14" font-family="JetBrains Mono, monospace" font-weight="700" fill="#0a0a0a">pip install</text>
+      <text x="156" y="14" font-size="14" font-weight="700" fill="#0a0a0a"> shortcuts.</text>
+      <text x="36" y="34" font-size="12" fill="#374151">Adding a Rust dep is a real decision —</text>
+      <text x="36" y="50" font-size="12" fill="#374151">features, version pins, compile time.</text>
+    </g>
+
+    <g transform="translate(24,480)">
+      <circle cx="12" cy="12" r="12" fill="#9CA3AF"/>
+      <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="white">−</text>
+      <text x="36" y="14" font-size="14" font-weight="700" fill="#0a0a0a">Compile times break flow state.</text>
+      <text x="36" y="34" font-size="12" fill="#374151">A cold incremental build on this workspace</text>
+      <text x="36" y="50" font-size="12" fill="#374151">hits 30+ seconds. You learn to batch.</text>
+    </g>
+
+    <g transform="translate(24,600)">
+      <circle cx="12" cy="12" r="12" fill="#9CA3AF"/>
+      <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="white">−</text>
+      <text x="36" y="14" font-size="14" font-weight="700" fill="#0a0a0a">Debugging async traits is a trip.</text>
+      <text x="36" y="34" font-size="12" fill="#374151">Errors from</text>
+      <text x="116" y="34" font-size="12" font-family="JetBrains Mono, monospace" fill="#0a0a0a">async_trait</text>
+      <text x="200" y="34" font-size="12" fill="#374151">macro expansions can be</text>
+      <text x="36" y="50" font-size="12" fill="#374151">40 lines of generics referencing types you didn't write.</text>
+    </g>
+  </g>
+
+  <!-- Punchline -->
+  <text x="600" y="852" text-anchor="middle" font-size="16" font-style="italic" fill="#7C3AED" font-weight="700">
+    Claude Code didn't replace Rust knowledge. It made Rust knowledge reachable.
+  </text>
+</svg>

@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 880" font-family="Inter, system-ui, sans-serif">
+  <defs>
+    <linearGradient id="purp" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9CA3AF"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="880" fill="#f9fafb"/>
+
+  <text x="60" y="48" font-size="13" font-weight="700" fill="#7C3AED" letter-spacing="2">AURA ARCHITECTURE</text>
+  <text x="60" y="72" font-size="14" fill="#6B7280">Clients → Gateway middleware + core → Providers, with optional Postgres / Redis / Prometheus</text>
+
+  <!-- Clients row -->
+  <text x="60" y="118" font-size="11" font-weight="700" fill="#6B7280" letter-spacing="1.5">CLIENTS</text>
+  <g transform="translate(60,130)">
+    <g>
+      <rect width="340" height="68" rx="12" fill="white" stroke="#E5E7EB"/>
+      <text x="170" y="32" text-anchor="middle" font-size="15" font-weight="700" fill="#0a0a0a">Chat UI</text>
+      <text x="170" y="52" text-anchor="middle" font-size="12" fill="#6B7280">user-facing apps · apps/chat</text>
+    </g>
+    <g transform="translate(360,0)">
+      <rect width="340" height="68" rx="12" fill="white" stroke="#E5E7EB"/>
+      <text x="170" y="32" text-anchor="middle" font-size="15" font-weight="700" fill="#0a0a0a">Agents</text>
+      <text x="170" y="52" text-anchor="middle" font-size="12" fill="#6B7280">tool-using workflows · agentic loops</text>
+    </g>
+    <g transform="translate(720,0)">
+      <rect width="340" height="68" rx="12" fill="white" stroke="#E5E7EB"/>
+      <text x="170" y="32" text-anchor="middle" font-size="15" font-weight="700" fill="#0a0a0a">Applications</text>
+      <text x="170" y="52" text-anchor="middle" font-size="12" fill="#6B7280">APIs · workers · CLIs · SDKs</text>
+    </g>
+  </g>
+
+  <!-- Arrows down -->
+  <line x1="230" y1="206" x2="230" y2="234" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="600" y1="206" x2="600" y2="234" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="970" y1="206" x2="970" y2="234" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Gateway block (middleware + core) -->
+  <g transform="translate(60,244)">
+    <rect width="900" height="296" rx="16" fill="url(#purp)" opacity="0.08"/>
+    <rect width="900" height="296" rx="16" fill="none" stroke="#7C3AED" stroke-opacity="0.35"/>
+    <text x="20" y="28" font-size="11" font-weight="700" fill="#7C3AED" letter-spacing="1.5">AURA GATEWAY</text>
+
+    <!-- Middleware row -->
+    <text x="20" y="58" font-size="11" font-weight="600" fill="#6B7280" letter-spacing="1.5">MIDDLEWARE</text>
+    <g transform="translate(20,72)">
+      <g>
+        <rect width="166" height="58" rx="10" fill="white" stroke="#E5E7EB"/>
+        <text x="83" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="#0a0a0a">Auth</text>
+        <text x="83" y="44" text-anchor="middle" font-size="11" fill="#6B7280">bearer + scopes</text>
+      </g>
+      <g transform="translate(174,0)">
+        <rect width="166" height="58" rx="10" fill="white" stroke="#E5E7EB"/>
+        <text x="83" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="#0a0a0a">Rate limiter</text>
+        <text x="83" y="44" text-anchor="middle" font-size="11" fill="#6B7280">Redis bucket</text>
+      </g>
+      <g transform="translate(348,0)">
+        <rect width="166" height="58" rx="10" fill="white" stroke="#E5E7EB"/>
+        <text x="83" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="#0a0a0a">Response cache</text>
+        <text x="83" y="44" text-anchor="middle" font-size="11" fill="#6B7280">SHA256 · TTL</text>
+      </g>
+      <g transform="translate(522,0)">
+        <rect width="166" height="58" rx="10" fill="white" stroke="#E5E7EB"/>
+        <text x="83" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="#0a0a0a">Compression</text>
+        <text x="83" y="44" text-anchor="middle" font-size="11" fill="#6B7280">TOON · AISP</text>
+      </g>
+      <g transform="translate(696,0)">
+        <rect width="166" height="58" rx="10" fill="white" stroke="#E5E7EB"/>
+        <text x="83" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="#0a0a0a">Logger</text>
+        <text x="83" y="44" text-anchor="middle" font-size="11" fill="#6B7280">async → Postgres</text>
+      </g>
+    </g>
+
+    <!-- Core row -->
+    <text x="20" y="172" font-size="11" font-weight="600" fill="#6B7280" letter-spacing="1.5">CORE</text>
+    <g transform="translate(20,186)">
+      <g>
+        <rect width="280" height="86" rx="12" fill="#7C3AED"/>
+        <text x="140" y="32" text-anchor="middle" font-size="14" font-weight="700" fill="white">Provider Registry</text>
+        <text x="140" y="52" text-anchor="middle" font-size="11" fill="#EDE9FE">model → provider</text>
+        <text x="140" y="70" text-anchor="middle" font-size="11" fill="#EDE9FE">trait adapters</text>
+      </g>
+      <g transform="translate(292,0)">
+        <rect width="280" height="86" rx="12" fill="#7C3AED"/>
+        <text x="140" y="32" text-anchor="middle" font-size="14" font-weight="700" fill="white">Cost Calculator</text>
+        <text x="140" y="52" text-anchor="middle" font-size="11" fill="#EDE9FE">per-model pricing</text>
+        <text x="140" y="70" text-anchor="middle" font-size="11" fill="#EDE9FE">input · output · cached · reasoning</text>
+      </g>
+      <g transform="translate(584,0)">
+        <rect width="276" height="86" rx="12" fill="#7C3AED"/>
+        <text x="138" y="32" text-anchor="middle" font-size="14" font-weight="700" fill="white">Response Enrichment</text>
+        <text x="138" y="52" text-anchor="middle" font-size="11" fill="#EDE9FE">cost_usd · latency_ms</text>
+        <text x="138" y="70" text-anchor="middle" font-size="11" fill="#EDE9FE">agentic{...}</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Storage column on the right -->
+  <text x="990" y="270" font-size="11" font-weight="700" fill="#6B7280" letter-spacing="1.5">STORAGE</text>
+  <g transform="translate(990,284)">
+    <g>
+      <rect width="170" height="80" rx="12" fill="white" stroke="#E5E7EB"/>
+      <text x="85" y="32" text-anchor="middle" font-size="14" font-weight="700" fill="#0a0a0a">PostgreSQL</text>
+      <text x="85" y="52" text-anchor="middle" font-size="11" fill="#6B7280">logs · orgs · keys</text>
+      <text x="85" y="68" text-anchor="middle" font-size="11" fill="#6B7280">users (optional)</text>
+    </g>
+    <g transform="translate(0,90)">
+      <rect width="170" height="80" rx="12" fill="white" stroke="#E5E7EB"/>
+      <text x="85" y="32" text-anchor="middle" font-size="14" font-weight="700" fill="#0a0a0a">Redis</text>
+      <text x="85" y="52" text-anchor="middle" font-size="11" fill="#6B7280">rate limits</text>
+      <text x="85" y="68" text-anchor="middle" font-size="11" fill="#6B7280">response cache</text>
+    </g>
+    <g transform="translate(0,180)">
+      <rect width="170" height="80" rx="12" fill="white" stroke="#E5E7EB"/>
+      <text x="85" y="32" text-anchor="middle" font-size="14" font-weight="700" fill="#0a0a0a">Prometheus</text>
+      <text x="85" y="52" text-anchor="middle" font-size="11" fill="#6B7280">/metrics</text>
+      <text x="85" y="68" text-anchor="middle" font-size="11" fill="#6B7280">endpoint</text>
+    </g>
+  </g>
+
+  <!-- Arrow from gateway to providers -->
+  <line x1="500" y1="544" x2="500" y2="582" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Providers row -->
+  <text x="60" y="610" font-size="11" font-weight="700" fill="#6B7280" letter-spacing="1.5">PROVIDERS</text>
+  <g transform="translate(60,624)" font-size="12">
+    <g><rect width="155" height="62" rx="10" fill="white" stroke="#E5E7EB"/><text x="77.5" y="28" text-anchor="middle" font-weight="700" fill="#0a0a0a">OpenAI</text><text x="77.5" y="48" text-anchor="middle" fill="#6B7280">GPT-5 · o-series</text></g>
+    <g transform="translate(163,0)"><rect width="155" height="62" rx="10" fill="white" stroke="#E5E7EB"/><text x="77.5" y="28" text-anchor="middle" font-weight="700" fill="#0a0a0a">Anthropic</text><text x="77.5" y="48" text-anchor="middle" fill="#6B7280">Claude 4.5 · 3.5</text></g>
+    <g transform="translate(326,0)"><rect width="155" height="62" rx="10" fill="white" stroke="#E5E7EB"/><text x="77.5" y="28" text-anchor="middle" font-weight="700" fill="#0a0a0a">Google</text><text x="77.5" y="48" text-anchor="middle" fill="#6B7280">Gemini 3 · 2.5</text></g>
+    <g transform="translate(489,0)"><rect width="155" height="62" rx="10" fill="white" stroke="#E5E7EB"/><text x="77.5" y="28" text-anchor="middle" font-weight="700" fill="#0a0a0a">Mistral</text><text x="77.5" y="48" text-anchor="middle" fill="#6B7280">OAI-compatible</text></g>
+    <g transform="translate(652,0)"><rect width="155" height="62" rx="10" fill="white" stroke="#E5E7EB"/><text x="77.5" y="28" text-anchor="middle" font-weight="700" fill="#0a0a0a">Ollama</text><text x="77.5" y="48" text-anchor="middle" fill="#6B7280">local models</text></g>
+    <g transform="translate(815,0)"><rect width="155" height="62" rx="10" fill="white" stroke="#E5E7EB"/><text x="77.5" y="28" text-anchor="middle" font-weight="700" fill="#0a0a0a">Bedrock</text><text x="77.5" y="48" text-anchor="middle" fill="#6B7280">AWS SigV4</text></g>
+    <g transform="translate(978,0)"><rect width="155" height="62" rx="10" fill="white" stroke="#E5E7EB"/><text x="77.5" y="28" text-anchor="middle" font-weight="700" fill="#0a0a0a">HuggingFace</text><text x="77.5" y="48" text-anchor="middle" fill="#6B7280">TGI endpoints</text></g>
+  </g>
+
+  <!-- Footer caption -->
+  <text x="60" y="752" font-size="13" fill="#374151">
+    <tspan font-weight="700" fill="#0a0a0a">One endpoint, every provider.</tspan>  POST /v1/responses → enriched with cost_usd, latency_ms, and an agentic{} block on the way back.
+  </text>
+  <text x="60" y="784" font-size="12" fill="#6B7280">Resolution happens from the model name. No YAML routing config. Provider registry owns it.</text>
+
+  <!-- Brand chip -->
+  <g transform="translate(60,832)">
+    <rect width="180" height="28" rx="14" fill="#7C3AED"/>
+    <text x="90" y="19" text-anchor="middle" font-size="12" font-weight="700" fill="white">aura-llm.dev</text>
+  </g>
+  <text x="1140" y="852" text-anchor="end" font-size="11" fill="#9CA3AF">Source: github.com/UmaiTech/aura-llm-gateway · v0.9</text>
+</svg>
