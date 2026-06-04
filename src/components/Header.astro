@@ -44,7 +44,7 @@ const navItems = [
       </div>
 
       <!-- Mobile menu button -->
-      <button id="mobile-menu-button" class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Open mobile menu" aria-expanded="false">
+      <button id="mobile-menu-button" class="md:hidden p-2.5 -mr-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Open mobile menu" aria-expanded="false">
         <svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
@@ -145,8 +145,6 @@ const navItems = [
   const mobileMenu = document.getElementById('mobile-menu');
   
   function openMobileMenu() {
-    console.log('Opening mobile menu...');
-    
     if (mobileMenu) {
       // Show menu with new CSS approach
       mobileMenu.classList.add('show');
@@ -216,11 +214,20 @@ const navItems = [
   .mobile-menu-content {
     display: flex;
     flex-direction: column;
+    /* Fallback for older browsers, then dynamic viewport height so the
+       menu is not clipped behind mobile browser chrome (URL/address bar). */
     height: 100vh;
+    height: 100dvh;
     width: 100vw;
+    width: 100dvw;
     background: inherit;
     position: relative;
-    overflow: hidden;
+    /* Allow the menu to scroll on very short screens instead of clipping. */
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* Respect notches / home indicators on modern phones. */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
   }
   
   /* Subtle background pattern */

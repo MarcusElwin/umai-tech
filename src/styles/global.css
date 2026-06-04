@@ -9,6 +9,15 @@
   
   body {
     @apply antialiased;
+    /* Prevent any stray full-bleed/overflowing element from causing
+       horizontal page scroll on mobile. `clip` (unlike `hidden`) does not
+       create a scroll container, so it keeps `position: sticky` working. */
+    overflow-x: clip;
+  }
+
+  /* Remove the 300ms tap delay and grey flash on touch devices */
+  a, button, [role="button"] {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
