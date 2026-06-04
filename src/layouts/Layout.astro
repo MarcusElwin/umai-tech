@@ -20,6 +20,19 @@ const { title, description = 'Umai Tech - AI, GenAI, ML Blog and Insights', noHe
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Apply theme before paint to avoid a flash of the wrong color scheme -->
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var isDark = stored
+            ? stored === 'dark'
+            : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.classList.toggle('dark', isDark);
+        } catch (e) {}
+      })();
+    </script>
     
     <!-- Favicon with cache busting -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2025" />

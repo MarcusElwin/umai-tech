@@ -152,6 +152,19 @@ const { Content, headings } = await entry.render();
   </article>
 </Layout>
 
+<script>
+  // Wrap any wide tables rendered from Markdown in a horizontally
+  // scrollable container so they don't blow out the layout on mobile.
+  document.querySelectorAll('.blog-content table').forEach((table) => {
+    const parent = table.parentElement;
+    if (!parent || parent.classList.contains('table-scroll')) return;
+    const wrapper = document.createElement('div');
+    wrapper.className = 'table-scroll';
+    parent.insertBefore(wrapper, table);
+    wrapper.appendChild(table);
+  });
+</script>
+
 <style>
   .blog-content {
     /* Headings */
@@ -318,6 +331,17 @@ const { Content, headings } = await entry.render();
   /* Improve table responsive design */
   .blog-content :global(table) {
     @apply text-sm;
+  }
+
+  /* Wrapper added by the script below so wide tables scroll horizontally
+     on mobile instead of overflowing the page. */
+  .blog-content :global(.table-scroll) {
+    @apply block w-full overflow-x-auto my-6;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .blog-content :global(.table-scroll) > :global(table) {
+    @apply my-0;
   }
   
   /* Add reading flow improvements */
