@@ -97,9 +97,18 @@ const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 4);
         toggleTOC();
       });
       
-      // Set initial state
-      (tocContent as HTMLElement).style.maxHeight = (tocContent as HTMLElement).scrollHeight + 'px';
-      (tocContent as HTMLElement).style.opacity = '1';
+      // Set initial state: collapsed on mobile (where the TOC stacks below
+      // the article), expanded on larger screens where it sits in the sidebar.
+      const startCollapsed = window.matchMedia('(max-width: 1023px)').matches;
+      if (startCollapsed) {
+        (tocContent as HTMLElement).style.maxHeight = '0';
+        (tocContent as HTMLElement).style.opacity = '0';
+        (tocChevron as HTMLElement).style.transform = 'rotate(-90deg)';
+        tocToggle.setAttribute('aria-expanded', 'false');
+      } else {
+        (tocContent as HTMLElement).style.maxHeight = (tocContent as HTMLElement).scrollHeight + 'px';
+        (tocContent as HTMLElement).style.opacity = '1';
+      }
     }
     
     // Smooth scrolling for TOC links
