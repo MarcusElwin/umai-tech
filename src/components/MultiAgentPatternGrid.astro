@@ -1,0 +1,109 @@
+---
+const patterns = [
+  {
+    mode: 'v1',
+    pattern: 'Orchestrated',
+    architecture: 'Central coordinator',
+    flow: 'plan → delegate → synthesize',
+    summary: 'A coordinator routes work to research, writer, and editor specialists.',
+  },
+  {
+    mode: 'v2',
+    pattern: 'Choreographed',
+    architecture: 'Peer message bus',
+    flow: 'round-robin negotiation',
+    summary: 'Backend, frontend, and design peers coordinate through shared messages.',
+  },
+  {
+    mode: 'v3',
+    pattern: 'Hierarchical',
+    architecture: 'Dynamic agent tree',
+    flow: 'lead → sub-agents → rollup',
+    summary: 'A lead spawns depth-capped sub-agents and synthesizes their results.',
+  },
+  {
+    mode: 'v4',
+    pattern: 'Evaluator–Optimizer',
+    architecture: 'Critique loop',
+    flow: 'draft → score → revise',
+    summary: 'A generator improves a draft until a critic accepts the quality bar.',
+  },
+  {
+    mode: 'v5',
+    pattern: 'Debate',
+    architecture: 'Adversarial panel',
+    flow: 'argue → rebut → judge',
+    summary: 'Opposing agents argue their case before a judge synthesizes the answer.',
+  },
+  {
+    mode: 'v6',
+    pattern: 'Blackboard',
+    architecture: 'Shared workspace',
+    flow: 'select agent → write board',
+    summary: 'A controller chooses which specialist updates the shared board next.',
+  },
+  {
+    mode: 'v7',
+    pattern: 'Market',
+    architecture: 'Auction board',
+    flow: 'post task → bid → award',
+    summary: 'Agents bid on work; the dispatcher awards tasks to the strongest fit.',
+  },
+  {
+    mode: 'v8',
+    pattern: 'Self-Consistency',
+    architecture: 'Parallel sampling',
+    flow: 'sample N → select/merge',
+    summary: 'Several attempts run in parallel and a judge selects or merges the best.',
+  },
+  {
+    mode: 'v9',
+    pattern: 'Swarm',
+    architecture: 'Shared scratchpad',
+    flow: 'many passes → convergence',
+    summary: 'Identical agents build on a shared scratchpad over capped rounds.',
+  },
+];
+---
+
+<section class="not-prose my-8 rounded-2xl border border-umai-gray-200 bg-gradient-to-br from-white via-umai-gray-50 to-umai-accent/5 p-5 shadow-xl shadow-umai-gray-900/5 dark:border-umai-gray-700 dark:from-umai-gray-900 dark:via-umai-gray-900 dark:to-umai-accent/10" aria-labelledby="mat-patterns-title">
+  <div class="mb-5 max-w-3xl">
+    <p class="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-umai-accent">multi-agents-team</p>
+    <h3 id="mat-patterns-title" class="mb-3 text-2xl font-bold tracking-tight text-umai-primary dark:text-umai-secondary sm:text-3xl">
+      Nine architecture pages, one event contract
+    </h3>
+    <p class="text-sm leading-7 text-umai-gray-600 dark:text-umai-gray-300">
+      Each card links to the live architecture view on the playground. The point is not that one
+      pattern wins; it is that the same task can move through different coordination shapes and still
+      stream back through the same UI.
+    </p>
+  </div>
+
+  <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    {patterns.map((item) => (
+      <a
+        href={`https://mat.umai-tech.com/architectures/${item.mode}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group relative flex min-h-[13rem] flex-col overflow-hidden rounded-xl border border-umai-gray-200 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-umai-accent/60 hover:shadow-xl hover:shadow-umai-accent/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-umai-accent focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-umai-gray-700 dark:bg-umai-gray-800/80 dark:hover:border-umai-accent/70 dark:focus-visible:ring-offset-umai-gray-900"
+        aria-label={`Open ${item.pattern} architecture on mat.umai-tech.com`}
+      >
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-umai-accent to-umai-accent-light opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+        <div class="mb-4 flex items-start justify-between gap-3">
+          <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-umai-primary text-xs font-black tracking-tight text-white dark:bg-umai-secondary dark:text-umai-primary">
+            {item.mode}
+          </span>
+          <span class="rounded-full border border-umai-accent/20 bg-umai-accent/10 px-2.5 py-1 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-umai-accent dark:border-umai-accent/30 dark:bg-umai-accent/15">
+            open ↗
+          </span>
+        </div>
+        <h4 class="text-lg font-bold tracking-tight text-umai-gray-900 dark:text-white">{item.pattern}</h4>
+        <p class="mt-1 text-sm font-semibold text-umai-accent">{item.architecture}</p>
+        <p class="mt-2 rounded-lg bg-umai-gray-50 px-3 py-2 font-mono text-[0.72rem] text-umai-gray-600 dark:bg-umai-gray-900/70 dark:text-umai-gray-300">
+          {item.flow}
+        </p>
+        <p class="mt-3 text-sm leading-6 text-umai-gray-600 dark:text-umai-gray-300">{item.summary}</p>
+      </a>
+    ))}
+  </div>
+</section>

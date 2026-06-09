@@ -1,0 +1,352 @@
+---
+const componentId = `iah-${Math.random().toString(36).slice(2, 9)}`;
+
+const nodes = [
+  {
+    id: 'browser',
+    label: 'Browser chat UI',
+    eyebrow: 'mat.umai-tech.com',
+    description:
+      'The public app owns the mode selector, provider settings, local chat history, live timeline, tree visualizations, and final rich summaries.',
+    responsibility: 'User-facing control plane',
+  },
+  {
+    id: 'route',
+    label: 'Next.js API route',
+    eyebrow: '/api/agents-v*',
+    description:
+      'Each pattern has a streaming route. The route validates the request, resolves credentials, chooses the backend, and opens the response stream.',
+    responsibility: 'Request boundary',
+  },
+  {
+    id: 'provider',
+    label: 'Provider scope',
+    eyebrow: 'AsyncLocalStorage',
+    description:
+      'Provider and API-key selection are request-scoped, so concurrent runs do not share mutable credential state.',
+    responsibility: 'Credential isolation',
+  },
+  {
+    id: 'runner',
+    label: 'Pattern runner',
+    eyebrow: 'v1–v9',
+    description:
+      'The selected runner implements the coordination pattern: orchestrated, choreographed, hierarchical, debate, blackboard, market, self-consistency, swarm, and more.',
+    responsibility: 'Turn loop',
+  },
+  {
+    id: 'bus',
+    label: 'Conversation bus',
+    eyebrow: 'per run',
+    description:
+      'A per-run message layer carries user messages, agent outputs, handoffs, and intermediate context. There is no shared global conversation state across requests.',
+    responsibility: 'Coordination memory',
+  },
+  {
+    id: 'tools',
+    label: 'Tools',
+    eyebrow: 'AI SDK + Zod',
+    description:
+      'Agents call typed tools such as web search or completion markers. In the original harness, policy is whatever the app code enforces inline.',
+    responsibility: 'Action surface',
+  },
+  {
+    id: 'events',
+    label: 'AgentEvent sink',
+    eyebrow: 'shared schema',
+    description:
+      'Every runner emits the same event vocabulary: workflow starts, agent steps, tool calls, handoffs, blackboard writes, bids, traces, samples, and completion.',
+    responsibility: 'Observable run log',
+  },
+  {
+    id: 'sse',
+    label: 'SSE stream',
+    eyebrow: 'back to UI',
+    description:
+      'The route forwards events as Server-Sent Events so the UI can render the run while it is still happening.',
+    responsibility: 'Live rendering',
+  },
+];
+
+const defaultNode = nodes[0];
+---
+
+<section
+  class="not-prose my-10 -mx-2 rounded-3xl border border-umai-gray-200 bg-white p-4 shadow-2xl shadow-umai-gray-900/10 dark:border-umai-gray-700 dark:bg-umai-gray-900/80 sm:-mx-4 sm:p-6 xl:-mx-10"
+  data-iah-id={componentId}
+  aria-labelledby={`${componentId}-title`}
+>
+  <div class="mb-6 flex flex-col gap-4 border-b border-umai-gray-200 pb-5 dark:border-umai-gray-700 lg:flex-row lg:items-end lg:justify-between">
+    <div class="max-w-3xl">
+      <p class="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-umai-accent">original harness architecture</p>
+      <h3 id={`${componentId}-title`} class="text-2xl font-bold tracking-tight text-umai-primary dark:text-umai-secondary sm:text-3xl">
+        The whole first harness lived inside one app
+      </h3>
+      <p class="mt-3 text-sm leading-7 text-umai-gray-600 dark:text-umai-gray-300">
+        Click a block to inspect the job it owned. This is intentionally larger than the static SVG:
+        the architecture is the point of the article, not a footnote.
+      </p>
+    </div>
+    <a
+      href="https://mat.umai-tech.com"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center justify-center rounded-full bg-umai-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-umai-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-umai-accent focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:bg-umai-secondary dark:text-umai-primary dark:hover:bg-white dark:focus-visible:ring-offset-umai-gray-900"
+    >
+      Open live app ↗
+    </a>
+  </div>
+
+  <div>
+    <div class="overflow-x-auto rounded-2xl border border-umai-gray-200 bg-gradient-to-br from-umai-gray-50 via-white to-umai-accent/5 p-4 dark:border-umai-gray-700 dark:from-umai-gray-900 dark:via-umai-gray-900 dark:to-umai-accent/10 sm:p-6">
+      <div class="min-w-[760px]">
+        <div class="grid grid-cols-[1fr_4rem_1fr_4rem_1fr_4rem_1fr] items-center gap-3">
+          <button type="button" class="iah-node iah-node--primary" data-iah-node="browser">
+            <span class="iah-node__eyebrow">mat.umai-tech.com</span>
+            <span class="iah-node__label">Browser chat UI</span>
+            <span class="iah-node__meta">mode · model · backend · timeline</span>
+          </button>
+          <div class="iah-arrow" aria-hidden="true">POST</div>
+          <button type="button" class="iah-node iah-node--dark" data-iah-node="route">
+            <span class="iah-node__eyebrow">/api/agents-v*</span>
+            <span class="iah-node__label">Next.js route</span>
+            <span class="iah-node__meta">validate · credentials · stream</span>
+          </button>
+          <div class="iah-arrow" aria-hidden="true">run</div>
+          <button type="button" class="iah-node" data-iah-node="runner">
+            <span class="iah-node__eyebrow">v1–v9</span>
+            <span class="iah-node__label">Pattern runner</span>
+            <span class="iah-node__meta">coordination loop</span>
+          </button>
+          <div class="iah-arrow" aria-hidden="true">emit</div>
+          <button type="button" class="iah-node" data-iah-node="events">
+            <span class="iah-node__eyebrow">AgentEvent</span>
+            <span class="iah-node__label">Event sink</span>
+            <span class="iah-node__meta">shared event schema</span>
+          </button>
+        </div>
+
+        <div class="my-5 grid grid-cols-[1fr_4rem_1fr_4rem_1fr_4rem_1fr] items-center gap-3" aria-hidden="true">
+          <div></div>
+          <div></div>
+          <div class="mx-auto h-10 w-px bg-umai-accent/40"></div>
+          <div></div>
+          <div class="mx-auto h-10 w-px bg-umai-accent/40"></div>
+          <div></div>
+          <div class="mx-auto h-10 w-px bg-umai-accent/40"></div>
+        </div>
+
+        <div class="grid grid-cols-[1fr_4rem_1fr_4rem_1fr_4rem_1fr] items-stretch gap-3">
+          <div class="rounded-2xl border border-dashed border-umai-gray-300 bg-white/70 p-4 text-center text-sm font-semibold text-umai-gray-500 dark:border-umai-gray-700 dark:bg-umai-gray-900/60 dark:text-umai-gray-400">
+            browser localStorage history
+          </div>
+          <div></div>
+          <button type="button" class="iah-node iah-node--compact" data-iah-node="provider">
+            <span class="iah-node__eyebrow">AsyncLocalStorage</span>
+            <span class="iah-node__label">Provider scope</span>
+            <span class="iah-node__meta">OpenAI · Anthropic · Mistral · Fireworks</span>
+          </button>
+          <div></div>
+          <div class="grid gap-3">
+            <button type="button" class="iah-node iah-node--compact" data-iah-node="bus">
+              <span class="iah-node__eyebrow">per run</span>
+              <span class="iah-node__label">Conversation bus</span>
+              <span class="iah-node__meta">messages · handoffs · context</span>
+            </button>
+            <button type="button" class="iah-node iah-node--compact" data-iah-node="tools">
+              <span class="iah-node__eyebrow">AI SDK + Zod</span>
+              <span class="iah-node__label">Tools</span>
+              <span class="iah-node__meta">web search · done · delegation</span>
+            </button>
+          </div>
+          <div></div>
+          <button type="button" class="iah-node iah-node--compact" data-iah-node="sse">
+            <span class="iah-node__eyebrow">Server-Sent Events</span>
+            <span class="iah-node__label">Live UI stream</span>
+            <span class="iah-node__meta">agent_step · tool_call · complete</span>
+          </button>
+        </div>
+
+        <div class="mt-6 rounded-2xl border border-umai-accent/20 bg-umai-accent/10 p-4 text-sm leading-6 text-umai-gray-700 dark:border-umai-accent/30 dark:bg-umai-accent/15 dark:text-umai-gray-200">
+          <strong class="text-umai-gray-900 dark:text-white">Why this works:</strong>
+          everything shares one process boundary, so iteration is fast and the source is easy to read.
+          <strong class="text-umai-gray-900 dark:text-white">Why it bends:</strong>
+          durability, policy, budget enforcement, and server-side state all become custom app code.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <dialog
+    class="iah-dialog w-[min(92vw,38rem)] rounded-2xl border border-umai-gray-200 bg-white p-0 text-left shadow-2xl shadow-umai-gray-900/30 backdrop:bg-umai-primary/60 dark:border-umai-gray-700 dark:bg-umai-gray-900"
+    aria-labelledby={`${componentId}-dialog-title`}
+    aria-describedby={`${componentId}-dialog-description`}
+  >
+    <div class="border-b border-umai-gray-200 bg-gradient-to-r from-umai-gray-50 to-white p-5 dark:border-umai-gray-700 dark:from-umai-gray-800 dark:to-umai-gray-900">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <p class="iah-detail-eyebrow mb-2 text-xs font-bold uppercase tracking-[0.18em] text-umai-accent">
+            {defaultNode.eyebrow}
+          </p>
+          <h4 id={`${componentId}-dialog-title`} class="iah-detail-title text-2xl font-bold tracking-tight text-umai-gray-900 dark:text-white">
+            {defaultNode.label}
+          </h4>
+        </div>
+        <button
+          type="button"
+          class="iah-dialog-close inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-umai-gray-200 bg-white text-umai-gray-500 transition-colors hover:border-umai-accent/50 hover:text-umai-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-umai-accent dark:border-umai-gray-700 dark:bg-umai-gray-800 dark:text-umai-gray-300"
+          aria-label="Close architecture detail"
+        >
+          ×
+        </button>
+      </div>
+    </div>
+
+    <div class="p-5">
+      <p id={`${componentId}-dialog-description`} class="iah-detail-desc text-sm leading-7 text-umai-gray-600 dark:text-umai-gray-300">
+        {defaultNode.description}
+      </p>
+      <div class="mt-5 rounded-xl border border-umai-gray-200 bg-umai-gray-50 p-4 dark:border-umai-gray-700 dark:bg-umai-gray-800">
+        <p class="text-xs font-bold uppercase tracking-[0.16em] text-umai-gray-400">Responsibility</p>
+        <p class="iah-detail-role mt-2 text-sm font-semibold text-umai-gray-800 dark:text-umai-gray-200">
+          {defaultNode.responsibility}
+        </p>
+      </div>
+    </div>
+  </dialog>
+</section>
+
+<script is:inline define:vars={{ componentId, nodes }}>
+  (function () {
+    const root = document.querySelector(`[data-iah-id="${componentId}"]`);
+    if (!root) return;
+
+    const nodesById = Object.fromEntries(nodes.map((node) => [node.id, node]));
+    const titleElement = root.querySelector('.iah-detail-title');
+    const eyebrowElement = root.querySelector('.iah-detail-eyebrow');
+    const descriptionElement = root.querySelector('.iah-detail-desc');
+    const roleElement = root.querySelector('.iah-detail-role');
+    const dialog = root.querySelector('.iah-dialog');
+    const closeButton = root.querySelector('.iah-dialog-close');
+
+    function clearActive() {
+      root.querySelectorAll('[data-iah-node]').forEach((button) => {
+        button.classList.remove('iah-node--active');
+      });
+    }
+
+    function setActive(nodeId) {
+      const node = nodesById[nodeId];
+      if (!node || !titleElement || !eyebrowElement || !descriptionElement || !roleElement) return;
+
+      root.querySelectorAll('[data-iah-node]').forEach((button) => {
+        button.classList.toggle('iah-node--active', button.getAttribute('data-iah-node') === nodeId);
+      });
+
+      titleElement.textContent = node.label;
+      eyebrowElement.textContent = node.eyebrow;
+      descriptionElement.textContent = node.description;
+      roleElement.textContent = node.responsibility;
+
+      if (dialog && typeof dialog.showModal === 'function' && !dialog.open) {
+        dialog.showModal();
+      }
+    }
+
+    root.querySelectorAll('[data-iah-node]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const nodeId = button.getAttribute('data-iah-node');
+        if (nodeId) setActive(nodeId);
+      });
+    });
+
+    if (closeButton && dialog) {
+      closeButton.addEventListener('click', () => dialog.close());
+    }
+
+    if (dialog) {
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+      dialog.addEventListener('close', clearActive);
+    }
+  })();
+</script>
+
+<style>
+  .iah-node {
+    @apply flex min-h-32 flex-col rounded-2xl border border-umai-gray-200 bg-white p-4 text-left shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-umai-accent/60 hover:shadow-xl hover:shadow-umai-accent/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-umai-accent focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:border-umai-gray-700 dark:bg-umai-gray-800 dark:focus-visible:ring-offset-umai-gray-900;
+  }
+
+  .iah-node--primary {
+    @apply border-umai-accent/30 bg-umai-accent/10 dark:bg-umai-accent/15;
+  }
+
+  .iah-node--dark {
+    @apply border-umai-gray-900 bg-umai-gray-900 text-white dark:border-umai-gray-600 dark:bg-umai-gray-900;
+  }
+
+  .iah-node--compact {
+    @apply min-h-28;
+  }
+
+  .iah-node--active {
+    @apply -translate-y-1 border-umai-accent shadow-xl shadow-umai-accent/20 ring-2 ring-umai-accent/40;
+  }
+
+  .iah-node__eyebrow {
+    @apply mb-2 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-umai-accent;
+  }
+
+  .iah-node--dark .iah-node__eyebrow {
+    @apply text-umai-accent-light;
+  }
+
+  .iah-node__label {
+    @apply text-base font-bold tracking-tight text-umai-gray-900 dark:text-white;
+  }
+
+  .iah-node--dark .iah-node__label {
+    @apply text-white;
+  }
+
+  .iah-node__meta {
+    @apply mt-2 text-xs leading-5 text-umai-gray-500 dark:text-umai-gray-400;
+  }
+
+  .iah-node--dark .iah-node__meta {
+    @apply text-umai-gray-300;
+  }
+
+  .iah-arrow {
+    @apply relative flex items-center justify-center font-mono text-[0.68rem] font-bold uppercase tracking-[0.12em] text-umai-accent;
+  }
+
+  .iah-arrow::before {
+    @apply absolute left-0 right-0 top-1/2 h-px bg-umai-accent/40 content-[''];
+  }
+
+  .iah-arrow::after {
+    @apply absolute right-0 top-1/2 h-2 w-2 -translate-y-1/2 rotate-45 border-r-2 border-t-2 border-umai-accent/60 content-[''];
+  }
+
+  .iah-arrow {
+    text-shadow: 0 0 12px white;
+  }
+
+  .iah-dialog::backdrop {
+    background: rgb(10 10 10 / 0.62);
+    backdrop-filter: blur(8px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .iah-node {
+      @apply transition-none;
+    }
+
+    .iah-node:hover,
+    .iah-node--active {
+      transform: none;
+    }
+  }
+</style>

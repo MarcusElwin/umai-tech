@@ -1,0 +1,128 @@
+<svg width="1400" height="760" viewBox="0 0 1400 760" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">The harness is the product: testing iii against a multi-agent app</title>
+  <desc id="desc">A diagram showing a hand-rolled AI SDK harness on the left connected to an iii engine and worker substrate on the right.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1400" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FAF7F0"/>
+      <stop offset="0.48" stop-color="#F3ECE0"/>
+      <stop offset="1" stop-color="#EAE2D4"/>
+    </linearGradient>
+    <linearGradient id="left" x1="118" y1="136" x2="614" y2="610" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F6F0E7"/>
+    </linearGradient>
+    <linearGradient id="right" x1="786" y1="136" x2="1282" y2="610" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1F2937"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+    <filter id="shadow" x="70" y="94" width="1260" height="570" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="18"/>
+      <feGaussianBlur stdDeviation="24"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.18 0 0 0 0 0.14 0 0 0 0 0.09 0 0 0 0.16 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+    </filter>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto" markerUnits="strokeWidth">
+      <path d="M2 2L12 7L2 12" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="760" fill="url(#bg)"/>
+  <circle cx="160" cy="108" r="170" fill="#F59E0B" opacity="0.12"/>
+  <circle cx="1220" cy="650" r="210" fill="#7C3AED" opacity="0.12"/>
+  <path d="M0 608C184 538 325 690 503 624C659 566 716 420 892 448C1058 474 1153 623 1400 520V760H0V608Z" fill="#FFFFFF" opacity="0.32"/>
+
+  <text x="700" y="72" text-anchor="middle" fill="#1C1917" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="44" font-weight="760" letter-spacing="-1.5">
+    The harness is the product.
+  </text>
+  <text x="700" y="112" text-anchor="middle" fill="#78716C" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20" font-weight="500">
+    Testing iii against my multi-agent app
+  </text>
+
+  <g filter="url(#shadow)">
+    <rect x="100" y="150" width="520" height="470" rx="34" fill="url(#left)" stroke="#E7DCCB" stroke-width="2"/>
+    <rect x="780" y="150" width="520" height="470" rx="34" fill="url(#right)" stroke="#334155" stroke-width="2"/>
+  </g>
+
+  <g>
+    <text x="150" y="205" fill="#1C1917" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="28" font-weight="740">AI SDK harness</text>
+    <text x="150" y="236" fill="#78716C" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="500">One Next.js app owns the run</text>
+
+    <rect x="150" y="282" width="420" height="70" rx="18" fill="#FFFFFF" stroke="#E7DCCB"/>
+    <text x="178" y="310" fill="#292524" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="720">/api/agents-v*</text>
+    <text x="178" y="332" fill="#78716C" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="13">Route validates request and streams SSE</text>
+
+    <rect x="150" y="372" width="196" height="74" rx="18" fill="#FFFBF5" stroke="#E7DCCB"/>
+    <text x="178" y="402" fill="#292524" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="720">Runners</text>
+    <text x="178" y="424" fill="#78716C" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="13">v1–v9 patterns</text>
+
+    <rect x="374" y="372" width="196" height="74" rx="18" fill="#FFFBF5" stroke="#E7DCCB"/>
+    <text x="402" y="402" fill="#292524" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="720">Message bus</text>
+    <text x="402" y="424" fill="#78716C" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="13">Per-run context</text>
+
+    <rect x="150" y="466" width="196" height="74" rx="18" fill="#FFFBF5" stroke="#E7DCCB"/>
+    <text x="178" y="496" fill="#292524" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="720">Tools</text>
+    <text x="178" y="518" fill="#78716C" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="13">Inline + Zod</text>
+
+    <rect x="374" y="466" width="196" height="74" rx="18" fill="#FFFBF5" stroke="#E7DCCB"/>
+    <text x="402" y="496" fill="#292524" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="720">Browser state</text>
+    <text x="402" y="518" fill="#78716C" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="13">localStorage history</text>
+
+    <path d="M360 352V372" stroke="#D6C7B2" stroke-width="2"/>
+    <path d="M248 446V466" stroke="#D6C7B2" stroke-width="2"/>
+    <path d="M472 446V466" stroke="#D6C7B2" stroke-width="2"/>
+  </g>
+
+  <g>
+    <text x="830" y="205" fill="#F8FAFC" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="28" font-weight="740">iii substrate</text>
+    <text x="830" y="236" fill="#CBD5E1" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="500">Engine plus swappable workers</text>
+
+    <rect x="830" y="278" width="420" height="78" rx="20" fill="#111827" stroke="#475569"/>
+    <text x="858" y="310" fill="#F8FAFC" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="720">iii engine</text>
+    <text x="858" y="334" fill="#CBD5E1" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="13">Functions · triggers · channels · streams</text>
+
+    <rect x="830" y="386" width="125" height="70" rx="18" fill="#1E293B" stroke="#475569"/>
+    <text x="858" y="417" fill="#F8FAFC" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="720">Policy</text>
+    <text x="858" y="438" fill="#CBD5E1" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="12">gate calls</text>
+
+    <rect x="977" y="386" width="125" height="70" rx="18" fill="#1E293B" stroke="#475569"/>
+    <text x="1005" y="417" fill="#F8FAFC" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="720">Budget</text>
+    <text x="1005" y="438" fill="#CBD5E1" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="12">cap spend</text>
+
+    <rect x="1125" y="386" width="125" height="70" rx="18" fill="#1E293B" stroke="#475569"/>
+    <text x="1153" y="417" fill="#F8FAFC" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="720">State</text>
+    <text x="1153" y="438" fill="#CBD5E1" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="12">sessions</text>
+
+    <rect x="830" y="480" width="125" height="70" rx="18" fill="#1E293B" stroke="#475569"/>
+    <text x="858" y="511" fill="#F8FAFC" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="720">Queue</text>
+    <text x="858" y="532" fill="#CBD5E1" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="12">durability</text>
+
+    <rect x="977" y="480" width="125" height="70" rx="18" fill="#1E293B" stroke="#475569"/>
+    <text x="1005" y="511" fill="#F8FAFC" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="720">Provider</text>
+    <text x="1005" y="532" fill="#CBD5E1" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="12">stream LLM</text>
+
+    <rect x="1125" y="480" width="125" height="70" rx="18" fill="#1E293B" stroke="#475569"/>
+    <text x="1153" y="511" fill="#F8FAFC" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="720">Traces</text>
+    <text x="1153" y="532" fill="#CBD5E1" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="12">OTel spans</text>
+
+    <path d="M1040 356V386" stroke="#64748B" stroke-width="2"/>
+    <path d="M1040 356C1040 371 893 371 893 386" stroke="#64748B" stroke-width="2"/>
+    <path d="M1040 356C1040 371 1188 371 1188 386" stroke="#64748B" stroke-width="2"/>
+    <path d="M1040 456V480" stroke="#64748B" stroke-width="2"/>
+    <path d="M893 456V480" stroke="#64748B" stroke-width="2"/>
+    <path d="M1188 456V480" stroke="#64748B" stroke-width="2"/>
+  </g>
+
+  <path d="M642 382C690 348 732 348 758 382" stroke="#7C3AED" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+  <text x="700" y="335" text-anchor="middle" fill="#6D28D9" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="760">move harness jobs</text>
+  <text x="700" y="498" text-anchor="middle" fill="#78716C" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="600">same UI · same events · different runtime</text>
+
+  <g>
+    <rect x="380" y="666" width="640" height="48" rx="24" fill="#FFFFFF" fill-opacity="0.72" stroke="#E7DCCB"/>
+    <circle cx="416" cy="690" r="7" fill="#F59E0B"/>
+    <text x="436" y="696" fill="#44403C" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="650">Start thin for learning. Move right when durability, policy, budget, and traces become real.</text>
+  </g>
+</svg>

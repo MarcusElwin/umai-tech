@@ -1,0 +1,97 @@
+---
+const improvements = [
+  {
+    label: '01',
+    title: 'A first-class run contract',
+    today: 'iii gives you workers, functions, triggers, state, streams, and channels.',
+    next: 'A standard agent-run envelope with run IDs, session IDs, event versions, terminal states, cancellation, and retry semantics.',
+    why: 'This would remove adapter glue where every app invents its own event translator.',
+  },
+  {
+    label: '02',
+    title: 'Browser-friendly event reads',
+    today: 'Channels and streams are strong worker-to-worker primitives.',
+    next: 'A documented HTTP/SSE or browser SDK path for reading queued run events without writing a proxy worker.',
+    why: 'My queue path had to expose `GET /events` from the worker so the Next.js app could poll safely.',
+  },
+  {
+    label: '03',
+    title: 'Worker lifecycle guardrails',
+    today: 'The engine tracks connected workers and removes functions when workers disconnect.',
+    next: 'Replace-on-register, singleton leases, or a `iii doctor` check for duplicate workers and stale registrations.',
+    why: 'Two MAT workers registering the same function can split runs and create random timeouts.',
+  },
+  {
+    label: '04',
+    title: 'Production HA recipes',
+    today: 'The docs cover Docker and reverse proxies for production deployment.',
+    next: 'Opinionated recipes for external state, stream, and queue backends on Fly.io, Kubernetes, and managed Redis/RabbitMQ.',
+    why: 'Until those layers are externalized, my Fly deployment should stay single-machine.',
+  },
+  {
+    label: '05',
+    title: 'Governance starter packs',
+    today: 'The harness model makes policy, budget, approval, credentials, and provider routing replaceable workers.',
+    next: 'Tested templates for OPA/Cedar policy, Slack approvals, workspace budgets, provider key vaulting, and audit logs.',
+    why: 'The primitives are there; teams still need safe defaults before agents touch internal systems.',
+  },
+  {
+    label: '06',
+    title: 'Replay and evals as primitives',
+    today: 'Tracing and logs make runs inspectable after the fact.',
+    next: 'A replay/eval worker that can rerun a turn against pinned inputs, compare traces, and catch harness regressions.',
+    why: 'Agent harness work needs regression tests for behavior, not just unit tests for functions.',
+  },
+];
+---
+
+<section class="not-prose my-8 overflow-hidden rounded-3xl border border-umai-gray-200 bg-white shadow-2xl shadow-umai-gray-900/10 dark:border-umai-gray-700 dark:bg-umai-gray-900/80" aria-labelledby="iii-improvements-title">
+  <div class="relative border-b border-umai-gray-200 bg-gradient-to-br from-umai-primary via-umai-gray-900 to-umai-accent p-6 text-white dark:border-umai-gray-700">
+    <div class="absolute inset-0 opacity-20" aria-hidden="true">
+      <div class="h-full w-full bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.35),transparent_28%),radial-gradient(circle_at_80%_0%,rgba(217,122,34,0.45),transparent_32%)]"></div>
+    </div>
+    <div class="relative max-w-3xl">
+      <div class="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-umai-secondary">iii next asks</div>
+      <h3 id="iii-improvements-title" class="text-2xl font-bold tracking-tight sm:text-3xl">
+        The primitives are strong; the defaults can get sharper
+      </h3>
+      <div class="mt-3 text-sm leading-7 text-umai-secondary/85">
+        These are not reasons to reject iii. They are the gaps I would productize first if the goal is
+        making agent harness adoption feel boring for real teams.
+      </div>
+    </div>
+  </div>
+
+  <div class="grid gap-4 p-5 sm:p-6 lg:grid-cols-2">
+    {improvements.map((item) => (
+      <article class="group relative overflow-hidden rounded-2xl border border-umai-gray-200 bg-umai-gray-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-umai-accent/50 hover:bg-white hover:shadow-xl hover:shadow-umai-accent/10 dark:border-umai-gray-700 dark:bg-umai-gray-800/70 dark:hover:bg-umai-gray-800">
+        <div class="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-umai-accent/10 transition-transform duration-300 group-hover:scale-125"></div>
+        <div class="relative">
+          <div class="mb-4 flex items-start justify-between gap-3">
+            <span class="font-mono text-3xl font-black tracking-tight text-umai-accent/35">
+              {item.label}
+            </span>
+            <span class="rounded-full border border-umai-accent/20 bg-umai-accent/10 px-2.5 py-1 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-umai-accent dark:border-umai-accent/30 dark:bg-umai-accent/15">
+              product gap
+            </span>
+          </div>
+          <h4 class="text-lg font-bold tracking-tight text-umai-gray-900 dark:text-white">{item.title}</h4>
+
+          <div class="mt-4 grid gap-3">
+            <div class="rounded-xl border border-umai-gray-200 bg-white p-3 dark:border-umai-gray-700 dark:bg-umai-gray-900">
+              <div class="text-[0.68rem] font-bold uppercase tracking-[0.14em] text-umai-gray-400">today</div>
+              <div class="mt-1 text-sm leading-6 text-umai-gray-700 dark:text-umai-gray-300">{item.today}</div>
+            </div>
+            <div class="rounded-xl border border-umai-accent/25 bg-umai-accent/10 p-3 dark:border-umai-accent/30 dark:bg-umai-accent/15">
+              <div class="text-[0.68rem] font-bold uppercase tracking-[0.14em] text-umai-accent">what I would want next</div>
+              <div class="mt-1 text-sm leading-6 text-umai-gray-800 dark:text-umai-gray-200">{item.next}</div>
+            </div>
+            <div class="text-sm leading-6 text-umai-gray-600 dark:text-umai-gray-300">
+              <span class="font-semibold text-umai-gray-900 dark:text-white">Why it matters:</span> {item.why}
+            </div>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
