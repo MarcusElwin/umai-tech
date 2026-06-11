@@ -14,6 +14,7 @@ import HarnessComparisonCards from '@components/HarnessComparisonCards.astro';
 import HarnessImprovementCards from '@components/HarnessImprovementCards.astro';
 import HarnessJobStack from '@components/HarnessJobStack.astro';
 import HarnessLandscapeGrid from '@components/HarnessLandscapeGrid.astro';
+import IiiPrimitivesGrid from '@components/IiiPrimitivesGrid.astro';
 import InAppHarnessArchitecture from '@components/InAppHarnessArchitecture.astro';
 import MultiAgentPatternGrid from '@components/MultiAgentPatternGrid.astro';
 
@@ -23,11 +24,11 @@ At the beginning, you think you're building an agent. You wire up a model, give 
 
 Who owns the turn loop? Where do tool calls get approved? What happens if the browser disconnects halfway through a run? Where does session state live? Can I cap spend? Can I see which agent burned the tokens? Can I swap a provider without rewriting half the code? Can I replay the run after something breaks?
 
-That surrounding runtime is the **agentic harness**.
+That surrounding runtime is the **agentic harness** — the layer I've argued is [the moat, not the model](/blog/the-moat-is-the-harness-not-the-model).
 
 Frameworks and libraries all answer the harness question differently. Some give you a thin loop and say "bring your own production system." Some give you a graph abstraction. Some give you a full platform. I wanted to feel the trade-off directly, so I built one version myself and then started testing a very different substrate: iii.[^iii-home]
 
-This post isn't a benchmark or a vendor dunk. It's a build note from the messy middle: my initial AI SDK harness in multi-agents-team,[^mat-repo] the live playground at mat.umai-tech.com,[^mat-live] what iii changes, where the migration feels good, and where it adds operational weight. (Full disclosure: I liked the engine contract enough to start contributing to iii's Go SDK along the way, so read this as an interested party's build notes.)
+This post isn't a benchmark or a vendor dunk. It's a build note from the messy middle: my initial AI SDK harness in [multi-agents-team](https://github.com/MarcusElwin/multi-agents-team),[^mat-repo] the live playground at [mat.umai-tech.com](https://mat.umai-tech.com),[^mat-live] what iii changes, where the migration feels good, and where it adds operational weight. (Full disclosure: I liked the engine contract enough to start contributing to iii's Go SDK along the way, so read this as an interested party's build notes.)
 
 <Callout type="insight" title="The short version">
 My in-app harness is the right shape for learning, demos, and fast iteration. iii is interesting when the harness needs production jobs: durable execution, policy, budgets, server-side state, and observability. The trade-off is that you now operate a real engine, not just a Next.js app.
@@ -47,15 +48,19 @@ When people talk about agents, they often talk about models, prompts, tools, and
 
 That list is the harness.
 
-And once you see it, you start seeing harnesses everywhere. LangGraph is a harness with explicit graph control. AutoGen is a harness built around multi-agent conversations. The Vercel AI SDK gives you excellent model/tool/streaming primitives, but the harness around those primitives is still your job.[^vercel-ai-sdk] Anthropic's multi-agent research system is another harness shape: specialist agents, a lead agent, parallelism, and tool-heavy research coordination.[^anthropic-multi-agent]
+And once you see it, you start seeing harnesses everywhere. LangGraph is a harness with explicit graph control. AutoGen is a harness built around multi-agent conversations. Pi calls itself exactly what it is — a minimal agent harness you adapt to your workflows, not the other way around.[^pi] OpenClaw is a harness for a personal assistant: one agent runtime wired into WhatsApp, Telegram, your inbox, and your calendar.[^openclaw] The Vercel AI SDK gives you excellent model/tool/streaming primitives, but the harness around those primitives is still your job.[^vercel-ai-sdk] Anthropic's multi-agent research system is another harness shape: specialist agents, a lead agent, parallelism, and tool-heavy research coordination.[^anthropic-multi-agent]
 
 I wanted a repo that made those trade-offs visible instead of theoretical.
 
 ## What multi-agents-team is
 
-multi-agents-team is a Next.js playground for multi-agent coordination patterns.[^mat-repo] The live version is at mat.umai-tech.com.[^mat-live] The same user request can run through nine different architectures:
+MAT or *multi-agents-team* is a Next.js playground for multi-agent coordination patterns.[^mat-repo] The live version is at [mat.umai-tech.com](https://mat.umai-tech.com).[^mat-live] The same user request can run through nine different architectures:
 
 <MultiAgentPatternGrid />
+
+<Callout type="info" title="Why nine architectures?">
+Nine isn't a magic number — it's the smallest set that covers the coordination axes I cared about: who decides (a central coordinator, negotiating peers, or a market), how state is shared (handoffs, a blackboard, a common scratchpad), and how quality emerges (critique loops, debate, parallel sampling). Each pattern stresses the harness differently — handoffs, shared boards, bids, parallel samples — but every run has to emit the same `AgentEvent` stream. If the harness can carry all nine without special cases, the event contract is probably right.
+</Callout>
 
 The project is intentionally hands-on. Every mode has its own streaming API route. Every run emits a shared `AgentEvent` stream: workflow starts, iteration starts, agent steps, tool calls, handoffs, blackboard updates, bids, traces, samples, and final completion. The UI renders that stream live so you can watch the system reason, not just read the final answer.
 
@@ -73,6 +78,10 @@ The first harness is deliberately simple:
 
 This was the right first move. It kept the coordination logic close to the app. If I wanted to understand why a debate run behaved differently from a blackboard run, I could open the runner file and read it. No distributed system. No platform ceremony. No second runtime.
 
+<Callout type="note" title="Could I have skipped the hand-rolling?">
+Probably. openharness is an open-source SDK that builds exactly this kind of harness on top of the Vercel AI SDK — stateless agents, composable middleware, tool-permission callbacks, context compaction, subagent hierarchies.[^open-harness] If I'd wanted a harness off the shelf, that's where I'd have started. But the point of this repo was the opposite: build each harness job by hand first, so I'd understand what I was buying when I later reached for a substrate like iii.
+</Callout>
+
 But as soon as I started asking production questions, the harness got louder.
 
 ## The limits of the hand-rolled harness
@@ -89,13 +98,15 @@ That last row is the reason I still like the original harness. One app is hard t
 
 ## What iii is
 
-iii — source-available on GitHub — is a Rust engine built by the team behind the Motia backend framework.[^iii-home][^iii-github][^iii-motia] The repo sits at roughly **17k stars**, the engine is licensed under ELv2 with Apache-2.0 SDKs,[^iii-license] and the docs describe a system built from three primitives — workers, functions, and triggers — with state, streams, and queues shipped as built-in workers.[^iii-docs] The important mental model comes from the founder's own harness write-up:
+iii — [source-available on GitHub](https://github.com/iii-hq/iii)[^iii-github] — is a Rust engine built by the team behind the Motia backend framework.[^iii-home][^iii-motia] The repo sits at roughly **17k stars**, the engine is licensed under ELv2 with Apache-2.0 SDKs,[^iii-license] and the docs describe a system built from three primitives — **workers**, **functions**, and **triggers** — with state, streams, and queues shipped as built-in workers.[^iii-docs] The important mental model comes from the founder's own harness write-up:
 
 <Citation author="Mike Piccolo" source="How to Build Your Own Agent Harness, iii (May 2026)" url="https://iii.dev/blog/how-to-build-your-own-agent-harness/" type="pullquote">
 Pick the workers. Write the missing ones. Compose. The harness is the composition.
 </Citation>
 
 In iii, workers connect to an engine over WebSocket and register functions and triggers. The engine routes calls, manages worker connections, exposes modules for HTTP/state/queues/streams, and gives the system a common substrate.[^iii-architecture]
+
+<IiiPrimitivesGrid />
 
 That changes the harness shape. Instead of one application process owning every concern, the harness can be decomposed:
 
@@ -250,7 +261,7 @@ That composability is the interesting part. The claim isn't "iii has the perfect
 
 It also makes partial migration realistic. I can keep the Vercel AI SDK where it is useful. I can keep my nine runners. I can keep my event schema. Then I can move durability, policy, budget, and trace concerns into iii one by one.
 
-That's a good engineering shape.
+That's a good engineering shape — and it's the old, proven one. Small primitives with one interface compose; big frameworks with many interfaces accrete. When the harness is a set of functions on a bus, "we need budget enforcement now" is a worker you write this week, not a feature request on someone else's roadmap. That's the real power of primitives: composability turns the harness from a product you adopt into an architecture you evolve.
 
 ## What still hurts
 
@@ -270,7 +281,7 @@ A thin harness optimizes for momentum. A thick harness optimizes for control. Th
 
 ## Where iii sits in the harness landscape
 
-iii isn't entering an empty field — every serious agent stack already answers the harness question somewhere. LangGraph checkpoints graph state inside your process.[^langgraph] Microsoft folded AutoGen and Semantic Kernel into one agent framework with an actor-style runtime.[^msaf] OpenAI's Agents SDK keeps the loop thin and in-process,[^openai-agents] while Temporal ships an official integration that turns that same loop into durable workflow code.[^temporal] Anthropic packages its own coding harness — loop, tools, permissions, subagents — as the Claude Agent SDK.[^claude-agent-sdk] OpenHands wraps each coding session in a sandboxed per-session runtime.[^openhands] Restate, Inngest, and Hatchet sell durable execution that agent builders increasingly borrow.[^restate][^inngest][^hatchet]
+iii isn't entering an empty field — every serious agent stack already answers the harness question somewhere. LangGraph checkpoints graph state inside your process.[^langgraph] Microsoft folded AutoGen and Semantic Kernel into one agent framework with an actor-style runtime.[^msaf] OpenAI's Agents SDK keeps the loop thin and in-process,[^openai-agents] while Temporal ships an official integration that turns that same loop into durable workflow code.[^temporal] Anthropic packages its own coding harness — loop, tools, permissions, subagents — as the Claude Agent SDK.[^claude-agent-sdk] Pi stakes out the same thin pole even more aggressively: a deliberately minimal harness you adapt to your workflows instead of the other way around.[^pi] OpenHands wraps each coding session in a sandboxed per-session runtime.[^openhands] Restate, Inngest, and Hatchet sell durable execution that agent builders increasingly borrow.[^restate][^inngest][^hatchet]
 
 The differences aren't feature lists. They're answers to one question: which layer of your system owns the harness jobs?
 
@@ -332,7 +343,13 @@ And honestly, that's how most AI systems should evolve. Start with the thinnest 
 
 [^vercel-ai-sdk]: Vercel, [AI SDK documentation](https://sdk.vercel.ai/docs).
 
+[^open-harness]: Max Gfeller, [openharness](https://open-harness.dev/) — a composable agent-harness SDK built on the Vercel AI SDK.
+
 [^anthropic-multi-agent]: Anthropic Engineering, ["How we built our multi-agent research system"](https://www.anthropic.com/engineering/built-multi-agent-research-system).
+
+[^pi]: Earendil, [Pi](https://pi.dev/) — "Pi is a minimal agent harness. Adapt Pi to your workflows, not the other way around."
+
+[^openclaw]: OpenClaw, [openclaw.ai](https://openclaw.ai/) — open-source personal AI assistant that runs on your own machine and connects to WhatsApp, Telegram, and other chat apps.
 
 [^langgraph]: LangChain, [LangGraph](https://www.langchain.com/langgraph).
 
