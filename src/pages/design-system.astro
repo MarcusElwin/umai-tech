@@ -1,0 +1,239 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Callout from '../components/Callout.astro';
+import Citation from '../components/Citation.astro';
+import CodeTerminal from '../components/CodeTerminal.astro';
+
+const brandColors = [
+  { name: 'umai-primary', hex: '#0a0a0a', usage: 'Dark surfaces, primary text, dark-mode background' },
+  { name: 'umai-secondary', hex: '#f5f5f5', usage: 'Light surfaces, inverted text on dark' },
+  { name: 'umai-accent', hex: '#8B5CF6', usage: 'Brand purple — links, highlights, eyebrows, CTAs' },
+  { name: 'umai-accent-dark', hex: '#7C3AED', usage: 'Hover states, gradients' },
+  { name: 'umai-accent-darker', hex: '#6D28D9', usage: 'Pressed states, deep gradients' },
+  { name: 'umai-accent-light', hex: '#A78BFA', usage: 'Dark-mode accents, soft highlights' },
+];
+
+const grayScale = [
+  { step: '50', hex: '#FAFAFA' },
+  { step: '100', hex: '#F4F4F5' },
+  { step: '200', hex: '#E4E4E7' },
+  { step: '300', hex: '#D4D4D8' },
+  { step: '400', hex: '#A1A1AA' },
+  { step: '500', hex: '#71717A' },
+  { step: '600', hex: '#52525B' },
+  { step: '700', hex: '#3F3F46' },
+  { step: '800', hex: '#27272A' },
+  { step: '900', hex: '#18181B' },
+];
+
+const fonts = [
+  {
+    name: 'Inter',
+    token: 'font-sans',
+    role: 'Primary — headings, body, UI',
+    sample: 'The harness is the product. Build agents that ship.',
+    class: 'font-sans',
+  },
+  {
+    name: 'JetBrains Mono',
+    token: 'font-mono',
+    role: 'Code, terminals, eyebrows, data',
+    sample: './marcus-cv --display --interactive',
+    class: 'font-mono',
+  },
+  {
+    name: 'Noto Sans JP',
+    token: 'font-japanese',
+    role: 'Japanese brand accents',
+    sample: 'うまい — skillful, delicious',
+    class: 'font-japanese',
+  },
+];
+
+const calloutTypes = ['info', 'warning', 'error', 'success', 'note', 'insight'] as const;
+---
+
+<Layout
+  title="Design System — Umai Tech"
+  description="The Umai Tech design system: brand colors, typography, and the component library used across the site and blog."
+>
+  <section class="pt-24 pb-16 px-4 sm:px-6 lg:px-8 bg-white dark:bg-umai-primary">
+    <div class="max-w-5xl mx-auto">
+      <!-- Hero -->
+      <div class="mb-16 text-center">
+        <p class="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-umai-accent font-mono">umai-tech / design-system</p>
+        <h1 class="text-4xl sm:text-5xl font-light text-gray-900 dark:text-white mb-4">
+          Design <span class="font-normal text-umai-accent">System</span>
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          The tokens and components behind umai-tech.com — Japanese craftsmanship
+          (<span class="font-japanese">うまい</span>) meets a terminal-flavored engineering aesthetic.
+        </p>
+      </div>
+
+      <!-- Colors -->
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">Color tokens</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+        Defined in <code class="font-mono text-umai-accent">tailwind.config.mjs</code> and used as
+        <code class="font-mono text-umai-accent">text-umai-accent</code>,
+        <code class="font-mono text-umai-accent">bg-umai-gray-900</code>, etc.
+      </p>
+
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+        {brandColors.map((color) => (
+          <div class="rounded-2xl border border-umai-gray-200 dark:border-umai-gray-700 overflow-hidden bg-white dark:bg-umai-gray-800">
+            <div class="h-20" style={`background: ${color.hex};`}></div>
+            <div class="p-4">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-mono text-sm font-bold text-gray-900 dark:text-white">{color.name}</span>
+                <span class="font-mono text-xs text-umai-gray-500 dark:text-umai-gray-400">{color.hex}</span>
+              </div>
+              <p class="mt-1 text-xs leading-5 text-umai-gray-500 dark:text-umai-gray-400">{color.usage}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">Gray scale <span class="font-mono text-sm font-normal text-umai-gray-500">umai-gray-*</span></h3>
+      <div class="mb-16 grid grid-cols-5 sm:grid-cols-10 overflow-hidden rounded-2xl border border-umai-gray-200 dark:border-umai-gray-700">
+        {grayScale.map((gray) => (
+          <div class="flex h-24 flex-col justify-end p-2" style={`background: ${gray.hex};`}>
+            <span class={`font-mono text-[0.65rem] font-bold ${Number(gray.step) >= 500 ? 'text-white/80' : 'text-umai-gray-700'}`}>{gray.step}</span>
+            <span class={`font-mono text-[0.55rem] ${Number(gray.step) >= 500 ? 'text-white/50' : 'text-umai-gray-500'}`}>{gray.hex}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Typography -->
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-6">Typography</h2>
+      <div class="mb-16 space-y-3">
+        {fonts.map((font) => (
+          <div class="rounded-2xl border border-umai-gray-200 bg-umai-gray-50 p-5 dark:border-umai-gray-700 dark:bg-umai-gray-800/70">
+            <div class="flex flex-wrap items-baseline justify-between gap-2 mb-3">
+              <span class="text-sm font-bold text-gray-900 dark:text-white">{font.name}</span>
+              <span class="font-mono text-xs text-umai-accent">{font.token}</span>
+            </div>
+            <p class={`${font.class} text-2xl text-gray-900 dark:text-white`}>{font.sample}</p>
+            <p class="mt-2 text-xs text-umai-gray-500 dark:text-umai-gray-400">{font.role}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- Patterns -->
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">Core patterns</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+        The recurring shapes across pages and blog components.
+      </p>
+      <div class="mb-16 grid gap-4 sm:grid-cols-2">
+        <div class="group relative overflow-hidden rounded-2xl border border-umai-gray-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-umai-accent/50 hover:shadow-xl hover:shadow-umai-accent/10 dark:border-umai-gray-700 dark:bg-umai-gray-800/80">
+          <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-umai-accent to-umai-accent-light opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+          <p class="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-umai-accent">eyebrow label</p>
+          <h4 class="text-lg font-bold tracking-tight text-gray-900 dark:text-white">Hover-lift card</h4>
+          <p class="mt-2 text-sm leading-6 text-umai-gray-600 dark:text-umai-gray-300">
+            Rounded-2xl, subtle border, lifts on hover with an accent gradient bar that fades in along the top edge.
+          </p>
+        </div>
+        <div class="rounded-2xl border border-umai-gray-200 bg-white p-5 dark:border-umai-gray-700 dark:bg-umai-gray-800/80">
+          <p class="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-umai-accent">buttons</p>
+          <div class="flex flex-wrap items-center gap-3">
+            <button type="button" class="rounded-full bg-umai-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-umai-gray-800 dark:bg-umai-secondary dark:text-umai-primary dark:hover:bg-white">
+              Primary pill
+            </button>
+            <button type="button" class="rounded-xl bg-umai-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-umai-accent-dark">
+              Accent action
+            </button>
+            <span class="rounded-full border border-umai-accent/20 bg-umai-accent/10 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-umai-accent">
+              chip / badge
+            </span>
+          </div>
+          <p class="mt-4 text-sm leading-6 text-umai-gray-600 dark:text-umai-gray-300">
+            Pills for navigation-level actions, accent rectangles for in-content actions, mono-tracking chips for metadata.
+          </p>
+        </div>
+      </div>
+
+      <!-- Callouts -->
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">Callout</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+        Boxed emphasis in blog posts. <code class="font-mono text-umai-accent">insight</code> carries thesis-level statements,
+        <code class="font-mono text-umai-accent">success</code> principles and playbooks,
+        <code class="font-mono text-umai-accent">warning</code> risks,
+        <code class="font-mono text-umai-accent">info</code> context, and
+        <code class="font-mono text-umai-accent">note</code> cross-references.
+      </p>
+      <div class="mb-16">
+        {calloutTypes.map((type) => (
+          <Callout type={type} title={`type="${type}"`}>
+            One strong sentence the reader's eye should land on.
+          </Callout>
+        ))}
+      </div>
+
+      <!-- Citations -->
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">Citation</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+        Attributed quotes. <code class="font-mono text-umai-accent">pullquote</code> is reserved for a post's single marquee quote.
+      </p>
+      <div class="mb-16">
+        <Citation author="Marcus Elwin" source="The Moat Is the Harness, Not the Model" type="pullquote">
+          The model is the rented car — the harness is the road network.
+        </Citation>
+        <Citation author="Marcus Elwin" source="umai-tech.com" type="quote">
+          A supporting quote uses the quieter quote treatment.
+        </Citation>
+        <Citation author="Marcus Elwin" source="umai-tech.com" type="reference">
+          Less prominent attributions use the reference treatment.
+        </Citation>
+      </div>
+
+      <!-- Code -->
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">Code terminal</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+        Dark terminal panel with mac dots, tab strip, and Shiki highlighting (GitHub Dark) — also how you consume the tokens.
+      </p>
+      <CodeTerminal
+        title="umai-tech · tokens"
+        examples={[
+          {
+            label: 'Tailwind',
+            lang: 'html',
+            code: `<!-- Accent text + eyebrow pattern -->
+<p class="text-xs font-bold uppercase tracking-[0.18em] text-umai-accent">
+  eyebrow label
+</p>
+
+<!-- Card surface, light + dark -->
+<div class="rounded-2xl border border-umai-gray-200 bg-white
+            dark:border-umai-gray-700 dark:bg-umai-gray-800/80">
+  ...
+</div>`,
+          },
+          {
+            label: 'Config',
+            lang: 'javascript',
+            code: `// tailwind.config.mjs
+colors: {
+  'umai-primary': '#0a0a0a',
+  'umai-secondary': '#f5f5f5',
+  'umai-accent': '#8B5CF6',      // + dark / darker / light
+  'umai-gray': { 50: '#FAFAFA', /* ... */ 900: '#18181B' },
+},
+fontFamily: {
+  sans: ['Inter', 'system-ui', 'sans-serif'],
+  mono: ['JetBrains Mono', 'monospace'],
+  japanese: ['Noto Sans JP', 'sans-serif'],
+}`,
+          },
+        ]}
+      />
+
+      <div class="mt-16">
+        <Callout type="insight" title="The rule of thumb">
+          Neutral zinc grays do the layout work, one purple does the talking, and the mono font marks
+          anything machine-flavored. If a new component needs a second accent color, it's probably
+          the wrong design.
+        </Callout>
+      </div>
+    </div>
+  </section>
+</Layout>

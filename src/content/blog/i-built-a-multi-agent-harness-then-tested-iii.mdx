@@ -13,12 +13,13 @@ import CodeTerminal from '@components/CodeTerminal.astro';
 import HarnessComparisonCards from '@components/HarnessComparisonCards.astro';
 import HarnessImprovementCards from '@components/HarnessImprovementCards.astro';
 import HarnessJobStack from '@components/HarnessJobStack.astro';
+import HarnessLandscapeGrid from '@components/HarnessLandscapeGrid.astro';
 import InAppHarnessArchitecture from '@components/InAppHarnessArchitecture.astro';
 import MultiAgentPatternGrid from '@components/MultiAgentPatternGrid.astro';
 
 Every serious agent project eventually becomes a harness project.
 
-At the beginning, you think you are building an agent. You wire up a model, give it a tool, stream some tokens, maybe add a second agent because the demo looks better when one model argues with another model. Then the surface area starts expanding.
+At the beginning, you think you're building an agent. You wire up a model, give it a tool, stream some tokens, maybe add a second agent because the demo looks better when one model argues with another model. Then the surface area starts expanding.
 
 Who owns the turn loop? Where do tool calls get approved? What happens if the browser disconnects halfway through a run? Where does session state live? Can I cap spend? Can I see which agent burned the tokens? Can I swap a provider without rewriting half the code? Can I replay the run after something breaks?
 
@@ -26,7 +27,7 @@ That surrounding runtime is the **agentic harness**.
 
 Frameworks and libraries all answer the harness question differently. Some give you a thin loop and say "bring your own production system." Some give you a graph abstraction. Some give you a full platform. I wanted to feel the trade-off directly, so I built one version myself and then started testing a very different substrate: iii.[^iii-home]
 
-This post is not a benchmark and not a vendor dunk. It is a build note from the messy middle: my initial AI SDK harness in multi-agents-team,[^mat-repo] the live playground at mat.umai-tech.com,[^mat-live] what iii changes, where the migration feels good, and where it adds operational weight.
+This post isn't a benchmark or a vendor dunk. It's a build note from the messy middle: my initial AI SDK harness in multi-agents-team,[^mat-repo] the live playground at mat.umai-tech.com,[^mat-live] what iii changes, where the migration feels good, and where it adds operational weight. (Full disclosure: I liked the engine contract enough to start contributing to iii's Go SDK along the way, so read this as an interested party's build notes.)
 
 <Callout type="insight" title="The short version">
 My in-app harness is the right shape for learning, demos, and fast iteration. iii is interesting when the harness needs production jobs: durable execution, policy, budgets, server-side state, and observability. The trade-off is that you now operate a real engine, not just a Next.js app.
@@ -34,7 +35,7 @@ My in-app harness is the right shape for learning, demos, and fast iteration. ii
 
 ## The harness problem
 
-When people talk about agents, they often talk about models, prompts, tools, and memory. Those matter. But after the prototype stage, the painful questions are usually not "which model?" They are:
+When people talk about agents, they often talk about models, prompts, tools, and memory. Those matter. But after the prototype stage, the painful questions usually aren't "which model?" They're:
 
 - **Control flow:** who decides the next step, and how do you stop loops?
 - **Tool execution:** which calls are allowed, denied, or human-approved?
@@ -63,7 +64,7 @@ The first harness is deliberately simple:
 - Next.js API routes own the request lifecycle.
 - The Vercel AI SDK handles model calls, tool definitions, and streaming-friendly primitives.
 - A per-run conversation object owns the message bus.
-- Provider selection is request-scoped with `AsyncLocalStorage`, so a user's API key does not leak across concurrent runs.
+- Provider selection is request-scoped with `AsyncLocalStorage`, so a user's API key doesn't leak across concurrent runs.
 - Chat history lives in the browser.
 - Cost is estimated and displayed, but not enforced.
 - Human input exists, but the early version is in-memory and single-process.
@@ -76,11 +77,11 @@ But as soon as I started asking production questions, the harness got louder.
 
 ## The limits of the hand-rolled harness
 
-The in-app harness is honest about what it is: a readable local runtime for exploring coordination patterns. That is a feature. It is also the boundary.
+The in-app harness is honest about what it is: a readable local runtime for exploring coordination patterns. That's a feature. It's also the boundary.
 
 For a public demo, browser-local history is fine. For a customer workflow, server-side sessions matter. For a toy web search tool, "the user clicked run" is enough permission. For a production agent touching internal systems, every tool call needs policy. For a blog-worthy demo, estimated cost is enough. For a real product, budget caps need to stop the run, not just decorate the UI.
 
-The uncomfortable part is that none of these problems are exotic. They are the normal jobs around an agent run:
+The uncomfortable part is that none of these problems are exotic. They're the normal jobs around an agent run:
 
 <HarnessJobStack />
 
@@ -88,10 +89,10 @@ That last row is the reason I still like the original harness. One app is hard t
 
 ## What iii is
 
-iii — open source on GitHub — describes itself around workers, functions, triggers, state, streams, and queues.[^iii-home][^iii-github][^iii-docs] The important mental model is simpler:
+iii — source-available on GitHub — is a Rust engine built by the team behind the Motia backend framework.[^iii-home][^iii-github][^iii-motia] The repo sits at roughly **17k stars**, the engine is licensed under ELv2 with Apache-2.0 SDKs,[^iii-license] and the docs describe a system built from three primitives — workers, functions, and triggers — with state, streams, and queues shipped as built-in workers.[^iii-docs] The important mental model comes from the founder's own harness write-up:
 
-<Citation type="pullquote" source="iii" url="https://iii.dev/blog/how-to-build-your-own-agent-harness/">
-The harness is not one object. It is a composition of workers that each own a job.
+<Citation author="Mike Piccolo" source="How to Build Your Own Agent Harness, iii (May 2026)" url="https://iii.dev/blog/how-to-build-your-own-agent-harness/" type="pullquote">
+Pick the workers. Write the missing ones. Compose. The harness is the composition.
 </Citation>
 
 In iii, workers connect to an engine over WebSocket and register functions and triggers. The engine routes calls, manages worker connections, exposes modules for HTTP/state/queues/streams, and gives the system a common substrate.[^iii-architecture]
@@ -106,16 +107,16 @@ That changes the harness shape. Instead of one application process owning every 
 - A trace layer gives you OpenTelemetry spans across the run.
 - A custom worker can replace one layer by registering the same function IDs.
 
-The iii blog post frames this as "build your own agent harness."[^iii-harness] I think the stronger interpretation is: **do not confuse the harness with the application framework**.
+The iii blog post frames this as "build your own agent harness."[^iii-harness] I think the stronger interpretation is: **don't confuse the harness with the application framework**.
 
 The harness is the set of jobs that make an agent safe, durable, observable, and operable. iii's bet is that those jobs should be workers on a shared bus, not hidden inside one framework object.
 
 <Callout type="info" title="The primitive shift">
-The powerful idea is not "use this one agent framework." It is seeing queues, streams, state, model providers, policy gates, approval surfaces, browser tabs, and business services as the same kind of thing: workers. If a capability is missing, add or replace a worker. Do not keep changing the core engine.
+The powerful idea isn't "use this one agent framework." It's seeing queues, streams, state, model providers, policy gates, approval surfaces, browser tabs, and business services as the same kind of thing: workers. If a capability is missing, add or replace a worker. Don't keep changing the core engine.
 </Callout>
 
-<Callout type="note" title="Small open-source note">
-I also ended up contributing to iii itself: MarcusElwin committed Go SDK work that sits alongside the Node, Python, and Rust SDKs.[^iii-go-sdk] That made the primitive argument feel more concrete. Once the engine contract is stable, another language becomes an SDK layer, not a rewrite of the engine.
+<Callout type="note" title="Contributor note">
+This is the Go SDK work I mentioned up top: it sits alongside the Node, Python, and Rust SDKs.[^iii-go-sdk] It's also why the primitive argument feels concrete to me — once the engine contract is stable, another language becomes an SDK layer, not a rewrite of the engine.
 </Callout>
 
 ## Testing iii inside my repo
@@ -132,7 +133,7 @@ The iii path keeps the same front-end contract but changes where the turn runs:
 4. A worker runs the existing agent loop and emits the same `AgentEvent` shape.
 5. The Next.js app forwards those events back to the same chat UI.
 
-That last point matters. I did not want to rewrite the product around iii. I wanted to test whether the harness layer could move while the visible app stayed stable.
+That last point matters. I didn't want to rewrite the product around iii. I wanted to test whether the harness layer could move while the visible app stayed stable.
 
 <figure class="not-prose my-10 w-full overflow-hidden rounded-3xl border border-umai-gray-200 bg-white shadow-2xl shadow-umai-gray-900/10 dark:border-umai-gray-700 dark:bg-umai-gray-900/80">
   <img
@@ -152,13 +153,15 @@ The adapter does three pragmatic things:
 - It accepts live SSE from the engine when the worker streams events over the HTTP response.
 - It also supports a queued path where a run gets a `runId`, keeps executing on the engine, and the app polls events until completion.
 
-There is also a small policy bridge. My tools are still defined inline in the agent factories. I did not want to couple those tools directly to the iii SDK. Instead, the iii worker installs a request-scoped policy checker; tools call a local `policyCheck()` function; the in-app backend has no checker, so it behaves as before. On the iii path, the check can forward to `policy::check_permissions`.
+There is also a small policy bridge. My tools are still defined inline in the agent factories. I didn't want to couple those tools directly to the iii SDK. Instead, the iii worker installs a request-scoped policy checker; tools call a local `policyCheck()` function; the in-app backend has no checker, so it behaves as before. On the iii path, the check can forward to `policy::check_permissions`.
 
-That is the migration pattern I like: keep the app's internal abstractions stable, move one harness concern at a time.
+iii's own reference harness makes the same call at a different layer: it ships as roughly **fourteen workers** in a separate workers repo, and its policy gate fails closed — a five-second timeout counts as a deny.[^iii-workers]
+
+That's the migration pattern I like: keep the app's internal abstractions stable, move one harness concern at a time.
 
 ### How I deployed the iii harness on Fly.io
 
-The Next.js app can live happily on Vercel because the in-app harness is just route handlers. The iii backend is different. It is a long-running engine plus a worker that needs to stay connected to that engine over WebSocket, so I deployed that part separately on Fly.io.[^fly-docs]
+The Next.js app can live happily on Vercel because the in-app harness is just route handlers. The iii backend is different. It's a long-running engine plus a worker that needs to stay connected to that engine over WebSocket, so I deployed that part separately on Fly.io.[^fly-docs]
 
 The high-level shape is:
 
@@ -220,7 +223,7 @@ NEXT_PUBLIC_III_BACKEND_ENABLED=true`
 That gives me the split I wanted: Vercel keeps serving the product UI, Fly runs the long-lived harness substrate, and the two meet at one explicit seam: `POST /run`.
 
 <Callout type="note" title="This is a phased migration">
-I would not describe this as "the app is now an iii app." The honest description is better: the app has a working in-app harness and an iii backend path for testing production harness concerns without throwing away the original runners.
+I wouldn't describe this as "the app is now an iii app." The honest description is better: the app has a working in-app harness and an iii backend path for testing production harness concerns without throwing away the original runners.
 </Callout>
 
 ## My harness vs iii
@@ -229,25 +232,25 @@ Here is the comparison I wish I had when I started.
 
 <HarnessComparisonCards />
 
-The original harness wins on approachability. It is easy to clone, run, read, and modify. It is the harness I would show someone who wants to learn how multi-agent patterns actually behave.
+The original harness wins on approachability. It's easy to clone, run, read, and modify. It's the harness I'd show someone who wants to learn how multi-agent patterns actually behave.
 
-iii wins on separation of concerns. Policy should not be sprinkled through random tool functions. Budget enforcement should not be a UI label. Long-running agent state should not depend on a browser tab or a serverless request staying alive. If those are your problems, iii's worker model starts to make sense.
+iii wins on separation of concerns. Policy shouldn't be sprinkled through random tool functions. Budget enforcement shouldn't be a UI label. Long-running agent state shouldn't depend on a browser tab or a serverless request staying alive. If those are your problems, iii's worker model starts to make sense.
 
-But this is not free.
+But this isn't free.
 
 ## What feels better with iii
 
 The biggest improvement is that the harness jobs become explicit.
 
-In my first version, "the harness" was spread across routes, runners, event types, provider utilities, local storage, and some UI assumptions. It worked because the app was small and the author was me. That is not a production architecture principle.
+In my first version, "the harness" was spread across routes, runners, event types, provider utilities, local storage, and some UI assumptions. It worked because the app was small and the author was me. That's not a production architecture principle.
 
-With iii, a policy layer is not an afterthought. It is a function call. A budget layer is not a comment. It can be a worker. The approval path is not necessarily a React component. It can be another system that writes a decision into state. A Slack approval surface and a console approval surface can both call the same underlying function.
+With iii, a policy layer isn't an afterthought — it's a function call. A budget layer isn't a comment — it can be a worker. The approval path doesn't have to be a React component — it can be another system that writes a decision into state. A Slack approval surface and a console approval surface can both call the same underlying function.
 
-That composability is the interesting part. The claim is not "iii has the perfect default harness." The claim is that a harness is easier to evolve when its responsibilities are connected by stable function IDs instead of fused into one framework.
+That composability is the interesting part. The claim isn't "iii has the perfect default harness." It's that a harness is easier to evolve when its responsibilities are connected by stable function IDs instead of fused into one framework.
 
 It also makes partial migration realistic. I can keep the Vercel AI SDK where it is useful. I can keep my nine runners. I can keep my event schema. Then I can move durability, policy, budget, and trace concerns into iii one by one.
 
-That is a good engineering shape.
+That's a good engineering shape.
 
 ## What still hurts
 
@@ -255,9 +258,9 @@ The cost is operational complexity.
 
 The in-app harness has one deployable. The iii path introduces another runtime: engine configuration, worker registration, auth token, health checks, event transport, timeout behavior, and failure modes between the app and engine.
 
-That is not a reason to reject it. It is a reason to be honest about when you need it.
+That's not a reason to reject it. It's a reason to be honest about when you need it.
 
-If I am teaching multi-agent patterns, I do not want a distributed system in the way. If I am running a weekend experiment, I do not need a budget worker. If the tool is just web search against a user's own API key, a full policy engine may be more architecture than product.
+If I'm teaching multi-agent patterns, I don't want a distributed system in the way. If I'm running a weekend experiment, I don't need a budget worker. If the tool is just web search against a user's own API key, a full policy engine may be more architecture than product.
 
 But if the agent can call internal tools, mutate business state, spend real money, or run for minutes in the background, the "simple" harness starts hiding risk. At that point, the second runtime may be cheaper than the pile of bespoke code you were about to write badly.
 
@@ -265,13 +268,23 @@ But if the agent can call internal tools, mutate business state, spend real mone
 A thin harness optimizes for momentum. A thick harness optimizes for control. The mistake is pretending one of those is always the grown-up answer.
 </Callout>
 
+## Where iii sits in the harness landscape
+
+iii isn't entering an empty field — every serious agent stack already answers the harness question somewhere. LangGraph checkpoints graph state inside your process.[^langgraph] Microsoft folded AutoGen and Semantic Kernel into one agent framework with an actor-style runtime.[^msaf] OpenAI's Agents SDK keeps the loop thin and in-process,[^openai-agents] while Temporal ships an official integration that turns that same loop into durable workflow code.[^temporal] Anthropic packages its own coding harness — loop, tools, permissions, subagents — as the Claude Agent SDK.[^claude-agent-sdk] OpenHands wraps each coding session in a sandboxed per-session runtime.[^openhands] Restate, Inngest, and Hatchet sell durable execution that agent builders increasingly borrow.[^restate][^inngest][^hatchet]
+
+The differences aren't feature lists. They're answers to one question: which layer of your system owns the harness jobs?
+
+<HarnessLandscapeGrid />
+
+iii's nearest neighbors are the durable-execution substrates. The difference is the unit of composition: Temporal and friends give you durable workflows you write; iii gives you a live function registry on a bus, where each harness job is a worker you can replace — including with one written by another team, in another language. That's a stronger composition story and a younger ecosystem, and both halves of that sentence matter.
+
 ## What I would want from iii next
 
-Reading my integration against iii's current docs and harness write-up, I would not frame the gaps as "iii lacks primitives." The primitives are the interesting part. The next step is productized harness ergonomics: fewer custom adapters, clearer production defaults, and stronger contracts around runs, events, and governance.[^iii-docs][^iii-harness]
+Reading my integration against iii's current docs and harness write-up, I wouldn't frame the gaps as "iii lacks primitives." The primitives are the interesting part. The next step is productized harness ergonomics: fewer custom adapters, clearer production defaults, and stronger contracts around runs, events, and governance.[^iii-docs][^iii-harness]
 
 <HarnessImprovementCards />
 
-That distinction matters. A worker substrate can always say "write a worker." That is powerful, but it is also where early adopters pay the integration tax. The more iii can package the common harness seams, the easier it becomes to recommend for teams that are not trying to become harness experts.
+That distinction matters. A worker substrate can always say "write a worker." That's powerful, but it's also where early adopters pay the integration tax. The more iii can package the common harness seams, the easier it becomes to recommend for teams that aren't trying to become harness experts.
 
 ## The slider, not the religion
 
@@ -283,13 +296,13 @@ At the other end: durable queues, server-side state, policy gates, human approva
 
 My in-app harness lives closer to the thin end. iii lets the system move toward the thick end without forcing every concern into the same application process.
 
-That is the part I find compelling. Not "replace your app with iii." Not "frameworks are dead." More practical:
+That's the part I find compelling. Not "replace your app with iii." Not "frameworks are dead." More practical:
 
 **Keep the agent logic where it is easiest to reason about. Move the cross-cutting harness jobs to a substrate when those jobs become real.**
 
-For `multi-agents-team`, that means the original harness remains the default. It is the best path for trying the nine patterns and understanding coordination trade-offs. The iii backend is the experiment for what happens when those same patterns need production properties.
+For `multi-agents-team`, that means the original harness remains the default. It's the best path for trying the nine patterns and understanding coordination trade-offs. The iii backend is the experiment for what happens when those same patterns need production properties.
 
-And honestly, that is how most AI systems should evolve. Start with the thinnest harness that teaches you something. Do not cargo-cult a platform on day one. But when the run starts touching real systems, stop pretending a route handler and a clever prompt are enough.
+And honestly, that's how most AI systems should evolve. Start with the thinnest harness that teaches you something. Don't cargo-cult a platform on day one. But when the run starts touching real systems, stop pretending a route handler and a clever prompt are enough.
 
 ## References
 
@@ -309,8 +322,32 @@ And honestly, that is how most AI systems should evolve. Start with the thinnest
 
 [^iii-go-sdk]: iii HQ, [Go SDK package](https://github.com/iii-hq/iii/tree/main/sdk/packages/go/iii).
 
+[^iii-workers]: iii HQ, [workers repo](https://github.com/iii-hq/workers), including the reference harness workers.
+
+[^iii-license]: iii HQ, [iii GitHub repo](https://github.com/iii-hq/iii): the engine is licensed under the Elastic License 2.0; the SDKs, CLI, and console are Apache-2.0.
+
+[^iii-motia]: iii documentation, ["Migrating from Motia"](https://iii.dev/docs/changelog/0-11-0/migrating-from-motia-js).
+
 [^fly-docs]: Fly.io, [documentation](https://fly.io/docs/).
 
 [^vercel-ai-sdk]: Vercel, [AI SDK documentation](https://sdk.vercel.ai/docs).
 
 [^anthropic-multi-agent]: Anthropic Engineering, ["How we built our multi-agent research system"](https://www.anthropic.com/engineering/built-multi-agent-research-system).
+
+[^langgraph]: LangChain, [LangGraph](https://www.langchain.com/langgraph).
+
+[^msaf]: Microsoft, [Agent Framework GitHub repo](https://github.com/microsoft/agent-framework).
+
+[^openai-agents]: OpenAI, [Agents SDK documentation](https://openai.github.io/openai-agents-python/).
+
+[^temporal]: Temporal, [documentation](https://docs.temporal.io/).
+
+[^claude-agent-sdk]: Anthropic Engineering, ["Building agents with the Claude Agent SDK"](https://www.anthropic.com/engineering/building-agents-with-the-claude-agent-sdk).
+
+[^openhands]: All Hands AI, [OpenHands GitHub repo](https://github.com/All-Hands-AI/OpenHands).
+
+[^restate]: Restate, [restate.dev](https://restate.dev/).
+
+[^inngest]: Inngest, [AgentKit documentation](https://agentkit.inngest.com/).
+
+[^hatchet]: Hatchet, [hatchet.run](https://hatchet.run/).

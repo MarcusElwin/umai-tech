@@ -1,0 +1,103 @@
+---
+const families = [
+  {
+    family: 'In-process framework',
+    examples: ['LangGraph', 'Microsoft Agent Framework', 'OpenAI Agents SDK'],
+    jobsLive:
+      'Inside your application process. Graphs, checkpointers, guardrails, and sessions are objects the framework owns.',
+    tradeoff:
+      'Fast to adopt and easy to reason about locally; durability and policy are bounded by the framework and the process running it.',
+  },
+  {
+    family: 'Thin SDK',
+    examples: ['Claude Agent SDK'],
+    jobsLive:
+      'In the model vendor’s packaged loop: tools, permissions, hooks, and subagents shipped as a library you embed.',
+    tradeoff:
+      'Excellent loop ergonomics; durability, budgets, and multi-service orchestration are explicitly out of scope.',
+  },
+  {
+    family: 'Durable-execution substrate',
+    examples: ['Temporal', 'Restate', 'Inngest', 'Hatchet'],
+    jobsLive:
+      'In a workflow engine that makes the run itself durable: retries, queues, state, and replay come from the substrate.',
+    tradeoff:
+      'The strongest durability story; agent-specific jobs like policy, approvals, and budgets are still yours to build on top.',
+  },
+  {
+    family: 'Session platform',
+    examples: ['OpenHands'],
+    jobsLive:
+      'In a per-session runtime: sandbox, event stream, and tools bundled around each agent session.',
+    tradeoff:
+      'Batteries included for coding agents; less a substrate you compose, more a product you adopt.',
+  },
+];
+
+const workerBus = {
+  family: 'Worker bus',
+  examples: ['iii'],
+  jobsLive:
+    'In independent workers on a shared engine bus. Each harness job — policy, budget, state, provider, traces — is a function you can swap without touching the rest.',
+  tradeoff:
+    'The most composable shape, and the one this post tests; the price is that you operate the engine and pay the early-adopter integration tax.',
+};
+---
+
+<section class="not-prose my-8 rounded-3xl border border-umai-gray-200 bg-gradient-to-br from-white via-umai-gray-50 to-umai-accent/5 p-5 shadow-2xl shadow-umai-gray-900/10 dark:border-umai-gray-700 dark:from-umai-gray-900 dark:via-umai-gray-900 dark:to-umai-accent/10 sm:p-6" aria-labelledby="harness-landscape-title">
+  <div class="mb-6 max-w-3xl border-b border-umai-gray-200 pb-5 dark:border-umai-gray-700">
+    <div class="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-umai-accent">the landscape</div>
+    <h3 id="harness-landscape-title" class="text-2xl font-bold tracking-tight text-umai-primary dark:text-umai-secondary sm:text-3xl">
+      Five answers to where the harness jobs live
+    </h3>
+    <div class="mt-3 text-sm leading-7 text-umai-gray-600 dark:text-umai-gray-300">
+      Every serious agent stack answers the harness question somewhere. The interesting comparison
+      isn&rsquo;t feature lists &mdash; it&rsquo;s which layer of your system ends up owning durability,
+      policy, budgets, and state.
+    </div>
+  </div>
+
+  <div class="grid gap-3 sm:grid-cols-2">
+    {families.map((item) => (
+      <article class="group relative overflow-hidden rounded-2xl border border-umai-gray-200 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-umai-accent/50 hover:shadow-xl hover:shadow-umai-accent/10 dark:border-umai-gray-700 dark:bg-umai-gray-800/80">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-umai-accent to-umai-accent-light opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+        <h4 class="text-lg font-bold tracking-tight text-umai-gray-900 dark:text-white">{item.family}</h4>
+        <div class="mt-2 flex flex-wrap gap-1.5">
+          {item.examples.map((example) => (
+            <span class="rounded-full bg-umai-gray-100 px-2.5 py-1 font-mono text-[0.68rem] font-semibold text-umai-gray-600 dark:bg-umai-gray-900 dark:text-umai-gray-300">
+              {example}
+            </span>
+          ))}
+        </div>
+        <div class="mt-3 text-sm leading-6 text-umai-gray-600 dark:text-umai-gray-300">{item.jobsLive}</div>
+        <div class="mt-3 rounded-xl border border-umai-gray-200 bg-umai-gray-50 p-3 text-sm leading-6 text-umai-gray-700 dark:border-umai-gray-700 dark:bg-umai-gray-900/60 dark:text-umai-gray-300">
+          <span class="mb-1 block text-[0.68rem] font-bold uppercase tracking-[0.14em] text-umai-gray-400">trade-off</span>
+          {item.tradeoff}
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <article class="relative mt-3 overflow-hidden rounded-2xl border border-umai-accent/40 bg-umai-accent/10 p-4 shadow-inner shadow-umai-accent/10 dark:border-umai-accent/40 dark:bg-umai-accent/15">
+    <div class="flex flex-wrap items-start justify-between gap-3">
+      <div>
+        <h4 class="text-lg font-bold tracking-tight text-umai-gray-900 dark:text-white">{workerBus.family}</h4>
+        <div class="mt-2 flex flex-wrap gap-1.5">
+          {workerBus.examples.map((example) => (
+            <span class="rounded-full bg-white px-2.5 py-1 font-mono text-[0.68rem] font-semibold text-umai-accent dark:bg-umai-gray-900">
+              {example}
+            </span>
+          ))}
+        </div>
+      </div>
+      <span class="rounded-full border border-umai-accent/30 bg-white px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-umai-accent dark:bg-umai-gray-900">
+        tested in this post
+      </span>
+    </div>
+    <div class="mt-3 text-sm leading-6 text-umai-gray-700 dark:text-umai-gray-200">{workerBus.jobsLive}</div>
+    <div class="mt-3 rounded-xl border border-umai-accent/25 bg-white/80 p-3 text-sm leading-6 text-umai-gray-700 dark:border-umai-accent/30 dark:bg-umai-gray-900/70 dark:text-umai-gray-300">
+      <span class="mb-1 block text-[0.68rem] font-bold uppercase tracking-[0.14em] text-umai-accent">trade-off</span>
+      {workerBus.tradeoff}
+    </div>
+  </article>
+</section>

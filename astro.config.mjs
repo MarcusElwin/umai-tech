@@ -21,6 +21,9 @@ export default defineConfig({
     icon()
   ],
   output: 'static',
+  redirects: {
+    '/resume': '/cv',
+  },
   adapter: vercel({
     webAnalytics: { enabled: true },
     imageService: true,

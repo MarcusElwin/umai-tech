@@ -60,55 +60,52 @@ const rows = [
       Thin app harness vs worker substrate
     </h3>
     <div class="mt-3 text-sm leading-7 text-umai-gray-600 dark:text-umai-gray-300">
-      Same product surface, different runtime responsibilities. The useful comparison is not who is
-      “better”; it is where each harness shape puts the work.
+      Same product surface, different runtime responsibilities. The useful comparison isn&rsquo;t who&rsquo;s
+      &ldquo;better&rdquo; &mdash; it&rsquo;s where each harness shape puts the work.
     </div>
   </div>
 
-  <div class="grid gap-4 lg:grid-cols-2">
-    <div class="rounded-2xl border border-umai-gray-200 bg-umai-gray-50 p-4 dark:border-umai-gray-700 dark:bg-umai-gray-800/70">
-      <div class="mb-3 flex items-center justify-between gap-3">
-        <div>
-          <div class="text-lg font-bold tracking-tight text-umai-gray-900 dark:text-white">AI SDK harness</div>
-          <div class="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-umai-gray-400">thin app runtime</div>
-        </div>
-        <span class="rounded-full bg-umai-primary px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-white dark:bg-umai-secondary dark:text-umai-primary">
-          current
-        </span>
+  <div class="mb-4 hidden gap-4 sm:grid sm:grid-cols-2">
+    <div class="flex items-center justify-between gap-3 rounded-2xl border border-umai-gray-200 bg-umai-gray-50 p-4 dark:border-umai-gray-700 dark:bg-umai-gray-800/70">
+      <div>
+        <div class="text-lg font-bold tracking-tight text-umai-gray-900 dark:text-white">AI SDK harness</div>
+        <div class="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-umai-gray-400">thin app runtime</div>
       </div>
-      <div class="space-y-3">
-        {rows.map((row) => (
-          <article class="rounded-xl border border-umai-gray-200 bg-white p-3 dark:border-umai-gray-700 dark:bg-umai-gray-900">
-            <div class="text-[0.68rem] font-bold uppercase tracking-[0.14em] text-umai-gray-400">{row.dimension}</div>
-            <div class="mt-1 text-sm leading-6 text-umai-gray-700 dark:text-umai-gray-300">{row.inApp}</div>
-          </article>
-        ))}
-      </div>
+      <span class="rounded-full bg-umai-primary px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-white dark:bg-umai-secondary dark:text-umai-primary">
+        current
+      </span>
     </div>
+    <div class="flex items-center justify-between gap-3 rounded-2xl bg-gradient-to-r from-umai-accent to-umai-accent-dark p-4">
+      <div>
+        <div class="text-lg font-bold tracking-tight text-white">iii substrate</div>
+        <div class="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-white/75">engine + composable workers</div>
+      </div>
+      <a
+        href="https://iii.dev"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="rounded-full bg-white px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-umai-accent transition-colors hover:bg-umai-secondary"
+      >
+        iii.dev ↗
+      </a>
+    </div>
+  </div>
 
-    <div class="overflow-hidden rounded-2xl border border-umai-accent/40 bg-umai-accent/10 shadow-inner shadow-umai-accent/10 dark:border-umai-accent/40 dark:bg-umai-accent/15">
-      <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-umai-accent to-umai-accent-dark p-4">
-        <div>
-          <div class="text-lg font-bold tracking-tight text-white">iii substrate</div>
-          <div class="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-white/75">engine + composable workers</div>
+  <div class="space-y-3">
+    {rows.map((row) => (
+      <article class="rounded-2xl border border-umai-gray-200 bg-umai-gray-50 p-4 dark:border-umai-gray-700 dark:bg-umai-gray-800/70">
+        <div class="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-umai-gray-400">{row.dimension}</div>
+        <div class="mt-3 grid gap-3 sm:grid-cols-2">
+          <div class="rounded-xl border border-umai-gray-200 bg-white p-3 dark:border-umai-gray-700 dark:bg-umai-gray-900">
+            <div class="mb-1 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-umai-gray-400 sm:hidden">AI SDK harness</div>
+            <div class="text-sm leading-6 text-umai-gray-700 dark:text-umai-gray-300">{row.inApp}</div>
+          </div>
+          <div class="rounded-xl border border-umai-accent/25 bg-umai-accent/10 p-3 dark:border-umai-accent/30 dark:bg-umai-accent/15">
+            <div class="mb-1 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-umai-accent sm:hidden">iii substrate</div>
+            <div class="text-sm leading-6 text-umai-gray-700 dark:text-umai-gray-200">{row.iii}</div>
+          </div>
         </div>
-        <a
-          href="https://iii.dev"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="rounded-full bg-white px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-umai-accent transition-colors hover:bg-umai-secondary"
-        >
-          iii.dev ↗
-        </a>
-      </div>
-      <div class="space-y-3 p-4">
-        {rows.map((row) => (
-          <article class="rounded-xl border border-umai-accent/20 bg-white p-3 dark:border-umai-accent/30 dark:bg-umai-gray-900">
-            <div class="text-[0.68rem] font-bold uppercase tracking-[0.14em] text-umai-accent">{row.dimension}</div>
-            <div class="mt-1 text-sm leading-6 text-umai-gray-700 dark:text-umai-gray-300">{row.iii}</div>
-          </article>
-        ))}
-      </div>
-    </div>
+      </article>
+    ))}
   </div>
 </section>
