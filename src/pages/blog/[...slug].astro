@@ -87,6 +87,19 @@ const { Content, headings } = await entry.render();
             ))}
           </div>
         )}
+
+        {entry.data.heroImage && (
+          <figure class="mt-8 overflow-hidden rounded-3xl border border-umai-gray-200 bg-umai-gray-50 shadow-2xl shadow-umai-gray-900/10 dark:border-umai-gray-700 dark:bg-umai-gray-900/80">
+            <img
+              src={entry.data.heroImage}
+              alt={`${entry.data.title} hero image`}
+              class="block h-auto w-full"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+            />
+          </figure>
+        )}
       </header>
 
       <!-- Article content -->
@@ -256,6 +269,10 @@ const { Content, headings } = await entry.render();
   .blog-content :global(img) {
     @apply rounded-lg shadow-sm my-6 max-w-md mx-auto block;
   }
+
+  .blog-content :global(img.wide-blog-image) {
+    @apply my-0 max-w-none rounded-none shadow-none;
+  }
   
   /* Tables */
   .blog-content :global(table) {
@@ -363,6 +380,10 @@ const { Content, headings } = await entry.render();
   
   .blog-content :global(img:hover) {
     @apply transform scale-105 shadow-lg;
+  }
+
+  .blog-content :global(img.wide-blog-image:hover) {
+    @apply transform-none shadow-none;
   }
   
   /* Improve mermaid diagram styling */

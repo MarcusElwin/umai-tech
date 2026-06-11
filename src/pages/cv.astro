@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+import InteractiveCV from '../components/InteractiveCV.astro';
+---
+
+<Layout
+  title="CV — Marcus Elwin"
+  description="Marcus Elwin's CV: AI product and engineering leader. Explore an interactive terminal resume or download the PDF."
+>
+  <section class="pt-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-umai-primary">
+    <div class="max-w-5xl mx-auto text-center">
+      <h1 class="text-4xl sm:text-5xl font-light text-gray-900 dark:text-white mb-4">
+        Marcus <span class="font-normal text-umai-accent">Elwin</span>
+      </h1>
+      <p class="text-lg text-gray-600 dark:text-gray-400">
+        AI product &amp; engineering — browse the interactive resume below or grab the PDF.
+      </p>
+    </div>
+  </section>
+
+  <InteractiveCV />
+</Layout>

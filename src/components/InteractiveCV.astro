@@ -2,89 +2,178 @@
 // InteractiveCV.astro - Terminal-inspired CV with download functionality
 ---
 
-<section class="interactive-cv-section py-20 bg-gray-50 dark:bg-umai-gray-900 relative overflow-hidden" style="isolation: isolate; position: relative; z-index: 1;">
+<section
+  class="interactive-cv-section py-20 bg-gray-50 dark:bg-umai-gray-900 relative overflow-hidden"
+  style="isolation: isolate; position: relative; z-index: 1;"
+>
   <!-- Background pattern - REMOVED TO FIX CLICK ISSUE -->
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Header -->
     <div class="text-center mb-12">
-      <h2 class="text-3xl md:text-4xl font-light text-gray-900 dark:text-white mb-4">
+      <h2
+        class="text-3xl md:text-4xl font-light text-gray-900 dark:text-white mb-4"
+      >
         Interactive <span class="text-umai-accent font-normal">Resume</span>
       </h2>
       <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-        Explore my experience through an interactive terminal interface, or download the traditional PDF version.
+        Explore my experience through an interactive terminal interface, or
+        download the traditional PDF version.
       </p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Terminal CV -->
       <div class="lg:col-span-2">
-        <div class="bg-gray-900 dark:bg-black rounded-2xl shadow-2xl overflow-hidden border-2 border-gray-800">
+        <div
+          id="cv-terminal"
+          class="cv-terminal bg-gray-900 dark:bg-black rounded-2xl shadow-2xl overflow-hidden border-2 border-gray-800"
+        >
           <!-- Terminal Header -->
-          <div class="flex items-center justify-between px-4 py-3 bg-gray-800 dark:bg-gray-900 border-b border-gray-700">
+          <div
+            class="flex items-center justify-between px-4 py-3 bg-gray-800 dark:bg-gray-900 border-b border-gray-700"
+          >
             <div class="flex items-center space-x-2">
               <div class="w-3 h-3 bg-red-500 rounded-full shadow-sm"></div>
               <div class="w-3 h-3 bg-yellow-500 rounded-full shadow-sm"></div>
               <div class="w-3 h-3 bg-green-500 rounded-full shadow-sm"></div>
             </div>
-            <div class="text-gray-400 text-sm font-mono flex items-center gap-2">
+            <div
+              class="text-gray-400 text-sm font-mono flex items-center gap-2"
+            >
               <span class="text-green-400">●</span>
               <span>marcus@umai-tech</span>
               <span class="text-gray-500">~/resume</span>
             </div>
-            <div class="text-xs text-gray-500 font-mono">Interactive CV v2.0</div>
+            <div class="flex items-center gap-3">
+              <div class="text-xs text-gray-500 font-mono">
+                Interactive CV v2.0
+              </div>
+              <button
+                type="button"
+                id="cv-fullwindow-btn"
+                class="text-gray-400 hover:text-white transition-colors"
+                aria-label="Toggle full window"
+                title="Toggle full window (Esc to exit)"
+              >
+                <svg
+                  class="cv-fs-expand w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                  ></path>
+                </svg>
+                <svg
+                  class="cv-fs-compress w-4 h-4 hidden"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9 9L4 4m5 5V5m0 4H5m10 0l5-5m-5 5V5m0 4h4M9 15l-5 5m5-5v4m0-4H5m10 0l5 5m-5-5v4m0-4h4"
+                  ></path>
+                </svg>
+              </button>
+            </div>
           </div>
 
           <!-- Terminal Content -->
-          <div class="font-mono text-sm bg-gray-900 h-96" style="display: flex; flex-direction: column;">
+          <div
+            class="cv-terminal-body font-mono text-sm bg-gray-900 h-96"
+            style="display: flex; flex-direction: column;"
+          >
             <!-- Command line -->
-            <div class="p-4 border-b border-gray-700 bg-gray-800" style="flex-shrink: 0;">
+            <div
+              class="p-4 border-b border-gray-700 bg-gray-800"
+              style="flex-shrink: 0;"
+            >
               <div class="space-y-1">
                 <div class="flex items-center">
                   <span class="text-blue-400">marcus@umai-tech</span>
                   <span class="text-white">:</span>
                   <span class="text-yellow-400">~/resume</span>
                   <span class="text-white">$ </span>
-                  <span class="text-green-400 terminal-cursor">./marcus-cv --display --interactive</span>
+                  <span class="text-green-400 terminal-cursor"
+                    >./marcus-cv --display --interactive</span
+                  >
                 </div>
                 <div class="text-gray-500 text-xs">
-                  <span class="text-green-400">✓</span> Loading Marcus Elwin's Interactive Resume...
+                  <span class="text-green-400">✓</span> Loading Marcus Elwin's Interactive
+                  Resume...
                 </div>
               </div>
             </div>
-            
+
             <!-- Scrollable content -->
-            <div id="cv-content" style="flex: 1; overflow-y: auto; overflow-x: hidden; padding: 16px; background: #111827; font-family: monospace; font-size: 12px; position: relative; z-index: 1000;">
+            <div
+              id="cv-content"
+              style="flex: 1; overflow-y: auto; overflow-x: hidden; padding: 16px; background: #111827; font-family: monospace; font-size: 12px; position: relative; z-index: 1000;"
+            >
               <div class="text-green-400">Loading CV data...</div>
             </div>
           </div>
 
           <!-- Terminal Controls -->
-          <div class="px-6 py-4 bg-gray-800 dark:bg-gray-900 border-t border-gray-700">
+          <div
+            class="px-6 py-4 bg-gray-800 dark:bg-gray-900 border-t border-gray-700"
+          >
             <div class="flex items-center justify-between mb-3">
-              <div class="text-xs text-gray-500 font-mono">Available sections:</div>
-              <div class="text-xs text-gray-500 font-mono">Press Tab ↹ to navigate</div>
+              <div class="text-xs text-gray-500 font-mono">
+                Available sections:
+              </div>
+              <div class="text-xs text-gray-500 font-mono">
+                Press Tab ↹ to navigate
+              </div>
             </div>
             <div class="flex flex-wrap gap-2">
-              <button type="button" class="cv-btn bg-umai-accent hover:bg-umai-accent-dark text-white px-4 py-2 rounded-lg text-xs font-mono transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2" data-section="overview">
+              <button
+                type="button"
+                class="cv-btn bg-umai-accent hover:bg-umai-accent-dark text-white px-4 py-2 rounded-lg text-xs font-mono transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2"
+                data-section="overview"
+              >
                 <span class="text-yellow-300">👤</span>
                 ./overview
               </button>
-              <button type="button" class="cv-btn bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-xs font-mono transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2" data-section="experience">
+              <button
+                type="button"
+                class="cv-btn bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-xs font-mono transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2"
+                data-section="experience"
+              >
                 <span class="text-blue-300">💼</span>
                 ./experience
               </button>
-              <button type="button" class="cv-btn bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-xs font-mono transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2" data-section="skills">
+              <button
+                type="button"
+                class="cv-btn bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-xs font-mono transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2"
+                data-section="skills"
+              >
                 <span class="text-green-300">⚡</span>
                 ./skills
               </button>
-              <button type="button" class="cv-btn bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-xs font-mono transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2" data-section="education">
+              <button
+                type="button"
+                class="cv-btn bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-xs font-mono transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2"
+                data-section="education"
+              >
                 <span class="text-purple-300">🎓</span>
                 ./education
               </button>
-              <button type="button" class="cv-btn bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-xs font-mono transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2" data-section="certifications">
-                <span class="text-orange-300">📜</span>
-                ./certs
+              <button
+                type="button"
+                class="cv-btn bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-xs font-mono transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2"
+                data-section="projects"
+              >
+                <span class="text-orange-300">🚀</span>
+                ./projects
               </button>
             </div>
           </div>
@@ -93,21 +182,54 @@
 
       <!-- Download Panel -->
       <div class="lg:col-span-1">
-        <div class="bg-white dark:bg-umai-gray-800 rounded-2xl shadow-lg p-8 border border-gray-200 dark:border-gray-700 sticky top-8">
+        <div
+          class="bg-white dark:bg-umai-gray-800 rounded-2xl shadow-lg p-8 border border-gray-200 dark:border-gray-700 sticky top-8"
+        >
           <div class="text-center mb-6">
-            <div class="w-16 h-16 bg-umai-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-umai-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            <div
+              class="w-16 h-16 bg-umai-accent/10 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <svg
+                class="w-8 h-8 text-umai-accent"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
               </svg>
             </div>
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Download Resume</h3>
-            <p class="text-gray-600 dark:text-gray-400 text-sm">Get a traditional PDF version for your records</p>
+            <h3
+              class="text-xl font-semibold text-gray-900 dark:text-white mb-2"
+            >
+              Download Resume
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">
+              Get a traditional PDF version for your records
+            </p>
           </div>
 
           <div class="space-y-4">
-            <button type="button" id="download-pdf-btn" class="w-full bg-umai-accent hover:bg-umai-accent-dark text-white py-3 px-4 rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M7 13h10"/>
+            <button
+              type="button"
+              id="download-pdf-btn"
+              class="w-full bg-umai-accent hover:bg-umai-accent-dark text-white py-3 px-4 rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3M7 13h10"></path>
               </svg>
               Download PDF
             </button>
@@ -116,7 +238,7 @@
               <div class="text-xs text-gray-500 dark:text-gray-400 space-y-1">
                 <div class="flex justify-between">
                   <span>Last Updated:</span>
-                  <span>Jan 2025</span>
+                  <span>Apr 2026</span>
                 </div>
                 <div class="flex justify-between">
                   <span>Location:</span>
@@ -124,7 +246,7 @@
                 </div>
                 <div class="flex justify-between">
                   <span>Experience:</span>
-                  <span>7+ Years</span>
+                  <span>9+ Years</span>
                 </div>
               </div>
             </div>
@@ -132,24 +254,36 @@
         </div>
 
         <!-- Quick Stats -->
-        <div class="mt-6 bg-white dark:bg-umai-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-          <h4 class="font-semibold text-gray-900 dark:text-white mb-4">Quick Stats</h4>
+        <div
+          class="mt-6 bg-white dark:bg-umai-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700"
+        >
+          <h4 class="font-semibold text-gray-900 dark:text-white mb-4">
+            Quick Stats
+          </h4>
           <div class="space-y-3">
             <div class="flex justify-between items-center">
-              <span class="text-gray-600 dark:text-gray-400 text-sm">Experience</span>
-              <span class="text-umai-accent font-semibold">7+ Years</span>
+              <span class="text-gray-600 dark:text-gray-400 text-sm"
+                >Experience</span
+              >
+              <span class="text-umai-accent font-semibold">9+ Years</span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="text-gray-600 dark:text-gray-400 text-sm">Companies</span>
-              <span class="text-umai-accent font-semibold">8+</span>
+              <span class="text-gray-600 dark:text-gray-400 text-sm"
+                >Companies</span
+              >
+              <span class="text-umai-accent font-semibold">5</span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="text-gray-600 dark:text-gray-400 text-sm">Industries</span>
+              <span class="text-gray-600 dark:text-gray-400 text-sm"
+                >Industries</span
+              >
               <span class="text-umai-accent font-semibold">6+</span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="text-gray-600 dark:text-gray-400 text-sm">Languages</span>
-              <span class="text-umai-accent font-semibold">4</span>
+              <span class="text-gray-600 dark:text-gray-400 text-sm"
+                >Languages</span
+              >
+              <span class="text-umai-accent font-semibold">3</span>
             </div>
           </div>
         </div>
@@ -163,89 +297,82 @@
   const cvData = {
     overview: {
       name: "Marcus Elwin",
-      title: "AI Lead @ Kustom",
+      title: "AI Lead @ Kustom (fmr. Klarna Checkout)",
+      tagline: "building scalable AI solutions for bold brands",
       location: "Greater Stockholm Metropolitan Area",
       email: "marcus@elwin.com",
       linkedin: "linkedin.com/in/MarcusElwin",
       blog: "dswithmac.com",
-      summary: "Service and sales oriented, pragmatic AI Leader & Data Scientist with 7+ years of Advanced Analytics, Machine Learning, Data Science and Generative AI experience. I love new challenges and thrive at the intersection of technology, IT, people and business!",
+      website: "umai-tech.com",
+      summary:
+        "AI Engineer & Product Leader with broad experience from FinTech, Retail and Legal Tech. My strengths are LLMs, agentic systems and MLOps. I enjoy building AI from zero-to-one and driving projects end-to-end.",
       journey: "Data Scientist → Product Manager → AI Engineer → AI Lead",
       core_expertise: [
-        "Generative AI & LLMs (Claude, ChatGPT, Mistral)",
-        "Machine Learning (NLP, Neural Networks, Deep Learning)",
-        "Programming (Python, TypeScript, R, SQL, Java, C#)",
-        "Cloud Platforms (AWS, GCP, Azure)",
-        "Analytics & Visualization (Looker, Tableau, QlikView)"
+        "ML Engineering & AI Systems",
+        "LLMs, Agents & Harness Engineering",
+        "Evaluation & LLMOps",
+        "RAG & Hybrid Search",
+        "Python, TypeScript, PyTorch",
+        "Product Management",
+        "Cloud (GCP, Azure, AWS) & DevOps (GitHub, Docker, K8s)",
       ],
       languages: {
-        "English": "Native or Bilingual",
-        "Swedish": "Native or Bilingual", 
-        "German": "Elementary",
-        "French": "Limited Working"
-      }
+        Swedish: "Native Speaker",
+        English: "Native Speaker",
+        French: "Limited Working Proficiency",
+      },
     },
     experience: [
       {
         title: "AI Lead",
-        company: "Kustom",
+        company: "Kustom (fmr. Klarna Checkout)",
         period: "May 2025 - Present",
         location: "Stockholm, Sweden",
-        description: "Current role as AI Lead driving AI innovation and strategy."
+        achievements: [
+          "Own end-to-end AI strategy, roadmap, and delivery for agentic commerce across Europe's leading checkout platform (24,000+ businesses)",
+          "Architect agent-based systems with multi-step reasoning, tool selection, and graceful error recovery",
+          "Establish quality bars using evaluation frameworks and A/B testing",
+          "Key initiative: AI-powered upsell on the confirmation page — incremental revenue at the highest-intent moment",
+          "Collaborate with platform partners and merchants to define use cases, co-design solutions, and drive network-wide adoption",
+        ],
       },
       {
         title: "Lead AI Engineer",
-        company: "Pocketlaw",
-        period: "December 2024 - May 2025",
+        company: "Miramis Technologies (fmr. Pocketlaw)",
+        period: "November 2023 - May 2025",
         location: "Stockholm, Sweden",
         achievements: [
-          "Transformed legal operations through innovative LLM-powered solutions",
-          "Architected advanced AI agents delivering 10x faster contract processing",
-          "Drove company-wide AI strategy while mentoring technical talent",
-          "Regular speaking at industry meet-ups representing Pocketlaw"
-        ]
-      },
-      {
-        title: "Data Scientist/ML Engineer",
-        company: "Pocketlaw",
-        period: "November 2023 - December 2024",
-        location: "Stockholm, Sweden",
-        achievements: [
-          "First ML Engineer at Pocketlaw setting up key data pipelines",
-          "Built AI-powered features: PLAI document assistant, AI auto tagging",
-          "Developed agentic AI driven contract review tool",
+          "First AI & data hire — pioneered AI and data initiatives across the company",
+          "Designed scalable data pipelines and established data-driven workflows",
+          "Built LLM-powered features: PLAI document assistant, AI auto-tagging, and an agentic contract review tool",
           "Created internal Text2SQL tool 'PLarvis' for analytics",
-          "Led ML/LLMOps initiatives to scale AI deployments"
-        ]
+          "Owned the AI strategy and mentored a growing AI team (1 FTE)",
+        ],
       },
       {
-        title: "Associate Product Manager",
+        title: "Product Manager",
         company: "Tink",
         period: "January 2023 - November 2023",
         location: "Stockholm, Sweden",
         achievements: [
-          "Product Manager for Income Check product using ML and Data Science",
-          "Implemented real-time income verification solutions"
-        ]
+          "Owned the Income Check product: real-time income verification built with ML and open banking data (PSD2)",
+          "Extended the income taxonomy from 5 to 21 categories and added account metadata for improved UX",
+          "Product grew 20-30% MoM; ran product deep-dives and use-case mapping with customers across Europe",
+          "Scoped and drove product discovery for future credit / risk products",
+        ],
       },
       {
         title: "Senior Data Scientist",
         company: "Tink",
-        period: "June 2022 - November 2023",
+        period: "April 2021 - January 2023",
         location: "Stockholm, Sweden",
         achievements: [
-          "Engineering Risk / Risk Decisioning product team",
-          "Enriched open banking data for risk decisioning using ML"
-        ]
-      },
-      {
-        title: "Data Scientist",
-        company: "Tink",
-        period: "April 2021 - June 2022",
-        location: "Stockholm, Sweden",
-        achievements: [
-          "Risk & Credit decisioning team member",
-          "Developed ML models for financial risk assessment"
-        ]
+          "Built credit and risk products using machine learning, deep learning, and open banking data",
+          "Income classification and risky-transaction classification as predictive features for credit risk modelling",
+          "Developed credit scoring models and ran backtests with many clients",
+          "Defined 'golden paths' for ML deployment on Vertex AI together with the platform team",
+          "Tools: SageMaker (AWS), BigQuery (GCP), Python, Airflow, Kubernetes",
+        ],
       },
       {
         title: "Data Scientist",
@@ -253,51 +380,67 @@
         period: "April 2019 - April 2021",
         location: "Solna, Sweden",
         achievements: [
-          "One of first Data Scientists at center of excellence for Data Science & AI",
-          "Built team and worked on projects across Retail, Pharmacy, Banking, Insurance",
-          "Full project lifecycle: scoping MVPs, experimentation, modeling, A/B testing",
-          "Production deployment of ML models",
-          "Tools: Python, PySpark, Hive, Impala, AirFlow, GitLab, Jenkins"
-        ]
+          "Use cases across all ICA Gruppen companies: retail, banking, insurance, and pharmacy",
+          "Helped grow the team from 3 to 8 FTEs — way-of-working, technical frameworks, recruiting, coaching",
+          "Full lifecycle: MVP scoping, experimentation and modelling, A/B testing, productionizing ML models",
+          "Use cases: churn prediction, demand forecasting, assortment optimization, workforce scheduling",
+          "Tools: Python, PySpark, AirFlow, SQL",
+        ],
       },
       {
         title: "Economic & Statistical Research Analyst",
         company: "Nasdaq",
-        period: "July 2018 - March 2019",
+        period: "October 2016 - March 2019",
         location: "Stockholm, Sweden",
         achievements: [
-          "Business Intelligence, Data Science, Economic & Statistical Research",
-          "Market Microstructure for equity, derivatives, commodities in Nordics",
-          "Tools: SQL, R, Python, QlikView, SAP Business Objects",
-          "Regulatory reporting to FSAs, ESMA, and FESE"
-        ]
-      }
+          "Quantitative analysis, data science, business intelligence, and market microstructure research",
+          "High-frequency trading classification and clustering",
+          "EXSIM: reinforcement-learning exchange simulator",
+          "Commodities slide-deck automation in R; main tools SQL and R",
+        ],
+      },
     ],
     skills: {
-      "Generative AI & LLMs": {
+      "ML Engineering & AI Systems": {
         level: 95,
-        items: ["Claude", "ChatGPT", "Mistral", "LangChain", "Prompt Engineering"]
+        items: [
+          "AI System Design",
+          "Agent Architectures",
+          "MLOps",
+          "Production ML",
+        ],
       },
-      "Machine Learning": {
-        level: 92,
-        items: ["Natural Language Processing", "Neural Networks", "Deep Learning", "Regression", "Classification", "Clustering", "Reinforcement Learning"]
+      "LLMs, Agents & Harness Engineering": {
+        level: 93,
+        items: [
+          "Claude",
+          "ChatGPT",
+          "Mistral",
+          "Agentic Systems",
+          "Tool Use",
+          "Prompt Engineering",
+        ],
       },
-      "Programming Languages": {
+      "Programming": {
         level: 90,
-        items: ["Python", "TypeScript", "R", "SQL", "Java", "C#"]
+        items: ["Python", "TypeScript", "PyTorch", "SQL", "R"],
       },
-      "Cloud Platforms": {
+      "Evaluation & LLMOps": {
         level: 88,
-        items: ["Google Cloud Platform (GCP)", "Microsoft Azure", "AWS", "Terraform"]
+        items: ["Evaluation Frameworks", "A/B Testing", "DSPy", "Observability"],
       },
-      "Data & Analytics": {
-        level: 87,
-        items: ["BigQuery", "SQL Server", "PostgreSQL", "Hive", "Impala", "Apache Spark"]
-      },
-      "Visualization & BI": {
+      "Product Management": {
         level: 85,
-        items: ["Looker", "Tableau", "QlikView", "SAP Business Objects"]
-      }
+        items: ["Roadmaps", "Product Discovery", "Customer Deep-Dives"],
+      },
+      "RAG & Hybrid Search": {
+        level: 84,
+        items: ["Embeddings", "Vector Search", "Hybrid Retrieval"],
+      },
+      "Cloud & DevOps": {
+        level: 82,
+        items: ["GCP", "Azure", "AWS", "GitHub", "Docker", "Kubernetes"],
+      },
     },
     education: [
       {
@@ -306,64 +449,82 @@
         school: "KTH Royal Institute of Technology",
         period: "2016 - 2018",
         location: "Stockholm, Sweden",
-        thesis: "Simulating market maker behaviour using Deep Reinforcement Learning to understand market microstructure"
+        thesis:
+          "Simulating market maker behaviour using Deep Reinforcement Learning to understand market microstructure",
       },
       {
-        degree: "Bachelor of Science (B.Sc.)",
-        field: "Information and Communication Technology", 
+        degree: "Bachelor of Engineering (B.Eng.)",
+        field: "IT Engineering",
         school: "KTH Royal Institute of Technology",
         period: "2013 - 2016",
-        location: "Stockholm, Sweden"
+        location: "Stockholm, Sweden",
       },
       {
         degree: "Bachelor's degree",
         field: "Business & Economics",
         school: "Stockholm University",
         period: "2015 - 2017",
-        location: "Stockholm, Sweden"
+        location: "Stockholm, Sweden",
       },
       {
         degree: "Exchange Student",
         field: "Computer and Information Sciences",
         school: "Institut national des Sciences appliquées de Lyon",
         period: "2015 - 2016",
-        location: "Lyon, France"
-      }
+        location: "Lyon, France",
+      },
     ],
-    certifications: [
+    projects: [
       {
-        name: "Elements of AI",
-        issuer: "University of Helsinki",
-        year: "2023"
+        name: "iii — Go SDK Contributions",
+        link: "github.com/iii-hq/iii",
+        description:
+          "Open-source contributor to iii, a source-available agent infrastructure engine (~17k stars) — Go SDK work alongside the Node, Python, and Rust SDKs, including connection-scoped reply routing",
       },
       {
-        name: "Google Cloud Platform Big Data and Machine Learning Fundamentals",
-        issuer: "Google Cloud",
-        year: "2022"
+        name: "Aura — Agentic LLM Gateway in Rust",
+        link: "github.com/UmaiTech/aura-llm-gateway",
+        description:
+          "Open-source agentic LLM gateway written in Rust — unified provider routing, streaming, and observability for LLM traffic",
       },
       {
-        name: "Machine Learning with TensorFlow on Google Cloud Platform Specialization",
-        issuer: "Google Cloud",
-        year: "2022"
+        name: "Multi-Agents-Team",
+        link: "github.com/MarcusElwin/multi-agents-team",
+        demo: "mat.umai-tech.com",
+        description:
+          "Next.js playground for nine multi-agent coordination patterns — orchestrated, debate, blackboard, market, swarm — with a hand-rolled AI SDK harness and an iii engine backend",
       },
       {
-        name: "Cambridge Advanced English (CAE)",
-        issuer: "Cambridge Assessment English",
-        year: "2020"
-      }
-    ]
+        name: "NER using DSPy",
+        link: "github.com/MarcusElwin/ner-dspy",
+        description:
+          "Open-source project demonstrating advanced evaluation frameworks and prompt optimisation using DSPy — directly applicable to building scalable AI evaluation infrastructure",
+      },
+      {
+        name: "AI Engineering: Legal Agents",
+        link: "github.com/MarcusElwin",
+        description:
+          "Research project exploring LLMs and AI agents for complex document processing — tool use, planning loops, and failure recovery",
+      },
+      {
+        name: "Agentic Commerce Analysis",
+        link: "umai-tech.com",
+        description:
+          "Thought leadership on building reliable, user-trusted agent systems in production — agentic commerce, the dawn of a new AI-driven era for e-commerce",
+      },
+    ],
   };
 
   // Terminal functionality
-  let currentSection = 'overview';
+  let currentSection = "overview";
   let isAnimating = false;
 
   function getASCIIHeader(section) {
     const headers = {
       overview: {
-        title: 'OVERVIEW',
-        subtitle: '🚀 INTERACTIVE RESUME 🚀',
-        description: 'AI Lead & Data Science Expert',
+        title: "OVERVIEW",
+        subtitle: "🚀 INTERACTIVE RESUME 🚀",
+        description: "AI Lead & AI Engineer",
         ascii: `
 ╔══════════════════════════════════════════════════════╗
 ║  ███╗   ███╗ █████╗ ██████╗  ██════╝██╗   ██╗██╗     ║
@@ -377,12 +538,12 @@
 ║  █████╗  ██║     ██║ █╗ ██║██║██╔██╗ ██║             ║
 ║  ██╔══╝  ██║     ██║███╗██║██║██║╚██╗██║             ║
 ║  ███████╗███████╗╚███╔███╔╝██║██║ ╚████║             ║
-╚══════════════════════════════════════════════════════╝`
+╚══════════════════════════════════════════════════════╝`,
       },
       experience: {
-        title: 'EXPERIENCE',
-        subtitle: '💼 PROFESSIONAL JOURNEY',
-        description: '7+ Years in AI & Data Science',
+        title: "EXPERIENCE",
+        subtitle: "💼 PROFESSIONAL JOURNEY",
+        description: "9+ Years in AI & Data Science",
         ascii: `
 ╔═══════════════════════════════════════════════════════════════════════════════╗
 ║  ███████╗██╗  ██╗██████╗ ███████╗██████╗ ██╗███████╗███╗   ██╗ ██████╗███████╗║
@@ -391,12 +552,12 @@
 ║  ██╔══╝   ██╔██╗ ██╔═══╝ ██╔══╝  ██╔══██╗██║██╔══╝  ██║╚██╗██║██║     ██╔══╝  ║
 ║  ███████╗██╔╝ ██╗██║     ███████╗██║  ██║██║███████╗██║ ╚████║╚██████╗███████╗║
 ║  ╚══════╝╚═╝  ╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚═╝  ╚═══╝ ╚═════╝╚══════╝║
-╚═══════════════════════════════════════════════════════════════════════════════╝`
+╚═══════════════════════════════════════════════════════════════════════════════╝`,
       },
       skills: {
-        title: 'SKILLS',
-        subtitle: '⚡ TECHNICAL EXPERTISE',
-        description: 'AI, ML, and Engineering Stack',
+        title: "SKILLS",
+        subtitle: "⚡ TECHNICAL EXPERTISE",
+        description: "AI, ML, and Engineering Stack",
         ascii: `
 ╔═══════════════════════════════════════╗
 ║  ███████╗██╗  ██╗██╗██╗     ██╗      ███████╗║
@@ -405,12 +566,12 @@
 ║  ╚════██║██╔═██╗ ██║██║     ██║      ╚════██║║
 ║  ███████║██║  ██╗██║███████╗███████╗███████║║
 ║  ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚══════╝║
-╚═══════════════════════════════════════╝`
+╚═══════════════════════════════════════╝`,
       },
       education: {
-        title: 'EDUCATION',
-        subtitle: '🎓 ACADEMIC FOUNDATION',
-        description: 'KTH Royal Institute of Technology',
+        title: "EDUCATION",
+        subtitle: "🎓 ACADEMIC FOUNDATION",
+        description: "KTH Royal Institute of Technology",
         ascii: `
 ╔═══════════════════════════════════════════════════════════════════════════╗
 ║  ███████╗██████╗ ██╗   ██╗ ██████╗ █████╗ ████████╗██╗ ██████╗ ███╗   ██╗║
@@ -419,77 +580,82 @@
 ║  ██╔══╝  ██║  ██║██║   ██║██║     ██╔══██║   ██║   ██║██║   ██║██║╚██╗██║║
 ║  ███████╗██████╔╝╚██████╔╝╚██████╗██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║║
 ║  ╚══════╝╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝║
-╚═══════════════════════════════════════════════════════════════════════════╝`
+╚═══════════════════════════════════════════════════════════════════════════╝`,
       },
-      certifications: {
-        title: 'CERTIFICATIONS',
-        subtitle: '📜 PROFESSIONAL CREDENTIALS',
-        description: 'Industry Recognition & Learning',
+      projects: {
+        title: "PROJECTS",
+        subtitle: "🚀 KEY PROJECTS & PUBLICATIONS",
+        description: "Open Source & Thought Leadership",
         ascii: `
-╔═══════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-║   ██████╗███████╗██████╗ ████████╗██╗███████╗██╗ ██████╗ █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗║
-║  ██╔════╝██╔════╝██╔══██╗╚══██╔══╝██║██╔════╝██║██╔════╝██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝║
-║  ██║     █████╗  ██████╔╝   ██║   ██║█████╗  ██║██║     ███████║   ██║   ██║██║   ██║██╔██╗ ██║███████╗║
-║  ██║     ██╔══╝  ██╔══██╗   ██║   ██║██╔══╝  ██║██║     ██╔══██║   ██║   ██║██║   ██║██║╚██╗██║╚════██║║
-║  ╚██████╗███████╗██║  ██║   ██║   ██║██║     ██║╚██████╗██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║███████║║
-║   ╚═════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝╚═╝     ╚═╝ ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝║
-╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════╝`
-      }
+╔═════════════════════════════════════════════════════════════════════╗
+║  ██████╗ ██████╗  ██████╗      ██╗███████╗ ██████╗████████╗███████╗║
+║  ██╔══██╗██╔══██╗██╔═══██╗     ██║██╔════╝██╔════╝╚══██╔══╝██╔════╝║
+║  ██████╔╝██████╔╝██║   ██║     ██║█████╗  ██║        ██║   ███████╗║
+║  ██╔═══╝ ██╔══██╗██║   ██║██   ██║██╔══╝  ██║        ██║   ╚════██║║
+║  ██║     ██║  ██║╚██████╔╝╚█████╔╝███████╗╚██████╗   ██║   ███████║║
+║  ╚═╝     ╚═╝  ╚═╝ ╚═════╝  ╚════╝ ╚══════╝ ╚═════╝   ╚═╝   ╚══════╝║
+╚═════════════════════════════════════════════════════════════════════╝`,
+      },
     };
     return headers[section] || headers.overview;
   }
 
   function displayContent(data) {
-    const content = document.getElementById('cv-content');
+    const content = document.getElementById("cv-content");
     if (!content) {
-      console.error('cv-content element not found');
+      console.error("cv-content element not found");
       return;
     }
 
     // Enhanced terminal output with better styling and icons
-    let output = '';
-    
+    let output = "";
+
     // Determine section type and show appropriate ASCII header
-    let sectionType = currentSection || 'overview';
-    
+    let sectionType = currentSection || "overview";
+
     // Debug log to see what we're working with
-    console.log('Current section:', currentSection, 'Data type:', Array.isArray(data) ? 'array' : typeof data);
-    
+    console.log(
+      "Current section:",
+      currentSection,
+      "Data type:",
+      Array.isArray(data) ? "array" : typeof data,
+    );
+
     const header = getASCIIHeader(sectionType);
-    
+
     // Add ASCII header with MARCUS in purple and ELWIN in yellow
     output += `<div style="margin-bottom: 24px; text-align: center;">`;
-    
+
     // Use consistent purple color for all ASCII headers
     output += `<pre style="color: #8b5cf6; font-size: 8px; line-height: 1; margin: 0; text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);">${header.ascii}</pre>`;
-    
-    if (sectionType !== 'overview') {
+
+    if (sectionType !== "overview") {
       output += `<div style="margin-top: 8px; color: #86efac; font-size: 12px;">${header.subtitle}</div>`;
       output += `<div style="color: #9ca3af; font-size: 10px;">${header.description}</div>`;
     } else {
       output += `<div style="margin-top: 8px; color: #86efac; font-size: 12px;">🚀 INTERACTIVE RESUME 🚀</div>`;
-      output += `<div style="color: #9ca3af; font-size: 10px;">AI Lead & Data Science Expert - Stockholm, Sweden</div>`;
+      output += `<div style="color: #9ca3af; font-size: 10px;">AI Lead & AI Engineer - Stockholm, Sweden</div>`;
     }
     output += `</div>`;
-    
+
     // Add system info banner (only for overview)
-    if (sectionType === 'overview') {
+    if (sectionType === "overview") {
       output += `<div style="margin-bottom: 20px; padding: 12px; background: linear-gradient(90deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%); border: 1px solid #374151; border-radius: 8px;">`;
       output += `<div style="color: #60a5fa; font-size: 11px; margin-bottom: 8px;">SYSTEM INFO:</div>`;
       output += `<div style="color: #86efac; font-size: 10px; line-height: 1.4;">`;
-      output += `<span style="color: #fbbf24;">Version:</span> Marcus CV v2.0.1 | `;
-      output += `<span style="color: #fbbf24;">Build:</span> 2025.01.24 | `;
+      output += `<span style="color: #fbbf24;">Version:</span> Marcus CV v3.0.0 | `;
+      output += `<span style="color: #fbbf24;">Build:</span> 2026.06.11 | `;
       output += `<span style="color: #fbbf24;">Runtime:</span> Interactive Terminal | `;
       output += `<span style="color: #fbbf24;">Status:</span> <span style="color: #10b981;">ONLINE ●</span>`;
       output += `</div>`;
       output += `</div>`;
     }
-    
+
     if (Array.isArray(data)) {
       data.forEach((item, index) => {
         output += `<div style="margin-bottom: 24px; border-left: 3px solid #8b5cf6; padding-left: 16px; background: linear-gradient(90deg, rgba(139, 92, 246, 0.05) 0%, transparent 50%); border-radius: 0 8px 8px 0;">`;
         output += `<div style="color: #fbbf24; font-weight: bold; font-size: 14px; margin-bottom: 8px;">📁 [${index}] {</div>`;
-        
+
         Object.entries(item).forEach(([key, value]) => {
           if (Array.isArray(value)) {
             output += `<div style="color: #60a5fa; padding-left: 16px; margin: 6px 0;">🔗 ${key}: [</div>`;
@@ -498,14 +664,21 @@
             });
             output += `<div style="color: #60a5fa; padding-left: 16px;">]</div>`;
           } else {
-            const displayValue = typeof value === 'string' && value.includes('@') 
-              ? `<a href="mailto:${value}" style="color: #93c5fd !important; text-decoration: underline !important; cursor: pointer !important; padding: 2px 4px; background: rgba(147, 197, 253, 0.1); border-radius: 4px;" onmousedown="console.log('Email clicked')">📧 ${value}</a>`
-              : typeof value === 'string' && (value.startsWith('http') || value.includes('linkedin.com') || value.includes('.com'))
-                ? `<a href="${value.startsWith('http') ? value : 'https://' + value}" target="_blank" style="color: #93c5fd !important; text-decoration: underline !important; cursor: pointer !important; padding: 2px 4px; background: rgba(147, 197, 253, 0.1); border-radius: 4px;" onmousedown="console.log('Link clicked')">🔗 ${value}</a>`
-                : key === 'title' || key === 'company' || key === 'degree' ? `<span style="color: #fbbf24; font-weight: bold;">${value}</span>`
-                : key === 'period' ? `<span style="color: #a78bfa;">📅 ${value}</span>`
-                : key === 'location' ? `<span style="color: #f59e0b;">📍 ${value}</span>`
-                : value;
+            const displayValue =
+              typeof value === "string" && value.includes("@")
+                ? `<a href="mailto:${value}" style="color: #93c5fd !important; text-decoration: underline !important; cursor: pointer !important; padding: 2px 4px; background: rgba(147, 197, 253, 0.1); border-radius: 4px;" onmousedown="console.log('Email clicked')">📧 ${value}</a>`
+                : typeof value === "string" &&
+                    (value.startsWith("http") ||
+                      value.includes("linkedin.com") ||
+                      value.includes(".com"))
+                  ? `<a href="${value.startsWith("http") ? value : "https://" + value}" target="_blank" style="color: #93c5fd !important; text-decoration: underline !important; cursor: pointer !important; padding: 2px 4px; background: rgba(147, 197, 253, 0.1); border-radius: 4px;" onmousedown="console.log('Link clicked')">🔗 ${value}</a>`
+                  : key === "title" || key === "company" || key === "degree"
+                    ? `<span style="color: #fbbf24; font-weight: bold;">${value}</span>`
+                    : key === "period"
+                      ? `<span style="color: #a78bfa;">📅 ${value}</span>`
+                      : key === "location"
+                        ? `<span style="color: #f59e0b;">📍 ${value}</span>`
+                        : value;
             output += `<div style="color: #60a5fa; padding-left: 16px; margin: 4px 0; line-height: 1.6;">${key}: <span style="color: #86efac;">"${displayValue}"</span></div>`;
           }
         });
@@ -514,54 +687,66 @@
       });
     } else {
       Object.entries(data).forEach(([key, value]) => {
-        const keyIcon = {
-          'name': '👤',
-          'title': '💼', 
-          'email': '📧',
-          'location': '📍',
-          'summary': '📝',
-          'core_expertise': '⚡',
-          'languages': '🌐'
-        }[key] || '📋';
-        
+        const keyIcon =
+          {
+            name: "👤",
+            title: "💼",
+            email: "📧",
+            location: "📍",
+            summary: "📝",
+            core_expertise: "⚡",
+            languages: "🌐",
+          }[key] || "📋";
+
         output += `<div style="margin-bottom: 20px; border-left: 3px solid #8b5cf6; padding-left: 16px; background: linear-gradient(90deg, rgba(139, 92, 246, 0.05) 0%, transparent 50%); border-radius: 0 8px 8px 0;">`;
-        
+
         if (Array.isArray(value)) {
           output += `<div style="color: #fbbf24; font-weight: bold; font-size: 14px; margin-bottom: 8px;">${keyIcon} ${key}: [</div>`;
           value.forEach((v) => {
             output += `<div style="color: #86efac; padding-left: 16px; line-height: 1.6; margin: 4px 0;">  • "${v}"</div>`;
           });
           output += `<div style="color: #fbbf24;">]</div>`;
-        } else if (typeof value === 'object' && value !== null) {
+        } else if (typeof value === "object" && value !== null) {
           output += `<div style="color: #fbbf24; font-weight: bold; font-size: 14px; margin-bottom: 8px;">${keyIcon} ${key}: {</div>`;
           Object.entries(value).forEach(([subKey, subValue]) => {
             if (Array.isArray(subValue)) {
-              output += `<div style="color: #60a5fa; padding-left: 16px; margin: 4px 0; line-height: 1.6;">${subKey}: <span style="color: #a78bfa;">[${subValue.join(', ')}]</span></div>`;
+              output += `<div style="color: #60a5fa; padding-left: 16px; margin: 4px 0; line-height: 1.6;">${subKey}: <span style="color: #a78bfa;">[${subValue.join(", ")}]</span></div>`;
             } else {
-              const displayValue = typeof subValue === 'string' && subValue.includes('@') 
-                ? `<a href="mailto:${subValue}" style="color: #93c5fd !important; text-decoration: underline !important; cursor: pointer !important; padding: 2px 4px; background: rgba(147, 197, 253, 0.1); border-radius: 4px;">📧 ${subValue}</a>`
-                : typeof subValue === 'string' && (subValue.startsWith('http') || subValue.includes('linkedin.com') || subValue.includes('.com'))
-                  ? `<a href="${subValue.startsWith('http') ? subValue : 'https://' + subValue}" target="_blank" style="color: #93c5fd !important; text-decoration: underline !important; cursor: pointer !important; padding: 2px 4px; background: rgba(147, 197, 253, 0.1); border-radius: 4px;">🔗 ${subValue}</a>`
-                  : subValue;
+              const displayValue =
+                typeof subValue === "string" && subValue.includes("@")
+                  ? `<a href="mailto:${subValue}" style="color: #93c5fd !important; text-decoration: underline !important; cursor: pointer !important; padding: 2px 4px; background: rgba(147, 197, 253, 0.1); border-radius: 4px;">📧 ${subValue}</a>`
+                  : typeof subValue === "string" &&
+                      (subValue.startsWith("http") ||
+                        subValue.includes("linkedin.com") ||
+                        subValue.includes(".com"))
+                    ? `<a href="${subValue.startsWith("http") ? subValue : "https://" + subValue}" target="_blank" style="color: #93c5fd !important; text-decoration: underline !important; cursor: pointer !important; padding: 2px 4px; background: rgba(147, 197, 253, 0.1); border-radius: 4px;">🔗 ${subValue}</a>`
+                    : subValue;
               output += `<div style="color: #60a5fa; padding-left: 16px; margin: 4px 0; line-height: 1.6;">${subKey}: <span style="color: #86efac;">"${displayValue}"</span></div>`;
             }
           });
           output += `<div style="color: #fbbf24;">}</div>`;
         } else {
-          const displayValue = typeof value === 'string' && value.includes('@') 
-            ? `<a href="mailto:${value}" style="color: #93c5fd !important; text-decoration: underline !important; cursor: pointer !important; padding: 2px 4px; background: rgba(147, 197, 253, 0.1); border-radius: 4px;">📧 ${value}</a>`
-            : typeof value === 'string' && (value.startsWith('http') || value.includes('linkedin.com') || value.includes('.com'))
-              ? `<a href="${value.startsWith('http') ? value : 'https://' + value}" target="_blank" style="color: #93c5fd !important; text-decoration: underline !important; cursor: pointer !important; padding: 2px 4px; background: rgba(147, 197, 253, 0.1); border-radius: 4px;">🔗 ${value}</a>`
-              : key === 'name' ? `<span style="color: #fbbf24; font-weight: bold; font-size: 16px;">${value}</span>`
-              : key === 'title' ? `<span style="color: #a78bfa; font-weight: bold;">${value}</span>`
-              : key === 'location' ? `<span style="color: #f59e0b;">📍 ${value}</span>`
-              : value;
+          const displayValue =
+            typeof value === "string" && value.includes("@")
+              ? `<a href="mailto:${value}" style="color: #93c5fd !important; text-decoration: underline !important; cursor: pointer !important; padding: 2px 4px; background: rgba(147, 197, 253, 0.1); border-radius: 4px;">📧 ${value}</a>`
+              : typeof value === "string" &&
+                  (value.startsWith("http") ||
+                    value.includes("linkedin.com") ||
+                    value.includes(".com"))
+                ? `<a href="${value.startsWith("http") ? value : "https://" + value}" target="_blank" style="color: #93c5fd !important; text-decoration: underline !important; cursor: pointer !important; padding: 2px 4px; background: rgba(147, 197, 253, 0.1); border-radius: 4px;">🔗 ${value}</a>`
+                : key === "name"
+                  ? `<span style="color: #fbbf24; font-weight: bold; font-size: 16px;">${value}</span>`
+                  : key === "title"
+                    ? `<span style="color: #a78bfa; font-weight: bold;">${value}</span>`
+                    : key === "location"
+                      ? `<span style="color: #f59e0b;">📍 ${value}</span>`
+                      : value;
           output += `<div style="color: #fbbf24; font-weight: bold; font-size: 14px; margin-bottom: 4px;">${keyIcon} ${key}: <span style="color: #86efac; font-weight: normal;">"${displayValue}"</span></div>`;
         }
         output += `</div>`;
       });
     }
-    
+
     // Enhanced footer with ASCII art
     output += `<div style="margin-top: 32px; padding: 16px; border: 1px solid #374151; border-radius: 8px; background: rgba(17, 24, 39, 0.5);">`;
     output += `<pre style="color: #6b7280; font-size: 10px; line-height: 1.2; margin: 0;">`;
@@ -571,35 +756,35 @@
     output += `╰─────────────────────────────────────────╯</pre>`;
     output += `</div>`;
     output += '<div style="height: 20px;"></div>';
-    
+
     content.innerHTML = output;
-    console.log('Enhanced CV content displayed');
+    console.log("Enhanced CV content displayed");
   }
 
   function updateCommandLine(section) {
     const commands = {
-      overview: './marcus-cv --display --interactive',
-      experience: './marcus-cv --show experience --verbose',
-      skills: './marcus-cv --list skills --detailed',
-      education: './marcus-cv --show education --academic',
-      certifications: './marcus-cv --list certs --verified'
+      overview: "./marcus-cv --display --interactive",
+      experience: "./marcus-cv --show experience --verbose",
+      skills: "./marcus-cv --list skills --detailed",
+      education: "./marcus-cv --show education --academic",
+      projects: "./marcus-cv --list projects --featured",
     };
-    
+
     const descriptions = {
-      overview: 'Loading Marcus Elwin\'s Interactive Resume...',
-      experience: 'Fetching professional experience data...',
-      skills: 'Analyzing technical skill matrix...',
-      education: 'Retrieving academic credentials...',
-      certifications: 'Validating professional certifications...'
+      overview: "Loading Marcus Elwin's Interactive Resume...",
+      experience: "Fetching professional experience data...",
+      skills: "Analyzing technical skill matrix...",
+      education: "Retrieving academic credentials...",
+      certifications: "Validating professional certifications...",
     };
-    
-    const commandElement = document.querySelector('.terminal-cursor');
-    const descElement = document.querySelector('.text-gray-500.text-xs');
-    
+
+    const commandElement = document.querySelector(".terminal-cursor");
+    const descElement = document.querySelector(".text-gray-500.text-xs");
+
     if (commandElement) {
       commandElement.textContent = commands[section] || commands.overview;
     }
-    
+
     if (descElement) {
       descElement.innerHTML = `<span class="text-green-400">✓</span> ${descriptions[section] || descriptions.overview}`;
     }
@@ -609,49 +794,48 @@
     if (isAnimating) return;
     isAnimating = true;
 
-    console.log('Showing section:', section);
-    
+    console.log("Showing section:", section);
+
     // Update command line for this section
     updateCommandLine(section);
 
     // Update button states
-    document.querySelectorAll('.cv-btn').forEach(btn => {
-      btn.classList.remove('bg-umai-accent', 'bg-umai-accent-dark');
-      btn.classList.add('bg-gray-600');
+    document.querySelectorAll(".cv-btn").forEach((btn) => {
+      btn.classList.remove("bg-umai-accent", "bg-umai-accent-dark");
+      btn.classList.add("bg-gray-600");
     });
-    
+
     // Find the clicked button and highlight it
-    const buttons = document.querySelectorAll('.cv-btn');
-    buttons.forEach(btn => {
-      if (btn.textContent.includes(section) || 
-          (section === 'certifications' && btn.textContent.includes('certs'))) {
-        btn.classList.remove('bg-gray-600');
-        btn.classList.add('bg-umai-accent');
+    const buttons = document.querySelectorAll(".cv-btn");
+    buttons.forEach((btn) => {
+      if (btn.textContent.includes(section)) {
+        btn.classList.remove("bg-gray-600");
+        btn.classList.add("bg-umai-accent");
       }
     });
 
     const data = cvData[section];
-    
+
     if (!data) {
-      console.error('No data found for section:', section);
+      console.error("No data found for section:", section);
       isAnimating = false;
       return;
     }
-    
+
     // Store current section for ASCII header detection
     currentSection = section;
-    
+
     // Display content immediately
     displayContent(data);
     isAnimating = false;
   }
 
   function downloadPDF() {
-    console.log('Download PDF clicked');
+    console.log("Download PDF clicked");
     // Direct download of the actual PDF file
-    const link = document.createElement('a');
-    link.href = '/assets/CV_2025_Marcus_Elwin.pdf';
-    link.download = 'CV_2025_Marcus_Elwin.pdf';
+    const link = document.createElement("a");
+    link.href = "/assets/resume_marcus.pdf";
+    link.download = "resume_marcus.pdf";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -659,40 +843,67 @@
 
   // Initialize when DOM is ready
   function initCV() {
-    console.log('Initializing Enhanced Interactive CV...');
-    
+    console.log("Initializing Enhanced Interactive CV...");
+
     // Add event listeners to CV buttons
-    document.querySelectorAll('.cv-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const section = this.getAttribute('data-section');
-        console.log('Button clicked for section:', section);
+    document.querySelectorAll(".cv-btn").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const section = this.getAttribute("data-section");
+        console.log("Button clicked for section:", section);
         showSection(section);
       });
     });
 
     // Add event listener to download button
-    const downloadBtn = document.getElementById('download-pdf-btn');
+    const downloadBtn = document.getElementById("download-pdf-btn");
     if (downloadBtn) {
-      downloadBtn.addEventListener('click', downloadPDF);
+      downloadBtn.addEventListener("click", downloadPDF);
     }
-    
+
+    // Full-window toggle
+    const terminal = document.getElementById("cv-terminal");
+    const fullwindowBtn = document.getElementById("cv-fullwindow-btn");
+
+    function setFullwindow(active) {
+      if (!terminal) return;
+      terminal.classList.toggle("cv-terminal--fullwindow", active);
+      const section = terminal.closest(".interactive-cv-section");
+      if (section) section.classList.toggle("cv-fs-active", active);
+      document.body.style.overflow = active ? "hidden" : "";
+      if (fullwindowBtn) {
+        fullwindowBtn.querySelector(".cv-fs-expand")?.classList.toggle("hidden", active);
+        fullwindowBtn.querySelector(".cv-fs-compress")?.classList.toggle("hidden", !active);
+      }
+    }
+
+    if (fullwindowBtn && terminal) {
+      fullwindowBtn.addEventListener("click", () => {
+        setFullwindow(!terminal.classList.contains("cv-terminal--fullwindow"));
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && terminal.classList.contains("cv-terminal--fullwindow")) {
+          setFullwindow(false);
+        }
+      });
+    }
+
     // Initialize with overview
     setTimeout(() => {
-      console.log('Loading overview...');
-      showSection('overview');
+      console.log("Loading overview...");
+      showSection("overview");
     }, 1000);
 
     // Cursor blinking
     setInterval(() => {
-      const cursor = document.querySelector('.terminal-cursor');
+      const cursor = document.querySelector(".terminal-cursor");
       if (cursor) {
-        cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
+        cursor.style.opacity = cursor.style.opacity === "0" ? "1" : "0";
       }
     }, 800);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCV);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initCV);
   } else {
     initCV();
   }
@@ -702,16 +913,22 @@
   .terminal-cursor {
     position: relative;
   }
-  
+
   .terminal-cursor::after {
-    content: '▋';
+    content: "▋";
     animation: blink 1s infinite;
     color: #10b981;
   }
-  
+
   @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0;
+    }
   }
 
   #cv-content {
@@ -719,6 +936,33 @@
     line-height: 1.4;
     white-space: pre-wrap;
     word-break: break-word;
+  }
+
+  /* Full-window mode: terminal fills the browser window */
+  .cv-terminal--fullwindow {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0;
+    border-width: 0;
+  }
+
+  .cv-terminal--fullwindow .cv-terminal-body {
+    height: auto;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .cv-terminal--fullwindow #cv-content {
+    font-size: 14px !important;
+  }
+
+  /* Lift the section above the fixed site header (z-50) while full-window */
+  section.interactive-cv-section.cv-fs-active {
+    isolation: auto !important;
+    z-index: 100 !important;
   }
 
   .cv-btn:hover {
