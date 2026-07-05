@@ -30,6 +30,8 @@ const { title, description = 'Umai Tech - AI, GenAI, ML Blog and Insights', noHe
             ? stored === 'dark'
             : window.matchMedia('(prefers-color-scheme: dark)').matches;
           document.documentElement.classList.toggle('dark', isDark);
+          // Keep data-theme in sync so astro-mermaid renders diagrams in the right theme.
+          document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
         } catch (e) {}
       })();
     </script>
