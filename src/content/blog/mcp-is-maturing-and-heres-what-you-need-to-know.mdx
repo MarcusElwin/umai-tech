@@ -206,31 +206,11 @@ graph TD
   M --> CO["checkout<br/>elicitation → step-up auth → Tasks"]
 ```
 
-The interesting part is the checkout path, because it exercises three of the new spec's features in one flow. When an agent calls `checkout`, the bridge doesn't just charge a card — it asks a human to confirm, using elicitation:
+The interesting part is the checkout path — it exercises three of the new spec's features in one flow. Rather than hand-wave it, let's walk the actual output of the repo's `./scripts/smoke.sh`, which drives all three protocols against the live feed and pipes the JSON through `jq`. Follow along: `cargo run` in one shell, `./scripts/smoke.sh` in another.
 
-```json
-{
-  "resultType": "inputRequired",
-  "inputRequests": {
-    "confirm": {
-      "type": "elicitation",
-      "message": "Confirm 1x Tech Fleece Pro (Black / L) — 71.99 SEK (free shipping)?",
-      "schema": { "type": "boolean" }
-    }
-  },
-  "requestState": "<opaque cart + pricing blob>"
-}
-```
+### Discovery and search (MCP)
 
-The whole cart rides in `requestState`, so **any** stateless pod can resume the flow when the confirmation comes back — no session, no affinity. And when the agent re-issues the call to actually pay, the bridge demands a payment-scoped token via step-up auth. No fresh scope, no charge:
-
-```json
-{ "error": { "code": -32001, "message": "step-up authentication required (payment scope)" } }
-```
-
-Fulfillment then hands back a Tasks handle the agent polls. Search, confirm, authorize, fulfill — all stateless, all resumable on any instance.
-
-Don't take my word for it. The repo ships a `./scripts/smoke.sh` that drives the whole thing — MCP, ACP, and UCP — against the live feed, piped through `jq`. Here's a real run:
+There's no handshake to perform anymore. A client simply asks what the server can do with `server/discover`, then searches. The catalog is hoodtopia's real Google Shopping feed — 288 variants — mapped into one internal model and enriched on the way out (note the generated `description`):
 
 ```bash
 $ ./scripts/smoke.sh
@@ -275,6 +255,13 @@ $ ./scripts/smoke.sh
     "url": "https://hoodtopia.co/products/tech-fleece-pro"
   }
 }
+```
+
+### Checkout, part 1 — ask the human (elicitation)
+
+When an agent calls `checkout`, the bridge doesn't just charge a card. It returns an `inputRequired` result — the spec's elicitation — asking a person to confirm the exact item and price. The whole cart rides in `requestState` (base64 here), so **any** stateless pod can resume the flow when the answer comes back; no session, no affinity:
+
+```bash
 == 3. checkout -> elicitation (confirm) ==
 {
   "inputRequests": {
@@ -287,6 +274,13 @@ $ ./scripts/smoke.sh
   "requestState": "eyJjb2xvciI6IkJsYWNrIiwiY3VycmVuY3kiOiJTRUsi...",
   "resultType": "inputRequired"
 }
+```
+
+### Checkout, part 2 — no scope, no charge (step-up auth)
+
+The agent re-issues the call with the confirmation. But paying is privileged, so the bridge demands a fresh payment-scoped token via step-up auth. Without it, the order is refused with `-32001` — trust enforced by the protocol, not buried in application code:
+
+```bash
 == 4. confirm WITHOUT payment scope -> step-up required ==
 {
   "error": {
@@ -294,6 +288,13 @@ $ ./scripts/smoke.sh
     "message": "step-up authentication required (payment scope)"
   }
 }
+```
+
+### Checkout, part 3 — hand back a Task
+
+With a payment-scoped token the charge goes through, and fulfillment becomes a **Task**: the bridge returns a handle (echoing the decoded order) that the agent polls with `tasks/get`. Long-running work, no blocked connection, resumable on any instance:
+
+```bash
 == 5. confirm WITH payment scope -> task handle ==
 {
   "resultType": "task",
@@ -310,6 +311,13 @@ $ ./scripts/smoke.sh
     "status": "working"
   }
 }
+```
+
+### The same catalog, now over ACP
+
+Same internal model, different façade. Over **ACP** (OpenAI/Stripe) the bridge exports the catalog as a product feed and runs the five-call checkout session — here a session is created and completed with a (demo) Shared Payment Token:
+
+```bash
 == 6. ACP product feed (first line) ==
 {
   "availability": "in_stock",
@@ -327,6 +335,13 @@ $ ./scripts/smoke.sh
   "payment": { "captured": true, "method": "shared_payment_token (demo)" },
   "status": "completed"
 }
+```
+
+### …and over UCP
+
+And over **UCP** (Google/Shopify) the same catalog answers JSON-RPC. One backend, three protocols — write the mapping once, and every agent reads from it whichever brick it's built on:
+
+```bash
 == 8. UCP catalog.search (JSON-RPC) ==
 {
   "count": 48,
@@ -340,8 +355,6 @@ $ ./scripts/smoke.sh
   }
 }
 ```
-
-One server, one feed, three protocols: MCP tools (steps 1–5), an ACP product feed plus checkout session (6–7), and UCP JSON-RPC (8) — the elicitation and step-up-auth challenge (steps 3–4) are the exact responses shown above, straight off the live catalog.
 
 <Callout type="note" title="Repo Status">
 `mcp-commerce-bridge` is currently a **private** repo while I clean it up. The plan is a public release with three packages sharing one mapping contract — a Rust crate, a Python package (PyPI), and a TypeScript package (npm) — so the translation layer is usable wherever you already are. Ping me if you want early access.
