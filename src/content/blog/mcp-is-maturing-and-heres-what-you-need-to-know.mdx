@@ -8,7 +8,6 @@ tags: ["Agentic Commerce", "Model Context Protocol", "Protocols", "E-commerce", 
 ---
 
 import Callout from '@components/Callout.astro';
-import Mermaid from '@components/Mermaid.astro';
 import PrettyTable from '@components/PrettyTable.astro';
 import Citation from '@components/Citation.astro';
 
@@ -55,11 +54,13 @@ To appreciate the fix, you have to feel the old pain. Under the previous **Strea
 
 Lose the pin, and the client's next request lands on a pod that has neither its session nor its stream. So affinity wasn't a nice-to-have you could tune away. It was mandatory. Here is what that actually looked like in front of the cluster:
 
-<Mermaid code={`graph LR
-  C["MCP Client"] -->|"Mcp-Session-Id: abc123"| LB["Contour / Envoy<br/>hash on Session-Id"]
-  LB ==>|"pinned"| P1["Pod 1<br/>session state + open SSE"]
-  LB -.->|"can't route here"| P2["Pod 2"]
-  LB -.->|"can't route here"| P3["Pod 3"]`} />
+```mermaid
+graph LR
+  C["MCP Client"] -->|"Mcp-Session-Id abc123"| LB["Contour / Envoy<br/>hash on Session-Id"]
+  LB ==>|pinned| P1["Pod 1<br/>session state + open SSE"]
+  LB -.->|unreachable| P2["Pod 2"]
+  LB -.->|unreachable| P3["Pod 3"]
+```
 
 On Kubernetes with Contour (the Envoy-based ingress), you bought that pin with request-header hashing — and then fought Envoy to stop it from reaping your long-lived SSE streams:
 
@@ -102,12 +103,14 @@ If you have ever tuned an idle timeout to `1h` and still watched streams die dur
 
 Now the fun part. With a stateless core, there is no session to pin and no stream to keep alive. Any pod can answer any request. So the load balancer goes back to being boring — and boring, in infrastructure, is a compliment.
 
-<Mermaid code={`graph LR
+```mermaid
+graph LR
   C["MCP Client"] --> LB["Contour / Envoy<br/>round-robin"]
   LB --> P1["Pod 1"]
   LB --> P2["Pod 2"]
   LB --> P3["Pod 3"]
-  LB -->|"Mcp-Method: tasks/*"| T["Tasks Pool"]`} />
+  LB -->|"Mcp-Method tasks/*"| T["Tasks Pool"]
+```
 
 Better still, because `Mcp-Method` and `Mcp-Name` now ride as headers, the ingress can route by capability without inspecting the body — for example, sending long-running `tasks/*` calls to their own pool while everything else round-robins across the general fleet. No hashing, no cookies, no affinity:
 
@@ -194,12 +197,14 @@ Round-robin across interchangeable pods. Rolling deploys that don't sever anyone
 
 Specs are abstract, so I built something concrete to pressure-test the claim. `mcp-commerce-bridge` is a small, stateless MCP server that fronts my demo shop, **hoodtopia.co**, and translates between the three protocols agents actually speak: **MCP**, **ACP** (OpenAI/Stripe), and **UCP** (Google/Shopify). It reads a real Google Shopping feed — 288 variants across six hoodie styles — maps it into one internal model, and renders it into whichever protocol the caller wants.
 
-<Mermaid code={`graph TD
+```mermaid
+graph TD
   F["Google Shopping feed<br/>288 variants"] --> B["mcp-commerce-bridge<br/>stateless MCP core"]
   B --> A["ACP adapter<br/>OpenAI / Stripe"]
   B --> U["UCP adapter<br/>Google / Shopify"]
   B --> M["MCP tools"]
-  M --> CO["checkout<br/>elicitation -> step-up auth -> Tasks"]`} />
+  M --> CO["checkout<br/>elicitation → step-up auth → Tasks"]
+```
 
 The interesting part is the checkout path, because it exercises three of the new spec's features in one flow. When an agent calls `checkout`, the bridge doesn't just charge a card — it asks a human to confirm, using elicitation:
 
