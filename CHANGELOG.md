@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/MarcusElwin/umai-tech/compare/v1.0.0...v1.1.0) (2026-07-05)
+
+
+### Features
+
+* **blog:** "MCP Is Maturing" — 2026 spec & agentic commerce ([#26](https://github.com/MarcusElwin/umai-tech/issues/26)) ([62c64b0](https://github.com/MarcusElwin/umai-tech/commit/62c64b0b844f03eb2aba62148399f309afc3fa55))
+
 # 1.0.0 (2026-06-11)
 
 
