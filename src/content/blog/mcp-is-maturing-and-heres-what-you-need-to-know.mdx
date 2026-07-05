@@ -230,6 +230,119 @@ The whole cart rides in `requestState`, so **any** stateless pod can resume the 
 
 Fulfillment then hands back a Tasks handle the agent polls. Search, confirm, authorize, fulfill — all stateless, all resumable on any instance.
 
+Don't take my word for it. The repo ships a `./scripts/smoke.sh` that drives the whole thing — MCP, ACP, and UCP — against the live feed, piped through `jq`. Here's a real run:
+
+```bash
+$ ./scripts/smoke.sh
+== 1. server/discover ==
+[
+  {
+    "description": "Search the hoodtopia catalog.",
+    "inputSchema": {
+      "properties": { "q": { "type": "string" } },
+      "type": "object"
+    },
+    "name": "search_products"
+  },
+  {
+    "description": "Confirm and place an order (requires step-up auth).",
+    "inputSchema": {
+      "properties": {
+        "product_id": { "type": "string" },
+        "size": { "enum": ["XS", "S", "M", "L", "XL", "XXL"] }
+      },
+      "required": ["product_id"],
+      "type": "object"
+    },
+    "name": "checkout"
+  }
+]
+== 2. search_products q=tech (48 variants — summary) ==
+{
+  "count": 48,
+  "first": {
+    "available": true,
+    "color": "Black",
+    "currency": "SEK",
+    "description": "Tech Fleece Pro (performance) in Black — soft, considered colour, everyday fit.",
+    "group_id": "prod_01KT6PTKEVFFBTDYES6W1KKRP7",
+    "id": "TEC-BLA-XS",
+    "image": "https://hoodtopia.co/images/products/tech-fleece-pro-black.jpg",
+    "price_cents": 7199,
+    "product_type": "performance",
+    "size": "XS",
+    "title": "Tech Fleece Pro",
+    "url": "https://hoodtopia.co/products/tech-fleece-pro"
+  }
+}
+== 3. checkout -> elicitation (confirm) ==
+{
+  "inputRequests": {
+    "confirm": {
+      "message": "Confirm 1x Tech Fleece Pro (Black / L) — 71.99 SEK (free shipping)?",
+      "schema": { "type": "boolean" },
+      "type": "elicitation"
+    }
+  },
+  "requestState": "eyJjb2xvciI6IkJsYWNrIiwiY3VycmVuY3kiOiJTRUsi...",
+  "resultType": "inputRequired"
+}
+== 4. confirm WITHOUT payment scope -> step-up required ==
+{
+  "error": {
+    "code": -32001,
+    "message": "step-up authentication required (payment scope)"
+  }
+}
+== 5. confirm WITH payment scope -> task handle ==
+{
+  "resultType": "task",
+  "task": {
+    "id": "task_order_8f21",
+    "order": {
+      "color": "Black",
+      "currency": "SEK",
+      "price_cents": 7199,
+      "product_id": "TEC-BLA-L",
+      "size": "L",
+      "title": "Tech Fleece Pro"
+    },
+    "status": "working"
+  }
+}
+== 6. ACP product feed (first line) ==
+{
+  "availability": "in_stock",
+  "id": "CLA-BLA-XS",
+  "item_group_id": "prod_01KT6PTKET5MAFGWRP5E1ZM1F4",
+  "title": "Classic Comfort Hoodie",
+  "price": "47.99 SEK",
+  "color": "Black",
+  "size": "XS",
+  "link": "https://hoodtopia.co/products/classic-comfort-hoodie"
+}
+== 7. ACP create + complete checkout session ==
+{
+  "id": "cs_000001",
+  "payment": { "captured": true, "method": "shared_payment_token (demo)" },
+  "status": "completed"
+}
+== 8. UCP catalog.search (JSON-RPC) ==
+{
+  "count": 48,
+  "first": {
+    "id": "PRE-BLA-XS",
+    "title": "Premium Zip-Up",
+    "product_type": "premium",
+    "color": "Black",
+    "price_cents": 7999,
+    "currency": "SEK"
+  }
+}
+```
+
+One server, one feed, three protocols: MCP tools (steps 1–5), an ACP product feed plus checkout session (6–7), and UCP JSON-RPC (8) — the elicitation and step-up-auth challenge (steps 3–4) are the exact responses shown above, straight off the live catalog.
+
 <Callout type="note" title="Repo Status">
 `mcp-commerce-bridge` is currently a **private** repo while I clean it up. The plan is a public release with three packages sharing one mapping contract — a Rust crate, a Python package (PyPI), and a TypeScript package (npm) — so the translation layer is usable wherever you already are. Ping me if you want early access.
 </Callout>
