@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/MarcusElwin/umai-tech/compare/v1.1.0...v1.1.1) (2026-07-05)
+
+
+### Bug Fixes
+
+* **ci:** stop attaching dist/** as GitHub release assets ([#27](https://github.com/MarcusElwin/umai-tech/issues/27)) ([1e3e9c7](https://github.com/MarcusElwin/umai-tech/commit/1e3e9c79c2c02f96386bea90e25065a439dc7be6))
+
 # [1.1.0](https://github.com/MarcusElwin/umai-tech/compare/v1.0.0...v1.1.0) (2026-07-05)
 
 
