@@ -292,6 +292,74 @@ function convertComponents(content, slug) {
     (match) => renderLessonsGrid(match, slug)
   );
 
+  // ---- PrettyTable → Markdown table -----------------------------------------
+  converted = converted.replace(
+    /<PrettyTable\b([^>]*)>([\s\S]*?)<\/PrettyTable>/g,
+    (_, attrs, body) => {
+      const titleMatch = attrs.match(/title="([^"]*)"/);
+      const title = titleMatch ? titleMatch[1] : '';
+      const headersMatch = attrs.match(/headers=\{(\[[\s\S]*?\])\}/);
+      let headers = [];
+      if (headersMatch) {
+        try {
+          headers = JSON.parse(headersMatch[1].replace(/'/g, '"'));
+        } catch {
+          headers = headersMatch[1]
+            .replace(/[[\]]/g, '')
+            .split(',')
+            .map((s) => s.trim().replace(/^["']|["']$/g, ''));
+        }
+      }
+      const cell = (raw) =>
+        stripInlineTags(raw).replace(/\s+/g, ' ').trim().replace(/\|/g, '\\|') || ' ';
+      const rows = [];
+      const trRe = /<tr\b[^>]*>([\s\S]*?)<\/tr>/g;
+      let tr;
+      while ((tr = trRe.exec(body)) !== null) {
+        const cells = [];
+        const tdRe = /<td\b[^>]*>([\s\S]*?)<\/td>/g;
+        let td;
+        while ((td = tdRe.exec(tr[1])) !== null) cells.push(cell(td[1]));
+        if (cells.length) rows.push(cells);
+      }
+      let md = '';
+      if (title) md += `**${title}**\n\n`;
+      if (headers.length) {
+        md += `| ${headers.join(' | ')} |\n| ${headers.map(() => '---').join(' | ')} |\n`;
+      }
+      for (const r of rows) md += `| ${r.join(' | ')} |\n`;
+      return md;
+    }
+  );
+
+  // ---- ```mermaid``` fenced blocks → static image reference -----------------
+  // Medium can't render mermaid, so point at pre-rendered PNGs under /medium/.
+  let mermaidIdx = 0;
+  converted = converted.replace(/```mermaid\n[\s\S]*?\n```/g, () => {
+    mermaidIdx += 1;
+    return `![Diagram ${mermaidIdx}](${mediumAsset(slug, `diagram-${mermaidIdx}.png`)})`;
+  });
+
+  // ---- Citation (reference / no-author variants) ----------------------------
+  // The earlier handler needs author+source; this catches type="reference"
+  // citations that carry only source (+ optional url).
+  converted = converted.replace(
+    /<Citation\b([^>]*)>([\s\S]*?)<\/Citation>/g,
+    (_, attrs, body) => {
+      const get = (k) => (attrs.match(new RegExp(k + '="([^"]*)"')) || [])[1];
+      const author = get('author');
+      const source = get('source');
+      const url = get('url');
+      const text = stripInlineTags(body);
+      const src = source ? (url ? `[${source}](${url})` : source) : '';
+      const attribution = [author, src].filter(Boolean).join(', ');
+      if (!text && !attribution) return '';
+      let out = text ? `> *"${text}"*` : '';
+      if (attribution) out += `${text ? '\n> \n> ' : '> '}— ${attribution}`;
+      return out;
+    }
+  );
+
   // ---- Catch-all for any remaining custom components ------------------------
   converted = converted.replace(/<[A-Z][^>]*\/>/g, '[Interactive Component - See Original Post]');
   converted = converted.replace(/<[A-Z][A-Za-z0-9]*\b[\s\S]*?<\/[A-Z][A-Za-z0-9]*>/g, '[Interactive Component - See Original Post]');
@@ -516,11 +584,12 @@ Tags: ${tags.join(', ')}`;
   fs.writeFileSync(outputPath, mediumOutput);
   console.log(`✅ Converted content saved to: ${outputPath}`);
 
-  // Surface which SVGs the post references so the user knows what to upload.
-  const referenced = [...mediumOutput.matchAll(/medium\/([\w-]+\.svg)/g)].map((m) => m[1]);
+  // Surface which image assets (SVG/PNG, incl. rendered mermaid diagrams) the
+  // post references so the user knows what to upload.
+  const referenced = [...mediumOutput.matchAll(/medium\/([\w-]+\.(?:svg|png))/g)].map((m) => m[1]);
   const unique = Array.from(new Set(referenced));
   if (unique.length) {
-    console.log('\n🖼  SVG assets referenced (upload these to public/images/blog/' + slug + '/medium/):');
+    console.log('\n🖼  Image assets referenced (upload these to public/images/blog/' + slug + '/medium/):');
     for (const f of unique) console.log('  - ' + f);
   }
 
