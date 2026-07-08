@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/MarcusElwin/umai-tech/compare/v1.1.1...v1.2.0) (2026-07-08)
+
+
+### Features
+
+* **medium:** PrettyTable + mermaid support; export MCP post ([#28](https://github.com/MarcusElwin/umai-tech/issues/28)) ([d2691fa](https://github.com/MarcusElwin/umai-tech/commit/d2691fad565f3e1a9c2cbf59299eafc64325aa45)), closes [#19](https://github.com/MarcusElwin/umai-tech/issues/19)
+
 ## [1.1.1](https://github.com/MarcusElwin/umai-tech/compare/v1.1.0...v1.1.1) (2026-07-05)
 
 
