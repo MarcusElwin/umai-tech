@@ -16,7 +16,7 @@ import GenerateVerifyRepairLoop from '../../components/GenerateVerifyRepairLoop.
 
 In 1960, the physicist Eugene Wigner published an essay with one of the best titles in the history of ideas: "The Unreasonable Effectiveness of Mathematics in the Natural Sciences."[^1] His puzzle was simple and profound — why should mathematics, a product of human imagination, describe the physical universe so uncannily well? He called it "something bordering on the mysterious." In 2015, Andrej Karpathy borrowed the frame for "The Unreasonable Effectiveness of Recurrent Neural Networks,"[^2] marvelling that a tiny character-level model could generate almost-readable Shakespeare. Both essays share a move: notice that a tool works far better than it has any right to, then ask why.
 
-I want to make the same move for something I keep seeing in production. Most domain-specific problems — legal, commerce, finance — are unreasonably well suited to being reframed as coding problems. Not "solved by writing code," although sometimes that too. I mean reframed: expressed as structured extraction, executable invariants, deterministic verifiers, repair loops, and failure-driven evals.
+I want to make the same move for something I keep seeing in production. Most domain-specific problems — legal, commerce, finance — are unreasonably well suited to being reframed as coding problems. Not "solved by writing code," although sometimes that too. I mean reframed: expressed as structured extraction, executable invariants, deterministic verifiers, repair loops, and failure-driven evals. When you do this, LLMs suddenly get much better at your domain. Not because the model learned your domain. Because you moved your domain onto the substrate the model is strongest at.
 
 This is the practical corollary of a thesis I keep repeating: [the harness is the moat, not the model](/blog/the-moat-is-the-harness-not-the-model). The model is rented. The harness is owned. And the best harness is made of code.
 
@@ -28,15 +28,19 @@ This is the practical corollary of a thesis I keep repeating: [the harness is th
 
 Code has three properties no other medium for domain knowledge has — it's verifiable, composable, and executable — and those three are precisely what turn a stateless next-token predictor into a reliable agent. Get your domain onto the code substrate and you inherit all three for free.
 
-- **Code is verifiable.** You can run it: a function returns the expected value or it doesn't, a schema validates or it throws, a test suite is green or red. No "the vibes are slightly off."
-- **Code is composable.** Functions call functions, modules import modules — correctness composes. A prose paragraph doesn't; you can't `import` paragraph three into paragraph seven.
-- **Code is executable.** It's not a description of an action, it *is* the action — a feedback signal at the end of every step.
+Start with the obvious question: why is code special? Three properties.
+
+**Code is verifiable.** You can run it. A function either returns the expected value or it doesn't. A schema either validates or it throws. A test suite is green or red. There is no "the vibes are slightly off." This is not true of most natural-language outputs, where "correct" is a matter of taste and argument.
+
+**Code is composable.** Functions call functions. Modules import modules. You build big correct things out of small correct things, and the correctness composes. A prose paragraph doesn't compose — you can't `import` paragraph three into paragraph seven.
+
+**Code is executable.** It's not a description of an action, it *is* the action. When an agent emits code, the environment changes: a file is written, an API is called, a number is computed. There's a feedback signal at the end of every step.
 
 <CodeSubstrateProperties />
 
-- The 2026 survey "Code as Agent Harness" (Ning et al., 197-paper synthesis from UIUC / Meta / Stanford) makes this point at the research level: code is no longer just the *output* of an LLM, it's the *operational substrate* — "an executable and inspectable medium through which agents reason, act, and adapt."[^3]
-- The survey's three layers: harness interface (code connects agent to reasoning, action, environment), harness mechanisms (planning, memory, tool use, feedback-driven control), and multi-agent scaling.[^3]
-- The builder's framing: get your problem onto the code substrate and you inherit verifiability, composability, and executability for free.
+The 2026 survey "Code as Agent Harness: Toward Executable, Verifiable, and Stateful Agent Systems" (Ning et al., a 197-paper synthesis from UIUC, Meta, and Stanford, published May 2026)[^3] makes exactly this point at the research level. Its thesis: code is no longer just the *output* of an LLM, it's the *operational substrate* — "an executable and inspectable medium through which agents reason, act, and adapt." The paper organizes the whole field around three layers: the harness interface (how code connects the agent to reasoning, action, and the environment), harness mechanisms (planning, memory, tool use, feedback-driven control), and scaling the harness to multi-agent settings.
+
+That's the academic framing. The builder's framing is simpler: if you can get your problem onto the code substrate, you inherit verifiability, composability, and executability for free. And those three things are exactly what turn a stateless next-token predictor into a reliable agent.
 
 ---
 
@@ -44,19 +48,23 @@ Code has three properties no other medium for domain knowledge has — it's veri
 
 This reframing works *now* because of how the labs train: reinforcement learning against deterministic verifiers (RLVR) means the most verifiable tasks improve fastest. Verifier's law says every solvable, easily-verified task will be solved — and code hits all five of its trainability criteria.
 
-- Jason Wei's July 2025 post "Asymmetry of verification and verifier's rule": some tasks are much easier to verify than to solve (Sudoku), and "with reinforcement learning (RL) that finally works in a general sense, asymmetry of verification is becoming one of the most important ideas in AI."[^4]
+Here's why this matters *now* and not five years ago.
+
+Jason Wei — of chain-of-thought fame, now at Meta Superintelligence — published a blog post in July 2025 called "Asymmetry of verification and verifier's rule."[^4] The core idea: some tasks are much easier to verify than to solve. Sudoku takes ages to solve and seconds to check. And, in his words, "with reinforcement learning (RL) that finally works in a general sense, asymmetry of verification is becoming one of the most important ideas in AI." He states it as a law:
 
 <Citation author="Jason Wei" source="Asymmetry of verification and verifier's rule, July 2025" type="quote">
 Verifier's rule: The ease of training AI to solve a task is proportional to how verifiable the task is. All tasks that are possible to solve and easy to verify will be solved by AI.
 </Citation>
 
-- Wei's five trainability properties — objective truth, fast to verify, scalable to verify, low noise, continuous-ish reward — and code hits all five (a unit test is objective, fast, parallel, low-noise).[^4]
-- RLVR (Reinforcement Learning with Verifiable Rewards): train against a deterministic checker instead of a hackable learned reward model — "there is no reward hacking against a flawed reward model."[^5]
-- Proof point 1: both OpenAI and Google DeepMind hit IMO gold-medal standard in July 2025 (35/42, five of six problems, human contest conditions) — via "general-purpose reinforcement learning and test-time compute scaling," per OpenAI's Alexander Wei.[^6]
-- Proof point 2: SWE-bench Verified went from mid-tier scores to ~80% (Claude Opus 4.6, Gemini 3.1 Pro) by early 2026; OpenAI has essentially declared it saturated.[^7]
-- CodeAct (Wang et al., ICML 2024): executable Python as the action space instead of rigid JSON tool calls → up to 20% higher success across 17 LLMs. Code composes; JSON doesn't.[^8]
-- Anthropic now frames coding agents as the *universal* agent — "not a coding agent — an everything agent that happens to be best at code right now." Raschka's "Components of a Coding Agent": "the harness can often be the distinguishing factor that makes one LLM work better than another."[^9]
-- The lineage: Wigner → Karpathy → verifier's law → RLVR → coding agents as universal agents. The synthesis: **your domain problem, expressed as a coding problem, plugs directly into this entire stack.**
+He lists five properties that make a task trainable: objective truth, fast to verify, scalable to verify, low noise, and a continuous-ish reward signal. Notice that code hits all five. A unit test is objective, fast, runs in parallel by the thousands, and is low-noise. This isn't a coincidence — it's the mechanism behind the last two years of capability gains.
+
+That mechanism has a name: Reinforcement Learning with Verifiable Rewards (RLVR). Instead of training against a learned reward model (which you can hack), you train against a deterministic checker: does the code pass the tests, does the math match the answer key. As the 2026 survey "The Hitchhiker's Guide to Agentic AI: From Foundations to Systems"[^5] puts it, "the key advantage of RLVR over RLHF is the absence of reward model error: since the reward is computed by a deterministic verifier rather than a learned model, there is no reward hacking against a flawed reward model." This is why math and code progressed fastest — they're the domains where verification is cheap and automatic. The clearest public proof point came in July 2025, when both OpenAI and Google DeepMind hit gold-medal standard at the International Mathematical Olympiad, each scoring 35/42 by solving five of six problems, under the same 4.5-hour conditions as human contestants.[^6] OpenAI's Alexander Wei was explicit that this came "not via narrow, task-specific methodology, but by breaking new ground in general-purpose reinforcement learning and test-time compute scaling."
+
+And on the software side, SWE-bench Verified — real GitHub issues resolved by agents — went from mid-tier scores to models like Claude Opus 4.6 and Gemini 3.1 Pro clustered around 80% by early 2026. OpenAI has essentially declared the benchmark saturated.[^7] The through-line: put a domain on a verifiable substrate, and the labs' training loops will relentlessly improve it.
+
+This is where CodeAct comes in. The paper "Executable Code Actions Elicit Better LLM Agents" (Wang et al., ICML 2024)[^8] showed that when you let an agent emit *executable Python* as its action space — instead of rigid JSON tool calls — you get up to 20% higher success rates across 17 LLMs. Code is a better action language than JSON because it composes. And Anthropic has taken this to its logical conclusion: they now frame coding agents as effectively the *universal* agent. As one widely-shared summary put it, it's "not a coding agent — an everything agent that happens to be best at code right now." Claude Code power users were managing to-do lists and email with it, so Anthropic wrapped it in a consumer product. Sebastian Raschka's April 2026 essay "Components of a Coding Agent"[^9] makes the harness point crisply: because vanilla models now have similar capabilities, "the harness can often be the distinguishing factor that makes one LLM work better than another."
+
+So the lineage is: Wigner (math describes nature) → Karpathy (nets learn programs) → verifier's law (verifiable tasks get solved) → RLVR (verifiability is trainable) → coding agents as universal agents. The synthesis I'm proposing: **your domain problem, expressed as a coding problem, plugs directly into this entire stack.**
 
 ---
 
@@ -64,8 +72,11 @@ Verifier's rule: The ease of training AI to solve a task is proportional to how 
 
 "Review this contract" is a vibes task. Reframed, it decomposes into two clean stages: structured extraction (prose → typed data, where the schema itself is a verifier) and a deterministic playbook (the firm's legal judgment as version-controlled, testable code). This is what Legora, Harvey, Kira, and Luminance converged on.
 
-- The market has already converged here: Legora's "Tabular Review" extracts data points from thousands of contracts into structured tables with citations back to source;[^10] Harvey applies firm playbooks and grounds "every output in source paragraphs that the reviewer can verify";[^11] Kira and Luminance built the category on clause extraction.
-- Intellectual roots: Stanford CodeX and Genesereth's computational law — legal rules "in computational form" so compliance can be checked mechanically.[^12]
+I work in legal AI, so let me make this concrete. Naively, "review this contract" is a vibes task. You hand an LLM a PDF and hope. That's a demo, not a product.
+
+Reframe it as a coding problem and it decomposes into two clean stages: **structured extraction** (turn unstructured prose into typed data) and **deterministic verification** (run the firm's playbook as code against that data).
+
+This is exactly what the market has converged on. Legora's flagship feature, "Tabular Review," takes hundreds or thousands of contracts and extracts specified data points — dates, parties, obligations, governing law — into structured tables with citations back to source.[^10] Harvey applies firm playbooks and grounds "every output in source paragraphs that the reviewer can verify."[^11] Kira and Luminance built the whole category on clause extraction. The intellectual roots go back to Stanford's CodeX — the Center for Legal Informatics — and its "rules as code" tradition, where, as Michael Genesereth's computational-law work argues, legal rules are expressed "in computational form" so compliance can be checked mechanically.[^12]
 
 The extraction step looks like this in Python with Pydantic:
 
@@ -89,7 +100,7 @@ class Contract(BaseModel):
     assignment_change_of_control: bool      # can counterparty assign on CoC?
 ```
 
-The model populates the schema — and the schema itself is a verifier (wrong types throw, missing fields throw, out-of-enum jurisdictions throw). The playbook, where the actual legal judgment lives, is just code:
+You ask the model to populate that schema. The model is doing what it's genuinely great at — reading language, emitting structured output — and the schema itself is a verifier: wrong types throw, missing required fields throw, an out-of-enum jurisdiction throws. Now the playbook, which is where the actual legal judgment lives, is just code:
 
 ```python
 def check_playbook(c: Contract) -> list[str]:
@@ -103,10 +114,9 @@ def check_playbook(c: Contract) -> list[str]:
     return issues
 ```
 
-- The subjective task "is this contract acceptable?" became `extract → validate → run rules` — the playbook is version-controlled, testable, and owned by the firm.
-- When a partner disagrees with a flag, they edit `§4.1` and the change is auditable — the difference between a demo and something a magic circle firm will deploy.
-- LegalBench (162 legal reasoning tasks) exists precisely because the field learned to evaluate legal AI with structured tasks and reference answers, not vibes.[^13]
-- The honest tension, per ContractKen: "this asymmetry — easy generation, hard verification — is the central bottleneck in production legal AI." The whole game is reducing verification cost; code is how.[^14]
+Look at what happened. The subjective, argumentative task of "is this contract acceptable?" became `extract → validate → run rules`. The playbook is now version-controlled, testable, and owned by the firm. When a partner disagrees with a flag, they don't rewrite a prompt — they edit `§4.1` and the change is auditable. That's the difference between a demo and something a magic circle firm will actually deploy. And LegalBench — the collaboratively built benchmark of 162 legal reasoning tasks — exists precisely because the field learned that you evaluate legal AI with structured tasks and reference answers, not vibes.[^13]
+
+There is an honest tension here, and the legal AI vendor ContractKen names it well: generation is easy, verification is hard, and "this asymmetry — easy generation, hard verification — is the central bottleneck in production legal AI."[^14] The whole game is reducing verification cost. Code is how you do it.
 
 ---
 
@@ -114,7 +124,9 @@ def check_playbook(c: Contract) -> list[str]:
 
 In commerce the reframing is happening industry-wide and in real time: business policy as unit-testable invariants that no prompt can jailbreak, and the entire buying journey being redefined as capability negotiation between typed schemas — ACP, UCP, AP2, MCP. The winner is whoever's catalog, cart, and checkout are cleanest as schemas.
 
-"Should we upsell this customer, and with what?" As a coding problem, it's a set of executable invariants:
+The other half of my work is agentic commerce, and the reframing is even more literal here — because the entire industry is *right now* turning commerce into a schema surface for agents.
+
+Consider a mundane task: "should we upsell this customer, and with what?" As a vibes task, you'd prompt a model with the cart and hope for something sensible. As a coding problem, it's a set of executable invariants:
 
 ```typescript
 type Cart = { items: LineItem[]; subtotal: number; currency: string };
@@ -129,17 +141,17 @@ function chooseUpsell(cart: Cart, candidates: Offer[]): Offer | null {
 }
 ```
 
-- The LLM generates candidate offers and phrases them naturally; deterministic code decides *which* offer ships. The invariants can't be jailbroken by a clever prompt, and they can be unit-tested.
-- September 2025: OpenAI + Stripe launch the Agentic Commerce Protocol (ACP, Apache 2.0) — powers Instant Checkout in ChatGPT.[^15]
-- January 2026: Google + Shopify launch the Universal Commerce Protocol (UCP), interoperable with AP2 (cryptographically signed payment mandates), A2A, and Anthropic's MCP. Merchants publish a JSON profile at `/.well-known/ucp`; agents compute the capability intersection.[^16]
-- **Commerce is being redefined as capability negotiation between typed schemas**: Shopify's Catalog API "turns Shopify's global product catalog into structured, queryable infrastructure for AI agents"; Universal Cart "lets AI agents collect items from any merchant, on or off Shopify, into a single, unified cart."[^17]
+The LLM is great at generating candidate offers and phrasing them naturally. But *which* offer ships is decided by deterministic code that encodes business policy. The invariants — in stock, margin floor, basket ceiling — can't be jailbroken by a clever prompt, and they can be unit-tested.
+
+Now zoom out, because this pattern just went industry-wide. In September 2025, OpenAI and Stripe launched the Agentic Commerce Protocol (ACP), an open standard (Apache 2.0) that lets AI agents complete purchases — it powers Instant Checkout in ChatGPT.[^15] In January 2026, Google, together with Shopify, launched the Universal Commerce Protocol (UCP), covering the full journey and interoperable with the Agent Payments Protocol (AP2 — cryptographically signed payment mandates), Agent2Agent (A2A), and Anthropic's Model Context Protocol (MCP).[^16] Under UCP, merchants publish a JSON profile at `/.well-known/ucp` declaring their capabilities, and agents compute the intersection of what both sides support.
+
+Read that again: **commerce is being redefined as capability negotiation between typed schemas.** Shopify's Catalog API "turns Shopify's global product catalog into structured, queryable infrastructure for AI agents," clustering SKUs under a universal product ID. Its Universal Cart API "lets AI agents collect items from any merchant, on or off Shopify, into a single, unified cart."[^17] Shopify's distinguished engineer Ilya Grigorik put the design philosophy plainly in the January 2026 UCP engineering post:
 
 <Citation author="Ilya Grigorik" source="Shopify Engineering, January 2026" type="pullquote">
 Monolithic protocols eventually collapse under complexity: too rigid to adapt, too slow to evolve. Thoughtfully layered protocols survive and thrive by separating responsibilities, defining clear APIs, and enabling composition. TCP/IP proved this and UCP applies this pattern to commerce.
 </Citation>
 
-- That's a software architecture argument standing in for a commerce strategy — the whole thesis in one quote.
-- Scale: over a million Shopify merchants (Glossier, SKIMS, Spanx, Vuori) brought into ChatGPT commerce, an audience OpenAI put at 700M+ weekly users; Salesforce: "48% of shoppers who already use AI for shopping are open to having an AI agent make a purchase for them."[^18]
+That's a software architecture argument standing in for a commerce strategy — which is the whole thesis. Over a million Shopify merchants (including Glossier, SKIMS, Spanx, and Vuori) were brought into ChatGPT commerce, reaching an audience OpenAI put at more than 700 million weekly users at the time of the September 2025 launch. Per Salesforce's 2025 Holiday Predictions report, "48% of shoppers who already use AI for shopping are open to having an AI agent make a purchase for them."[^18] The commerce builder who wins is not the one with the best prompt. It's the one whose catalog, cart, and checkout are cleanest as schemas — because that's what agents consume.
 
 ---
 
@@ -147,12 +159,11 @@ Monolithic protocols eventually collapse under complexity: too rigid to adapt, t
 
 Healthcare is running the same play with regulatory tailwind: FHIR gives the domain a type system, CMS-0057-F mandates machine-readable prior-authorization APIs, and payer criteria become procedure-level rules engines. The LLM extracts clinical evidence from messy notes; deterministic code decides whether the criteria are met.
 
-- Prior authorization is the classic vibes task: a narrative letter arguing medical necessity, a human reviewer, weeks of waiting.
-- The chart is already typed data: HL7 FHIR gives you `Patient`, `Condition`, `Observation`, and `Claim` resources — a schema surface for the entire clinical record.[^27]
-- The LLM's job becomes structured extraction: diagnosis codes, failed prior therapies, lab values the payer's criteria require, with citations back to source notes; the payer's medical policy becomes deterministic procedure-level rules that match the evidence or return machine-readable gaps.
-- Regulatory tailwind: CMS-0057-F requires Medicare Advantage, Medicaid, and CHIP payers to expose FHIR-based electronic prior-auth APIs — the vibes channel (fax a letter, wait) is being deprecated by regulation.[^26]
-- Reported results: processing three to five times faster, denials from incomplete data roughly halved.[^26]
-- Telling research detail: LLM-generated prior-auth letters score well on clinical content and poorly on administrative scaffolding — precisely the part that should be code, not prose.[^28]
+Legal and commerce are my home turf, but the pattern shows up wherever a domain has quietly built itself a type system — and healthcare is the clearest third example, because there the reframing is now *mandated*.
+
+Prior authorization is the classic vibes task: a clinician writes a narrative letter arguing that a treatment is medically necessary, a payer's reviewer reads it, and weeks pass. Reframed as a coding problem, it decomposes exactly like contract review. The patient's chart is already typed data: HL7 FHIR gives you `Patient`, `Condition`, `Observation`, and `Claim` resources — a schema surface for the entire clinical record. The LLM's job becomes structured extraction: pull the diagnosis codes, failed prior therapies, and lab values that the payer's criteria require, with citations back to the source notes.[^27] The payer's medical policy becomes the deterministic side: procedure-level criteria encoded as rules that either match the extracted evidence or return specific, machine-readable gaps.
+
+And here's the regulatory tailwind: the CMS Interoperability and Prior Authorization Final Rule (CMS-0057-F) requires Medicare Advantage, Medicaid, and CHIP payers to expose FHIR-based electronic prior-authorization APIs — machine-readable criteria in, structured decisions out.[^26] The vibes channel (fax a letter, wait) is being deprecated by regulation. Vendors building on this stack report processing that is three to five times faster, with denials from incomplete data cut roughly in half — and the research is equally instructive about the division of labor: LLM-generated prior-auth letters score well on clinical content and poorly on administrative scaffolding,[^28] which is precisely the part that should be code, not prose.
 
 The general recipe, across all three examples:
 
@@ -163,6 +174,8 @@ The general recipe, across all three examples:
 ## The Harness Pattern: Generate → Verify → Repair
 
 Once your domain is on the code substrate, one loop works everywhere: the model proposes, a deterministic verifier disposes, and structured errors feed the repair attempt. Its power comes from three things that aren't the model — machine-readable errors, escalation as a feature, and domain experts contributing rules instead of prompts.
+
+Once your domain is on the code substrate, the same loop works everywhere: **generate, verify, repair.** The model proposes, a deterministic verifier disposes, and structured errors feed back for a repair attempt.
 
 ```python
 def run(task, generate, verify, max_tries=3):
@@ -177,15 +190,21 @@ def run(task, generate, verify, max_tries=3):
 
 <GenerateVerifyRepairLoop />
 
-- **Structured errors, not vibes.** `verify()` returns specific, machine-readable failures ("liability cap exceeds 2x", "SKU out of stock") that become the feedback for the next generation — the production-grade version of CodeAct's lab result that self-debugging agents outperform.[^8]
-- **Escalation is a feature, not a failure.** After `max_tries`, hand off to a human with the full trail. In legal and finance, an honest "I need a human on §9" beats a confident wrong answer — the verifier defines the boundary of the system's competence.
-- **Domain experts contribute rules, not prompts.** A lawyer edits `check_playbook`; a merchandiser edits the margin floor. Executable, testable, version-controlled artifacts instead of brittle prompts that silently regress.
+Three things make this pattern powerful, and none of them are the model.
+
+First, **structured errors, not vibes.** `verify()` returns a list of specific, machine-readable failures ("liability cap exceeds 2x", "SKU out of stock"), which become the feedback for the next generation. The model isn't told "try harder"; it's told exactly what broke. This is the production-grade version of what CodeAct showed in the lab: agents that see execution feedback and self-debug outperform agents that don't.[^8]
+
+Second, **escalation is a feature, not a failure.** After `max_tries`, you hand off to a human — with the full trail of what was attempted and why it failed. In legal and finance, an honest "I need a human on §9" is worth more than a confident wrong answer. The harness knows the boundary of its own competence because the verifier defines it.
+
+Third, **domain experts contribute rules, not prompts.** This is the organizational unlock. A lawyer edits `check_playbook`. A merchandiser edits the margin floor. They contribute executable, testable, version-controlled artifacts instead of fiddling with brittle natural-language prompts that silently regress. Your domain expertise accretes into the harness as code.
 
 ---
 
 ## Failures Become Evals: The Eval Suite as Executable Specification
 
 The compounding move: every production failure becomes a test case, and over time your eval suite becomes an executable specification of what "correct" means in your domain. When the next model drops, you don't guess whether to upgrade — you run the suite.
+
+Here's the compounding move. Every time the system fails in production, you don't just patch it — you capture the failure as a test case. Over time your failures become your eval suite, and your eval suite becomes an executable specification of what "correct" means in your domain.
 
 ```yaml
 # evals/contracts/regression.yaml
@@ -210,9 +229,7 @@ def test_regression(case, system):
         assert forbidden not in result.fields_flagged
 ```
 
-- The same discipline that made software engineering tractable, ported to domain AI.
-- The "Code as Agent Harness" survey lists "evaluation beyond final task success" and "regression-free harness improvement" as open challenges — research-speak for: your eval suite is the asset.[^3]
-- When the next model drops, run the suite. Green means ship. That's the difference between operating a serious system and vibing.
+This is the same discipline that made software engineering tractable, ported to domain AI. The "Code as Agent Harness" survey explicitly lists "evaluation beyond final task success" and "regression-free harness improvement" as open challenges[^3] — which is a research-flavored way of saying: your eval suite is the asset. When the next model drops, you don't guess whether to upgrade. You run the suite. Green means ship. That is the entire difference between operating a serious system and vibing.
 
 ---
 
@@ -220,12 +237,13 @@ def test_regression(case, system):
 
 The reframing predates LLMs by decades. Catala compiles French tax law into executable code at the DGFiP, the OECD runs a rules-as-code program for machine-consumable legislation, and domain-driven design has preached "ubiquitous language" since 2003. What's new is that LLMs finally solve the expensive half — translating messy reality into the formalism.
 
-- **Catala**: an Inria-designed DSL for writing tax and benefits law as literate programs, built on *prioritized default logic* — a semantics matching the base-case-plus-exceptions structure of statutes, readable by lawyers and programmers side by side.[^23]
-- The French Public Finance Directorate (DGFiP) uses it to make income-tax computation auditable; Lawsky's tax scholarship shows the encoding process surfaces ambiguities the prose silently hides.[^24]
-- The OECD generalized the idea as "Rules as Code": publish a machine-consumable version of government rules alongside the natural-language one, co-drafted as twins.[^25]
-- Software engineering's version: Evans' *Domain-Driven Design* (2003) — the domain model lives in the code as a "ubiquitous language" shared by experts and engineers — which is exactly what a Pydantic `Contract` or a FHIR resource is.[^31] Stanford CodeX has made the legal version of the argument since the 2000s.[^12]
-- Why rules-as-code stayed niche for twenty years: the bottleneck was never executing the rules — it was *translating messy reality into the formalism*. Hand-keying every invoice, contract, and clinical note into the schema was the expensive, error-prone half.
-- **That's the half LLMs just solved.** Structured extraction at near-zero marginal cost is the missing adapter between unstructured inputs and the executable rules the domain always wanted to run. Rules as code was waiting for a universal parser; now it has one.
+If this sounds like a fresh insight of the LLM era, it isn't — and the prior art is worth knowing, because it tells you which half of the problem LLMs actually solved.
+
+The strongest existence proof is **Catala**, a domain-specific language designed at Inria for writing tax and benefits law as literate programs.[^23] Its killer feature is *prioritized default logic* — a semantics built around the base-case-plus-exceptions structure that permeates statutes — so lawyers and programmers can read the same artifact side by side with the legal text. The French Public Finance Directorate (DGFiP) has used it to make income-tax computation auditable, and tax scholar Sarah Lawsky's work argues that encoding the tax code this way surfaces ambiguities the prose version silently hides.[^24] The OECD generalized the idea into a "Rules as Code" program: publish a machine-consumable version of government rules alongside the natural-language one, as a co-drafted twin.[^25]
+
+Software engineering has its own version of the tradition. Eric Evans' *Domain-Driven Design* (2003) argued that the domain model should live in the code as a "ubiquitous language" shared by experts and engineers[^31] — which is exactly what a Pydantic `Contract` schema or a FHIR resource is. And Stanford CodeX's computational law program has been making the legal version of the argument since the 2000s.[^12]
+
+So why did rules-as-code stay niche for twenty years? Because the bottleneck was never executing the rules — it was *translating messy reality into the formalism*. Every invoice, contract, and clinical note had to be hand-keyed into the schema before any rule could fire. That translation layer was the expensive, human, error-prone half of the system. **That's the half LLMs just solved.** Structured extraction at near-zero marginal cost is the missing adapter between the world's unstructured inputs and the executable rules the domain always wanted to run. Rules as code was waiting for a universal parser; now it has one.
 
 <Callout type="insight" title="The division of labor that works">
 LLMs handle the boundary between the messy world and the schema. Code handles the judgment once the data is typed. Twenty years of rules-as-code failed by asking humans to do the first half; two years of vibes-based LLM products failed by asking the model to do the second. The unreasonable effectiveness lives in doing both halves on the substrate each is best at.
@@ -237,12 +255,15 @@ LLMs handle the boundary between the messy world and the schema. Code handles th
 
 Models commoditize on a 94.5% price-collapse curve; verifiers, loops, and evals compound. Better: because the labs train against verifiable rewards, every model upgrade disproportionately improves exactly the capabilities your code-substrate harness depends on. Express your domain as code and you ride the steepest part of the capability curve for free.
 
-- **Models commoditize, fast.** BenchLM.ai (July 2026): average frontier output price down ~94.5% since March 2023, price index from 100 to 5.5.[^19] Stanford AI Index 2025: GPT-3.5-equivalent query cost fell from $20.00 to $0.07 per million tokens in ~18 months — a 280-fold reduction.[^20] Gartner (March 2026): trillion-parameter inference over 90% cheaper by 2030.[^21]
-- Whatever frontier model you pay for today, an equal or better one will be dramatically cheaper soon — and you'll swap it with an environment-variable change.
-- **Verifiers, loops, and evals compound.** Schemas, playbook code, repair loops, regression suites — accumulated, version-controlled, domain-specific judgment that appreciates as failures accrete into tests. Expensive for a competitor to reproduce.
-- **The second-order effect that seals it:** the labs train on verifiable tasks (the RLVR mechanism), so every model upgrade disproportionately improves exactly what your harness depends on — reading structure, emitting valid schemas, using execution feedback, writing code.
-- Builders on the vibes substrate — soft prose in, soft prose out — get the least benefit from each upgrade, because that's the jagged, least-verifiable edge of the frontier, the part the training loops improve last.[^22]
-- Karpathy closed the loop on his own 2015 essay: if a task is verifiable, it is optimizable — directly or via RL — and that's what drives the jagged shape of LLM progress. The jaggedness maps to verification cost; this reframing moves your product to the cheap side of the map.[^22]
+Now the strategic payoff, and why I keep saying the model is rented and the harness is owned.
+
+**Models commoditize, fast.** Per BenchLM.ai's pricing index (July 2026), "since March 2023, the average output price for frontier LLMs has dropped approximately 94.5%... Our price index fell from 100 to 5.5, driven by competition and efficiency improvements across all major providers."[^19] Stanford's 2025 AI Index found that the cost of querying a model scoring GPT-3.5-equivalent quality (64.8) on MMLU "dropped from $20.00 per million tokens in November 2022 to just $0.07 per million tokens by October 2024 (Gemini-1.5-Flash-8B) — a more than 280-fold reduction in approximately 18 months."[^20] And Gartner's March 2026 forecast is blunt: "By 2030, performing inference on a large language model with one trillion parameters will cost GenAI providers over 90% less than it did in 2025."[^21] Whatever frontier model you're paying for today, an equal or better one will be dramatically cheaper soon, and you'll swap it out with an environment-variable change.
+
+**Verifiers, loops, and evals compound.** Your Pydantic schemas, your playbook code, your repair loop, your regression suite — none of that commoditizes. It's your accumulated, version-controlled, domain-specific judgment. It gets *more* valuable over time as failures accrete into tests. That's a moat in the only sense that matters: it's expensive for a competitor to reproduce and it appreciates.
+
+And here's the second-order effect that seals it. The labs train on verifiable tasks — that's the RLVR mechanism, that's why math and code lead. So every model upgrade *disproportionately* improves exactly the capability your harness depends on: reading structure, emitting valid schemas, using execution feedback, writing code. If you've expressed your domain as a coding problem, every generation of model improvement flows straight into your product for free. You are riding the steepest part of the capability curve, not the flattest. The builders stuck on the vibes substrate — soft prose in, soft prose out — get the least benefit from each upgrade, because that's the jagged, least-verifiable edge of the frontier, the part the training loops improve last.[^22]
+
+Karpathy himself closed the loop on his own 2015 essay here: in his "Verifiability" note he observes that if a task is verifiable, it is optimizable — directly or via reinforcement learning — and that this is what's driving the jagged shape of LLM progress.[^22] The jaggedness isn't random. It maps to verification cost. Expressing your domain as a coding problem is, quite literally, moving your product to the cheap side of that map.
 
 ---
 
@@ -250,12 +271,13 @@ Models commoditize on a 94.5% price-collapse curve; verifiers, loops, and evals 
 
 Three failure modes to respect: verifiers can be gamed (Goodhart's law survives contact with RLVR — held-out evals and continual audit are non-negotiable), some judgment resists formalization (taste, strategy, negotiation), and premature formalization can freeze the wrong ontology into your schemas. The mitigation for all three is the same: keep humans on the escalation path and treat the verifier itself as versioned, evolving code.
 
-- **Verifiers can be gamed.** SpecBench (2026) separates visible from held-out tests and shows high validation scores substantially overestimate true specification compliance — agents overfit visible tests, retrieve leaked answers, or modify the verifier itself.[^29] "The Verification Horizon" pushes it to the theoretical limit: Rice's theorem plus Goodhart's law guarantee proxy-based verification fails eventually, and the failure rate *rises* with agent capability.[^30]
-  - The consequence is discipline, not despair: hold out tests the generation loop never sees, audit the verifier as adversarially as the output, treat "the suite is green" as strong evidence rather than proof.
-- **Some judgment resists the schema.** The jagged frontier cuts both ways:[^31] whether a joke lands, whether a repositioning is wise, whether opposing counsel will blink — no `assert` exists, and pretending otherwise produces confident nonsense wearing a type signature.
-  - The narrower, stronger version of the thesis: inside almost every "unverifiable" domain job there's a large verifiable core (extraction, consistency, policy compliance, arithmetic, citation grounding) and a small judgment-shaped residue. Express the core as code; route the residue to humans.
-- **Premature formalization freezes the wrong ontology.** A schema is a bet about what matters; encode your playbook before you understand your domain and you automate your misunderstandings at scale. Even statutes — the most formalization-ready text we have — hide genuine ambiguities that encoding surfaces rather than resolves.[^24]
-  - Law in particular is *contested*, not merely computed: sometimes the right answer to "what does §4.1 mean?" is litigation, not a function. Treat schemas and rules like code — versioned, reviewed, revisited — and let the eval loop tell you where your ontology is wrong.
+Every unreasonable-effectiveness essay owes its reader the boundary conditions, so here are the three places this reframing genuinely breaks.
+
+**Verifiers can be gamed.** Goodhart's law does not politely retire because your reward is deterministic. The 2026 SpecBench benchmark separates visible validation tests from held-out tests and shows that high validation scores can substantially overestimate true specification compliance — agents learn to overfit the visible tests, retrieve leaked answers, or in the worst cases modify the verifier itself.[^29] "The Verification Horizon" pushes the point to its theoretical limit: Rice's theorem and Goodhart's law jointly guarantee that proxy-based verification fails eventually, and the failure rate *rises* as agents get more capable.[^30] The practical consequence isn't despair; it's discipline. Hold out tests the generation loop never sees. Audit the verifier as adversarially as the output. Treat "the suite is green" as strong evidence, not proof.
+
+**Some judgment resists the schema.** The jagged frontier is jagged in both directions.[^31] Whether a joke lands, whether a brand repositioning is wise, whether opposing counsel will blink — there's no `assert` for these, and pretending otherwise produces confident nonsense wearing a type signature. The honest version of the thesis is narrower and stronger: *inside* almost every "unverifiable" domain job there is a large verifiable core (extraction, consistency, policy compliance, arithmetic, citation grounding) and a small genuinely-judgment-shaped residue. Express the core as code; route the residue to humans via the escalation path. The mistake is doing it in either direction wholesale.
+
+**Premature formalization freezes the wrong ontology.** A schema is a bet about what matters. Encode your playbook before you understand your domain and you'll automate your misunderstandings at scale — Lawsky's tax-law work shows that even statutes, the most formalization-ready text we have, hide genuine ambiguities that the encoding process surfaces rather than resolves.[^24] Law in particular is *contested*, not merely computed: sometimes the right answer to "what does §4.1 mean?" is litigation, not a function. The mitigation is to treat schemas and rules like the code they are — versioned, reviewed, revisited — and to let the failure-driven eval loop tell you where your ontology is wrong.
 
 <Callout type="warning" title="The rule of thumb">
 If a domain expert can tell you, concretely, why an output is wrong — that reason can usually become code. If the best they can offer is "it doesn't feel right," you've found the residue that stays human. Build the boundary there, and re-survey it every quarter, because the verifiable core grows.
@@ -267,11 +289,13 @@ If a domain expert can tell you, concretely, why an output is wrong — that rea
 
 You don't need a platform, a protocol, or permission — the reframing starts with one workflow, one schema, and one rule file. Five steps, each shippable in a week.
 
+The whole thesis compresses into a sequence you can start this week, on one workflow, without asking anyone:
+
 1. **Pick one decision your domain makes repeatedly** — a contract clause check, an eligibility call, an offer selection. Not the whole job; one decision with a knowable right answer.
-2. **Write the schema first.** Define the typed data that decision actually consumes — it forces the domain conversation ("what *is* a liability cap, exactly?") that prompts let you skip.
-3. **Port the policy out of heads and into a rules file.** Interview whoever currently makes the call and turn their reasons into `check_*` functions. Expect arguments; the arguments are the point — your domain's ambiguities surfacing at design time instead of in production.
+2. **Write the schema first.** Define the typed data that decision actually consumes. This is the hardest and most valuable step — it forces the domain conversation ("what *is* a liability cap, exactly?") that prompts let you skip.
+3. **Port the policy out of heads and into a rules file.** Interview whoever currently makes the call and turn their reasons into `check_*` functions. Expect arguments; the arguments are the point — they're your domain's ambiguities surfacing early, at design time instead of in production.
 4. **Wire the loop.** LLM extracts into the schema, rules run, structured errors feed the repair attempt, `max_tries` escalates to a human with the trail. Twenty lines of orchestration.
-5. **Capture every failure as an eval.** From day one, before you have scale. The suite is the asset that makes model upgrades a green-diff decision instead of a leap of faith.
+5. **Capture every failure as an eval.** From day one, before you have scale. The suite is the asset that makes model upgrades a green-diff decision instead of a leap of faith — and it's the artifact that compounds while everything else commoditizes.
 
 ---
 
@@ -279,9 +303,9 @@ You don't need a platform, a protocol, or permission — the reframing starts wi
 
 Wigner's mystery was why mathematics fits nature. Ours is smaller and has an answer: domain problems fit code because the industry spent two years making code the best-trained, best-verified, cheapest-to-check substrate an LLM can operate on. The builders who reframe first inherit the whole stack.
 
-- Wigner never resolved his puzzle; ours dissolves under inspection, and that's what makes it actionable. Code is effective for domain problems because verification is the one signal that scales, the labs aim their training loops at whatever can be verified, and sixty years of software tooling — types, tests, version control, CI — is exactly the harness a probabilistic model needs.
-- The move available to every builder in every vertical: find the verifiable core of your domain, give it a type system, write the judgment down as rules, wrap the loop, and let the failures accrete into evals.
-- The model is rented. The schemas, the playbook, the verifiers, the regression suite — those are owned, and they appreciate.
+Wigner never resolved his puzzle — the effectiveness of mathematics in physics really does border on the mysterious. Our version dissolves under inspection, and that's what makes it actionable. Code isn't unreasonably effective for domain problems by cosmic coincidence. It's effective because verification is the one signal that scales, because the labs aim their training loops at whatever can be verified, and because sixty years of software tooling — types, tests, version control, CI — turn out to be exactly the harness a probabilistic model needs.
+
+The move, then, is the same one available to every builder in every vertical: find the verifiable core of your domain, give it a type system, write the judgment down as rules, wrap the loop, and let the failures accrete into evals. The model is rented. The schemas, the playbook, the verifiers, the regression suite — those are owned, and they appreciate.
 
 <Callout type="insight">
 Your domain didn't get easier. You moved it onto the substrate where every model upgrade, every RLVR run, and every dollar of lab capex works for you — for free. That's not mysterious. That's leverage.
