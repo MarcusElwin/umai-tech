@@ -1,0 +1,87 @@
+---
+/**
+ * Compact vertical timeline tracing the "unreasonable effectiveness" lineage
+ * from Wigner (1960) to domain problems as coding problems (this post).
+ */
+const milestones = [
+  {
+    year: '1960',
+    title: 'Wigner — mathematics describes nature',
+    detail:
+      '"The Unreasonable Effectiveness of Mathematics in the Natural Sciences." Why should a product of human imagination describe the physical universe so uncannily well? "Something bordering on the mysterious."',
+    accent: '#F59E0B',
+  },
+  {
+    year: '2015',
+    title: 'Karpathy — neural nets learn programs',
+    detail:
+      '"The Unreasonable Effectiveness of Recurrent Neural Networks." A tiny character-level model generates almost-readable Shakespeare. Same move: notice a tool works far better than it has any right to, then ask why.',
+    accent: '#3B82F6',
+  },
+  {
+    year: '2024',
+    title: 'CodeAct — code as the action space',
+    detail:
+      'Wang et al. (ICML 2024): let agents emit executable Python instead of rigid JSON tool calls and success rates rise up to 20% across 17 LLMs. Code composes; JSON doesn’t.',
+    accent: '#10B981',
+  },
+  {
+    year: '2025',
+    title: 'Verifier’s law + RLVR',
+    detail:
+      'Jason Wei: the ease of training AI to solve a task is proportional to how verifiable it is. RLVR trains against deterministic checkers — no reward model to hack. IMO gold and SWE-bench saturation follow.',
+    accent: '#8B5CF6',
+  },
+  {
+    year: '2026',
+    title: 'Coding agents become universal agents',
+    detail:
+      'Code graduates from output to operational substrate ("Code as Agent Harness", Ning et al.). Anthropic frames the coding agent as an everything-agent that happens to be best at code.',
+    accent: '#EC4899',
+  },
+  {
+    year: 'Now',
+    title: 'Your domain, expressed as code',
+    detail:
+      'The synthesis: express legal, commerce, healthcare, or finance problems as structured extraction, executable invariants, and deterministic verifiers — and plug directly into this entire stack.',
+    accent: '#8B5CF6',
+  },
+];
+---
+
+<section
+  class="not-prose my-8 rounded-3xl border border-umai-gray-200 bg-white p-5 shadow-2xl shadow-umai-gray-900/10 dark:border-umai-gray-700 dark:bg-umai-gray-900/80 sm:p-6"
+  aria-labelledby="effectiveness-lineage-title"
+>
+  <div class="mb-6 max-w-3xl border-b border-umai-gray-200 pb-5 dark:border-umai-gray-700">
+    <div class="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-umai-accent">the lineage</div>
+    <h3 id="effectiveness-lineage-title" class="text-2xl font-bold tracking-tight text-umai-primary dark:text-umai-secondary sm:text-3xl">
+      Sixty-six years of unreasonable effectiveness
+    </h3>
+    <div class="mt-3 text-sm leading-7 text-umai-gray-600 dark:text-umai-gray-300">
+      The same move, made six times: notice that a substrate works far better than it has any
+      right to — then build on it.
+    </div>
+  </div>
+
+  <ol class="relative space-y-0 border-l-2 border-umai-gray-200 dark:border-umai-gray-700">
+    {milestones.map((m, i) => (
+      <li class={`group relative pl-6 ${i === milestones.length - 1 ? 'pb-0' : 'pb-6'}`}>
+        <span
+          class="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-[3px] border-white shadow transition-transform duration-200 group-hover:scale-125 dark:border-umai-gray-900"
+          style={`background-color: ${m.accent}`}
+        ></span>
+        <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <span
+            class="rounded-full px-2.5 py-0.5 font-mono text-xs font-bold text-white"
+            style={`background-color: ${m.accent}`}
+          >
+            {m.year}
+          </span>
+          <h4 class="text-base font-bold tracking-tight text-umai-gray-900 dark:text-white">{m.title}</h4>
+        </div>
+        <p class="mt-1.5 text-sm leading-6 text-umai-gray-600 dark:text-umai-gray-300">{m.detail}</p>
+      </li>
+    ))}
+  </ol>
+</section>

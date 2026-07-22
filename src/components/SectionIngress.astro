@@ -1,0 +1,35 @@
+---
+/**
+ * A styled "ingress" (lead paragraph) placed at the top of a section.
+ * Gives each section a scannable, high-level summary that can be edited
+ * independently of the body copy.
+ */
+export interface Props {
+  label?: string;
+}
+
+const { label } = Astro.props;
+---
+
+<div class="section-ingress not-prose relative my-6 rounded-r-xl border-l-4 border-umai-accent bg-purple-50/60 py-4 pl-5 pr-4 dark:bg-purple-950/20">
+  {label && (
+    <div class="mb-1 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-umai-accent">
+      {label}
+    </div>
+  )}
+  <div class="text-[1.05rem] font-medium italic leading-relaxed text-umai-gray-700 dark:text-umai-gray-200">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .section-ingress :global(p) {
+    margin: 0;
+  }
+  .section-ingress :global(strong) {
+    @apply font-semibold text-umai-gray-900 dark:text-white;
+  }
+  .section-ingress :global(code) {
+    @apply rounded bg-black/5 px-1.5 py-0.5 font-mono text-sm not-italic dark:bg-white/10;
+  }
+</style>
