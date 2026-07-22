@@ -9,7 +9,6 @@ tags: ["AI", "AI Engineering", "Agentic AI", "Large Language Models", "RLVR", "E
 
 import Callout from '../../components/Callout.astro';
 import Citation from '../../components/Citation.astro';
-import SectionIngress from '../../components/SectionIngress.astro';
 import EffectivenessLineage from '../../components/EffectivenessLineage.astro';
 import CodeSubstrateProperties from '../../components/CodeSubstrateProperties.astro';
 import DomainReframingGrid from '../../components/DomainReframingGrid.astro';
@@ -27,9 +26,7 @@ This is the practical corollary of a thesis I keep repeating: [the harness is th
 
 ## Why Code Is the Perfect Substrate for Agentic Loops
 
-<SectionIngress label="ingress">
 Code has three properties no other medium for domain knowledge has — it's verifiable, composable, and executable — and those three are precisely what turn a stateless next-token predictor into a reliable agent. Get your domain onto the code substrate and you inherit all three for free.
-</SectionIngress>
 
 Start with the obvious question: why is code special? Three properties.
 
@@ -49,9 +46,7 @@ That's the academic framing. The builder's framing is simpler: if you can get yo
 
 ## The Intellectual Lineage: Verifier's Law and RLVR
 
-<SectionIngress label="ingress">
 This reframing works *now* because of how the labs train: reinforcement learning against deterministic verifiers (RLVR) means the most verifiable tasks improve fastest. Verifier's law says every solvable, easily-verified task will be solved — and code hits all five of its trainability criteria.
-</SectionIngress>
 
 Here's why this matters *now* and not five years ago.
 
@@ -75,9 +70,7 @@ So the lineage is: Wigner (math describes nature) → Karpathy (nets learn progr
 
 ## Worked Example 1 — Legal: Contract Review as Structured Extraction Plus a Deterministic Playbook
 
-<SectionIngress label="ingress">
 "Review this contract" is a vibes task. Reframed, it decomposes into two clean stages: structured extraction (prose → typed data, where the schema itself is a verifier) and a deterministic playbook (the firm's legal judgment as version-controlled, testable code). This is what Legora, Harvey, Kira, and Luminance converged on.
-</SectionIngress>
 
 I work in legal AI, so let me make this concrete. Naively, "review this contract" is a vibes task. You hand an LLM a PDF and hope. That's a demo, not a product.
 
@@ -129,9 +122,7 @@ There is an honest tension here, and the legal AI vendor ContractKen names it we
 
 ## Worked Example 2 — Commerce: Decisions as Executable Invariants and Protocol Schemas
 
-<SectionIngress label="ingress">
 In commerce the reframing is happening industry-wide and in real time: business policy as unit-testable invariants that no prompt can jailbreak, and the entire buying journey being redefined as capability negotiation between typed schemas — ACP, UCP, AP2, MCP. The winner is whoever's catalog, cart, and checkout are cleanest as schemas.
-</SectionIngress>
 
 The other half of my work is agentic commerce, and the reframing is even more literal here — because the entire industry is *right now* turning commerce into a schema surface for agents.
 
@@ -166,9 +157,7 @@ That's a software architecture argument standing in for a commerce strategy — 
 
 ## Worked Example 3 — Healthcare: Prior Authorization as Typed Resources Plus Payer Rules
 
-<SectionIngress label="ingress">
 Healthcare is running the same play with regulatory tailwind: FHIR gives the domain a type system, CMS-0057-F mandates machine-readable prior-authorization APIs, and payer criteria become procedure-level rules engines. The LLM extracts clinical evidence from messy notes; deterministic code decides whether the criteria are met.
-</SectionIngress>
 
 Legal and commerce are my home turf, but the pattern shows up wherever a domain has quietly built itself a type system — and healthcare is the clearest third example, because there the reframing is now *mandated*.
 
@@ -184,9 +173,7 @@ The general recipe, across all three examples:
 
 ## The Harness Pattern: Generate → Verify → Repair
 
-<SectionIngress label="ingress">
 Once your domain is on the code substrate, one loop works everywhere: the model proposes, a deterministic verifier disposes, and structured errors feed the repair attempt. Its power comes from three things that aren't the model — machine-readable errors, escalation as a feature, and domain experts contributing rules instead of prompts.
-</SectionIngress>
 
 Once your domain is on the code substrate, the same loop works everywhere: **generate, verify, repair.** The model proposes, a deterministic verifier disposes, and structured errors feed back for a repair attempt.
 
@@ -215,9 +202,7 @@ Third, **domain experts contribute rules, not prompts.** This is the organizatio
 
 ## Failures Become Evals: The Eval Suite as Executable Specification
 
-<SectionIngress label="ingress">
 The compounding move: every production failure becomes a test case, and over time your eval suite becomes an executable specification of what "correct" means in your domain. When the next model drops, you don't guess whether to upgrade — you run the suite.
-</SectionIngress>
 
 Here's the compounding move. Every time the system fails in production, you don't just patch it — you capture the failure as a test case. Over time your failures become your eval suite, and your eval suite becomes an executable specification of what "correct" means in your domain.
 
@@ -250,9 +235,7 @@ This is the same discipline that made software engineering tractable, ported to 
 
 ## This Isn't New: Rules as Code Got There First
 
-<SectionIngress label="ingress">
 The reframing predates LLMs by decades. Catala compiles French tax law into executable code at the DGFiP, the OECD runs a rules-as-code program for machine-consumable legislation, and domain-driven design has preached "ubiquitous language" since 2003. What's new is that LLMs finally solve the expensive half — translating messy reality into the formalism.
-</SectionIngress>
 
 If this sounds like a fresh insight of the LLM era, it isn't — and the prior art is worth knowing, because it tells you which half of the problem LLMs actually solved.
 
@@ -270,9 +253,7 @@ LLMs handle the boundary between the messy world and the schema. Code handles th
 
 ## Why the Moat Argument Holds
 
-<SectionIngress label="ingress">
 Models commoditize on a 94.5% price-collapse curve; verifiers, loops, and evals compound. Better: because the labs train against verifiable rewards, every model upgrade disproportionately improves exactly the capabilities your code-substrate harness depends on. Express your domain as code and you ride the steepest part of the capability curve for free.
-</SectionIngress>
 
 Now the strategic payoff, and why I keep saying the model is rented and the harness is owned.
 
@@ -288,9 +269,7 @@ Karpathy himself closed the loop on his own 2015 essay here: in his "Verifiabili
 
 ## Where the Reframing Breaks: The Honest Limits
 
-<SectionIngress label="ingress">
 Three failure modes to respect: verifiers can be gamed (Goodhart's law survives contact with RLVR — held-out evals and continual audit are non-negotiable), some judgment resists formalization (taste, strategy, negotiation), and premature formalization can freeze the wrong ontology into your schemas. The mitigation for all three is the same: keep humans on the escalation path and treat the verifier itself as versioned, evolving code.
-</SectionIngress>
 
 Every unreasonable-effectiveness essay owes its reader the boundary conditions, so here are the three places this reframing genuinely breaks.
 
@@ -308,9 +287,7 @@ If a domain expert can tell you, concretely, why an output is wrong — that rea
 
 ## How to Start on Monday
 
-<SectionIngress label="ingress">
 You don't need a platform, a protocol, or permission — the reframing starts with one workflow, one schema, and one rule file. Five steps, each shippable in a week.
-</SectionIngress>
 
 The whole thesis compresses into a sequence you can start this week, on one workflow, without asking anyone:
 
@@ -324,9 +301,7 @@ The whole thesis compresses into a sequence you can start this week, on one work
 
 ## Conclusion
 
-<SectionIngress label="ingress">
 Wigner's mystery was why mathematics fits nature. Ours is smaller and has an answer: domain problems fit code because the industry spent two years making code the best-trained, best-verified, cheapest-to-check substrate an LLM can operate on. The builders who reframe first inherit the whole stack.
-</SectionIngress>
 
 Wigner never resolved his puzzle — the effectiveness of mathematics in physics really does border on the mysterious. Our version dissolves under inspection, and that's what makes it actionable. Code isn't unreasonably effective for domain problems by cosmic coincidence. It's effective because verification is the one signal that scales, because the labs aim their training loops at whatever can be verified, and because sixty years of software tooling — types, tests, version control, CI — turn out to be exactly the harness a probabilistic model needs.
 
