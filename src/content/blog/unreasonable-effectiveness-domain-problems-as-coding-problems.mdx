@@ -9,6 +9,7 @@ tags: ["AI", "AI Engineering", "Agentic AI", "Large Language Models", "RLVR", "E
 
 import Callout from '../../components/Callout.astro';
 import Citation from '../../components/Citation.astro';
+import CodeTerminal from '../../components/CodeTerminal.astro';
 import EffectivenessLineage from '../../components/EffectivenessLineage.astro';
 import CodeSubstrateProperties from '../../components/CodeSubstrateProperties.astro';
 import DomainReframingGrid from '../../components/DomainReframingGrid.astro';
@@ -80,8 +81,11 @@ This is exactly what the market has converged on. Legora's flagship feature, "Ta
 
 The extraction step looks like this in Python with Pydantic:
 
-```python
-from pydantic import BaseModel
+<CodeTerminal
+  title="legal · schema.py"
+  label="Python"
+  lang="python"
+  code={`from pydantic import BaseModel
 from datetime import date
 from enum import Enum
 
@@ -97,13 +101,16 @@ class Contract(BaseModel):
     auto_renew: bool
     liability_cap_multiple: float | None   # cap as multiple of fees
     governing_law: Governing
-    assignment_change_of_control: bool      # can counterparty assign on CoC?
-```
+    assignment_change_of_control: bool      # can counterparty assign on CoC?`}
+/>
 
 You ask the model to populate that schema. The model is doing what it's genuinely great at — reading language, emitting structured output — and the schema itself is a verifier: wrong types throw, missing required fields throw, an out-of-enum jurisdiction throws. Now the playbook, which is where the actual legal judgment lives, is just code:
 
-```python
-def check_playbook(c: Contract) -> list[str]:
+<CodeTerminal
+  title="legal · playbook.py"
+  label="Python"
+  lang="python"
+  code={`def check_playbook(c: Contract) -> list[str]:
     issues = []
     if c.liability_cap_multiple is None or c.liability_cap_multiple > 2.0:
         issues.append("Liability cap exceeds 2x fees (playbook §4.1)")
@@ -111,8 +118,8 @@ def check_playbook(c: Contract) -> list[str]:
         issues.append("Auto-renew on >12mo term needs approval (§7.2)")
     if c.assignment_change_of_control:
         issues.append("Assignment on change-of-control is non-standard (§9)")
-    return issues
-```
+    return issues`}
+/>
 
 Look at what happened. The subjective, argumentative task of "is this contract acceptable?" became `extract → validate → run rules`. The playbook is now version-controlled, testable, and owned by the firm. When a partner disagrees with a flag, they don't rewrite a prompt — they edit `§4.1` and the change is auditable. That's the difference between a demo and something a magic circle firm will actually deploy. And LegalBench — the collaboratively built benchmark of 162 legal reasoning tasks — exists precisely because the field learned that you evaluate legal AI with structured tasks and reference answers, not vibes.[^13]
 
@@ -128,8 +135,11 @@ The other half of my work is agentic commerce, and the reframing is even more li
 
 Consider a mundane task: "should we upsell this customer, and with what?" As a vibes task, you'd prompt a model with the cart and hope for something sensible. As a coding problem, it's a set of executable invariants:
 
-```typescript
-type Cart = { items: LineItem[]; subtotal: number; currency: string };
+<CodeTerminal
+  title="commerce · upsell.ts"
+  label="TypeScript"
+  lang="typescript"
+  code={`type Cart = { items: LineItem[]; subtotal: number; currency: string };
 type Offer = { sku: string; margin: number; inStock: boolean };
 
 function chooseUpsell(cart: Cart, candidates: Offer[]): Offer | null {
@@ -138,8 +148,8 @@ function chooseUpsell(cart: Cart, candidates: Offer[]): Offer | null {
     .filter(o => o.margin > 0.15)              // margin floor
     .filter(o => cart.subtotal < 500);         // don't upsell big baskets
   return eligible.sort((a, b) => b.margin - a.margin)[0] ?? null;
-}
-```
+}`}
+/>
 
 The LLM is great at generating candidate offers and phrasing them naturally. But *which* offer ships is decided by deterministic code that encodes business policy. The invariants — in stock, margin floor, basket ceiling — can't be jailbroken by a clever prompt, and they can be unit-tested.
 
@@ -177,16 +187,19 @@ Once your domain is on the code substrate, one loop works everywhere: the model 
 
 Once your domain is on the code substrate, the same loop works everywhere: **generate, verify, repair.** The model proposes, a deterministic verifier disposes, and structured errors feed back for a repair attempt.
 
-```python
-def run(task, generate, verify, max_tries=3):
+<CodeTerminal
+  title="harness · loop.py"
+  label="Python"
+  lang="python"
+  code={`def run(task, generate, verify, max_tries=3):
     errors = []
     for attempt in range(max_tries):
         candidate = generate(task, feedback=errors)
         errors = verify(candidate)          # returns [] if valid
         if not errors:
             return candidate, "ok"
-    return candidate, "escalate"            # hand to a human
-```
+    return candidate, "escalate"            # hand to a human`}
+/>
 
 <GenerateVerifyRepairLoop />
 
@@ -206,8 +219,13 @@ The compounding move: every production failure becomes a test case, and over tim
 
 Here's the compounding move. Every time the system fails in production, you don't just patch it — you capture the failure as a test case. Over time your failures become your eval suite, and your eval suite becomes an executable specification of what "correct" means in your domain.
 
-```yaml
-# evals/contracts/regression.yaml
+<CodeTerminal
+  title="evals · regression suite"
+  examples={[
+    {
+      label: "regression.yaml",
+      lang: "yaml",
+      code: `# evals/contracts/regression.yaml
 - id: cap-2024-11-liability
   input: fixtures/msa_acme.pdf
   expect_issues:
@@ -217,17 +235,20 @@ Here's the compounding move. Every time the system fails in production, you don'
 
 - id: upsell-oos-2025-03
   input: fixtures/cart_holiday.json
-  expect_upsell: null          # out-of-stock item must never be offered
-```
-
-```python
-def test_regression(case, system):
+  expect_upsell: null          # out-of-stock item must never be offered`
+    },
+    {
+      label: "test_regression.py",
+      lang: "python",
+      code: `def test_regression(case, system):
     result = system.run(load(case["input"]))
     for issue in case.get("expect_issues", []):
         assert issue in result.issues
     for forbidden in case.get("must_not_flag", []):
-        assert forbidden not in result.fields_flagged
-```
+        assert forbidden not in result.fields_flagged`
+    }
+  ]}
+/>
 
 This is the same discipline that made software engineering tractable, ported to domain AI. The "Code as Agent Harness" survey explicitly lists "evaluation beyond final task success" and "regression-free harness improvement" as open challenges[^3] — which is a research-flavored way of saying: your eval suite is the asset. When the next model drops, you don't guess whether to upgrade. You run the suite. Green means ship. That is the entire difference between operating a serious system and vibing.
 
