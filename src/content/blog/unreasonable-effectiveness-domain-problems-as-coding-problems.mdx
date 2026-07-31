@@ -1,10 +1,10 @@
 ---
-title: "The Unreasonable Effectiveness of Expressing Your Domain Problem as a Coding Problem"
-description: "Legal, commerce, healthcare, tax — most domain problems are unreasonably well suited to being reframed as coding problems: structured extraction, executable invariants, deterministic verifiers, and failure-driven evals. Do this and every model upgrade flows straight into your product."
+title: "The Unreasonable Effectiveness of Domain Problems as Code"
+description: "Reframe domain problems as coding problems — typed schemas, executable rules, deterministic verifiers — and every model upgrade flows into your product."
 pubDate: 2026-07-22T10:00:00.000Z
-heroImage: "/images/blog/unreasonable-effectiveness-domain-problems-as-coding-problems/hero.png"
+heroImage: "/images/blog/unreasonable-effectiveness-domain-problems-as-coding-problems/hero.webp"
 author: "Marcus Elwin"
-tags: ["AI", "AI Engineering", "Agentic AI", "Large Language Models", "RLVR", "Evals", "Legal Tech", "Agentic Commerce", "Strategy", "Generative AI"]
+tags: ["AI", "AI Engineering", "Agentic AI", "Large Language Models", "RLVR", "Evals", "Legal Tech", "Agentic Commerce"]
 ---
 
 import Callout from '../../components/Callout.astro';
@@ -14,10 +14,11 @@ import EffectivenessLineage from '../../components/EffectivenessLineage.astro';
 import CodeSubstrateProperties from '../../components/CodeSubstrateProperties.astro';
 import DomainReframingGrid from '../../components/DomainReframingGrid.astro';
 import GenerateVerifyRepairLoop from '../../components/GenerateVerifyRepairLoop.astro';
+import CodingHarnessAnatomy from '../../components/CodingHarnessAnatomy.astro';
 
 In 1960, the physicist Eugene Wigner published an essay with one of the best titles in the history of ideas: "The Unreasonable Effectiveness of Mathematics in the Natural Sciences."[^1] His puzzle was simple and profound — why should mathematics, a product of human imagination, describe the physical universe so uncannily well? He called it "something bordering on the mysterious." In 2015, Andrej Karpathy borrowed the frame for "The Unreasonable Effectiveness of Recurrent Neural Networks,"[^2] marvelling that a tiny character-level model could generate almost-readable Shakespeare. Both essays share a move: notice that a tool works far better than it has any right to, then ask why.
 
-I want to make the same move for something I keep seeing in production. Most domain-specific problems — legal, commerce, finance — are unreasonably well suited to being reframed as coding problems. Not "solved by writing code," although sometimes that too. I mean reframed: expressed as structured extraction, executable invariants, deterministic verifiers, repair loops, and failure-driven evals. When you do this, LLMs suddenly get much better at your domain. Not because the model learned your domain. Because you moved your domain onto the substrate the model is strongest at.
+I want to make the same move for something I keep seeing in production. Most domain-specific problems — legal, commerce, healthcare — are unreasonably well suited to being reframed as coding problems. Not "solved by writing code," although sometimes that too. I mean reframed: expressed as structured extraction, executable invariants, deterministic verifiers, repair loops, and failure-driven evals. When you do this, LLMs suddenly get much better at your domain. Not because the model learned your domain. Because you moved your domain onto the substrate the model is strongest at.
 
 This is the practical corollary of a thesis I keep repeating: [the harness is the moat, not the model](/blog/the-moat-is-the-harness-not-the-model). The model is rented. The harness is owned. And the best harness is made of code.
 
@@ -41,7 +42,7 @@ Start with the obvious question: why is code special? Three properties.
 
 The 2026 survey "Code as Agent Harness: Toward Executable, Verifiable, and Stateful Agent Systems" (Ning et al., a 197-paper synthesis from UIUC, Meta, and Stanford, published May 2026)[^3] makes exactly this point at the research level. Its thesis: code is no longer just the *output* of an LLM, it's the *operational substrate* — "an executable and inspectable medium through which agents reason, act, and adapt." The paper organizes the whole field around three layers: the harness interface (how code connects the agent to reasoning, action, and the environment), harness mechanisms (planning, memory, tool use, feedback-driven control), and scaling the harness to multi-agent settings.
 
-That's the academic framing. The builder's framing is simpler: if you can get your problem onto the code substrate, you inherit verifiability, composability, and executability for free. And those three things are exactly what turn a stateless next-token predictor into a reliable agent.
+That's the academic framing. The builder's framing is simpler: the rest of this post is just those three properties, cashed in — verifiers you can trust, playbooks that compose, and loops that end in ground truth.
 
 ---
 
@@ -64,6 +65,10 @@ That mechanism has a name: Reinforcement Learning with Verifiable Rewards (RLVR)
 And on the software side, SWE-bench Verified — real GitHub issues resolved by agents — went from mid-tier scores to models like Claude Opus 4.6 and Gemini 3.1 Pro clustered around 80% by early 2026. OpenAI has essentially declared the benchmark saturated.[^7] The through-line: put a domain on a verifiable substrate, and the labs' training loops will relentlessly improve it.
 
 This is where CodeAct comes in. The paper "Executable Code Actions Elicit Better LLM Agents" (Wang et al., ICML 2024)[^8] showed that when you let an agent emit *executable Python* as its action space — instead of rigid JSON tool calls — you get up to 20% higher success rates across 17 LLMs. Code is a better action language than JSON because it composes. And Anthropic has taken this to its logical conclusion: they now frame coding agents as effectively the *universal* agent. As one widely-shared summary put it, it's "not a coding agent — an everything agent that happens to be best at code right now." Claude Code power users were managing to-do lists and email with it, so Anthropic wrapped it in a consumer product. Sebastian Raschka's April 2026 essay "Components of a Coding Agent"[^9] makes the harness point crisply: because vanilla models now have similar capabilities, "the harness can often be the distinguishing factor that makes one LLM work better than another."
+
+And that "everything agent" has a remarkably stable shape. Whether you open up Claude Code, Mario Zechner's pi, LangChain's DeepAgents, or Codex CLI, you find the same architecture — one loop, three supporting layers, three cross-cutting concerns:
+
+<CodingHarnessAnatomy />
 
 So the lineage is: Wigner (math describes nature) → Karpathy (nets learn programs) → verifier's law (verifiable tasks get solved) → RLVR (verifiability is trainable) → coding agents as universal agents. The synthesis I'm proposing: **your domain problem, expressed as a coding problem, plugs directly into this entire stack.**
 
@@ -104,7 +109,9 @@ class Contract(BaseModel):
     assignment_change_of_control: bool      # can counterparty assign on CoC?`}
 />
 
-You ask the model to populate that schema. The model is doing what it's genuinely great at — reading language, emitting structured output — and the schema itself is a verifier: wrong types throw, missing required fields throw, an out-of-enum jurisdiction throws. Now the playbook, which is where the actual legal judgment lives, is just code:
+You ask the model to populate that schema. The model is doing what it's genuinely great at — reading language, emitting structured output — and the schema itself is a verifier: wrong types throw, missing required fields throw, an out-of-enum jurisdiction throws.
+
+Better still: as of 2025-2026 schema conformance is a *decode-time guarantee*, not a retry-and-hope. Constrained-decoding engines like XGrammar — now the default structured-output backend in vLLM, SGLang, and TensorRT-LLM — mask invalid tokens as the model samples, at sub-40-microsecond overhead per token, and API-level structured outputs push schema-failure rates below 0.1%.[^33] The schema isn't just checked after the fact; it's enforced while the model generates. Now the playbook, which is where the actual legal judgment lives, is just code:
 
 <CodeTerminal
   title="legal · playbook.py"
@@ -262,7 +269,9 @@ If this sounds like a fresh insight of the LLM era, it isn't — and the prior a
 
 The strongest existence proof is **Catala**, a domain-specific language designed at Inria for writing tax and benefits law as literate programs.[^23] Its killer feature is *prioritized default logic* — a semantics built around the base-case-plus-exceptions structure that permeates statutes — so lawyers and programmers can read the same artifact side by side with the legal text. The French Public Finance Directorate (DGFiP) has used it to make income-tax computation auditable, and tax scholar Sarah Lawsky's work argues that encoding the tax code this way surfaces ambiguities the prose version silently hides.[^24] The OECD generalized the idea into a "Rules as Code" program: publish a machine-consumable version of government rules alongside the natural-language one, as a co-drafted twin.[^25]
 
-Software engineering has its own version of the tradition. Eric Evans' *Domain-Driven Design* (2003) argued that the domain model should live in the code as a "ubiquitous language" shared by experts and engineers[^31] — which is exactly what a Pydantic `Contract` schema or a FHIR resource is. And Stanford CodeX's computational law program has been making the legal version of the argument since the 2000s.[^12]
+Software engineering has its own version of the tradition. Eric Evans' *Domain-Driven Design* (2003) argued that the domain model should live in the code as a "ubiquitous language" shared by experts and engineers[^32] — which is exactly what a Pydantic `Contract` schema or a FHIR resource is. And Stanford CodeX's computational law program has been making the legal version of the argument since the 2000s.[^12]
+
+Software is also re-learning the lesson on itself, right now, under the name **spec-driven development**. GitHub's Spec Kit (93k+ stars, 30+ supported agents including Claude Code), AWS Kiro, and BMAD all treat the written specification as the primary, executable artifact — and code as a regenerable output produced from it.[^34] SDD emerged in 2025 as the direct answer to vibe coding: once agents write the code, the spec becomes the thing you version, review, and verify against. That is this post's thesis applied to software's own domain — even programmers, it turns out, needed to be told to express their problem as a coding problem.
 
 So why did rules-as-code stay niche for twenty years? Because the bottleneck was never executing the rules — it was *translating messy reality into the formalism*. Every invoice, contract, and clinical note had to be hand-keyed into the schema before any rule could fire. That translation layer was the expensive, human, error-prone half of the system. **That's the half LLMs just solved.** Structured extraction at near-zero marginal cost is the missing adapter between the world's unstructured inputs and the executable rules the domain always wanted to run. Rules as code was waiting for a universal parser; now it has one.
 
@@ -298,6 +307,8 @@ Every unreasonable-effectiveness essay owes its reader the boundary conditions, 
 
 **Some judgment resists the schema.** The jagged frontier is jagged in both directions.[^31] Whether a joke lands, whether a brand repositioning is wise, whether opposing counsel will blink — there's no `assert` for these, and pretending otherwise produces confident nonsense wearing a type signature. The honest version of the thesis is narrower and stronger: *inside* almost every "unverifiable" domain job there is a large verifiable core (extraction, consistency, policy compliance, arithmetic, citation grounding) and a small genuinely-judgment-shaped residue. Express the core as code; route the residue to humans via the escalation path. The mistake is doing it in either direction wholesale.
 
+And one honest wrinkle on the second limit: the boundary is moving. The labs are actively extending RLVR into non-verifiable territory with rubric-based rewards — the "Rubrics as Rewards" line of work turns instance-specific rubrics into training signals and beats LLM-as-judge baselines by up to 31% on HealthBench, with 2026 follow-ups (QUBRIC, Open Rubric System) scaling the recipe.[^35] A rubric is halfway between a vibe and a verifier, and it's becoming trainable. That sharpens the advice rather than undermining it: the verifiable core of your domain grows every quarter, so re-survey the boundary — what needed a human last year may take a rubric this year and a deterministic check the next.
+
 **Premature formalization freezes the wrong ontology.** A schema is a bet about what matters. Encode your playbook before you understand your domain and you'll automate your misunderstandings at scale — Lawsky's tax-law work shows that even statutes, the most formalization-ready text we have, hide genuine ambiguities that the encoding process surfaces rather than resolves.[^24] Law in particular is *contested*, not merely computed: sometimes the right answer to "what does §4.1 mean?" is litigation, not a function. The mitigation is to treat schemas and rules like the code they are — versioned, reviewed, revisited — and to let the failure-driven eval loop tell you where your ontology is wrong.
 
 <Callout type="warning" title="The rule of thumb">
@@ -331,6 +342,8 @@ The move, then, is the same one available to every builder in every vertical: fi
 <Callout type="insight">
 Your domain didn't get easier. You moved it onto the substrate where every model upgrade, every RLVR run, and every dollar of lab capex works for you — for free. That's not mysterious. That's leverage.
 </Callout>
+
+*Building in legal, commerce, healthcare, or another domain that's ready for this reframing? [Get in touch](/contact) — this is exactly the kind of harness work we do at Umai Tech. For the strategic companion piece, read [The Moat Isn't Your Model — It's Your Harness and Data Flywheel](/blog/the-moat-is-the-harness-not-the-model).*
 
 ---
 
@@ -366,4 +379,8 @@ Your domain didn't get easier. You moved it onto the substrate where every model
 [^28]: ["AI-Generated Prior Authorization Letters: Strong Clinical Content, Weak Administrative Scaffolding"](https://arxiv.org/pdf/2603.29366), arXiv:2603.29366, 2026
 [^29]: ["SpecBench: Measuring Reward Hacking in Long-Horizon Coding Agents"](https://arxiv.org/html/2605.21384v1), arXiv:2605.21384, 2026
 [^30]: ["The Verification Horizon: No Silver Bullet for Coding Agent Rewards"](https://arxiv.org/html/2606.26300), arXiv:2606.26300, 2026 — Rice's theorem + Goodhart's law on proxy verification
-[^31]: Dell'Acqua, Mollick, et al., "Navigating the Jagged Technological Frontier," Harvard Business School Working Paper, 2023; Eric Evans, *Domain-Driven Design: Tackling Complexity in the Heart of Software*, Addison-Wesley, 2003 ("ubiquitous language")
+[^31]: Dell'Acqua, Mollick, et al., "Navigating the Jagged Technological Frontier," Harvard Business School Working Paper, 2023
+[^32]: Eric Evans, *Domain-Driven Design: Tackling Complexity in the Heart of Software*, Addison-Wesley, 2003 ("ubiquitous language")
+[^33]: [XGrammar](https://letsdatascience.com/blog/structured-outputs-making-llms-return-reliable-json) — default structured-generation backend for vLLM, SGLang, and TensorRT-LLM as of March 2026; [JSONSchemaBench](https://arxiv.org/pdf/2501.10868), arXiv:2501.10868; structured-output failure-rate comparisons per [AppScale's 2026 engineering guide](https://appscale.blog/en/blog/structured-output-engineering-reliable-json-from-llms-2026)
+[^34]: [GitHub Spec Kit](https://www.fundesk.io/spec-driven-development-github-spec-kit-guide); [AWS Kiro and the 2026 SDD tool landscape](https://www.marktechpost.com/2026/05/08/9-best-ai-tools-for-spec-driven-development-in-2026-kiro-bmad-gsd-and-more-compare/); [Spec-Driven Development: The Definitive 2026 Guide](https://www.thebcms.com/blog/spec-driven-development/)
+[^35]: Gunjal et al., ["Rubrics as Rewards: Reinforcement Learning Beyond Verifiable Domains"](https://arxiv.org/abs/2507.17746), arXiv:2507.17746; [QUBRIC](https://arxiv.org/html/2606.03968v1), arXiv:2606.03968; [Open Rubric System](https://arxiv.org/pdf/2602.14069), arXiv:2602.14069
