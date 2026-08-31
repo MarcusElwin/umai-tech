@@ -414,13 +414,17 @@ Build notes are worth more than architecture diagrams, so:
 
 **6. Pin your state, not your code.** Task state lives in memory, so I pinned it to `globalThis` to survive Next's hot reload — otherwise a task parked in `input-required` vanishes the moment you edit a file mid-demo. I pinned the whole runtime, which also pinned the executor, and then spent twenty minutes watching an agent I had *definitely just fixed* keep serving its old implementation. Pin the stores. Rebuild the handlers.
 
+**7. The protocol assumes an agent remembers its own tasks. Serverless doesn't.** Everything worked locally and then fell over on the first real deployment, in four disguises that looked like four unrelated bugs. The scripted lifecycle started in one request and streamed from another, so the platform killed the run the moment the first response was sent — a spinner over an empty timeline. Agent-to-agent hops were traced by whichever process ran the *calling* agent, which isn't the process the browser is watching, so the interesting rows simply weren't there. Each instance minted its own card-signing key, so a client fetching the card from one and the JWKS from another found no matching `kid` and refused to transact — my own security check, working exactly as designed, against me. And a follow-up answer to an `input-required` question landed on an instance that had never heard of the task, which surfaced to a shopper as a raw UUID and the word "failed".
+
+Three of those are mine to fix, and I did: run the lifecycle inside the streaming request; have each agent hand its trace slice back on the result's `metadata` so the caller can assemble one timeline; and stop signing when the deployment can scale out and no stable key is configured, since an honestly unsigned card beats an unverifiable one. The fourth isn't a bug so much as a requirement I hadn't read carefully. A2A quite reasonably assumes an agent remembers its own tasks, and an in-memory task store on a platform that hands you a different process each request does not. That's a deployment decision — shared storage, or one long-lived process — and it's worth making before you promise anyone a demo.
+
 ## Part 4: Closing remarks
 
-Building this changed what I think A2A is for.
+I've spent time with ACP, UCP and MCP, but I'd been hesitant to dip my toes into A2A. I'm a firm believer in solving human-to-agent commerce first — the interactions that already have a person, a card and a complaints process attached. Agent-to-agent always felt like the next problem rather than this one.
 
-I went in expecting the value to be interoperability — different frameworks, one wire format. That's real but it's table stakes; any decent RPC contract gives you that. The value that showed up in practice was **the task model**. `input-required` and long-running `working` are the two states commerce actually needs and that a request/response API makes you build yourself, badly, every time. If your domain has work that pauses for a human or runs for days, that's the argument. If it doesn't, you may not need A2A at all, and that's a fine conclusion.
+What changed my mind was **the task model**. `input-required` and long-running `working` are the two states commerce actually needs, and the two a request/response API makes you build yourself, badly, every time. If your domain has work that pauses for a human or runs for days, that's the argument. If it doesn't, you may not need A2A at all, and that's a fine conclusion. It also made the whole thing feel less futuristic than I'd assumed: given adoption, this is a protocol for problems people already have.
 
-What's still missing is worth being loud about, because a demo that only flatters the protocol isn't much use to anyone.
+Obviously my example is a simplification. But if checkout providers and shipping providers all move to an agentic interface, they need some way to hand work over and to act on behalf of consumers and of each other. The same holds for any domain with more than one party in the loop. Which is why what's still missing is worth being loud about — a demo that only flatters the protocol isn't much use to anyone.
 
 **There is no dispute standard.** My claims agent works because I own all three sides and wrote the policy. Cross-merchant, cross-carrier claims need agreed evidence formats, agreed liability rules, and agreed escalation paths. None of that exists. It's the largest unclaimed space in agentic commerce and it's not a protocol problem so much as an industry-agreement problem.
 
@@ -437,6 +441,8 @@ The protocols are converging. A2A and MCP under one foundation is genuinely good
 <Callout type="insight" title="If you build one of these">
 Start with the boundary, not the agents. Decide what each agent is forbidden from seeing, then make it true in code. Every interesting thing in this build came from that constraint — and every shortcut I was tempted by would have quietly deleted the reason to use a protocol at all.
 </Callout>
+
+*Everything here is my own writing and my own opinion. It does not represent the views or work of any previous, current or future employer.*
 
 ---
 
