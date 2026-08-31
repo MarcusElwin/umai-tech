@@ -8,6 +8,7 @@ heroImage: "/images/blog/three-agents-and-a-hoodie-a2a-across-the-purchase-lifec
 ---
 
 import Callout from '@components/Callout.astro';
+import CodeTerminal from '@components/CodeTerminal.astro';
 import PrettyTable from '@components/PrettyTable.astro';
 
 Agentic commerce is still early. OpenAI and Stripe put the first real stake in the ground in September 2025 with the Agentic Commerce Protocol — an open standard for an agent running checkout against a merchant it does not own.[^acp] Google and Shopify followed at NRF in January 2026 with the Universal Commerce Protocol, co-developed with Etsy, Wayfair, Target and Walmart and endorsed by a couple of dozen payment networks.[^ucp] Plenty of people will tell you the agentic channel is here to stay and will move serious money over the next few years.
@@ -26,11 +27,11 @@ A2A's tasks — not its messages — are the thing worth having. Commerce is ful
 
 ## Part 1: Agentic commerce, a primer
 
-Strip the marketing off and agentic commerce is one change: **the buyer stops being a human with a browser**.
+Strip the marketing off and agentic commerce is one change: **the buyer stops being a human with a browser**. What replaces the browsing is a mapping problem — turning a user's intent into an order intent, and an order intent into a payment intent.
 
-That sounds incremental. It isn't, because almost every load-bearing assumption in a checkout flow is an assumption about a human being present.
+Take "I want to buy red sneakers." In the human-to-agent shape we have today, the agent maps that to an order intent and comes back with a ranked list to choose from. That is ChatGPT and Gemini right now. The shopper picks the pair they like and, in principle, finishes checkout in the chat.
 
-A human reads a total before clicking pay. A human notices when the delivery estimate says eleven days. A human sees the product photo and knows it's the wrong blue. A human gets an email saying "your parcel was delivered" and looks on the porch. Retail's entire risk model — chargebacks, dispute windows, "are you sure?" interstitials — is built on there being someone at the other end who can be surprised.
+In practice they mostly don't. What we have seen so far is that people are happy to do *discovery* in a chat and then leave — they would rather be handed off to the merchant's own site to pay. The payment-intent step gets sidestepped, and not for want of plumbing: ACP ships a delegated payment spec, and Google's AP2 exists for precisely this, modelling a purchase as three signed mandates — intent, cart, payment — which is the same chain written in cryptography.[^ap2] The capability is further along than the behaviour.
 
 Replace that human with an agent and three things move at once.
 
@@ -40,9 +41,13 @@ Replace that human with an agent and three things move at once.
 
 **The post-purchase tail becomes the hard part.** This is the bit that gets skipped. Buying is one request. Everything after — where is it, it arrived broken, I want my money back — is a long-running conversation across multiple systems, and it's where most of the operational cost of retail actually lives. A demo that stops at "order placed" has demoed the easy 10%.
 
-I mapped the protocol landscape around this a while back — MCP for tools, A2A for agent coordination, AP2/ACP/x402 for the money, identity layers on top.[^lego] The short version of that piece: no single protocol covers agentic commerce, and pretending otherwise gets you an architecture with a hole in it.
+And that tail is where agent-to-agent stops being a nice idea and becomes the only shape that works. "Where is my parcel, and can I have my money back?" cannot be answered by one agent with tools, because no single party holds the answer: the merchant knows what was paid, the carrier knows what happened to the box, and the claims desk knows the policy. Three systems, three owners, often three companies.
 
-This post is about one layer of that stack, and about being honest where its edges are.
+Note also what is *missing* here compared to checkout. When a chat can't close a purchase, there is an escape hatch — hand the shopper to the merchant's website. There is no equivalent for the tail. The entire value of an agent handling a damaged delivery is that the buyer does not have to go and chase three companies themselves. Take away the coordination and there is nothing left worth automating.
+
+Not to minimise the ordering problem: human-to-agent has to work before agent-to-agent becomes a big thing. But many of the building blocks are already here. I mapped the protocol landscape a while back — MCP for tools, A2A for agent coordination, AP2/ACP/x402 for the money, identity layers on top.[^lego] The short version of that piece: no single protocol covers agentic commerce, and pretending otherwise gets you an architecture with a hole in it.
+
+This post is about one layer of that stack — probably the more futuristic one — and about being honest where its edges are.
 
 ## Part 2: What A2A actually unlocks for commerce
 
@@ -64,17 +69,19 @@ Implementing it forced a question I had not thought hard enough about, and it's 
 
 A JWS header can carry a `jku` — a URL saying where to find the key. It is very tempting to just fetch it. Don't. A card that names its own key location proves nothing, because anyone who can serve you a card can serve you a matching key; you would be asking the forger to vouch for the forgery. My verifier ignores `jku` entirely and resolves keys from the origin the card was fetched from — the one thing in the exchange I had already decided to trust:
 
-```ts
-const verifier = verifyAgentCardSignature(async (kid) => {
+<CodeTerminal
+  title="signing.ts · resolving the key"
+  lang="ts"
+  code={`const verifier = verifyAgentCardSignature(async (kid) => {
   // Deliberately NOT the signature's own jku. The only thing worth
   // trusting is the origin you already chose to talk to.
-  const response = await fetch(new URL("/.well-known/jwks.json", origin));
+  const response = await fetch(new URL("/a2a/jwks", origin));
   const { keys } = await response.json();
   const match = keys.find((k) => k.kid === kid);
-  if (!match) throw new Error(`No key ${kid} published by ${origin}`);
+  if (!match) throw new Error(\`No key \${kid} published by \${origin}\`);
   return match;
-});
-```
+});`}
+/>
 
 Which surfaces the honest limit of card signing: it proves a card came from a domain. It does not tell you that domain deserves your money. That's a different problem, and nobody has solved it — see the closing section.
 
@@ -121,15 +128,17 @@ That is the worst failure mode a commerce agent has. A crash is loud. A confiden
 
 The fix isn't clever, it's just a decision: **read what the sentence says, and ask about what it doesn't.**
 
-```ts
-const missing = [
+<CodeTerminal
+  title="checkout.ts · ask, don't assume"
+  lang="ts"
+  code={`const missing = [
   ...(items.length === 0 ? ["product"] : []),
   ...(!country ? ["destination"] : []),
 ];
 // Defaulting here would mean handing back a confirmable total
 // for a product nobody named.
-if (missing.length > 0) throw new NeedsMoreInfo(askFor(missing), pending);
-```
+if (missing.length > 0) throw new NeedsMoreInfo(askFor(missing), pending);`}
+/>
 
 `NeedsMoreInfo` becomes an `input-required` carrying what was understood so far, so the follow-up resumes the original request rather than starting over — a bare "Tokyo" still lands on the `place_order` that asked the question, instead of falling through to the default skill with no keywords to match on.
 
@@ -205,8 +214,10 @@ The thick edges are the ones that matter. Those are agents acting as clients of 
 
 It cannot quote a total, because a total includes delivery and it doesn't own rate cards. So mid-task, it opens an A2A call of its own:
 
-```ts
-// It is a server to the buyer and a client to shipping, at the same time,
+<CodeTerminal
+  title="checkout.ts · calling the shipping agent"
+  lang="ts"
+  code={`// It is a server to the buyer and a client to shipping, at the same time,
 // over the same protocol. That symmetry is what makes this a mesh.
 this.working(task, bus, "Asking the shipping agent for delivery options…");
 
@@ -220,13 +231,15 @@ const shippingResult = await callAgent({
     orderAmountMinor: cart.subtotalMinor,
     address: { postalCode: address.postalCode, city: address.city, country },
   },
-});
-```
+});`}
+/>
 
 Then it stops. It does not place the order:
 
-```ts
-bus.publish(
+<CodeTerminal
+  title="checkout.ts · the confirmation gate"
+  lang="ts"
+  code={`bus.publish(
   AgentEvent.statusUpdate(
     statusUpdate({
       taskId: task.id,
@@ -234,14 +247,14 @@ bus.publish(
       state: TaskState.TASK_STATE_INPUT_REQUIRED,
       message: this.say(
         task,
-        `${summary} to ${quote.address.city}, delivered by ${quote.shipping.name}. ` +
-        `Total ${formatMinor(quote.totalMinor, quote.currency)}. Confirm to place the order.`,
+        \`\${summary} to \${quote.address.city}, delivered by \${quote.shipping.name}. \` +
+        \`Total \${formatMinor(quote.totalMinor, quote.currency)}. Confirm to place the order.\`,
         quote,               // the quote rides along as a data part
       ),
     })
   )
-);
-```
+);`}
+/>
 
 The quote travels in the `input-required` status message itself, so the follow-up turn can pick it up with no server-side session state. The task *is* the state. That felt like the protocol working with me rather than against me.
 
@@ -257,8 +270,10 @@ The agent is a protocol skin over both. That is how agents actually arrive in a 
 
 The genuinely new part is tracking, because tracking is long-running:
 
-```ts
-// Poll faster than the parcel moves so no scan is missed, and wait well past
+<CodeTerminal
+  title="shipping.ts · a task that runs for days"
+  lang="ts"
+  code={`// Poll faster than the parcel moves so no scan is missed, and wait well past
 // the nominal delivery time before concluding it is stuck — a tight budget
 // would report a healthy parcel as lost.
 for (let tick = 0; tick < maxPolls; tick++) {
@@ -267,14 +282,14 @@ for (let tick = 0; tick < maxPolls; tick++) {
     lastStage = stage;
     if (stage === "delivered") {
       bus.publish(AgentEvent.artifactUpdate({ /* proof-of-delivery */ }));
-      this.complete(task, bus, `Delivered. ${shipment.deliveredTo}.`, proof);
+      this.complete(task, bus, \`Delivered. \${shipment.deliveredTo}.\`, proof);
       return;
     }
     this.working(task, bus, STAGE_LABELS[stage]);  // still working. for days.
   }
   await new Promise((r) => setTimeout(r, pollMs));
-}
-```
+}`}
+/>
 
 One detail I'd defend: the parcel's stage is a pure function of `(shipment, now)`, not a timer. A client that resubscribes hours later sees the correct state, because the state was never in the loop — it was always derivable. A long-running task has to guarantee that, and a timer quietly doesn't.
 
@@ -282,8 +297,10 @@ One detail I'd defend: the parcel's stage is a pure function of `(shipment, now)
 
 Someone says their hoodie arrived soaked. To decide, you need to know what they paid and when (checkout), and whether the carrier ever delivered anything and to whom (shipping). The claims agent has neither. So:
 
-```ts
-const orderResult = await callAgent({
+<CodeTerminal
+  title="disputes.ts · gathering evidence from two peers"
+  lang="ts"
+  code={`const orderResult = await callAgent({
   from: "disputes", to: "checkout", skill: "order_status",
   contextId: task.contextId, data: { orderId: claim.orderId },
 });
@@ -293,8 +310,8 @@ const shipmentResult = await callAgent({
   contextId: task.contextId, data: { orderId: claim.orderId },
 });
 
-const decision = adjudicate(type, facts);
-```
+const decision = adjudicate(type, facts);`}
+/>
 
 Before any of that, it asks for a photo — `input-required` again — and the photo comes back as a **file part**, actual bytes on the wire, not a URL the agent would have to trust. Multi-modal messages are not a nice-to-have here; evidence you can't verify the provenance of isn't evidence.
 
@@ -332,8 +349,11 @@ That last one matters. An agent that always produces an answer is worse than one
 
 Here's the actual trace of one lifecycle — buy, follow the parcel to the door, claim damage — trimmed of the noise:
 
-```
-shopper  → checkout   place_order         Buy one Nebula Fade hoodie in L, to Stockholm.
+<CodeTerminal
+  title="one purchase, three agents"
+  label="trace"
+  lang="text"
+  code={`shopper  → checkout   place_order         Buy one Nebula Fade hoodie in L, to Stockholm.
 checkout → shipping   quote_shipping      Delivery options for SE, basket 109900 SEK
 shipping → checkout   quote_shipping      3 options to SE, from PostNord Standard (free over 1000 kr).
 checkout → shopper    place_order         [input-required] Total SEK 1,099.00. Confirm to place the order.
@@ -357,8 +377,8 @@ disputes → shipping   shipment_evidence   Delivery evidence for HT-10001
 shipping → disputes   shipment_evidence   Delivered via postnord (5C06D21A060ASE).
 disputes → checkout   issue_replacement   Replacement approved under claim CLM-2001
 checkout → shipping   book_shipment       Book replacement delivery for HT-10002
-disputes → shopper                        [completed] CLM-2001: replacement.
-```
+disputes → shopper                        [completed] CLM-2001: replacement.`}
+/>
 
 <figure class="not-prose my-10 w-full overflow-hidden rounded-3xl border border-umai-gray-200 bg-white shadow-2xl shadow-umai-gray-900/10 dark:border-umai-gray-700 dark:bg-umai-gray-900/80">
   <img
@@ -378,7 +398,7 @@ Thirty-two events, one `contextId`, three agents, and a loop that closes: a clai
 The demo page renders that timeline live, and every row expands to the exact A2A payload on the wire. It runs with no database, no Medusa backend, and no API keys — `npm install && npm run dev`, then `/agents`. Code and notes: [github.com/MarcusElwin/hoodtopia](https://github.com/MarcusElwin/hoodtopia).[^hoodtopia]
 </Callout>
 
-### Six things that bit me
+### Where I lost time
 
 Build notes are worth more than architecture diagrams, so:
 
@@ -431,6 +451,8 @@ Start with the boundary, not the agents. Decide what each agent is forbidden fro
 [^a2a-spec]: A2A Project, [Agent2Agent (A2A) Protocol Specification](https://a2a-protocol.org/latest/specification/), and the [reference repository](https://github.com/a2aproject/A2A).
 
 [^a2a-v1]: A2A v1.0 (March 2026) formalised JWS-signed agent cards — RFC 7515 signatures over an RFC 8785 canonicalised card — so a client can verify a card was issued by the domain owner. See the [specification](https://a2a-protocol.org/latest/specification/). The implementation here uses the official [`@a2a-js/sdk`](https://github.com/a2aproject/a2a-js) v1.1.0.
+
+[^ap2]: Google, [Agent Payments Protocol (AP2)](https://ap2-protocol.org/), announced 16 September 2025 with 60+ partners including Mastercard, PayPal, American Express and Coinbase. A purchase is represented as three cryptographically signed mandates — Intent, Cart and Payment. OpenAI's [delegated payment spec](https://github.com/agentic-commerce-protocol/agentic-commerce-protocol) covers the equivalent step in ACP.
 
 [^lego]: Marcus Elwin, ["The Lego Bricks of Agentic Commerce: Why AI Agents Need 5 Protocol Layers to Work Together"](https://umai-tech.com/blog).
 
