@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/MarcusElwin/umai-tech/compare/v1.2.0...v1.3.0) (2026-08-31)
+
+
+### Features
+
+* **blog:** three agents and a hoodie — A2A across the purchase lifecycle ([#30](https://github.com/MarcusElwin/umai-tech/issues/30)) ([311c65f](https://github.com/MarcusElwin/umai-tech/commit/311c65f0199d4a80aee7cea1b50f988cb179458b))
+
 # [1.2.0](https://github.com/MarcusElwin/umai-tech/compare/v1.1.1...v1.2.0) (2026-07-08)
 
 
