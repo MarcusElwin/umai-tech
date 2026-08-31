@@ -107,7 +107,31 @@ Those two states are, I think, the entire commerce case for A2A. Everything else
 
 A2A does not authorise payments. It gives you a place to *pause* for authorisation — that's what `input-required` is — but the mandate itself, the cryptographic evidence that a human agreed to spend this money, belongs to AP2 or ACP.[^lego] Anyone selling you A2A as an agentic-payments story is selling you a socket and calling it electricity.
 
-It also doesn't tell you how to *select* a skill. Cards describe skills; requests carry a natural-language message. There is no `method` field. For an agent talking to a human's agent that's the right call — it keeps agents opaque, which is the design principle. For a merchant's checkout agent calling a merchant's shipping agent forty times a second, routing through an LLM to work out that you meant `quote_shipping` is absurd. Every mesh I've seen fills this in privately. Mine does too. I'll show you how below, and I'd rather it were standardised.
+It also doesn't tell you how to *select* a skill. Cards describe skills; requests carry a natural-language message. There is no `method` field. For an agent talking to a human's agent that's the right call — it keeps agents opaque, which is the design principle. For a merchant's checkout agent calling a merchant's shipping agent forty times a second, routing through an LLM to work out that you meant `quote_shipping` is absurd. Every mesh I've seen fills this in privately. Mine does too — a metadata key for machine callers, keyword classification for prose. I'd rather it were standardised.
+
+And that gap is bigger than it first looks, because **selecting the skill is only half the job**. I had routing working and thought I was done. Then I sent the checkout agent a sentence a real buyer's agent would send:
+
+> I would like to buy two Umai Kanji hoodies, ship them to London please.
+
+It routed to `place_order` correctly, and then offered me **one Nebula Purple hoodie, delivered to Stockholm, in Swedish kronor**, ready to confirm. Wrong product, wrong quantity, wrong country, wrong currency — presented as a total to approve. Nothing had failed. The router worked; there was simply no parameter extraction behind it, so every unparsed field fell through to a default that happened to be sitting in the code.
+
+That is the worst failure mode a commerce agent has. A crash is loud. A confidently wrong purchase confirmation is not, and the buyer's agent has no way to tell the difference — the reply is well-formed, correctly typed, and about the wrong hoodie.
+
+The fix isn't clever, it's just a decision: **read what the sentence says, and ask about what it doesn't.**
+
+```ts
+const missing = [
+  ...(items.length === 0 ? ["product"] : []),
+  ...(!country ? ["destination"] : []),
+];
+// Defaulting here would mean handing back a confirmable total
+// for a product nobody named.
+if (missing.length > 0) throw new NeedsMoreInfo(askFor(missing), pending);
+```
+
+`NeedsMoreInfo` becomes an `input-required` carrying what was understood so far, so the follow-up resumes the original request rather than starting over — a bare "Tokyo" still lands on the `place_order` that asked the question, instead of falling through to the default skill with no keywords to match on.
+
+Which is the second thing `input-required` turned out to be for. I reached for it as the payment-confirmation gate. It's also how an agent says *I don't know enough yet* without failing, and that turns a one-shot request into a conversation — the same state, doing two quite different jobs.
 
 ## Part 3: The build — three agents and a hoodie
 
