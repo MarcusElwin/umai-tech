@@ -10,13 +10,15 @@ heroImage: "/images/blog/three-agents-and-a-hoodie-a2a-across-the-purchase-lifec
 import Callout from '@components/Callout.astro';
 import PrettyTable from '@components/PrettyTable.astro';
 
-On 17 August, the Agent2Agent protocol joined the Agentic AI Foundation, the Linux Foundation body that already houses MCP.[^aaif-announce][^forbes] Two protocols that spent 2025 being described as rivals now sit under the same roof, which is roughly the outcome anyone who had actually read both specs expected.
+Agentic commerce is still early. OpenAI and Stripe put the first real stake in the ground in September 2025 with the Agentic Commerce Protocol — an open standard for an agent running checkout against a merchant it does not own.[^acp] Google and Shopify followed at NRF in January 2026 with the Universal Commerce Protocol, co-developed with Etsy, Wayfair, Target and Walmart and endorsed by a couple of dozen payment networks.[^ucp] Plenty of people will tell you the agentic channel is here to stay and will move serious money over the next few years.
 
-I'm an AAIF ambassador, so I could have written the explainer. Instead I built something, because agentic commerce is where I keep finding that the explainers quietly skip the hard part.
+Look closer, though, and nearly all of that movement is American. Adoption in Europe is thinner, and I'd expect that to change over the year rather than the quarter. There's also an ordering problem nobody gets to skip: the human-to-agent journey has to work before agent-to-agent commerce means very much. A shopper has to be willing to hand an agent a card before two agents have anything to settle between them.
 
-Here's the hard part. Almost every agent demo you have seen is one agent with several tools. That shape is easy to build and it teaches you nothing about the actual problem, which is what happens when the parties on either end of a call **do not belong to the same organisation and cannot see each other's data**. A merchant's checkout system, a carrier's tracking system, and a claims desk are three different parties even inside one company. Between companies it's not even close.
+But this is AI, and it moves fast. On 17 August the Agent2Agent protocol joined the Agentic AI Foundation, the Linux Foundation body that already houses MCP.[^aaif-announce][^forbes] Two protocols that spent 2025 being described as rivals now sit under the same roof, which is roughly the outcome anyone who had actually read both specs expected.
 
-So I built three agents that genuinely can't see each other's data, made them handle one purchase from basket to claim, and watched what the protocol had to do.
+Which brings me to the part the explainers skip. Almost every agent demo you have seen is one agent with several tools. That shape is easy to build and it teaches you nothing about the actual problem, which is what happens when the parties on either end of a call do not belong to the same organisation and cannot see each other's data. A merchant's checkout system, a carrier's tracking system, and a claims desk are three different parties even inside one company. Between companies it isn't close.
+
+So this post walks through what an agent-to-agent commerce flow could look like on A2A: three agents that genuinely cannot see each other's data, handling one purchase from basket to claim, and what the protocol had to do to get them there.
 
 <Callout type="insight" title="The short version">
 A2A's tasks — not its messages — are the thing worth having. Commerce is full of work that pauses for a human, or runs for three days, and a tool call cannot model either. What A2A deliberately does **not** give you is payment authorisation, agent identity you can enforce, or any way to say which skill you want. Those gaps are real and you will fill them yourself.
@@ -398,7 +400,7 @@ Building this changed what I think A2A is for.
 
 I went in expecting the value to be interoperability — different frameworks, one wire format. That's real but it's table stakes; any decent RPC contract gives you that. The value that showed up in practice was **the task model**. `input-required` and long-running `working` are the two states commerce actually needs and that a request/response API makes you build yourself, badly, every time. If your domain has work that pauses for a human or runs for days, that's the argument. If it doesn't, you may not need A2A at all, and that's a fine conclusion.
 
-What's still missing is worth being loud about, because the ambassador job isn't cheerleading.
+What's still missing is worth being loud about, because a demo that only flatters the protocol isn't much use to anyone.
 
 **There is no dispute standard.** My claims agent works because I own all three sides and wrote the policy. Cross-merchant, cross-carrier claims need agreed evidence formats, agreed liability rules, and agreed escalation paths. None of that exists. It's the largest unclaimed space in agentic commerce and it's not a protocol problem so much as an industry-agreement problem.
 
@@ -417,6 +419,10 @@ Start with the boundary, not the agents. Decide what each agent is forbidden fro
 </Callout>
 
 ---
+
+[^acp]: OpenAI and Stripe, [Agentic Commerce Protocol](https://github.com/agentic-commerce-protocol/agentic-commerce-protocol) — an Apache-2.0 open standard released 29 September 2025 alongside Instant Checkout in ChatGPT. See Stripe's [announcement](https://stripe.com/blog/developing-an-open-standard-for-agentic-commerce).
+
+[^ucp]: Google and Shopify, [Universal Commerce Protocol](https://shopify.engineering/UCP), announced by Sundar Pichai at NRF on 11 January 2026, co-developed with Etsy, Wayfair, Target and Walmart and endorsed by 20+ partners including Visa, Mastercard, Stripe and Adyen. Google's [technical overview](https://developers.googleblog.com/under-the-hood-universal-commerce-protocol/).
 
 [^aaif-announce]: Agentic AI Foundation, ["A2A joins AAIF's open agentic stack"](https://aaif.io/blog/a2a-joins-aaif), announced 17 August 2026. Project page: [aaif.io/projects/agent2agent](https://aaif.io/projects/agent2agent).
 
