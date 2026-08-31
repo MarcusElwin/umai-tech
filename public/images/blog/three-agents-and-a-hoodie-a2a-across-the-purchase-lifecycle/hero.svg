@@ -1,0 +1,114 @@
+<svg width="1400" height="760" viewBox="0 0 1400 760" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Three agents and a hoodie: A2A across the purchase lifecycle</title>
+  <desc id="desc">A diagram of a commerce mesh. A shopper agent on the left calls a checkout agent and a claims agent. The checkout agent calls the shipping agent for rates and labels, and the claims agent calls both the checkout and shipping agents for evidence before deciding a claim.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1400" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FAF7F0"/>
+      <stop offset="0.48" stop-color="#F3ECE0"/>
+      <stop offset="1" stop-color="#EAE2D4"/>
+    </linearGradient>
+    <linearGradient id="cardLight" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#FBF6EE"/>
+    </linearGradient>
+    <linearGradient id="cardShopper" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F4F1EA"/>
+    </linearGradient>
+    <filter id="shadow" x="-40" y="-20" width="1480" height="820" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="14"/>
+      <feGaussianBlur stdDeviation="18"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.18 0 0 0 0 0.14 0 0 0 0 0.09 0 0 0 0.16 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="s1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="s1" result="shape"/>
+    </filter>
+    <marker id="arrowA2A" markerWidth="22" markerHeight="22" refX="16" refY="11" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M5 4L17 11L5 18" stroke="#7C3AED" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </marker>
+    <marker id="arrowBuyer" markerWidth="18" markerHeight="18" refX="13" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M4 3.5L14 9L4 14.5" stroke="#A8A29E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="760" fill="url(#bg)"/>
+  <circle cx="150" cy="96" r="180" fill="#F59E0B" opacity="0.11"/>
+  <circle cx="1250" cy="680" r="220" fill="#7C3AED" opacity="0.11"/>
+  <path d="M0 636C184 572 325 706 503 648C659 597 716 468 892 493C1058 516 1153 648 1400 557V760H0V636Z" fill="#FFFFFF" opacity="0.3"/>
+
+  <text x="700" y="76" text-anchor="middle" fill="#1C1917" font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-size="46" font-weight="760" letter-spacing="-1.6">Three agents and a hoodie</text>
+  <text x="700" y="116" text-anchor="middle" fill="#78716C" font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-size="20" font-weight="500">A2A across the purchase lifecycle</text>
+
+  <!-- Edges: buyer to merchant agents -->
+  <path d="M296 356 C 350 336, 366 268, 428 252" stroke="#A8A29E" stroke-width="2.4" stroke-dasharray="7 6" fill="none" marker-end="url(#arrowBuyer)"/>
+  <path d="M296 404 C 400 470, 500 528, 616 540" stroke="#A8A29E" stroke-width="2.4" stroke-dasharray="7 6" fill="none" marker-end="url(#arrowBuyer)"/>
+  <text x="352" y="340" text-anchor="middle" fill="#8A817A" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13.5" font-weight="600">place_order</text>
+  <text x="368" y="512" fill="#8A817A" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13.5" font-weight="600">open_claim</text>
+
+  <!-- Edges: agent to agent (the ones that matter) -->
+  <path d="M690 250 L 836 250" stroke="#7C3AED" stroke-width="4.2" fill="none" marker-end="url(#arrowA2A)"/>
+  <text x="763" y="224" text-anchor="middle" fill="#6D28D9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13.5" font-weight="700">quote_shipping</text>
+  <text x="763" y="282" text-anchor="middle" fill="#8B5CF6" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" font-weight="600">book_shipment</text>
+
+  <path d="M700 496 C 668 428, 620 396, 590 340" stroke="#7C3AED" stroke-width="4.2" fill="none" marker-end="url(#arrowA2A)"/>
+  <text x="560" y="432" text-anchor="end" fill="#6D28D9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13.5" font-weight="700">order_status</text>
+
+  <path d="M846 496 C 878 428, 930 396, 962 340" stroke="#7C3AED" stroke-width="4.2" fill="none" marker-end="url(#arrowA2A)"/>
+  <text x="988" y="432" fill="#6D28D9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13.5" font-weight="700">shipment_evidence</text>
+
+  <g filter="url(#shadow)">
+    <!-- Shopper agent -->
+    <rect x="72" y="300" width="224" height="160" rx="26" fill="url(#cardShopper)" stroke="#DED5C6" stroke-width="2"/>
+    <!-- Checkout agent -->
+    <rect x="410" y="186" width="280" height="154" rx="26" fill="url(#cardLight)" stroke="#E7DCCB" stroke-width="2"/>
+    <!-- Shipping agent -->
+    <rect x="850" y="186" width="280" height="154" rx="26" fill="url(#cardLight)" stroke="#E7DCCB" stroke-width="2"/>
+    <!-- Claims agent -->
+    <rect x="600" y="496" width="280" height="154" rx="26" fill="url(#cardLight)" stroke="#E7DCCB" stroke-width="2"/>
+  </g>
+
+  <!-- Shopper agent contents -->
+  <rect x="72" y="300" width="224" height="6" rx="3" fill="#94A3B8"/>
+  <circle cx="102" cy="342" r="6" fill="#64748B"/>
+  <text x="120" y="348" fill="#1C1917" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="740">Shopper agent</text>
+  <text x="102" y="382" fill="#78716C" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14.5" font-weight="500">Buyer side. Holds no</text>
+  <text x="102" y="404" fill="#78716C" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14.5" font-weight="500">merchant credentials,</text>
+  <text x="102" y="426" fill="#78716C" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14.5" font-weight="500">no database access.</text>
+
+  <!-- Checkout agent contents -->
+  <rect x="410" y="186" width="280" height="6" rx="3" fill="#D97706"/>
+  <circle cx="440" cy="228" r="6" fill="#D97706"/>
+  <text x="458" y="234" fill="#1C1917" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="740">Checkout</text>
+  <text x="440" y="268" fill="#57534E" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14.5" font-weight="600">Owns orders and money</text>
+  <text x="440" y="296" fill="#A8A29E" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="500">Cannot price a delivery</text>
+  <rect x="440" y="308" width="132" height="22" rx="11" fill="#FEF3C7"/>
+  <text x="452" y="323" fill="#92400E" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" font-weight="700">input-required</text>
+
+  <!-- Shipping agent contents -->
+  <rect x="850" y="186" width="280" height="6" rx="3" fill="#0EA5E9"/>
+  <circle cx="880" cy="228" r="6" fill="#0EA5E9"/>
+  <text x="898" y="234" fill="#1C1917" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="740">Shipping</text>
+  <text x="880" y="268" fill="#57534E" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14.5" font-weight="600">Owns carriers and scans</text>
+  <text x="880" y="296" fill="#A8A29E" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="500">Knows nothing about money</text>
+  <rect x="880" y="308" width="164" height="22" rx="11" fill="#E0F2FE"/>
+  <text x="892" y="323" fill="#075985" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" font-weight="700">long-running task</text>
+
+  <!-- Claims agent contents -->
+  <rect x="600" y="496" width="280" height="6" rx="3" fill="#E11D48"/>
+  <circle cx="630" cy="538" r="6" fill="#E11D48"/>
+  <text x="648" y="544" fill="#1C1917" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="740">Claims</text>
+  <text x="630" y="578" fill="#57534E" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14.5" font-weight="600">Decides refunds</text>
+  <text x="630" y="606" fill="#A8A29E" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="500">Can see neither of the above</text>
+  <rect x="630" y="618" width="118" height="22" rx="11" fill="#FFE4E6"/>
+  <text x="642" y="633" fill="#9F1239" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" font-weight="700">file parts</text>
+
+  <!-- Footer note -->
+  <rect x="72" y="686" width="14" height="4" rx="2" fill="#7C3AED"/>
+  <text x="98" y="694" fill="#57534E" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="600">Agent calling agent — the same request an outside buyer would make</text>
+  <rect x="742" y="684" width="14" height="4" rx="2" fill="#A8A29E"/>
+  <text x="768" y="694" fill="#8A817A" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="500">Buyer side</text>
+  <text x="1328" y="694" text-anchor="end" fill="#A8A29E" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="600">A2A v1.0</text>
+</svg>
