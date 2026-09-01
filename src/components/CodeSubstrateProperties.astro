@@ -1,0 +1,68 @@
+---
+const properties = [
+  {
+    name: 'Verifiable',
+    verb: 'you can run it',
+    definition:
+      'A function returns the expected value or it doesn’t. A schema validates or it throws. A test suite is green or red. There is no "the vibes are slightly off."',
+    detail:
+      'Verification is what turns a probabilistic generator into something you can trust in production — and what the labs’ RLVR training loops optimize against.',
+    example: 'assert check_playbook(contract) == []',
+  },
+  {
+    name: 'Composable',
+    verb: 'correctness stacks',
+    definition:
+      'Functions call functions, modules import modules. You build big correct things out of small correct things, and the correctness composes.',
+    detail:
+      'Prose doesn’t compose — you can’t import paragraph three into paragraph seven. Typed interfaces are what let a thousand small verifiers add up to one reliable system.',
+    example: 'from playbook import check_liability_cap',
+  },
+  {
+    name: 'Executable',
+    verb: 'it is the action',
+    definition:
+      'Code isn’t a description of an action — it is the action. When an agent emits code, the environment changes and a feedback signal comes back.',
+    detail:
+      'Every step ends with ground truth: a file written, an API called, a number computed. That feedback is what agentic loops are made of.',
+    example: 'result = run(candidate); errors = verify(result)',
+  },
+];
+---
+
+<section
+  class="not-prose my-8 rounded-3xl border border-umai-gray-200 bg-white p-4 shadow-2xl shadow-umai-gray-900/10 dark:border-umai-gray-700 dark:bg-umai-gray-900/80 sm:p-6"
+  aria-labelledby="code-substrate-title"
+>
+  <div class="mb-6 max-w-3xl border-b border-umai-gray-200 pb-5 dark:border-umai-gray-700">
+    <div class="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-umai-accent">why code wins</div>
+    <h3 id="code-substrate-title" class="text-2xl font-bold tracking-tight text-umai-primary dark:text-umai-secondary sm:text-3xl">
+      Three properties of the code substrate
+    </h3>
+    <div class="mt-3 text-sm leading-7 text-umai-gray-600 dark:text-umai-gray-300">
+      Move a domain problem onto code and you inherit all three for free — and those three are
+      exactly what turn a stateless next-token predictor into a reliable agent.
+    </div>
+  </div>
+
+  <div class="grid gap-3 lg:grid-cols-3">
+    {properties.map((property) => (
+      <article class="group relative flex flex-col overflow-hidden rounded-2xl border border-umai-gray-200 bg-umai-gray-50 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-umai-accent/50 hover:bg-white hover:shadow-xl hover:shadow-umai-accent/10 dark:border-umai-gray-700 dark:bg-umai-gray-800/70 dark:hover:bg-umai-gray-800">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-umai-accent to-umai-accent-light opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+        <div class="mb-3 flex items-center justify-between gap-2">
+          <h4 class="font-mono text-lg font-bold tracking-tight text-umai-gray-900 dark:text-white">{property.name}</h4>
+          <span class="rounded-full border border-umai-accent/20 bg-umai-accent/10 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-umai-accent dark:border-umai-accent/30 dark:bg-umai-accent/15">
+            {property.verb}
+          </span>
+        </div>
+        <p class="text-sm leading-6 text-umai-gray-700 dark:text-umai-gray-200">{property.definition}</p>
+        <p class="mt-3 text-sm leading-6 text-umai-gray-500 dark:text-umai-gray-400">{property.detail}</p>
+        <p class="mt-auto pt-4">
+          <span class="block overflow-x-auto rounded-lg bg-umai-gray-900 px-3 py-2 font-mono text-[0.7rem] text-green-400 dark:bg-umai-gray-900/90">
+            {property.example}
+          </span>
+        </p>
+      </article>
+    ))}
+  </div>
+</section>
