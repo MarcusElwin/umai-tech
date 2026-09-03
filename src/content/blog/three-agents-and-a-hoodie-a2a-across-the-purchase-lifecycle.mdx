@@ -146,7 +146,7 @@ Which is the second thing `input-required` turned out to be for. I reached for i
 
 ## Part 3: The build — three agents and a hoodie
 
-I have a demo store called Hoodtopia: Next.js, MedusaJS for real commerce primitives, Kustom for checkout, built originally for a LangChain Stockholm meetup.[^hoodtopia] It already had a working shipping integration, real per-market carriers, and real order flow. Perfect substrate — the agents wrap something that was already load-bearing rather than a mock.
+I have a demo store called Hoodtopia: Next.js, MedusaJS for real commerce primitives, a hosted checkout provider for payment, built originally for a LangChain Stockholm meetup.[^hoodtopia] It already had a working shipping integration, real per-market carriers, and real order flow. Perfect substrate — the agents wrap something that was already load-bearing rather than a mock.
 
 I added three agents.
 
@@ -264,7 +264,7 @@ The quote travels in the `input-required` status message itself, so the follow-u
 
 This is my favourite part, and it's the least impressive-sounding.
 
-`buildShippingOptions()` already existed in Hoodtopia. It serves the Kustom Shipping Assistant callback in the live storefront: real per-market carriers, VAT in basis points, free-shipping thresholds, pickup lockers with coordinates. `createShipment()` already existed too, minting tracking ids in each carrier's real format — PostNord's 13-digit, Royal Mail's `XX…GB`, UPS's `1Z…`.
+`buildShippingOptions()` already existed in Hoodtopia. It serves the live storefront's shipping-options callback: real per-market carriers, VAT in basis points, free-shipping thresholds, pickup lockers with coordinates. `createShipment()` already existed too, minting tracking ids in each carrier's real format — PostNord's 13-digit, Royal Mail's `XX…GB`, UPS's `1Z…`.
 
 The agent is a protocol skin over both. That is how agents actually arrive in a commerce stack: not as a rewrite, but as a new interface onto systems that already work.
 
